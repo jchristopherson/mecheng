@@ -30,3 +30,24 @@
 *.exe
 *.out
 *.app
+
+# Directories
+bin/
+lib/
+build/
+html/
+latex/
+
+# CMake Stuff
+.cmaketools.json
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+CTestTestfile.cmake
+
+# Misc Stuff
+c_cpp_properties.json
