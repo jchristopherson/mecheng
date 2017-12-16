@@ -1,7 +1,7 @@
 ! test_columns.f90
 
 program main
-    use, intrinsic :: iso_fortran_env, only : real64
+    use, intrinsic :: iso_fortran_env, only : real64, int32
     use columns
     use constants
     implicit none
@@ -14,6 +14,8 @@ program main
 
     rst = test_buckling_2()
     if (.not.rst) overall = .false.
+
+    call test_array_inputs()
 
 
     print *, ""
@@ -147,5 +149,38 @@ contains
             rst = .true.
         end if
     end function
+
+! ------------------------------------------------------------------------------
+    !
+    subroutine test_array_inputs()
+        ! Variables
+        logical :: rst
+        real(real64), parameter :: tol = 1.0d-12
+        real(real64), parameter :: modulus = 10.0d6
+        real(real64), parameter :: yield = 40.0d3
+        real(real64), parameter :: width = 1.5d0
+        real(real64), parameter :: depth = 0.5d0
+        real(real64) :: area, moi, ratio, transition, check
+        real(real64), dimension(10) :: lengths, loads
+        integer(int32) :: i
+
+        ! Initialization
+        area = width * depth
+        moi = width * depth**3 / 12.0d0
+        do i = 1, size(lengths)
+            lengths(i) = 10.0d0 * i
+        end do
+
+        ! Compute the buckling loads
+        loads = buckling_load(modulus, yield, lengths, moi, area)
+
+        ! Check by calculating each individually
+        do i = 1, size(lengths)
+            check = buckling_load(modulus, yield, lengths(i), moi, area)
+            print '(AF9.3AF9.3A)', "Computed: ", loads(i), " lbf.  Expected: ",&
+                check, " lbf."
+        end do
+
+    end subroutine
 
 end program
