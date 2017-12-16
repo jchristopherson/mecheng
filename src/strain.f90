@@ -44,7 +44,8 @@ contains
             strain4) result(x)
         real(real64), intent(in) :: fg, strain1, strain2, strain3, strain4
         real(real64) :: x
-        x = 1.0d-3 * fg * (fg * (strain1 * strain3 - strain2 * strain4) - &
+        ! The 1.0d3 factor converts from V/V to mV/V
+        x = 1.0d3 * fg * (fg * (strain1 * strain3 - strain2 * strain4) - &
             (strain4 - strain3 + strain2 - strain1)) / (4.0d0 + &
             fg * (fg * (strain3 * (strain2 + strain1) + &
             strain4 * (strain2 + strain1)) + &
