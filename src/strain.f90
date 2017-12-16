@@ -40,6 +40,15 @@ contains
     !!         \/
     !!         V-
     !! @endverbatim
+    !!
+    !! @par 
+    !! The output of the bridge assuming each gage has the same resistance and
+    !! the same gage factor is as follows.
+    !! \f$ \frac{V_{out}}{V_{in}} = \frac{f_{g}(f_{g}(\epsilon_{1}\epsilon_{3} -
+    !! \epsilon_{2}\epsilon_{4}) - (\epsilon_{4} - \epsilon_{3} + \epsilon_{2} -
+    !! \epsilon_{1}))}{4 + f_{g}(f_{g}(\epsilon_{3} (\epsilon_{2} + 
+    !! \epsilon_{1}) + \epsilon_{4} (\epsilon_{2} + \epsilon_{1})) + 2
+    !! (\epsilon_{1} + \epsilon_{2} + \epsilon_{3} + \epsilon_{4}))} \f$
     pure elemental function wheatstone_bridge_1(fg, strain1, strain2, strain3, &
             strain4) result(x)
         real(real64), intent(in) :: fg, strain1, strain2, strain3, strain4
