@@ -117,8 +117,64 @@ contains
     end function
 
 ! ------------------------------------------------------------------------------
+    !> @brief Applies a rotation transformation to the x-direction strain.
+    !!
+    !! @param[in] ex The x-direction strain.
+    !! @param[in] ey The y-direction strain.
+    !! @param[in] gxy The x-y shear strain.
+    !! @param[in] theta The rotation angle, in radians.
+    !! @return The transformed strain.
+    !!
+    !! @par Definition
+    !! \f$ \epsilon_{x'} = \epsilon_{x} \cos^{2}\theta + \epsilon_{y} 
+    !! \sin^{2}\theta + \gamma_{xy} \sin\theta \cos\theta \f$
+    pure elemental function strain_transform_x(ex, ey, gxy, theta) result(x)
+        real(real64), intent(in) :: ex, ey, gxy, theta
+        real(real64) :: x, ct, st
+        ct = cos(theta)
+        st = sin(theta)
+        x = ex * ct**2 + ey * st**2 + gxy * st * ct
+    end function
 
 ! ------------------------------------------------------------------------------
+    !> @brief Applies a rotation transformation to the y-direction strain.
+    !!
+    !! @param[in] ex The x-direction strain.
+    !! @param[in] ey The y-direction strain.
+    !! @param[in] gxy The x-y shear strain.
+    !! @param[in] theta The rotation angle, in radians.
+    !! @return The transformed strain.
+    !!
+    !! @par Definition
+    !! \f$ \epsilon_{y'} = \epsilon_{x} \sin^{2}\theta + \epsilon_{y} 
+    !! \cos^{2}\theta - \gamma_{xy} \sin\theta \cos\theta \f$
+    pure elemental function strain_transform_y(ex, ey, gxy, theta) result(x)
+        real(real64), intent(in) :: ex, ey, gxy, theta
+        real(real64) :: x, ct, st
+        ct = cos(theta)
+        st = sin(theta)
+        x = ex * st**2 + ey * ct**2 - gxy * st * ct
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Applies a rotation transformation to the x-y shear strain.
+    !!
+    !! @param[in] ex The x-direction strain.
+    !! @param[in] ey The y-direction strain.
+    !! @param[in] gxy The x-y shear strain.
+    !! @param[in] theta The rotation angle, in radians.
+    !! @return The transformed strain.
+    !!
+    !! @par Definition
+    !! \f$ \gamma_{x'y'} = 2 (\epsilon_{x} - \epsilon_{y}) \sin\theta \cos\theta
+    !! + \gamma_{xy} (\cos^{2}\theta - \sin^{2}\theta) \f$
+    pure elemental function strain_transfom_xy(ex, ey, gxy, theta) result(x)
+        real(real64), intent(in) :: ex, ey, gxy, theta
+        real(real64) :: x, ct, st
+        ct = cos(theta)
+        st = sin(theta)
+        x = 2.0d0 * (ey - ex) * st * ct + gxy * (ct**2 - st**2)
+    end function
 
 ! ------------------------------------------------------------------------------
 end module
