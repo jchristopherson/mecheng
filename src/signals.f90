@@ -7,6 +7,7 @@
 module signals
     use, intrinsic :: iso_fortran_env, only : int32, real64
     use real_transform_routines, only : rfft1i, rfft1b, rfft1f
+    use complex_transform_routines, only : cfft1i, cfft1b, cfft1f
     implicit none
     private
     public :: low_pass_filter
@@ -14,6 +15,7 @@ module signals
     public :: band_pass_filter
     public :: band_stop_filter
     public :: averaging_filter
+    public :: fft
 
 contains
 ! ******************************************************************************
@@ -47,7 +49,7 @@ contains
         ndp = real(n, real64)
         df = fs / ndp
         fmax = half * ndp * df
-        lwsave = int(log(ndp), int32) + 4
+        lwsave = n + int(log(ndp), int32) + 4
         lwork = n
         allocate(wsave(lwsave))
         allocate(work(lwork))
@@ -102,7 +104,7 @@ contains
         ndp = real(n, real64)
         df = fs / ndp
         fmax = half * ndp * df
-        lwsave = int(log(ndp), int32) + 4
+        lwsave = n + int(log(ndp), int32) + 4
         lwork = n
         allocate(wsave(lwsave))
         allocate(work(lwork))
@@ -160,7 +162,7 @@ contains
         ndp = real(n, real64)
         df = fs / ndp
         fmax = half * ndp * df
-        lwsave = int(log(ndp), int32) + 4
+        lwsave = n + int(log(ndp), int32) + 4
         lwork = n
         allocate(wsave(lwsave))
         allocate(work(lwork))
@@ -220,7 +222,7 @@ contains
         ndp = real(n, real64)
         df = fs / ndp
         fmax = half * ndp * df
-        lwsave = int(log(ndp), int32) + 4
+        lwsave = n + int(log(ndp), int32) + 4
         lwork = n
         allocate(wsave(lwsave))
         allocate(work(lwork))
@@ -285,6 +287,58 @@ contains
             x(i) = sum(buffer) / dnpts
         end do
     end subroutine
+
+! ******************************************************************************
+! FOURIER TRANSFORM ROUTINES
+! ------------------------------------------------------------------------------
+    !> @brief Computes the Fourier transform of a discrete data set.
+    !!
+    !! @param[in] x The data set whose transform is to be computed.
+    !! @return The complex-valued Fourier transform of @p x.  Notice, this data
+    !!  is scaled by the factor N, where N is the length of @p x.
+    function fft(x) result(tf)
+        ! Arguments
+        real(real64), intent(in), dimension(:) :: x
+        complex(real64), allocatable, dimension(:) :: tf
+
+        ! Local Variables
+        integer(int32) :: i, n, lwsave, lwork, flag
+        real(real64) :: ndp
+        real(real64), allocatable, dimension(:) :: wsave, work
+
+        ! Parameters
+        real(real64), parameter :: zero = 0.0d0
+
+        ! Initialization
+        n = size(x)
+        ndp = real(n, real64)
+        lwsave = 2 * n + int(log(ndp), int32) + 4
+        lwork = 2 * n
+        allocate(wsave(lwsave))
+        allocate(work(lwork))
+
+        ! Initialize the transform
+        call cfft1i(n, wsave, lwsave, flag)
+
+        ! Store data for the transform
+        allocate(tf(n))
+        do i = 1, n
+            tf(i) = cmplx(x(i), zero, real64)
+        end do
+
+        ! Compute the transform
+        call cfft1f(n, 1, tf, n, wsave, lwsave, work, lwork, flag)
+    end function
+
+! ------------------------------------------------------------------------------
+
+! ------------------------------------------------------------------------------
+
+! ------------------------------------------------------------------------------
+
+! ------------------------------------------------------------------------------
+
+! ------------------------------------------------------------------------------
 
 ! ------------------------------------------------------------------------------
 end module
