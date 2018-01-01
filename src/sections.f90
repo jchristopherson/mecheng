@@ -40,7 +40,7 @@ contains
     pure function i_beam_section(webt, webh, flanget, flangew) result(s)
         ! Arguments
         real(real64), intent(in) :: webt, webh, flanget, flangew
-        real(real64), dimension(3) :: s
+        real(real64), dimension(4) :: s
 
         ! Local Variables
         real(real64) :: flangeArea
