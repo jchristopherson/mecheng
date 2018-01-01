@@ -1,0 +1,3 @@
+[submodule "src/external/modern_fftpack"]
+	path = src/external/modern_fftpack
+	url = https://github.com/jlokimlin/modern_fftpack.git
