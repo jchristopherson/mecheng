@@ -96,58 +96,19 @@ interface
     end subroutine
 end interface
 
-contains
 ! ******************************************************************************
-! FOURIER TRANSFORM ROUTINES
+! SIGNALS_FOURIER ROUTINES
 ! ------------------------------------------------------------------------------
+interface
     !> @brief Computes the Fourier transform of a discrete data set.
     !!
     !! @param[in] x The data set whose transform is to be computed.
     !! @return The complex-valued Fourier transform of @p x.  Notice, this data
     !!  is scaled by the factor N, where N is the length of @p x.
-    function fft(x) result(tf)
-        ! Arguments
+    module function fft(x) result(tf)
         real(real64), intent(in), dimension(:) :: x
         complex(real64), allocatable, dimension(:) :: tf
-
-        ! Local Variables
-        integer(int32) :: i, n, lwsave, lwork, flag
-        real(real64) :: ndp
-        real(real64), allocatable, dimension(:) :: wsave, work
-
-        ! Parameters
-        real(real64), parameter :: zero = 0.0d0
-
-        ! Initialization
-        n = size(x)
-        ndp = real(n, real64)
-        lwsave = 2 * n + int(log(ndp), int32) + 4
-        lwork = 2 * n
-        allocate(wsave(lwsave))
-        allocate(work(lwork))
-
-        ! Initialize the transform
-        call cfft1i(n, wsave, lwsave, flag)
-
-        ! Store data for the transform
-        allocate(tf(n))
-        do i = 1, n
-            tf(i) = cmplx(x(i), zero, real64)
-        end do
-
-        ! Compute the transform
-        call cfft1f(n, 1, tf, n, wsave, lwsave, work, lwork, flag)
     end function
+end interface
 
-! ------------------------------------------------------------------------------
-
-! ------------------------------------------------------------------------------
-
-! ------------------------------------------------------------------------------
-
-! ------------------------------------------------------------------------------
-
-! ------------------------------------------------------------------------------
-
-! ------------------------------------------------------------------------------
 end module
