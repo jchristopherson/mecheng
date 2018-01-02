@@ -17,6 +17,8 @@ module signals
     public :: averaging_filter
     public :: fft
     public :: ifft
+    public :: rfft
+    public :: irfft
 
 ! ******************************************************************************
 ! SIGNALS_FILTER SUBMODULE
@@ -119,6 +121,29 @@ interface
         ! Arguments
         complex(real64), intent(in), dimension(:) :: x
         complex(real64), allocatable, dimension(:) :: tf
+    end function
+
+    !> @brief Computes the Fourier transform of a real-valued data set, and
+    !! returns only the positive half of the transform.
+    !!
+    !! @param[in,out] x The data set whose transform is to be computed.  On
+    !!  output, the original values are altered as this array is used as
+    !!  in-place storage.
+    !! @return The complex-valued positive half of the Fourier transform of 
+    !!  @p x.
+    module function rfft(x) result(tf)
+        real(real64), intent(inout), dimension(:) :: x
+        complex(real64), allocatable, dimension(:) :: tf
+    end function
+
+    !> @brief Computes the inverse Fourier transform for a real-valued data set.
+    !!
+    !! @param[in] x The data set whose transform is to be computed.
+    !! @return The real-valued results of the transform of @p x.
+    module function irfft(x) result(tf)
+        ! Arguments
+        complex(real64), intent(in), dimension(:) :: x
+        real(real64), allocatable, dimension(:) :: tf
     end function
 end interface
 
