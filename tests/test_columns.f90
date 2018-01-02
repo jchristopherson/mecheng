@@ -154,13 +154,12 @@ contains
     !
     subroutine test_array_inputs()
         ! Variables
-        logical :: rst
         real(real64), parameter :: tol = 1.0d-12
         real(real64), parameter :: modulus = 10.0d6
         real(real64), parameter :: yield = 40.0d3
         real(real64), parameter :: width = 1.5d0
         real(real64), parameter :: depth = 0.5d0
-        real(real64) :: area, moi, ratio, transition, check
+        real(real64) :: area, moi, check
         real(real64), dimension(10) :: lengths, loads
         integer(int32) :: i
 

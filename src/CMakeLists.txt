@@ -13,3 +13,4 @@ set(mecheng_sources
 
 # Build the library
 add_library(mecheng ${mecheng_sources})
+target_link_libraries(mecheng fftpack)

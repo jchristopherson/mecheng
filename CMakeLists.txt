@@ -77,10 +77,4 @@ add_subdirectory(src)
 # ------------------------------------------------------------------------------
 # TESTS
 # ------------------------------------------------------------------------------
-set(test_columns_source tests/test_columns.f90)
-add_executable(mecheng_test_columns ${test_columns_source})
-target_link_libraries(mecheng_test_columns mecheng)
-add_custom_command(OUTPUT mecheng_test_columns_cmd 
-  DEPENDS ${test_columns_source}
-  COMMAND mecheng_test_columns)
-add_custom_target(run_mecheng_column_tests ALL DEPENDS mecheng_test_columns_cmd)
+add_subdirectory(tests)

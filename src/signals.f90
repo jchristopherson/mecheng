@@ -104,8 +104,7 @@ interface
     !> @brief Computes the Fourier transform of a data set.
     !!
     !! @param[in] x The data set whose transform is to be computed.
-    !! @return The complex-valued Fourier transform of @p x.  Notice, this data
-    !!  is scaled by the factor N, where N is the length of @p x.
+    !! @return The complex-valued Fourier transform of @p x.
     module function fft(x) result(tf)
         real(real64), intent(in), dimension(:) :: x
         complex(real64), allocatable, dimension(:) :: tf
@@ -115,8 +114,7 @@ interface
     !! set.
     !!
     !! @param[in] x The data set whose transform is to be computed.
-    !! @return The complex-valued Fourier transform of @p x.  Notice, this data
-    !!  is scaled by the factor N, where N is the length of @p x.
+    !! @return The complex-valued Fourier transform of @p x.
     module function ifft(x) result(tf)
         ! Arguments
         complex(real64), intent(in), dimension(:) :: x

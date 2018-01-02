@@ -15,11 +15,12 @@ contains
 
         ! Parameters
         real(real64), parameter :: zero = 0.0d0
+        real(real64), parameter :: two = 2.0d0
 
         ! Initialization
         n = size(x)
         ndp = real(n, real64)
-        lwsave = 2 * n + int(log(ndp), int32) + 4
+        lwsave = 2 * n + int(log(ndp) / log(two), int32) + 4
         lwork = 2 * n
         allocate(wsave(lwsave))
         allocate(work(lwork))
@@ -50,11 +51,12 @@ contains
 
         ! Parameters
         real(real64), parameter :: zero = 0.0d0
+        real(real64), parameter :: two = 2.0d0
 
         ! Initialization
         n = size(x)
         ndp = real(n, real64)
-        lwsave = 2 * n + int(log(ndp), int32) + 4
+        lwsave = 2 * n + int(log(ndp) / log(two), int32) + 4
         lwork = 2 * n
         allocate(wsave(lwsave))
         allocate(work(lwork))

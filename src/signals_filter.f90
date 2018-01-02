@@ -11,6 +11,7 @@ contains
         ! Parameters
         real(real64), parameter :: zero = 0.0d0
         real(real64), parameter :: half = 0.5d0
+        real(real64), parameter :: two = 2.0d0
 
         ! Local Variables
         integer(int32) :: n, indx, lwsave, lwork, flag
@@ -22,7 +23,7 @@ contains
         ndp = real(n, real64)
         df = fs / ndp
         fmax = half * ndp * df
-        lwsave = n + int(log(ndp), int32) + 4
+        lwsave = n + int(log(ndp) / log(two), int32) + 4
         lwork = n
         allocate(wsave(lwsave))
         allocate(work(lwork))
@@ -57,6 +58,7 @@ contains
         ! Parameters
         real(real64), parameter :: zero = 0.0d0
         real(real64), parameter :: half = 0.5d0
+        real(real64), parameter :: two = 2.0d0
 
         ! Local Variables
         integer(int32) :: n, indx, lwsave, lwork, flag
@@ -68,7 +70,7 @@ contains
         ndp = real(n, real64)
         df = fs / ndp
         fmax = half * ndp * df
-        lwsave = n + int(log(ndp), int32) + 4
+        lwsave = n + int(log(ndp) / log(two), int32) + 4
         lwork = n
         allocate(wsave(lwsave))
         allocate(work(lwork))
@@ -103,6 +105,7 @@ contains
         ! Parameters
         real(real64), parameter :: zero = 0.0d0
         real(real64), parameter :: half = 0.5d0
+        real(real64), parameter :: two = 2.0d0
 
         ! Local Variables
         integer(int32) :: n, indx1, indx2, lwsave, lwork, flag
@@ -114,7 +117,7 @@ contains
         ndp = real(n, real64)
         df = fs / ndp
         fmax = half * ndp * df
-        lwsave = n + int(log(ndp), int32) + 4
+        lwsave = n + int(log(ndp) / log(two), int32) + 4
         lwork = n
         allocate(wsave(lwsave))
         allocate(work(lwork))
@@ -151,6 +154,7 @@ contains
         ! Parameters
         real(real64), parameter :: zero = 0.0d0
         real(real64), parameter :: half = 0.5d0
+        real(real64), parameter :: two = 2.0d0
 
         ! Local Variables
         integer(int32) :: n, indx1, indx2, lwsave, lwork, flag
@@ -162,7 +166,7 @@ contains
         ndp = real(n, real64)
         df = fs / ndp
         fmax = half * ndp * df
-        lwsave = n + int(log(ndp), int32) + 4
+        lwsave = n + int(log(ndp) / log(two), int32) + 4
         lwork = n
         allocate(wsave(lwsave))
         allocate(work(lwork))
