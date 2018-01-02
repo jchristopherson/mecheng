@@ -27,10 +27,10 @@ contains
         ! Local Variables
         integer(int32) :: i
         real(real64) :: s(npts), dt, t, noise(npts)
-        complex(real64), allocatable, dimension(:) :: xfrm
-        real(real64), allocatable, dimension(:) :: p1, f1
+        complex(real64), allocatable, dimension(:) :: xfrm, rxfrm
+        real(real64), allocatable, dimension(:) :: p1, f1, p2
         type(plot_2d) :: plt
-        type(plot_data_2d) :: d1
+        type(plot_data_2d) :: d1, d2
         class(plot_axis), pointer :: xAxis, yAxis
 
         ! Build the signal
@@ -49,9 +49,16 @@ contains
         ! Compute the FFT
         xfrm = fft(s)
 
+        ! Use a real-valued transform
+        rxfrm = rfft(s) ! s is modified by this call
+
         ! Extract the meaningful portions of the transform 
         ! NOTE: factor of 2 due to symmetry of the transform
         p1 = 2.0d0 * abs(xfrm(1:npts/2 + 1))
+
+        ! Notice, we do not need to multiply the real-valued transform by 2 as
+        ! the transform applies the correct scaling.
+        p2 = abs(rxfrm)
 
         ! Compute a meaningful frequency axis
         allocate(f1(size(p1)))
@@ -61,7 +68,7 @@ contains
 
         ! Plot the results
         call plt%initialize()
-        call plt%set_title("FFT Test 1")
+        call plt%set_title("FFT Example")
         
         xAxis => plt%get_x_axis()
         call xAxis%set_title("Frequency [Hz]")
@@ -70,9 +77,19 @@ contains
         call yAxis%set_title("Amplitude")
 
         call d1%define_data(f1, p1)
-        call d1%set_name("Data Set 1")
+        call d1%set_name("Complex-Valued FFT")
+        call d1%set_use_auto_color(.false.)
+        call d1%set_line_color(CLR_BLUE)
+
+        call d2%define_data(f1, p2)
+        call d2%set_name("Real-Valued FFT")
+        call d2%set_use_auto_color(.false.)
+        call d2%set_line_color(CLR_GREEN)
+        call d2%set_line_style(LINE_DASHED)
+        call d2%set_line_width(2.0)
 
         call plt%push(d1)
+        call plt%push(d2)
         call plt%draw()
     end subroutine
 
