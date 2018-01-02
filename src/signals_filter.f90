@@ -44,9 +44,6 @@ contains
 
         ! Compute the inverse transform to obtain the filtered signal
         call rfft1b(n, 1, x, n, wsave, lwsave, work, lwork, flag)
-
-        ! Scale by N as the inverse transform does not perform this operation
-        x = x / ndp
     end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -91,9 +88,6 @@ contains
 
         ! Compute the inverse transform to obtain the filtered signal
         call rfft1b(n, 1, x, n, wsave, lwsave, work, lwork, flag)
-
-        ! Scale by N as the inverse transform does not perform this operation
-        x = x / ndp
     end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -140,9 +134,6 @@ contains
 
         ! Compute the inverse transform to obtain the filtered signal
         call rfft1b(n, 1, x, n, wsave, lwsave, work, lwork, flag)
-
-        ! Scale by N as the inverse transform does not perform this operation
-        x = x / ndp
     end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -188,9 +179,6 @@ contains
 
         ! Compute the inverse transform to obtain the filtered signal
         call rfft1b(n, 1, x, n, wsave, lwsave, work, lwork, flag)
-
-        ! Scale by N as the inverse transform does not perform this operation
-        x = x / ndp
     end subroutine
 
 ! ------------------------------------------------------------------------------
