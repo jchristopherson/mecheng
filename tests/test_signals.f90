@@ -15,7 +15,7 @@ program main
 
     ! Local Variables
     integer(int32) :: i
-    real(real64) :: s(npts), dt, t, noise
+    real(real64) :: s(npts), dt, t, noise(npts)
     complex(real64), allocatable, dimension(:) :: xfrm
     real(real64), allocatable, dimension(:) :: p1, f1
     type(plot_2d) :: plt
@@ -33,12 +33,13 @@ program main
 
     ! Generate some noise to corrupt the signal
     call random_number(noise)
-    s = s + noise
+    s = s + 2.0d0 * (noise - 0.5d0)
 
     ! Compute the FFT
     xfrm = fft(s)
 
-    ! Extract the meaningful portions of the transform
+    ! Extract the meaningful portions of the transform 
+    ! NOTE: factor of 2 due to symmetry of the transform
     p1 = 2.0d0 * abs(xfrm(1:npts/2 + 1))
 
     ! Compute a meaningful frequency axis
@@ -58,6 +59,7 @@ program main
     call yAxis%set_title("Amplitude")
 
     call d1%define_data(f1, p1)
+    call d1%set_name("Data Set 1")
 
     call plt%push(d1)
     call plt%draw()
