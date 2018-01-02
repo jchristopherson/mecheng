@@ -16,6 +16,7 @@ module signals
     public :: band_stop_filter
     public :: averaging_filter
     public :: fft
+    public :: ifft
 
 ! ******************************************************************************
 ! SIGNALS_FILTER SUBMODULE
@@ -100,13 +101,25 @@ end interface
 ! SIGNALS_FOURIER ROUTINES
 ! ------------------------------------------------------------------------------
 interface
-    !> @brief Computes the Fourier transform of a discrete data set.
+    !> @brief Computes the Fourier transform of a data set.
     !!
     !! @param[in] x The data set whose transform is to be computed.
     !! @return The complex-valued Fourier transform of @p x.  Notice, this data
     !!  is scaled by the factor N, where N is the length of @p x.
     module function fft(x) result(tf)
         real(real64), intent(in), dimension(:) :: x
+        complex(real64), allocatable, dimension(:) :: tf
+    end function
+
+    !> @brief Computes the inverse Fourier transform of a complex-valued data
+    !! set.
+    !!
+    !! @param[in] x The data set whose transform is to be computed.
+    !! @return The complex-valued Fourier transform of @p x.  Notice, this data
+    !!  is scaled by the factor N, where N is the length of @p x.
+    module function ifft(x) result(tf)
+        ! Arguments
+        complex(real64), intent(in), dimension(:) :: x
         complex(real64), allocatable, dimension(:) :: tf
     end function
 end interface
