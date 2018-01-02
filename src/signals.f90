@@ -19,6 +19,8 @@ module signals
     public :: ifft
     public :: rfft
     public :: irfft
+    public :: upsample
+    public :: downsample
 
 ! ******************************************************************************
 ! SIGNALS_FILTER SUBMODULE
@@ -144,6 +146,40 @@ interface
         ! Arguments
         complex(real64), intent(in), dimension(:) :: x
         real(real64), allocatable, dimension(:) :: tf
+    end function
+end interface
+
+! ******************************************************************************
+! SIGNALS_OPERATIONS ROUTINES
+! ------------------------------------------------------------------------------
+interface
+    !> @brief Resamples a discrete data set by the specified factor.
+    !!
+    !! @param[in] x The data set to resample.
+    !! @param[in] fs The frequency at which the original data was sampled.
+    !! @param[in] factor An integer factor defining a factor of how much to
+    !!  increase the sample rate @p fs.
+    !! @return The resampled data set.
+    module function upsample(x, fs, factor) result(y)
+        real(real64), intent(in), dimension(:) :: x
+        real(real64), intent(in) :: fs
+        integer(int32), intent(in) :: factor
+        real(real64), allocatable, dimension(:) :: y
+    end function
+    
+    !> @brief Resamples a discrete data set by the specified factor.
+    !!
+    !! @param[in] x The data set to resample.
+    !! @param[in] fs The frequency at which the original data was sampled.
+    !! @param[in] factor An integer factor defining a factor of how much to
+    !!  decrease the sample rate @p fs.
+    !! @return The resampled data set.
+    module function downsample(x, fs, factor)
+        ! Arguments
+        real(real64), intent(in), dimension(:) :: x
+        real(real64), intent(in) :: fs
+        integer(int32), intent(in) :: factor
+        real(real64), allocatable, dimension(:) :: y
     end function
 end interface
 

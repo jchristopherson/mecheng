@@ -9,7 +9,8 @@ set(mecheng_sources
     strain.f90
     signals.f90
     signals_filter.f90
-    signals_fourier.f90)
+    signals_fourier.f90
+    signals_operations.f90)
 
 # Build the library
 add_library(mecheng ${mecheng_sources})
