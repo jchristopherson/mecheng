@@ -109,9 +109,9 @@ contains
 
         ! Local Variables
         integer(int32) :: i
-        real(real64) :: s(npts), sfilt(npts), t(npts), dt
+        real(real64) :: s(npts), sfilt(npts), t(npts), dt, expect(npts)
         type(plot_2d) :: plt
-        type(plot_data_2d) :: d1, d2
+        type(plot_data_2d) :: d1, d2, d3
         class(plot_axis), pointer :: xAxis, yAxis
 
         ! Signal Initialization
@@ -122,6 +122,7 @@ contains
                 cos(2.0d0 * pi * 26.0d0 * t(i)) + &
                 0.25 * sin(2.0d0 * pi * 120.0d0 * t(i))
             sfilt(i) = s(i)
+            expect(i) = sin(2.0d0 * pi * 25.0d0 * t(i))
             if (i < npts) t(i+1) = t(i) + dt
         end do
 
@@ -147,9 +148,18 @@ contains
         call d2%set_name("Filtered")
         call d2%set_use_auto_color(.false.)
         call d2%set_line_color(CLR_GREEN)
+        call d2%set_line_width(2.0)
+
+        call d3%define_data(t, expect)
+        call d3%set_name("Expected")
+        call d3%set_use_auto_color(.false.)
+        call d3%set_line_color(CLR_RED)
+        call d3%set_line_style(LINE_DASHED)
+        call d3%set_line_width(2.0)
 
         call plt%push(d1)
         call plt%push(d2)
+        call plt%push(d3)
         call plt%draw()
     end subroutine
 
@@ -169,9 +179,9 @@ contains
 
         ! Local Variables
         integer(int32) :: i
-        real(real64) :: s(npts), sfilt(npts), t(npts), dt
+        real(real64) :: s(npts), sfilt(npts), t(npts), dt, expect(npts)
         type(plot_2d) :: plt
-        type(plot_data_2d) :: d1, d2
+        type(plot_data_2d) :: d1, d2, d3
         class(plot_axis), pointer :: xAxis, yAxis
 
         ! Signal Initialization
@@ -182,6 +192,8 @@ contains
                 cos(2.0d0 * pi * 26.0d0 * t(i)) + &
                 0.25 * sin(2.0d0 * pi * 120.0d0 * t(i))
             sfilt(i) = s(i)
+            expect(i) = cos(2.0d0 * pi * 26.0d0 * t(i)) + &
+                0.25 * sin(2.0d0 * pi * 120.0d0 * t(i))
             if (i < npts) t(i+1) = t(i) + dt
         end do
 
@@ -207,9 +219,18 @@ contains
         call d2%set_name("Filtered")
         call d2%set_use_auto_color(.false.)
         call d2%set_line_color(CLR_GREEN)
+        call d2%set_line_width(2.0)
+
+        call d3%define_data(t, expect)
+        call d3%set_name("Expected")
+        call d3%set_use_auto_color(.false.)
+        call d3%set_line_color(CLR_RED)
+        call d3%set_line_style(LINE_DASHED)
+        call d3%set_line_width(2.0)
 
         call plt%push(d1)
         call plt%push(d2)
+        call plt%push(d3)
         call plt%draw()
     end subroutine
 
@@ -230,9 +251,9 @@ contains
 
         ! Local Variables
         integer(int32) :: i
-        real(real64) :: s(npts), sfilt(npts), t(npts), dt
+        real(real64) :: s(npts), sfilt(npts), t(npts), dt, expect(npts)
         type(plot_2d) :: plt
-        type(plot_data_2d) :: d1, d2
+        type(plot_data_2d) :: d1, d2, d3
         class(plot_axis), pointer :: xAxis, yAxis
 
         ! Signal Initialization
@@ -243,6 +264,7 @@ contains
                 cos(2.0d0 * pi * 26.0d0 * t(i)) + &
                 0.25 * sin(2.0d0 * pi * 120.0d0 * t(i))
             sfilt(i) = s(i)
+            expect(i) = sin(2.0d0 * pi * 25.0d0 * t(i))
             if (i < npts) t(i+1) = t(i) + dt
         end do
 
@@ -268,9 +290,18 @@ contains
         call d2%set_name("Filtered")
         call d2%set_use_auto_color(.false.)
         call d2%set_line_color(CLR_GREEN)
+        call d2%set_line_width(2.0)
+
+        call d3%define_data(t, expect)
+        call d3%set_name("Expected")
+        call d3%set_use_auto_color(.false.)
+        call d3%set_line_color(CLR_RED)
+        call d3%set_line_style(LINE_DASHED)
+        call d3%set_line_width(2.0)
 
         call plt%push(d1)
         call plt%push(d2)
+        call plt%push(d3)
         call plt%draw()
     end subroutine
 
@@ -291,9 +322,9 @@ contains
 
         ! Local Variables
         integer(int32) :: i
-        real(real64) :: s(npts), sfilt(npts), t(npts), dt
+        real(real64) :: s(npts), sfilt(npts), t(npts), dt, expect(npts)
         type(plot_2d) :: plt
-        type(plot_data_2d) :: d1, d2
+        type(plot_data_2d) :: d1, d2, d3
         class(plot_axis), pointer :: xAxis, yAxis
 
         ! Signal Initialization
@@ -302,8 +333,10 @@ contains
         do i = 1, npts
             s(i) = sin(2.0d0 * pi * 25.0d0 * t(i)) + &
                 cos(2.0d0 * pi * 26.0d0 * t(i)) + &
-                0.25 * sin(2.0d0 * pi * 120.0d0 * t(i))
+                0.25d0 * sin(2.0d0 * pi * 120.0d0 * t(i))
             sfilt(i) = s(i)
+            expect(i) = cos(2.0d0 * pi * 26.0d0 * t(i)) + &
+                0.25d0 * sin(2.0d0 * pi * 120.0d0 * t(i))
             if (i < npts) t(i+1) = t(i) + dt
         end do
 
@@ -329,9 +362,18 @@ contains
         call d2%set_name("Filtered")
         call d2%set_use_auto_color(.false.)
         call d2%set_line_color(CLR_GREEN)
+        call d2%set_line_width(2.0)
+
+        call d3%define_data(t, expect)
+        call d3%set_name("Expected")
+        call d3%set_use_auto_color(.false.)
+        call d3%set_line_color(CLR_RED)
+        call d3%set_line_style(LINE_DASHED)
+        call d3%set_line_width(2.0)
 
         call plt%push(d1)
         call plt%push(d2)
+        call plt%push(d3)
         call plt%draw()
     end subroutine
 
