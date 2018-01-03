@@ -8,6 +8,7 @@ program main
     call test_bandpass_filter()
     call test_bandstop_filter()
     call test_averaging_filter()
+    call test_resampling()
 
 contains
 ! ------------------------------------------------------------------------------
@@ -434,6 +435,87 @@ contains
 
         call plt%push(d1)
         call plt%push(d2)
+        call plt%draw()
+    end subroutine
+
+! ------------------------------------------------------------------------------
+    ! Resampling Test
+    subroutine test_resampling()
+        use, intrinsic :: iso_fortran_env
+        use constants
+        use signals
+        use fplot_core
+        implicit none
+
+        ! Parameters
+        real(real64), parameter :: fs = 1024.0d0
+        integer(int32), parameter :: n = 1000
+        integer(int32), parameter :: factor = 4
+
+        ! Local Variables
+        integer(int32) :: i
+        real(real64) :: dt, t(n), tu(factor * n), td(n / factor), s(n)
+        real(real64), allocatable, dimension(:) :: su, sd
+        type(plot_2d) :: plt
+        type(plot_data_2d) :: d1, d2, d3
+        class(plot_axis), pointer :: xAxis, yAxis
+
+        ! Generate the signal
+        t(1) = 0.0d0
+        dt = 1.0d0 / fs
+        do i = 1, n
+            s(i) = sin(2.0d0 * pi * 5.0d0 * t(i)) + &
+                sin(2.0d0 * pi * 50.0d0 * t(i))
+            if (i < n) t(i+1) = t(i) + dt
+        end do
+
+        ! Generate the upsampled & downsampled time vectors
+        tu(1) = 0.0d0
+        dt = 1.0d0 / (fs * factor)
+        do i = 2, size(tu)
+            tu(i) = tu(i-1) + dt
+        end do
+
+        td(1) = 0.0d0
+        dt = factor / fs
+        do i = 2, size(td)
+            td(i) = td(i-1) + dt
+        end do
+        
+        ! Upsample the signal
+        su = upsample(s, fs, factor)
+        
+        ! Downsample the original signal
+        sd = downsample(s, fs, factor)
+
+        ! ! Plot the signal, along with the original
+        call plt%initialize()
+        call plt%set_title("Resampling Test 1")
+        
+        xAxis => plt%get_x_axis()
+        call xAxis%set_title("Time [s]")
+
+        yAxis => plt%get_y_axis()
+        call yAxis%set_title("s(t)")
+
+        call d1%define_data(t, s)
+        call d1%set_name("Original")
+        call d1%set_use_auto_color(.false.)
+        call d1%set_line_color(CLR_BLUE)
+
+        call d2%define_data(tu, su)
+        call d2%set_name("Upsampled")
+        call d2%set_use_auto_color(.false.)
+        call d2%set_line_color(CLR_GREEN)
+
+        call d3%define_data(td, sd)
+        call d3%set_name("Downsampled")
+        call d3%set_use_auto_color(.false.)
+        call d3%set_line_color(CLR_RED)
+
+        call plt%push(d1)
+        call plt%push(d2)
+        call plt%push(d3)
         call plt%draw()
     end subroutine
 

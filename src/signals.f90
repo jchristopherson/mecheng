@@ -174,7 +174,7 @@ interface
     !! @param[in] factor An integer factor defining a factor of how much to
     !!  decrease the sample rate @p fs.
     !! @return The resampled data set.
-    module function downsample(x, fs, factor)
+    module function downsample(x, fs, factor) result(y)
         ! Arguments
         real(real64), intent(in), dimension(:) :: x
         real(real64), intent(in) :: fs

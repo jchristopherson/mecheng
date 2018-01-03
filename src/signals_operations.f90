@@ -19,6 +19,7 @@ contains
         real(real64) :: nyquist
 
         ! Define the workspace array by padding with zeros
+        n = size(x)
         allocate(y(factor * n))
         y = zero
         do i = 1, n
@@ -33,7 +34,7 @@ contains
     end function
 
 ! ------------------------------------------------------------------------------
-    module function downsample(x, fs, factor)
+    module function downsample(x, fs, factor) result(y)
         ! Arguments
         real(real64), intent(in), dimension(:) :: x
         real(real64), intent(in) :: fs
@@ -45,7 +46,7 @@ contains
         real(real64), parameter :: half = 0.5d0
 
         ! Local Variables
-        integer(int32) :: i, n
+        integer(int32) :: n
         real(real64) :: nyquist
         real(real64), allocatable, dimension(:) :: work
 
@@ -58,7 +59,7 @@ contains
         call low_pass_filter(work, fs, nyquist)
 
         ! Collect the output
-        y = work(1:factor:n)
+        y = work(1:n:factor)
     end function
 
 ! ------------------------------------------------------------------------------
