@@ -21,6 +21,7 @@ module signals
     public :: irfft
     public :: upsample
     public :: downsample
+    public :: remove_mean
 
 ! ******************************************************************************
 ! SIGNALS_FILTER SUBMODULE
@@ -175,12 +176,19 @@ interface
     !!  decrease the sample rate @p fs.
     !! @return The resampled data set.
     module function downsample(x, fs, factor) result(y)
-        ! Arguments
         real(real64), intent(in), dimension(:) :: x
         real(real64), intent(in) :: fs
         integer(int32), intent(in) :: factor
         real(real64), allocatable, dimension(:) :: y
     end function
+
+    !> @brief Removes any mean (DC) level offset from a signal.
+    !!
+    !! @param[in,out] x On input, the signal on which to operate.  On output,
+    !!  the modified signal.
+    module subroutine remove_mean(x)
+        real(real64), intent(inout) :: x
+    end subroutine
 end interface
 
 end module

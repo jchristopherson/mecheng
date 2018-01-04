@@ -63,4 +63,39 @@ contains
     end function
 
 ! ------------------------------------------------------------------------------
+    module subroutine remove_mean(x)
+        ! Arguments
+        real(real64), intent(inout) :: x
+
+        ! Parameters
+        real(real64), parameter :: zero = 0.0d0
+        real(real64), parameter :: two = 2.0d0
+
+        ! Local Variables
+        integer(int32) :: lwsave, lwork, n, flag
+        real(real64) :: ndp
+        real(real64), allocatable, dimension(:) :: wsave, work
+
+        ! Initialization
+        n = size(x)
+        ndp = real(n, real64)
+        lwsave = n + int(log(ndp) / log(two), int32) + 4
+        lwork = n
+        allocate(wsave(lwsave))
+        allocate(work(lwork))
+
+        ! Initialize the FFT
+        call rfft1i(n, wsave, lwsave, flag)
+
+        ! Compute the FFT
+        call rfft1f(n, 1, x, n, wsave, lwsave, work, lwork, flag)
+
+        ! Zero out the DC term
+        x(1) = zero
+
+        ! Compute the inverse FFT
+        call rfft1b(n, 1, x, n, wsave, lwsave, work, lwork, flag)
+    end subroutine
+
+! ------------------------------------------------------------------------------
 end submodule
