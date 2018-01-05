@@ -65,7 +65,7 @@ contains
 ! ------------------------------------------------------------------------------
     module subroutine remove_mean(x)
         ! Arguments
-        real(real64), intent(inout) :: x
+        real(real64), intent(inout), dimension(:) :: x
 
         ! Parameters
         real(real64), parameter :: zero = 0.0d0

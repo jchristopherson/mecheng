@@ -187,7 +187,7 @@ interface
     !! @param[in,out] x On input, the signal on which to operate.  On output,
     !!  the modified signal.
     module subroutine remove_mean(x)
-        real(real64), intent(inout) :: x
+        real(real64), intent(inout), dimension(:) :: x
     end subroutine
 end interface
 

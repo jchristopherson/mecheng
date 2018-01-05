@@ -1,6 +1,12 @@
 ! test_signals.f90
 
 program main
+    use, intrinsic :: iso_fortran_env
+    use constants
+    use signals
+    use fplot_core
+    implicit none
+    
     ! Routines
     call test_fft()
     call test_lowpass_filter()
@@ -9,18 +15,13 @@ program main
     call test_bandstop_filter()
     call test_averaging_filter()
     call test_resampling()
+    call test_remove_mean()
 
 contains
 ! ------------------------------------------------------------------------------
     ! Example Reference:
     ! https://www.mathworks.com/help/matlab/ref/fft.html?s_tid=srchtitle
     subroutine test_fft()
-        use, intrinsic :: iso_fortran_env
-        use constants
-        use signals
-        use fplot_core
-        implicit none
-
         ! Parameters
         real(real64), parameter :: fs = 1.0d3
         integer(int32), parameter :: npts = 1500
@@ -97,12 +98,6 @@ contains
 ! ------------------------------------------------------------------------------
     ! Low Pass Filter Test
     subroutine test_lowpass_filter()
-        use, intrinsic :: iso_fortran_env
-        use constants
-        use signals
-        use fplot_core
-        implicit none
-
         ! Parameters
         real(real64), parameter :: fs = 1024.0d0
         integer(int32), parameter :: npts = 4096
@@ -167,12 +162,6 @@ contains
 ! ------------------------------------------------------------------------------
     ! High Pass Filter Test
     subroutine test_highpass_filter()
-        use, intrinsic :: iso_fortran_env
-        use constants
-        use signals
-        use fplot_core
-        implicit none
-
         ! Parameters
         real(real64), parameter :: fs = 1024.0d0
         integer(int32), parameter :: npts = 4096
@@ -238,12 +227,6 @@ contains
 ! ------------------------------------------------------------------------------
     ! Band Pass Filter Test
     subroutine test_bandpass_filter()
-        use, intrinsic :: iso_fortran_env
-        use constants
-        use signals
-        use fplot_core
-        implicit none
-
         ! Parameters
         real(real64), parameter :: fs = 1024.0d0
         integer(int32), parameter :: npts = 4096
@@ -309,12 +292,6 @@ contains
 ! ------------------------------------------------------------------------------
     ! Band Stop Filter Test
     subroutine test_bandstop_filter()
-        use, intrinsic :: iso_fortran_env
-        use constants
-        use signals
-        use fplot_core
-        implicit none
-
         ! Parameters
         real(real64), parameter :: fs = 1024.0d0
         integer(int32), parameter :: npts = 4096
@@ -381,12 +358,6 @@ contains
 ! ------------------------------------------------------------------------------
     ! Averaging Filter Test
     subroutine test_averaging_filter()
-        use, intrinsic :: iso_fortran_env
-        use constants
-        use signals
-        use fplot_core
-        implicit none
-
         ! Parameters
         real(real64), parameter :: fs = 1024.0d0
         integer(int32), parameter :: npts = 4096
@@ -441,12 +412,6 @@ contains
 ! ------------------------------------------------------------------------------
     ! Resampling Test
     subroutine test_resampling()
-        use, intrinsic :: iso_fortran_env
-        use constants
-        use signals
-        use fplot_core
-        implicit none
-
         ! Parameters
         real(real64), parameter :: fs = 1024.0d0
         integer(int32), parameter :: n = 1000
@@ -488,7 +453,7 @@ contains
         ! Downsample the original signal
         sd = downsample(s, fs, factor)
 
-        ! ! Plot the signal, along with the original
+        ! Plot the signal, along with the original
         call plt%initialize()
         call plt%set_title("Resampling Test 1")
         
@@ -512,6 +477,66 @@ contains
         call d3%set_name("Downsampled")
         call d3%set_use_auto_color(.false.)
         call d3%set_line_color(CLR_RED)
+
+        call plt%push(d1)
+        call plt%push(d2)
+        call plt%push(d3)
+        call plt%draw()
+    end subroutine
+
+! ------------------------------------------------------------------------------
+    subroutine test_remove_mean()
+        ! Parameters
+        real(real64), parameter :: fs = 1024.0d0
+        integer(int32), parameter :: n = 1000
+
+        ! Local Variables
+        integer(int32) :: i
+        real(real64) :: dt, t(n), s(n), s1(n), so(n)
+        type(plot_2d) :: plt
+        type(plot_data_2d) :: d1, d2, d3
+        class(plot_axis), pointer :: xAxis, yAxis
+
+        ! Create the signal
+        t(1) = 0.0d0
+        dt = 1.0d0 / fs
+        do i = 1, n
+            so(i) = sin(2.0d0 * pi * 5.0d0 * t(i)) + &
+                sin(2.0d0 * pi * 50.0d0 * t(i))
+            s(i) = so(i) + 1.5d0
+            s1(i) = s(i)
+            if (i < n) t(i+1) = t(i) + dt
+        end do
+        
+        ! Remove the mean on s1
+        call remove_mean(s1)
+
+        ! Plot the signal, along with the original
+        call plt%initialize()
+        call plt%set_title("Remove Mean Test 1")
+        
+        xAxis => plt%get_x_axis()
+        call xAxis%set_title("Time [s]")
+
+        yAxis => plt%get_y_axis()
+        call yAxis%set_title("s(t)")
+
+        call d1%define_data(t, s)
+        call d1%set_name("Original")
+        call d1%set_use_auto_color(.false.)
+        call d1%set_line_color(CLR_BLUE)
+
+        call d2%define_data(t, s1)
+        call d2%set_name("Mean Removed")
+        call d2%set_use_auto_color(.false.)
+        call d2%set_line_color(CLR_GREEN)
+
+        call d3%define_data(t, so)
+        call d3%set_name("Expected")
+        call d3%set_use_auto_color(.false.)
+        call d3%set_line_color(CLR_RED)
+        call d3%set_line_style(LINE_DASHED)
+        call d3%set_line_width(2.0)
 
         call plt%push(d1)
         call plt%push(d2)
