@@ -10,7 +10,9 @@ set(mecheng_sources
     signals.f90
     signals_filter.f90
     signals_fourier.f90
-    signals_operations.f90)
+    signals_operations.f90
+    kinematics.f90
+    kinematics_quaternion.f90)
 
 # Build the library
 add_library(mecheng ${mecheng_sources})
