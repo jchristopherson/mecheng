@@ -29,3 +29,19 @@ add_custom_command(OUTPUT mecheng_test_signals_cmd
     COMMAND mecheng_test_signals)
 add_custom_target(run_mecheng_signals_tests ALL 
     DEPENDS mecheng_test_signals_cmd)
+
+# ------------------------------------------------------------------------------
+# KINEMATICS TESTS
+# ------------------------------------------------------------------------------
+# Build the executable
+set(test_kinematics_source test_kinematics.f90)
+add_executable(mecheng_test_kinematics ${test_kinematics_source})
+target_link_libraries(mecheng_test_kinematics mecheng)
+
+# Run the tests
+add_custom_command(OUTPUT mecheng_test_kinematics_cmd
+    DEPENDS ${test_kinematics_source}
+    COMMAND mecheng_test_kinematics)
+add_custom_target(run_mecheng_kinematics_tests ALL
+    DEPENDS mecheng_test_kinematics_cmd)
+    
