@@ -11,12 +11,9 @@ The following example illustrates the use of quaternions, and compares the resul
 ```fortran
 program example
     use, intrinsic :: iso_fortran_env, only : real64, int32
-    use motion_quaternion
-    use motion_transforms
+    use kinematics
+    use constants
     implicit none
-
-    ! Constants
-    real(real64), parameter :: pi = 3.14159265359d0
 
     ! Local Variables
     type(quaternion) :: qx, qy, qz, qzyx, qs
@@ -108,7 +105,7 @@ following illustration from Jazar's text "Theory of Applied Robotics, Kinematics
 ```fortran
 program example
     use, intrinsic :: iso_fortran_env, only : real64, int32
-    use motion_transforms
+    use kinematics
     implicit none
 
     ! Robot Geometry (Constants)
