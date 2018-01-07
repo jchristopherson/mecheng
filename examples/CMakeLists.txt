@@ -35,3 +35,22 @@ if (RUN_QUATERNION_EXAMPLE)
     add_custom_target(run_quaternion_example ALL
         DEPENDS quaternion_example_cmd)
 endif()
+
+# ------------------------------------------------------------------------------
+# FFT EXAMPLE
+# ------------------------------------------------------------------------------
+option(RUN_FFT_EXAMPLE "Run FFT example?" ON)
+
+# Build the executable
+set(fft_example_source fft_example.f90)
+add_executable(fft_example ${fft_example_source})
+target_link_libraries(fft_example mecheng fplot)
+
+# Run the example
+if (RUN_FFT_EXAMPLE)
+    add_custom_command(OUTPUT fft_example_cmd
+        DEPENDS ${fft_example_source}
+        COMMAND fft_example)
+    add_custom_target(run_fft_example ALL
+        DEPENDS fft_example_cmd)
+endif()
