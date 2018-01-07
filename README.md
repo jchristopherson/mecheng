@@ -304,6 +304,7 @@ end program
 The above program produces the following plots.
 ![](images/fft_example_signal.png?raw=true)
 ![](images/fft_example_spectrum.png?raw=true)
+
 Notice, there is some leakage as the signal amplitudes aren't quite correct in the plot.  This could be treated with windowing, or using a data set length that would result in better frequency bin alignment (i.e. an integer power of two).
 
 ## References
