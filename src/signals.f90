@@ -22,6 +22,11 @@ module signals
     public :: upsample
     public :: downsample
     public :: remove_mean
+    public :: bartlett_window
+    public :: welch_window
+    public :: hann_window
+    public :: hamming_window
+    public :: blackman_window
 
 ! ******************************************************************************
 ! SIGNALS_FILTER SUBMODULE
@@ -148,6 +153,57 @@ interface
         complex(real64), intent(in), dimension(:) :: x
         real(real64), allocatable, dimension(:) :: tf
     end function
+    
+    !> @brief Defines a Bartlett window.
+    !!
+    !! @param[in] bin The index or bin number (0 <= @p bin <= @p winsize)
+    !! @param[in] winsize The window size.
+    !! @return The window function value.
+    module pure elemental function bartlett_window(bin, winsize) result(x)
+        integer(int32), intent(in) :: bin, winsize
+        real(real64) :: x
+    end function
+    
+    !> @brief Defines a Welch window.
+    !!
+    !! @param[in] bin The index or bin number (0 <= @p bin <= @p winsize)
+    !! @param[in] winsize The window size.
+    !! @return The window function value.
+    module pure elemental function welch_window(bin, winsize) result(x)
+        integer(int32), intent(in) :: bin, winsize
+        real(real64) :: x
+    end function
+    
+    !> @brief Defines a Hann window.
+    !!
+    !! @param[in] bin The index or bin number (0 <= @p bin <= @p winsize)
+    !! @param[in] winsize The window size.
+    !! @return The window function value.
+    moudle pure elemental function hann_window(bin, winsize) result(x)
+        integer(int32), intent(in) :: bin, winsize
+        real(real64) :: x
+    end function
+
+    !> @brief Defines a Hamming window.
+    !!
+    !! @param[in] bin The index or bin number (0 <= @p bin <= @p winsize)
+    !! @param[in] winsize The window size.
+    !! @return The window function value.
+    module pure elemental function hamming_window(bin, winsize) result(x)
+        integer(int32), intent(in) :: bin, winsize
+        real(real64) :: x
+    end function
+
+    !> @brief Defines a Blackman window.
+    !!
+    !! @param[in] bin The index or bin number (0 <= @p bin <= @p winsize)
+    !! @param[in] winsize The window size.
+    !! @return The window function value.
+    module pure elemental function blackman_window(bin, winsize) result(x)
+        integer(int32), intent(in) :: bin, winsize
+        real(real64) :: x
+    end function
+
 end interface
 
 ! ******************************************************************************
