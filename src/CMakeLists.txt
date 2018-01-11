@@ -11,6 +11,8 @@ set(mecheng_sources
     signals_filter.f90
     signals_fourier.f90
     signals_operations.f90
+    signals_windows.f90
+    signals_spectral_analysis.f90
     kinematics.f90
     kinematics_quaternion.f90
     kinematics_transforms.f90)
