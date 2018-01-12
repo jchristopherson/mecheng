@@ -32,31 +32,6 @@ module signals
 ! ******************************************************************************
 ! SIGNALS_SPECTRAL_ANALYSIS
 ! ------------------------------------------------------------------------------
-    !> @brief An object that makes it easier to perform spectral analysis
-    !! operations on a signal.
-    type spectral_analyzer
-    private
-        !> The length of a single data segment.
-        integer(int32) :: m_segmentLength = 0
-        !> The length of the spectrum.
-        integer(int32) :: m_spectrumLength = 0
-        !> The number of segments accumulated.
-        integer(int32) :: m_segments = 0
-        !> An array containing the sum of the spectral results
-        real(real64), allocatable, dimension(:) :: m_sum
-        !> An array containing the FFT parameters.
-        real(real64), allocatable, dimension(:) :: m_params
-        !> A workspace array for the FFT calculations.
-        real(real64), allocatable, dimension(:) :: m_work
-        !> A temporary storage array.
-        real(real64), allocatable, dimension(:) :: m_temp
-        !> A flag ensuring the object has been initialized
-        logical :: m_initialized = .false.
-    contains
-        procedure, public :: initialize => sa_init
-        procedure, public :: add_segment => sa_add
-    end type
-
 interface
     !> @brief Defines a window function.
     !!
@@ -69,16 +44,6 @@ interface
         real(real64) :: x
     end function
     
-    module subroutine sa_init(this, nseg)
-        class(spectral_analyzer), intent(inout) :: this
-        integer(int32), intent(in) :: nseg
-    end subroutine
-    
-    module subroutine sa_add(this, x, window)
-        class(spectral_analyzer), intent(inout) :: this
-        real(real64), intent(in), dimension(:) :: x
-        procedure(window_function), intent(in), pointer :: window
-    end subroutine
 end interface
 
 ! ******************************************************************************
