@@ -98,4 +98,15 @@ contains
     end subroutine
 
 ! ------------------------------------------------------------------------------
+    pure elemental module function is_power_of_two(n) result(x)
+        integer(int32), intent(in) :: n
+        logical :: x
+        if (n == 0) then
+            x = .true.
+        else
+            x = iand(n, n - 1) == 0
+        end if
+    end function
+
+! ------------------------------------------------------------------------------
 end submodule

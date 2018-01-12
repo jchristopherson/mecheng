@@ -268,6 +268,15 @@ interface
     module subroutine remove_mean(x)
         real(real64), intent(inout), dimension(:) :: x
     end subroutine
+    
+    !> @brief Tests to see if a value is an integer power of two.
+    !!
+    !! @param[in] n The value to test.
+    !! @return Returns true if @p n is a power of two; else, false.
+    pure elemental module function is_power_of_two(n) result(x)
+        integer(int32), intent(in) :: n
+        logical :: x
+    end function
 end interface
 
 end module
