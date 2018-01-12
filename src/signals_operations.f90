@@ -109,4 +109,26 @@ contains
     end function
 
 ! ------------------------------------------------------------------------------
+    pure elemental module function next_power_of_two(n) result(x)
+        integer(int32), intent(in) :: n
+        integer(int32) :: x
+        if (is_power_of_two(n)) then
+            x = n + 1
+        else
+            x = int(ceiling(log(real(n, real64)) / log(2.0d0)), int32)
+        end if
+    end function
+
+! ------------------------------------------------------------------------------
+    pure elemental module function previous_power_of_two(n) result(x)
+        integer(int32), intent(in) :: n
+        integer(int32) :: x
+        if (is_power_of_two(n)) then
+            x = n - 1
+        else
+            x = int(floor(log(real(n, real64)) / log(2.0d0)), int32)
+        end if
+    end function
+
+! ------------------------------------------------------------------------------
 end submodule

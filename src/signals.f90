@@ -28,6 +28,9 @@ module signals
     public :: hamming_window
     public :: blackman_window
     public :: window_function
+    public :: is_power_of_two
+    public :: next_power_of_two
+    public :: previous_power_of_two
 
 ! ******************************************************************************
 ! SIGNALS_SPECTRAL_ANALYSIS
@@ -276,6 +279,24 @@ interface
     pure elemental module function is_power_of_two(n) result(x)
         integer(int32), intent(in) :: n
         logical :: x
+    end function
+    
+    !> @brief Computes the next higher integer power of two.
+    !!
+    !! @param[in] n The value.
+    !! @return The next integer power of two higher than @p n.
+    pure elemental module function next_power_of_two(n) result(x)
+        integer(int32), intent(in) :: n
+        integer(int32) :: x
+    end function
+    
+    !> @brief Computes the next lower integer power of two.
+    !!
+    !! @param[in] n The value.
+    !! @return The previous integer power of two lower than @p n.
+    pure elemental module function previous_power_of_two(n) result(x)
+        integer(int32), intent(in) :: n
+        integer(int32) :: x
     end function
 end interface
 
