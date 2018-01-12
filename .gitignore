@@ -37,6 +37,7 @@ lib/
 build/
 html/
 latex/
+.vscode/
 
 # CMake Stuff
 .cmaketools.json
