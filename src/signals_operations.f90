@@ -131,4 +131,39 @@ contains
     end function
 
 ! ------------------------------------------------------------------------------
+    module function buffer(x, npts) result(y)
+        ! Arguments
+        real(real64), intent(in), dimension(:) :: x
+        integer(int32), intent(in) :: npts
+        real(real64), allocatable, dimension(:,:) :: y
+
+        ! Parameters
+        real(real64), parameter :: zero = 0.0d0
+
+        ! Local Variables
+        integer(int32) :: j, k, m, n, nseg, noverlap, npad, offset
+
+        ! Initialization
+        n = size(x)
+        nseg = int(ceiling(real(n, real64) / real(npts, real64)), int32)
+        allocate(y(npts, nseg))
+        if (mod(n, 2) == 0) then
+            offset = 0
+        else
+            y(1,1) = zero
+            offset = 1
+        end if
+        npad = n + offset
+        noverlap = (npts * nseg - npad) / 2
+
+        ! Process
+        k = 1 + offset
+        do j = 1, nseg
+            m = k + npts - 1
+            y(:,j) = x(k:m)
+            k = k + m - noverlap
+        end do
+    end function
+        
+! ------------------------------------------------------------------------------
 end submodule

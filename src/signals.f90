@@ -31,6 +31,7 @@ module signals
     public :: is_power_of_two
     public :: next_power_of_two
     public :: previous_power_of_two
+    public :: buffer
 
 ! ******************************************************************************
 ! SIGNALS_SPECTRAL_ANALYSIS
@@ -297,6 +298,12 @@ interface
     pure elemental module function previous_power_of_two(n) result(x)
         integer(int32), intent(in) :: n
         integer(int32) :: x
+    end function
+    
+    module function buffer(x, npts) result(y)
+        real(real64), intent(in), dimension(:) :: x
+        integer(int32), intent(in) :: npts
+        real(real64), allocatable, dimension(:,:) :: y
     end function
 end interface
 
