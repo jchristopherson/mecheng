@@ -33,6 +33,7 @@ module signals
     public :: previous_power_of_two
     public :: buffer
     public :: signal_magnitude
+    public :: frequencies
 
 ! ******************************************************************************
 ! GENERAL INTERFACES
@@ -55,6 +56,20 @@ interface
         use, intrinsic :: iso_fortran_env, only : int32, real64
         integer(int32), intent(in) :: bin, winsize
         real(real64) :: x
+    end function
+    
+    !> @brief Computes an array of frequency values corresponding to a discrete
+    !! Fourier transform of an array.
+    !!
+    !! @param[in] rate The rate at which the data was sampled.
+    !! @param[in] npts The number of sampled data points.
+    !! @return An M-element array containing the frequency values.  If @p npts
+    !!  is even, M = @p npts / 2 + 1; else, M = (@p npts + 1) / 2.
+    module function frequencies(rate, npts) result(f)
+        ! Arguments
+        real(real64), intent(in) :: rate
+        integer(int32), intent(in) :: npts
+        real(real64), allocatable, dimension(:) :: f
     end function
     
     !> @brief Computes the magnitude of the discrete harmonics of a signal.

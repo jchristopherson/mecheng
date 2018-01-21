@@ -3,6 +3,33 @@
 submodule (signals) signals_spectral_analysis
 contains
 ! ------------------------------------------------------------------------------
+    module function frequencies(rate, npts) result(f)
+        ! Arguments
+        real(real64), intent(in) :: rate
+        integer(int32), intent(in) :: npts
+        real(real64), allocatable, dimension(:) :: f
+
+        ! Parameters
+        real(real64), parameter :: one = 1.0d0
+
+        ! Local Variables
+        integer(int32) :: i, n
+
+        ! Initialization
+        if (mod(npts, 2) == 0) then
+            n = npts / 2 + 1
+        else
+            n = (npts + 1) / 2
+        end if
+        allocate(f(n))
+
+        ! Process
+        do i = 1, size(x)
+            f(i) = rate * (i - one) / npts
+        end do
+    end function
+
+! ------------------------------------------------------------------------------
     module function signal_magnitude_win(x, winfun, winsize) result(y)
         ! Arguments
         real(real64), intent(in), dimension(:) :: x
