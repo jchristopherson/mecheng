@@ -39,7 +39,7 @@ module signals
 ! ------------------------------------------------------------------------------
 !> @brief Computes the magnitude of the discrete harmonics of a signal.
 interface signal_magnitude
-    modulce procedure :: signal_magnitude_win
+    module procedure :: signal_magnitude_win
 end interface
 
 ! ******************************************************************************

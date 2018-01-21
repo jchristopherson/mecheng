@@ -27,7 +27,7 @@ contains
         allocate(wsave(lwsave))
         allocate(work(lwork))
         call rfft1i(winsize, wsave, lwsave, flag)
-        if (mod(winsize, 2)) then
+        if (mod(winsize, 2) == 0) then
             nxfrm = winsize / 2 + 1
         else
             nxfrm = (winsize + 1) / 2
