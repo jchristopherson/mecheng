@@ -24,7 +24,7 @@ contains
         allocate(f(n))
 
         ! Process
-        do i = 1, size(x)
+        do i = 1, n
             f(i) = rate * (i - one) / npts
         end do
     end function
@@ -46,6 +46,7 @@ contains
         real(real64), allocatable, dimension(:,:) :: bf
         real(real64), dimension(winsize) :: w
         real(real64), allocatable, dimension(:) :: wsave, work
+        real(real64) :: winsum
         complex(real64) :: num
 
         ! Initialization
@@ -64,9 +65,12 @@ contains
 
         ! Buffer the data, and compute the window function
         bf = buffer(x, winsize)
+        winsum = zero
         do i = 1, winsize
             w(i) = winfun(i - 1, winsize)
+            winsum = winsum + w(i)
         end do
+        winsum = winsum / winsize
 
         ! Apply the window function, and compute the FFT of each buffer
         do i = 1, size(bf, 2)
@@ -79,17 +83,17 @@ contains
             
             ! Compute the magnitude
             if (mod(winsize, 2) == 0) then
-                y(1) = y(1) + abs(bf(1, i))
+                y(1) = y(1) + abs(bf(1, i) / winsum)
                 do j = 2, nxfrm - 1
                     num = cmplx(bf(2*j-2,i), bf(2*j-1,i), real64)
-                    y(j) = y(j) + abs(num)
+                    y(j) = y(j) + abs(num / winsum)
                 end do
-                y(nxfrm) = y(i) + abs(bf(winsize, i))
+                y(nxfrm) = y(i) + abs(bf(winsize, i) / winsum)
             else
-                y(1) = y(1) + abs(bf(1, i))
+                y(1) = y(1) + abs(bf(1, i)) / winsum
                 do j = 2, nxfrm
                     num = cmplx(bf(2*j-2,i), bf(2*j-1,i), real64)
-                    y(j) = y(j) + abs(num)
+                    y(j) = y(j) + abs(num / winsum)
                 end do
             end if
         end do

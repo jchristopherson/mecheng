@@ -224,7 +224,7 @@ interface
     !! @param[in] bin The index or bin number (0 <= @p bin <= @p winsize)
     !! @param[in] winsize The window size.
     !! @return The window function value.
-    pure elemental module function bartlett_window(bin, winsize) result(x)
+    pure module function bartlett_window(bin, winsize) result(x)
         integer(int32), intent(in) :: bin, winsize
         real(real64) :: x
     end function
@@ -234,7 +234,7 @@ interface
     !! @param[in] bin The index or bin number (0 <= @p bin <= @p winsize)
     !! @param[in] winsize The window size.
     !! @return The window function value.
-    pure elemental module function welch_window(bin, winsize) result(x)
+    pure module function welch_window(bin, winsize) result(x)
         integer(int32), intent(in) :: bin, winsize
         real(real64) :: x
     end function
@@ -244,7 +244,7 @@ interface
     !! @param[in] bin The index or bin number (0 <= @p bin <= @p winsize)
     !! @param[in] winsize The window size.
     !! @return The window function value.
-    pure elemental module function hann_window(bin, winsize) result(x)
+    pure module function hann_window(bin, winsize) result(x)
         integer(int32), intent(in) :: bin, winsize
         real(real64) :: x
     end function
@@ -254,7 +254,7 @@ interface
     !! @param[in] bin The index or bin number (0 <= @p bin <= @p winsize)
     !! @param[in] winsize The window size.
     !! @return The window function value.
-    pure elemental module function hamming_window(bin, winsize) result(x)
+    pure module function hamming_window(bin, winsize) result(x)
         integer(int32), intent(in) :: bin, winsize
         real(real64) :: x
     end function
@@ -264,7 +264,7 @@ interface
     !! @param[in] bin The index or bin number (0 <= @p bin <= @p winsize)
     !! @param[in] winsize The window size.
     !! @return The window function value.
-    pure elemental module function blackman_window(bin, winsize) result(x)
+    pure module function blackman_window(bin, winsize) result(x)
         integer(int32), intent(in) :: bin, winsize
         real(real64) :: x
     end function

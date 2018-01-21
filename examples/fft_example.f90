@@ -9,15 +9,17 @@ program example
 
     ! Parameters
     integer(int32), parameter :: npts = 2000
+    integer(int32), parameter :: winsize = 512
     real(real64), parameter :: freq = 512.0d0 ! Signal sampled at 512 Hz
 
     ! Local Variables
     integer(int32) :: i
-    real(real64) :: dt, t(npts), s(npts)
+    real(real64) :: dt, t(npts), s(npts), sWin(npts)
     complex(real64), allocatable, dimension(:) :: xfrm
-    real(real64), allocatable, dimension(:) :: x, f, p
+    real(real64), allocatable, dimension(:) :: x, f, p, xWin, fWin
+    procedure(window_function), pointer :: win
     type(plot_2d) :: plt
-    type(plot_data_2d) :: d1, d2
+    type(plot_data_2d) :: d1, d2, d3
     class(plot_axis), pointer :: xAxis, yAxis, y2Axis
 
     ! Build the signal
@@ -27,6 +29,7 @@ program example
         s(i) = 2.0d0 * sin(2.0d0 * pi * 50.0d0 * t(i)) + &
             0.75 * sin(2.0d0 * pi * 120.0d0 * t(i)) + &
             1.25 * sin(2.0d0 * pi * 200.0d0 * t(i))
+        sWin(i) = s(i)
         if (i < npts) t(i+1) = t(i) + dt
     end do
     
@@ -47,6 +50,7 @@ program example
     call plt%push(d1)
     call plt%draw()
 
+! ------------------------------------------------------------------------------
     ! Now that the signal has been defined, compute it's FFT, and then display
     ! its magnitude and phase as a function of frequency
     xfrm = rfft(s)  ! Notice, s is modified by this function
@@ -60,11 +64,15 @@ program example
     p = atan2(aimag(xfrm), real(xfrm, real64)) * (180.0d0 / pi)
 
     ! The corresponding frequency values can be determined as follows
-    allocate(f(size(x)))
-    do i = 1, size(x)
-        f(i) = freq * (i - 1.0d0) / npts
-    end do
+    f = frequencies(freq, npts)
+
+! ------------------------------------------------------------------------------
+    ! An alternate approach, using a Hamming window
+    win => hamming_window
+    xWin = signal_magnitude(sWin, win, winsize)
+    fWin = frequencies(freq, winsize)
     
+! ------------------------------------------------------------------------------
     ! Plot the results.  Amplitude on the primary axis, and phase on the 
     ! secondary axis
     call plt%clear_all()
@@ -91,7 +99,15 @@ program example
     call d2%set_line_style(LINE_DASHED)
     call d2%set_draw_against_y2(.true.)
 
+    call d3%define_data(fWin, xWin)
+    call d3%set_name("Magnitude (Windowed)")
+    call d3%set_use_auto_color(.false.)
+    call d3%set_line_color(CLR_RED)
+    call d3%set_line_width(1.0)
+    call d3%set_line_style(LINE_DASH_DOTTED)
+
     call plt%push(d1)
     call plt%push(d2)
+    call plt%push(d3)
     call plt%draw()
 end program
