@@ -8,14 +8,20 @@ program main
     implicit none
     
     ! Routines
-    call test_fft()
-    call test_lowpass_filter()
-    call test_highpass_filter()
-    call test_bandpass_filter()
-    call test_bandstop_filter()
-    call test_averaging_filter()
-    call test_resampling()
-    call test_remove_mean()
+    ! call test_fft()
+    ! call test_lowpass_filter()
+    ! call test_highpass_filter()
+    ! call test_bandpass_filter()
+    ! call test_bandstop_filter()
+    ! call test_averaging_filter()
+    ! call test_resampling()
+    ! call test_remove_mean()
+
+    if (.not.test_buffer()) then
+        print '(A)', "SIGNALS TESTS FAILED."
+    else
+        print '(A)', "SIGNALS TESTS PASSED."
+    end if
 
 contains
 ! ------------------------------------------------------------------------------
@@ -543,6 +549,34 @@ contains
         call plt%push(d3)
         call plt%draw()
     end subroutine
+
+! ------------------------------------------------------------------------------
+    function test_buffer() result(rst)
+        ! Local Variables
+        logical :: rst
+        integer(int32) :: i
+        real(real64) :: x1(21), x2(19), ans1(4, 5)
+        real(real64), allocatable, dimension(:,:) :: s1
+
+        ! Initialization
+        rst = .true.
+        do i = 1, size(x1)
+            x1(i) = real(i, real64)
+        end do
+        do i = 1, size(x2)
+            x2(i) = real(i, real64)
+        end do
+
+        ! Define the solution matrix for test 1 - no overlap
+        ans1 = reshape(x1, [4, 5])
+
+        ! Test 1
+        s1 = buffer(x1, 9)
+        print '(AI0AI0)', "S1 ROWS: ", size(s1, 1), ", COLUMNS: ", size(s1, 2)
+        do i = 1, size(s1, 1)
+            print *, s1(i,:)
+        end do
+    end function
 
 ! ------------------------------------------------------------------------------
 end program

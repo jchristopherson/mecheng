@@ -18,21 +18,17 @@ add_custom_target(run_mecheng_column_tests ALL DEPENDS mecheng_test_columns_cmd)
 # ------------------------------------------------------------------------------
 # SIGNALS TESTS
 # ------------------------------------------------------------------------------
-option(RUN_SIGNALS_TESTS "Run signals tests?" OFF)
-
 # Build the executable
 set(test_signals_source test_signals.f90)
 add_executable(mecheng_test_signals ${test_signals_source})
 target_link_libraries(mecheng_test_signals mecheng fplot)
 
-if (RUN_SIGNALS_TESTS)
-    # Run the tests
-    add_custom_command(OUTPUT mecheng_test_signals_cmd
-        DEPENDS ${test_signals_source}
-        COMMAND mecheng_test_signals)
-    add_custom_target(run_mecheng_signals_tests ALL 
-    DEPENDS mecheng_test_signals_cmd)
-endif()
+# Run the tests
+add_custom_command(OUTPUT mecheng_test_signals_cmd
+    DEPENDS ${test_signals_source}
+    COMMAND mecheng_test_signals)
+add_custom_target(run_mecheng_signals_tests ALL 
+DEPENDS mecheng_test_signals_cmd)
 
 # ------------------------------------------------------------------------------
 # KINEMATICS TESTS

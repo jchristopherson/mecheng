@@ -139,30 +139,43 @@ contains
 
         ! Parameters
         real(real64), parameter :: zero = 0.0d0
+        real(real64), parameter :: one = 1.0d0
 
         ! Local Variables
-        integer(int32) :: j, k, m, n, nseg, noverlap, npad, offset
+        integer(int32) :: j, k, m, n, nseg, noverlap, offset, npad
 
         ! Initialization
         n = size(x)
         nseg = int(ceiling(real(n, real64) / real(npts, real64)), int32)
         allocate(y(npts, nseg))
-        if (mod(n, 2) == 0) then
-            offset = 0
-        else
-            y(1,1) = zero
-            offset = 1
-        end if
-        npad = n + offset
-        noverlap = (npts * nseg - npad) / 2
+        y = zero
+        
+        ! Determine any offset
+        offset = npts * nseg - n
 
-        ! Process
-        k = 1 + offset
-        do j = 1, nseg
-            m = k + npts - 1
-            y(:,j) = x(k:m)
-            k = k + m - noverlap
-        end do
+        ! Define the overlap
+        npad = n + offset
+        noverlap = ceiling((npts * nseg - npad) / (nseg - one))
+
+        ! Copy over the data
+        if (offset > 0) then
+            offset = offset / 2 ! Split between front and end of data set
+            m = npts - offset
+            y(offset+1:npts,1) = x(1:m)
+            k = 1 + m - noverlap
+            do j = 2, nseg
+                m = min(k + npts - 1, n)
+                y(:,j) = x(k:m)
+                k = k + npts - noverlap
+            end do
+        else
+            k = 1
+            do j = 1, nseg
+                m = min(k + npts - 1, n)
+                y(:,j) = x(k:m)
+                k = k + npts - noverlap
+            end do
+        end if
     end function
         
 ! ------------------------------------------------------------------------------

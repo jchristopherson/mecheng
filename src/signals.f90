@@ -300,6 +300,17 @@ interface
         integer(int32) :: x
     end function
     
+    !> @brief Splits the array into equally sized buffers.
+    !!
+    !! @param[in] x The array to split.
+    !! @param[in] npts The number of points to place in each buffer.
+    !! @return An NPTS-by-NBUFFER matrix containing the buffered data.
+    !!
+    !! @par Remarks
+    !! To accomodate the splitting of the data into the appropriate sized 
+    !! buffers, zeros may be added to the first and last buffers to 
+    !! appropriately fill each buffer.  Also notice, data may be overlapped if
+    !! such an arrangement makes for a better fit within the buffers.
     module function buffer(x, npts) result(y)
         real(real64), intent(in), dimension(:) :: x
         integer(int32), intent(in) :: npts
