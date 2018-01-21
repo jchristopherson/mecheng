@@ -32,6 +32,15 @@ module signals
     public :: next_power_of_two
     public :: previous_power_of_two
     public :: buffer
+    public :: signal_magnitude
+
+! ******************************************************************************
+! GENERAL INTERFACES
+! ------------------------------------------------------------------------------
+!> @brief Computes the magnitude of the discrete harmonics of a signal.
+interface signal_magnitude
+    modulce procedure :: signal_magnitude_win
+end interface
 
 ! ******************************************************************************
 ! SIGNALS_SPECTRAL_ANALYSIS
@@ -48,6 +57,19 @@ interface
         real(real64) :: x
     end function
     
+    !> @brief Computes the magnitude of the discrete harmonics of a signal.
+    !!
+    !! @param[in] x The N-element array containing the signal data.
+    !! @param[in] winfun The window function to apply.
+    !! @param[in] winsize The window size.  It is recommended that this value
+    !!  be an integer power of two, even if the size of @p x is not.
+    !! @return The magnitude of the each harmonic component of @p x.
+    module function signal_magnitude_win(x, winfun, winsize) result(y)
+        real(real64), intent(in), dimension(:) :: x
+        procedure(window_function), pointer, intent(in) :: winfun
+        integer(int32), intent(in) :: winsize
+        real(real64), allocatable, dimension(:) :: y
+    end function
 end interface
 
 ! ******************************************************************************
