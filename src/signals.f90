@@ -41,6 +41,7 @@ module signals
 !> @brief Computes the magnitude of the discrete harmonics of a signal.
 interface signal_magnitude
     module procedure :: signal_magnitude_win
+    module procedure :: signal_magnitude_no_win
 end interface
 
 ! ******************************************************************************
@@ -83,6 +84,15 @@ interface
         real(real64), intent(in), dimension(:) :: x
         procedure(window_function), pointer, intent(in) :: winfun
         integer(int32), intent(in) :: winsize
+        real(real64), allocatable, dimension(:) :: y
+    end function
+
+    !> @brief Computes the magnitude of the discrete harmonics of a signal.
+    !!
+    !! @param[in] x The N-element array containing the signal data.
+    !! @return The magnitude of the each harmonic component of @p x. 
+    module function signal_magnitude_no_win(x) result(y)
+        real(real64), intent(in), dimension(:) :: x
         real(real64), allocatable, dimension(:) :: y
     end function
 end interface

@@ -103,6 +103,52 @@ contains
     end function    
 
 ! ------------------------------------------------------------------------------
+    module function signal_magnitude_no_win(x) result(y)
+        ! Arguments
+        real(real64), intent(in), dimension(:) :: x
+        real(real64), allocatable, dimension(:) :: y
+
+        ! Parameters
+        real(real64), parameter :: two = 2.0d0
+
+        ! Local Variables
+        integer(int32) :: i, n, lwsave, lwork, flag, nxfrm
+        real(real64), allocatable, dimension(:) :: s, wsave, work
+        complex(real64) :: num
+
+        ! Initialization
+        n = size(x)
+        lwork = n
+        lwsave = n + int(log(real(n, real64)) / log(two), int32) + 4
+        allocate(work(lwork))
+        allocate(wsave(lwsave))
+        allocate(s(n))
+        s = x
+        call rfft1i(n, wsave, lwsave, flag)
+
+        ! Compute the FFT
+        call rfft1f(n, 1, s, n, wsave, lwsave, work, lwork, flag)
+
+        ! Compute the magnitude
+        if (mod(n, 2) == 0) then
+            nxfrm = n / 2 + 1
+            allocate(y(nxfrm))
+            y(1) = abs(s(1))
+            do i = 2, nxfrm - 1
+                num = cmplx(s(2 * i - 2), s(2 * i - 1), real64)
+                y(i) = abs(num)
+            end do
+            y(nxfrm) = abs(s(n))
+        else
+            nxfrm = (n + 1) / 2
+            allocate(y(nxfrm))
+            y(1) = abs(s(1))
+            do i = 2, nxfrm
+                num = cmplx(s(2 * i - 2), s(2 * i - 1), real64)
+                y(i) = abs(num)
+            end do
+        end if
+    end function
 
 ! ------------------------------------------------------------------------------
 
