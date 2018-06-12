@@ -237,7 +237,7 @@ program example
         sWin(i) = s(i)
         if (i < npts) t(i+1) = t(i) + dt
     end do
-    
+
     ! Plot the signal
     call plt%initialize()
     call plt%set_title("FFT Example - Signal")
@@ -245,13 +245,13 @@ program example
 
     xAxis => plt%get_x_axis()
     call xAxis%set_title("Time [sec]")
-    
+
     yAxis => plt%get_y_axis()
     call yAxis%set_title("s(t)")
 
     call d1%define_data(t, s)
     call d1%set_name("s(t)")
-    
+
     call plt%push(d1)
     call plt%draw()
 
@@ -260,7 +260,7 @@ program example
     ! its magnitude and phase as a function of frequency
     xfrm = rfft(s)  ! Notice, s is modified by this function
 
-    ! We can simply take the absolute value of the resulting complex-valued 
+    ! We can simply take the absolute value of the resulting complex-valued
     ! array to obtain the magnitude spectrum of the signal
     x = abs(xfrm)
 
@@ -276,9 +276,9 @@ program example
     win => hamming_window
     xWin = signal_magnitude(sWin, win, winsize)
     fWin = frequencies(freq, winsize)
-    
+
 ! ------------------------------------------------------------------------------
-    ! Plot the results.  Amplitude on the primary axis, and phase on the 
+    ! Plot the results.  Amplitude on the primary axis, and phase on the
     ! secondary axis
     call plt%clear_all()
     call plt%set_use_y2_axis(.true.)
@@ -295,7 +295,7 @@ program example
     call d1%set_use_auto_color(.false.)
     call d1%set_line_color(CLR_BLUE)
     call d1%set_line_width(2.0)
-    
+
     call d2%define_data(f, p)
     call d2%set_name("Phase (Y2)")
     call d2%set_use_auto_color(.false.)
@@ -326,3 +326,7 @@ Notice, there is some leakage as the signal amplitudes aren't quite correct in t
 ## References
 1. Jazar, Reza N., "Theory of Applied Robotics."  New York: Springer, 2007.
 2. Rosenberg, Reinhardt M. "Analytical Dynamics of Discrete Systems." New York: Plenum Press, 1977.
+
+## Dependencies
+This library depends upon the following libraries.
+- [MODERN_FFTPACK](https://github.com/jlokimlin/modern_fftpack)
