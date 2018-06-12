@@ -1,6 +1,3 @@
 [submodule "src/external/modern_fftpack"]
 	path = src/external/modern_fftpack
 	url = https://github.com/jlokimlin/modern_fftpack.git
-[submodule "tests/external/fplot"]
-	path = tests/external/fplot
-	url = https://github.com/jchristopherson/fplot.git
