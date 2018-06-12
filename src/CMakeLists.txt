@@ -47,4 +47,68 @@ set(mecheng_sources
 
 # Build the library
 add_library(mecheng ${mecheng_sources})
-target_link_libraries(mecheng fftpack)
+target_link_libraries(mecheng)
+
+# ------------------------------------------------------------------------------
+# INSTALLATION INSTRUCTIONS
+# ------------------------------------------------------------------------------
+# Define target information
+set_property(TARGET mecheng PROPERTY VERSION ${MECHENG_VERSION})
+set_property(TARGET mecheng PROPERTY SOVERSION ${MECHENG_MAJOR_VERSION})
+set_property(TARGET mecheng PROPERTY INTERFACE_mecheng_MAJOR_VERSION ${MECHENG_MAJOR_VERSION})
+set_property(TARGET mecheng APPEND PROPERTY COMPATIBLE_INTERFACE_STRING mecheng_MAJOR_VERSION)
+
+# Locate the "include" directories
+set(mecheng_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/include)
+
+# Define the installation instructions
+install(TARGETS mecheng EXPORT mechengTargets
+    RUNTIME DESTINATION mecheng/bin
+    LIBRARY DESTINATION mecheng/lib
+    ARCHIVE DESTINATION mecheng/lib
+    CONFIGURATIONS Release
+    INCLUDES DESTINATION mecheng/include
+)
+install(
+    DIRECTORY ${PROJECT_SOURCE_DIR}/include
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/mecheng
+    COMPONENT Devel
+)
+
+# Include the documentation
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/doc/html DESTINATION mecheng/doc)
+
+# Define the version file
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+    "${CMAKE_BINARY_DIR}/mechengConfigVersion.cmake"
+    VERSION ${MECHENG_VERSION}
+    COMPATIBILITY AnyNewerVersion
+)
+
+export(EXPORT mechengTargets
+    FILE "${CMAKE_BINARY_DIR}/mechengTargets.cmake"
+)
+
+# Define the configuration file
+configure_file(
+    "${PROJECT_SOURCE_DIR}/mechengConfig.cmake.in"
+    "${CMAKE_BINARY_DIR}/mechengConfig.cmake"
+    COPYONLY
+)
+
+set(ConfigPackageLocation mecheng/lib/cmake/mecheng)
+install(
+    EXPORT mechengTargets
+    FILE mechengTargets.cmake
+    DESTINATION ${ConfigPackageLocation}
+)
+install(
+    FILES
+        "${CMAKE_BINARY_DIR}/mechengConfig.cmake"
+        "${CMAKE_BINARY_DIR}/mechengConfigVersion.cmake"
+    DESTINATION
+        ${ConfigPackageLocation}
+    COMPONENT
+        Devel
+)

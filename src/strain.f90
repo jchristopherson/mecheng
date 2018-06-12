@@ -9,6 +9,9 @@ module strain
     implicit none
     private
     public :: wheatstone_bridge
+    public :: strain_transform_x
+    public :: strain_transform_y
+    public :: strain_transfom_xy
 
 ! ------------------------------------------------------------------------------
     !> @brief Computes the output of a wheatstone bridge.

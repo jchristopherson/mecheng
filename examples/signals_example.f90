@@ -1,21 +1,21 @@
-! test_signals.f90
+! signals_example.f90
 
-program main
+program example
     use, intrinsic :: iso_fortran_env
     use constants
     use signals
     use fplot_core
     implicit none
-    
+
     ! Routines
-    ! call test_fft()
-    ! call test_lowpass_filter()
-    ! call test_highpass_filter()
-    ! call test_bandpass_filter()
-    ! call test_bandstop_filter()
-    ! call test_averaging_filter()
-    ! call test_resampling()
-    ! call test_remove_mean()
+    call test_fft()
+    call test_lowpass_filter()
+    call test_highpass_filter()
+    call test_bandpass_filter()
+    call test_bandstop_filter()
+    call test_averaging_filter()
+    call test_resampling()
+    call test_remove_mean()
 
     if (.not.test_buffer()) then
         print '(A)', "SIGNALS TESTS FAILED."
@@ -45,7 +45,7 @@ contains
         t = 0.0d0
         dt = 1.0d0 / fs
         do i = 1, npts
-            s(i) = 0.7d0 * sin(2.0d0 * pi * 50.0d0 * t) + & 
+            s(i) = 0.7d0 * sin(2.0d0 * pi * 50.0d0 * t) + &
                 sin(2.0d0 * pi * 120.0d0 * t)
             t = t + dt
         end do
@@ -60,7 +60,7 @@ contains
         ! Use a real-valued transform
         rxfrm = rfft(s) ! s is modified by this call
 
-        ! Extract the meaningful portions of the transform 
+        ! Extract the meaningful portions of the transform
         ! NOTE: factor of 2 due to symmetry of the transform
         p1 = 2.0d0 * abs(xfrm(1:npts/2 + 1))
 
@@ -77,7 +77,7 @@ contains
         ! Plot the results
         call plt%initialize()
         call plt%set_title("FFT Example")
-        
+
         xAxis => plt%get_x_axis()
         call xAxis%set_title("Frequency [Hz]")
 
@@ -86,12 +86,10 @@ contains
 
         call d1%define_data(f1, p1)
         call d1%set_name("Complex-Valued FFT")
-        call d1%set_use_auto_color(.false.)
         call d1%set_line_color(CLR_BLUE)
 
         call d2%define_data(f1, p2)
         call d2%set_name("Real-Valued FFT")
-        call d2%set_use_auto_color(.false.)
         call d2%set_line_color(CLR_GREEN)
         call d2%set_line_style(LINE_DASHED)
         call d2%set_line_width(2.0)
@@ -133,8 +131,8 @@ contains
 
         ! Plot the signal, along with the original
         call plt%initialize()
-        call plt%set_title("Low Pass Filter Test 1")
-        
+        call plt%set_title("Low Pass Filter Example")
+
         xAxis => plt%get_x_axis()
         call xAxis%set_title("Time [s]")
 
@@ -143,18 +141,15 @@ contains
 
         call d1%define_data(t, s)
         call d1%set_name("Unfiltered")
-        call d1%set_use_auto_color(.false.)
         call d1%set_line_color(CLR_BLUE)
 
         call d2%define_data(t, sfilt)
         call d2%set_name("Filtered")
-        call d2%set_use_auto_color(.false.)
         call d2%set_line_color(CLR_GREEN)
         call d2%set_line_width(2.0)
 
         call d3%define_data(t, expect)
         call d3%set_name("Expected")
-        call d3%set_use_auto_color(.false.)
         call d3%set_line_color(CLR_RED)
         call d3%set_line_style(LINE_DASHED)
         call d3%set_line_width(2.0)
@@ -198,8 +193,8 @@ contains
 
         ! Plot the signal, along with the original
         call plt%initialize()
-        call plt%set_title("High Pass Filter Test 1")
-        
+        call plt%set_title("High Pass Filter Example")
+
         xAxis => plt%get_x_axis()
         call xAxis%set_title("Time [s]")
 
@@ -208,18 +203,15 @@ contains
 
         call d1%define_data(t, s)
         call d1%set_name("Unfiltered")
-        call d1%set_use_auto_color(.false.)
         call d1%set_line_color(CLR_BLUE)
 
         call d2%define_data(t, sfilt)
         call d2%set_name("Filtered")
-        call d2%set_use_auto_color(.false.)
         call d2%set_line_color(CLR_GREEN)
         call d2%set_line_width(2.0)
 
         call d3%define_data(t, expect)
         call d3%set_name("Expected")
-        call d3%set_use_auto_color(.false.)
         call d3%set_line_color(CLR_RED)
         call d3%set_line_style(LINE_DASHED)
         call d3%set_line_width(2.0)
@@ -263,8 +255,8 @@ contains
 
         ! Plot the signal, along with the original
         call plt%initialize()
-        call plt%set_title("Band Pass Filter Test 1")
-        
+        call plt%set_title("Band Pass Filter Example")
+
         xAxis => plt%get_x_axis()
         call xAxis%set_title("Time [s]")
 
@@ -273,18 +265,15 @@ contains
 
         call d1%define_data(t, s)
         call d1%set_name("Unfiltered")
-        call d1%set_use_auto_color(.false.)
         call d1%set_line_color(CLR_BLUE)
 
         call d2%define_data(t, sfilt)
         call d2%set_name("Filtered")
-        call d2%set_use_auto_color(.false.)
         call d2%set_line_color(CLR_GREEN)
         call d2%set_line_width(2.0)
 
         call d3%define_data(t, expect)
         call d3%set_name("Expected")
-        call d3%set_use_auto_color(.false.)
         call d3%set_line_color(CLR_RED)
         call d3%set_line_style(LINE_DASHED)
         call d3%set_line_width(2.0)
@@ -329,8 +318,8 @@ contains
 
         ! Plot the signal, along with the original
         call plt%initialize()
-        call plt%set_title("Band Stop Filter Test 1")
-        
+        call plt%set_title("Band Stop Filter Example")
+
         xAxis => plt%get_x_axis()
         call xAxis%set_title("Time [s]")
 
@@ -339,18 +328,15 @@ contains
 
         call d1%define_data(t, s)
         call d1%set_name("Unfiltered")
-        call d1%set_use_auto_color(.false.)
         call d1%set_line_color(CLR_BLUE)
 
         call d2%define_data(t, sfilt)
         call d2%set_name("Filtered")
-        call d2%set_use_auto_color(.false.)
         call d2%set_line_color(CLR_GREEN)
         call d2%set_line_width(2.0)
 
         call d3%define_data(t, expect)
         call d3%set_name("Expected")
-        call d3%set_use_auto_color(.false.)
         call d3%set_line_color(CLR_RED)
         call d3%set_line_style(LINE_DASHED)
         call d3%set_line_width(2.0)
@@ -392,8 +378,8 @@ contains
 
         ! Plot the signal, along with the original
         call plt%initialize()
-        call plt%set_title("Averaging Filter Test 1")
-        
+        call plt%set_title("Averaging Filter Example")
+
         xAxis => plt%get_x_axis()
         call xAxis%set_title("Time [s]")
 
@@ -402,12 +388,10 @@ contains
 
         call d1%define_data(t, s)
         call d1%set_name("Unfiltered")
-        call d1%set_use_auto_color(.false.)
         call d1%set_line_color(CLR_BLUE)
 
         call d2%define_data(t, sfilt)
         call d2%set_name("Filtered")
-        call d2%set_use_auto_color(.false.)
         call d2%set_line_color(CLR_GREEN)
 
         call plt%push(d1)
@@ -452,17 +436,17 @@ contains
         do i = 2, size(td)
             td(i) = td(i-1) + dt
         end do
-        
+
         ! Upsample the signal
         su = upsample(s, fs, factor)
-        
+
         ! Downsample the original signal
         sd = downsample(s, fs, factor)
 
         ! Plot the signal, along with the original
         call plt%initialize()
-        call plt%set_title("Resampling Test 1")
-        
+        call plt%set_title("Resampling Example")
+
         xAxis => plt%get_x_axis()
         call xAxis%set_title("Time [s]")
 
@@ -471,17 +455,14 @@ contains
 
         call d1%define_data(t, s)
         call d1%set_name("Original")
-        call d1%set_use_auto_color(.false.)
         call d1%set_line_color(CLR_BLUE)
 
         call d2%define_data(tu, su)
         call d2%set_name("Upsampled")
-        call d2%set_use_auto_color(.false.)
         call d2%set_line_color(CLR_GREEN)
 
         call d3%define_data(td, sd)
         call d3%set_name("Downsampled")
-        call d3%set_use_auto_color(.false.)
         call d3%set_line_color(CLR_RED)
 
         call plt%push(d1)
@@ -513,14 +494,14 @@ contains
             s1(i) = s(i)
             if (i < n) t(i+1) = t(i) + dt
         end do
-        
+
         ! Remove the mean on s1
         call remove_mean(s1)
 
         ! Plot the signal, along with the original
         call plt%initialize()
-        call plt%set_title("Remove Mean Test 1")
-        
+        call plt%set_title("Remove Mean Example")
+
         xAxis => plt%get_x_axis()
         call xAxis%set_title("Time [s]")
 
@@ -529,17 +510,14 @@ contains
 
         call d1%define_data(t, s)
         call d1%set_name("Original")
-        call d1%set_use_auto_color(.false.)
         call d1%set_line_color(CLR_BLUE)
 
         call d2%define_data(t, s1)
         call d2%set_name("Mean Removed")
-        call d2%set_use_auto_color(.false.)
         call d2%set_line_color(CLR_GREEN)
 
         call d3%define_data(t, so)
         call d3%set_name("Expected")
-        call d3%set_use_auto_color(.false.)
         call d3%set_line_color(CLR_RED)
         call d3%set_line_style(LINE_DASHED)
         call d3%set_line_width(2.0)
