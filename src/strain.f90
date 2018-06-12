@@ -35,20 +35,20 @@ contains
     !!            V(+)
     !!            /\
     !!    Leg 1  /  \ Leg 4
-    !! Vout(+) _/    \_ Vout(-)
+    !! Vout(-) _/    \_ Vout(+)
     !!          \    /
     !!    Leg 2  \  / Leg 3
     !!            \/
     !!            V(-)
     !! @endverbatim
     !!
-    !! @par 
+    !! @par
     !! The output of the bridge assuming each gage has the same resistance and
     !! the same gage factor is as follows.
     !! @par
     !! \f$ \frac{V_{out}}{V} = \frac{f_{g}(f_{g}(\epsilon_{1}\epsilon_{3} -
     !! \epsilon_{2}\epsilon_{4}) - (\epsilon_{4} - \epsilon_{3} + \epsilon_{2} -
-    !! \epsilon_{1}))}{4 + f_{g}(f_{g}(\epsilon_{3} (\epsilon_{2} + 
+    !! \epsilon_{1}))}{4 + f_{g}(f_{g}(\epsilon_{3} (\epsilon_{2} +
     !! \epsilon_{1}) + \epsilon_{4} (\epsilon_{2} + \epsilon_{1})) + 2
     !! (\epsilon_{1} + \epsilon_{2} + \epsilon_{3} + \epsilon_{4}))} \f$
     pure elemental function wheatstone_bridge_1(fg, strain1, strain2, strain3, &
@@ -66,7 +66,7 @@ contains
 ! ------------------------------------------------------------------------------
     !> @brief Computes the output of a wheatstone bridge.
     !!
-    !! @param[in] fg A 4-element array containing the gage factor for each 
+    !! @param[in] fg A 4-element array containing the gage factor for each
     !!  strain gage (gage 1, gage 2, gage 3, gage 4).
     !! @param[in] r A 4-element array containing the resistance for each strain
     !!  gage (gage 1, gage 2, gage 3, gage 4).
@@ -82,7 +82,7 @@ contains
     !!            V(+)
     !!            /\
     !!    Leg 1  /  \ Leg 4
-    !! Vout(+) _/    \_ Vout(-)
+    !! Vout(-) _/    \_ Vout(+)
     !!          \    /
     !!    Leg 2  \  / Leg 3
     !!            \/
@@ -92,8 +92,8 @@ contains
     !! @par
     !! The output of the bridge is defined as follows.
     !! @par
-    !! \f$ \frac{V_{out}}{V} = \frac{R_{3} + \Delta R_{3}}{R_{3} + \Delta R_{3} 
-    !!  + R_{4} + \Delta R_{4}} - \frac{R_{2} + \Delta R_{2}}{R_{2} + 
+    !! \f$ \frac{V_{out}}{V} = \frac{R_{3} + \Delta R_{3}}{R_{3} + \Delta R_{3}
+    !!  + R_{4} + \Delta R_{4}} - \frac{R_{2} + \Delta R_{2}}{R_{2} +
     !!  \Delta R_{2} + R_{1} + \Delta R_{1}}\f$
     !! @par
     !! Where:
@@ -126,7 +126,7 @@ contains
     !! @return The transformed strain.
     !!
     !! @par Definition
-    !! \f$ \epsilon_{x'} = \epsilon_{x} \cos^{2}\theta + \epsilon_{y} 
+    !! \f$ \epsilon_{x'} = \epsilon_{x} \cos^{2}\theta + \epsilon_{y}
     !! \sin^{2}\theta + \gamma_{xy} \sin\theta \cos\theta \f$
     pure elemental function strain_transform_x(ex, ey, gxy, theta) result(x)
         real(real64), intent(in) :: ex, ey, gxy, theta
@@ -146,7 +146,7 @@ contains
     !! @return The transformed strain.
     !!
     !! @par Definition
-    !! \f$ \epsilon_{y'} = \epsilon_{x} \sin^{2}\theta + \epsilon_{y} 
+    !! \f$ \epsilon_{y'} = \epsilon_{x} \sin^{2}\theta + \epsilon_{y}
     !! \cos^{2}\theta - \gamma_{xy} \sin\theta \cos\theta \f$
     pure elemental function strain_transform_y(ex, ey, gxy, theta) result(x)
         real(real64), intent(in) :: ex, ey, gxy, theta
