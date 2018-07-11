@@ -24,10 +24,13 @@ module strain
     end interface
 
 ! ------------------------------------------------------------------------------
-    !>
+    !> @brief Computes the output of a wheatstone bridge when two gages are in
+    !! series in each leg of the bridge.
     interface wheatstone_bridge_series
         module procedure :: wheatstone_bridge_series_1
         module procedure :: wheatstone_bridge_series_2
+        module procedure :: wheatstone_bridge_series_3
+        module procedure :: wheatstone_bridge_series_4
     end interface
 
 contains
@@ -351,6 +354,126 @@ contains
         r2 = fg * (strain2a + strain2b) + 2.0d0
         r3 = fg * (strain3a + strain3b) + 2.0d0
         r4 = fg * (strain4a + strain4b) + 2.0d0
+
+        ! Compute the output
+        x = 1.0d3 * ((r3 * r1 - r2 * r4) / ((r2 + r1) * r4 + (r2 + r1) * r3))
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Computes the output of a wheatstone bridge where two strain gages
+    !! are placed in series in each leg.
+    !!
+    !! @param[in] fg The gage factor of each strain gage [1a, 1b, ... 4a, 4b].
+    !! @param[in] r The resistance of each strain gage [1a, 1b, ... 4a, 4b].
+    !! @param[in] strain1a The strain in leg 1a of the bridge.
+    !! @param[in] strain1b The strain in leg 1b of the bridge.
+    !! @param[in] strain2a The strain in leg 2a of the bridge.
+    !! @param[in] strain2b The strain in leg 2b of the bridge.
+    !! @param[in] strain3a The strain in leg 3a of the bridge.
+    !! @param[in] strain3b The strain in leg 3b of the bridge.
+    !! @param[in] strain4a The strain in leg 4a of the bridge.
+    !! @param[in] strain4b The strain in leg 4b of the bridge.
+    !! @return The output of the bridge, in units of mV/V.
+    !!
+    !! @par Remarks
+    !! The construction of the wheatstone bridge is as follows.
+    !! @verbatim
+    !!             V(+)
+    !!    Leg 1b   /\  Leg 4b
+    !!            /  \
+    !!  Leg 1a   /    \  Leg 4a
+    !! Vout(-) _/      \_ Vout(+) 
+    !!  Leg 2b  \      / Leg 3b
+    !!           \    /
+    !!    Leg 2a  \  /   Leg 3a
+    !!             \/
+    !!            V(-)
+    !! @endverbatim
+    !!
+    !! @par
+    !! The bridge output is computed similarily to that of a traditional
+    !! wheatstone bridge, but the resistance of each leg requires treatment
+    !! of two strain gages in series.  The gage resistance in each leg
+    !! is as follows.
+    !! \f$ R_{eff,i} = f_{a,i} R_{a,i} \epsilon_{a,i} + R_{a,i} + 
+    !!  f_{b,i} R_{b,i} \epsilon_{b,i} + R_{b,i} \f$
+    pure function wheatstone_bridge_series_3(fg, r, strain1a, strain1b, &
+            strain2a, strain2b, strain3a, strain3b, strain4a, strain4b) &
+            result(x)
+        ! Arguments
+        real(real64), intent(in), dimension(8) :: fg, r
+        real(real64), intent(in) :: strain1a, strain1b, &
+            strain2a, strain2b, strain3a, strain3b, strain4a, strain4b
+        real(real64) :: x
+
+        ! Local Variables
+        real(real64) :: r1, r2, r3, r4
+
+        ! Compute the individual leg resistance values
+        r1 = r(1) * (fg(1) * strain1a + 1.0d0) + r(2) * (fg(2) * strain1b + 1.0d0)
+        r2 = r(3) * (fg(3) * strain2a + 1.0d0) + r(4) * (fg(4) * strain2b + 1.0d0)
+        r3 = r(5) * (fg(5) * strain3a + 1.0d0) + r(6) * (fg(6) * strain3b + 1.0d0)
+        r4 = r(7) * (fg(7) * strain4a + 1.0d0) + r(8) * (fg(8) * strain4b + 1.0d0)
+
+        ! Compute the output
+        x = 1.0d3 * ((r3 * r1 - r2 * r4) / ((r2 + r1) * r4 + (r2 + r1) * r3))
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Computes the output of a wheatstone bridge where two strain gages
+    !! are placed in series in each leg.
+    !!
+    !! @param[in] fg The gage factor of each strain gage [1a, 1b, ... 4a, 4b].
+    !! @param[in] r The resistance of each strain gage [1a, 1b, ... 4a, 4b].
+    !! @param[in] strain1a The strain in leg 1a of the bridge.
+    !! @param[in] strain1b The strain in leg 1b of the bridge.
+    !! @param[in] strain2a The strain in leg 2a of the bridge.
+    !! @param[in] strain2b The strain in leg 2b of the bridge.
+    !! @param[in] strain3a The strain in leg 3a of the bridge.
+    !! @param[in] strain3b The strain in leg 3b of the bridge.
+    !! @param[in] strain4a The strain in leg 4a of the bridge.
+    !! @param[in] strain4b The strain in leg 4b of the bridge.
+    !! @return The output of the bridge, in units of mV/V.
+    !!
+    !! @par Remarks
+    !! The construction of the wheatstone bridge is as follows.
+    !! @verbatim
+    !!             V(+)
+    !!    Leg 1b   /\  Leg 4b
+    !!            /  \
+    !!  Leg 1a   /    \  Leg 4a
+    !! Vout(-) _/      \_ Vout(+) 
+    !!  Leg 2b  \      / Leg 3b
+    !!           \    /
+    !!    Leg 2a  \  /   Leg 3a
+    !!             \/
+    !!            V(-)
+    !! @endverbatim
+    !!
+    !! @par
+    !! The bridge output is computed similarily to that of a traditional
+    !! wheatstone bridge, but the resistance of each leg requires treatment
+    !! of two strain gages in series.  The gage resistance in each leg
+    !! is as follows.
+    !! \f$ R_{eff,i} = f_{a,i} R_{a,i} \epsilon_{a,i} + R_{a,i} + 
+    !!  f_{b,i} R_{b,i} \epsilon_{b,i} + R_{b,i} \f$
+    pure function wheatstone_bridge_series_4(fg, r, strain1a, strain1b, &
+            strain2a, strain2b, strain3a, strain3b, strain4a, strain4b) &
+            result(x)
+        ! Arguments
+        real(real64), intent(in), dimension(8) :: fg, r
+        real(real64), intent(in), dimension(:) :: strain1a, strain1b, &
+            strain2a, strain2b, strain3a, strain3b, strain4a, strain4b
+        real(real64), allocatable, dimension(:) :: x
+
+        ! Local Variables
+        real(real64), allocatable, dimension(:) :: r1, r2, r3, r4
+
+        ! Compute the individual leg resistance values
+        r1 = r(1) * (fg(1) * strain1a + 1.0d0) + r(2) * (fg(2) * strain1b + 1.0d0)
+        r2 = r(3) * (fg(3) * strain2a + 1.0d0) + r(4) * (fg(4) * strain2b + 1.0d0)
+        r3 = r(5) * (fg(5) * strain3a + 1.0d0) + r(6) * (fg(6) * strain3b + 1.0d0)
+        r4 = r(7) * (fg(7) * strain4a + 1.0d0) + r(8) * (fg(8) * strain4b + 1.0d0)
 
         ! Compute the output
         x = 1.0d3 * ((r3 * r1 - r2 * r4) / ((r2 + r1) * r4 + (r2 + r1) * r3))
