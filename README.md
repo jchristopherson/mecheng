@@ -321,7 +321,7 @@ The above program produces the following plots.
 ![](images/fft_example_signal.png?raw=true)
 ![](images/fft_example_spectrum.png?raw=true)
 
-Notice, there is some leakage as the signal amplitudes aren't quite correct in the plot for the non-windowed data.  As is shown, this can be treated with windowing (shown), or using a data set length that would result in better frequency bin alignment (i.e. an integer power of two).
+Notice, there is some leakage as the signal amplitudes aren't quite correct in the plot for the non-windowed data.  As is shown, this can be treated with windowing.
 
 ## References
 1. Jazar, Reza N., "Theory of Applied Robotics."  New York: Springer, 2007.
@@ -330,3 +330,6 @@ Notice, there is some leakage as the signal amplitudes aren't quite correct in t
 ## Dependencies
 This library depends upon the following libraries.
 - [MODERN_FFTPACK](https://github.com/jlokimlin/modern_fftpack)
+
+## Documentation
+Documentation can be found [here](http://htmlpreview.github.io/?https://github.com/jchristopherson/mecheng/blob/master/doc/html/index.html)

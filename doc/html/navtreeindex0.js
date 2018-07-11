@@ -71,6 +71,8 @@ var NAVTREEINDEX0 =
 "interfacestrain_1_1wheatstone__bridge.html#a65b19a0d5bcb4e3a4e35d42a2d293d42":[1,0,3,0,1],
 "interfacestrain_1_1wheatstone__bridge.html#a8ea4982667c5020ec6097228815a866d":[1,0,3,0,2],
 "interfacestrain_1_1wheatstone__bridge__series.html":[1,0,3,1],
+"interfacestrain_1_1wheatstone__bridge__series.html#a018c34a84c489ee597147c8947bb4b4e":[1,0,3,1,2],
+"interfacestrain_1_1wheatstone__bridge__series.html#a6635d023a6021f3fe36384cb1273dbfa":[1,0,3,1,3],
 "interfacestrain_1_1wheatstone__bridge__series.html#a684f0d3742eb4a67f0272d0fe114ea07":[1,0,3,1,0],
 "interfacestrain_1_1wheatstone__bridge__series.html#a98a317c75c9bfbdbf38715dcaffb2f88":[1,0,3,1,1],
 "kinematics_8f90_source.html":[2,0,0,2],
