@@ -260,6 +260,17 @@ contains
     !!             \/
     !!            V(-)
     !! @endverbatim
+    !!
+    !! @par
+    !! The bridge output is computed similarily to that of a traditional
+    !! wheatstone bridge, but the resistance of each leg requires treatment
+    !! of two strain gages in series.  The gage resistance in each leg
+    !! is as follows.
+    !! \f$ R_{eff,i} = f_{a,i} R_{a,i} \epsilon_{a,i} + R_{a,i} + 
+    !!  f_{b,i} R_{b,i} \epsilon_{b,i} + R_{b,i} \f$
+    !! When the gage factor and nominal resistance is the same for each gage
+    !! the relationship simplifies to the following form.
+    !! \f$ R_{eff,i} = R_i (f_i (\epsilon_{a,i} + \epsilon_{b,i}) + 2) \f$
     pure function wheatstone_bridge_series_1(fg, strain1a, strain1b, &
             strain2a, strain2b, strain3a, strain3b, strain4a, strain4b) &
             result(x)
@@ -312,6 +323,17 @@ contains
     !!             \/
     !!            V(-)
     !! @endverbatim
+    !!
+    !! @par
+    !! The bridge output is computed similarily to that of a traditional
+    !! wheatstone bridge, but the resistance of each leg requires treatment
+    !! of two strain gages in series.  The gage resistance in each leg
+    !! is as follows.
+    !! \f$ R_{eff,i} = f_{a,i} R_{a,i} \epsilon_{a,i} + R_{a,i} + 
+    !!  f_{b,i} R_{b,i} \epsilon_{b,i} + R_{b,i} \f$
+    !! When the gage factor and nominal resistance is the same for each gage
+    !! the relationship simplifies to the following form.
+    !! \f$ R_{eff,i} = f_i R_i ((\epsilon_{a,i} + \epsilon_{b,i}) + 2) \f$
     pure function wheatstone_bridge_series_2(fg, strain1a, strain1b, &
             strain2a, strain2b, strain3a, strain3b, strain4a, strain4b) &
             result(x)
