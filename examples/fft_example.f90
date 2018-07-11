@@ -99,7 +99,6 @@ program example
 
     call d3%define_data(fWin, xWin)
     call d3%set_name("Magnitude (Windowed)")
-    call d3%set_use_auto_color(.false.)
     call d3%set_line_color(CLR_RED)
     call d3%set_line_width(1.0)
     call d3%set_line_style(LINE_DASH_DOTTED)
