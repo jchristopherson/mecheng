@@ -9,5 +9,6 @@ module constants
     implicit none
 
     !> @brief The parameter pi.
-    real(real64), parameter :: pi = 3.1415926535897932384626433832795d0
+    ! real(real64), parameter :: pi = 3.1415926535897932384626433832795d0
+    real(real64), parameter :: pi = acos(-1.0d0)
 end module
