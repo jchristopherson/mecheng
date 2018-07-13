@@ -1,5 +1,12 @@
 ! signals.f90
 
+! TO DO:
+! - Numerical Differntiation:
+!   - Fourier Approach: https://en.wikibooks.org/wiki/Parallel_Spectral_Numerical_Methods/Finding_Derivatives_using_Fourier_Spectral_Methods
+!       https://math.stackexchange.com/questions/740840/derivative-of-function-using-discrete-fourier-transform-matlab
+!       https://math.mit.edu/~stevenj/fft-deriv.pdf
+
+
 !> @brief \b signals
 !!
 !! @par Purpose
