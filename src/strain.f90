@@ -531,8 +531,8 @@ contains
     !! @par
     !! Where
     !! @par
-    !! \f$ R_{a,i} = R f_g (\epsilon_{a,i} + 1) \f$, and 
-    !! \f$ R_{b,i} = R f_g (\epsilon_{b,i} + 1) \f$.
+    !! \f$ R_{a,i} = R (f_g \epsilon_{a,i} + 1) \f$, and 
+    !! \f$ R_{b,i} = R (f_g \epsilon_{b,i} + 1) \f$.
     pure function wheatstone_bridge_parallel_1(fg, strain1a, strain1b, &
             strain2a, strain2b, strain3a, strain3b, strain4a, strain4b) &
             result(x)
@@ -546,14 +546,14 @@ contains
         real(real64) :: r1, r2, r3, r4, r1a, r1b, r2a, r2b, r3a, r3b, r4a, r4b
 
         ! Compute the individual leg resistance values
-        r1a = fg * (strain1a + 1.0d0)
-        r1b = fg * (strain1b + 1.0d0)
-        r2a = fg * (strain2a + 1.0d0)
-        r2b = fg * (strain2b + 1.0d0)
-        r3a = fg * (strain3a + 1.0d0)
-        r3b = fg * (strain3b + 1.0d0)
-        r4a = fg * (strain4a + 1.0d0)
-        r4b = fg * (strain4b + 1.0d0)
+        r1a = fg * strain1a + 1.0d0
+        r1b = fg * strain1b + 1.0d0
+        r2a = fg * strain2a + 1.0d0
+        r2b = fg * strain2b + 1.0d0
+        r3a = fg * strain3a + 1.0d0
+        r3b = fg * strain3b + 1.0d0
+        r4a = fg * strain4a + 1.0d0
+        r4b = fg * strain4b + 1.0d0
 
         r1 = r1a * r1b / (r1a + r1b)
         r2 = r2a * r2b / (r2a + r2b)
@@ -605,8 +605,8 @@ contains
     !! @par
     !! Where
     !! @par
-    !! \f$ R_{a,i} = R f_g (\epsilon_{a,i} + 1) \f$, and 
-    !! \f$ R_{b,i} = R f_g (\epsilon_{b,i} + 1) \f$.
+    !! \f$ R_{a,i} = R (f_g \epsilon_{a,i} + 1) \f$, and 
+    !! \f$ R_{b,i} = R (f_g \epsilon_{b,i} + 1) \f$.
     pure function wheatstone_bridge_parallel_2(fg, strain1a, strain1b, &
             strain2a, strain2b, strain3a, strain3b, strain4a, strain4b) &
             result(x)
@@ -621,14 +621,14 @@ contains
             r2a, r2b, r3a, r3b, r4a, r4b
 
         ! Compute the individual leg resistance values
-        r1a = fg * (strain1a + 1.0d0)
-        r1b = fg * (strain1b + 1.0d0)
-        r2a = fg * (strain2a + 1.0d0)
-        r2b = fg * (strain2b + 1.0d0)
-        r3a = fg * (strain3a + 1.0d0)
-        r3b = fg * (strain3b + 1.0d0)
-        r4a = fg * (strain4a + 1.0d0)
-        r4b = fg * (strain4b + 1.0d0)
+        r1a = fg * strain1a + 1.0d0
+        r1b = fg * strain1b + 1.0d0
+        r2a = fg * strain2a + 1.0d0
+        r2b = fg * strain2b + 1.0d0
+        r3a = fg * strain3a + 1.0d0
+        r3b = fg * strain3b + 1.0d0
+        r4a = fg * strain4a + 1.0d0
+        r4b = fg * strain4b + 1.0d0
 
         r1 = r1a * r1b / (r1a + r1b)
         r2 = r2a * r2b / (r2a + r2b)
@@ -680,8 +680,8 @@ contains
     !! @par
     !! Where
     !! @par
-    !! \f$ R_{a,i} = R f_g (\epsilon_{a,i} + 1) \f$, and 
-    !! \f$ R_{b,i} = R f_g (\epsilon_{b,i} + 1) \f$.
+    !! \f$ R_{a,i} = R (f_g \epsilon_{a,i} + 1) \f$, and 
+    !! \f$ R_{b,i} = R (f_g \epsilon_{b,i} + 1) \f$.
     pure function wheatstone_bridge_parallel_3(fg, r, strain1a, strain1b, &
             strain2a, strain2b, strain3a, strain3b, strain4a, strain4b) &
             result(x)
@@ -695,14 +695,14 @@ contains
         real(real64) :: r1, r2, r3, r4, r1a, r1b, r2a, r2b, r3a, r3b, r4a, r4b
 
         ! Compute the individual leg resistance values
-        r1a = fg * (strain1a + 1.0d0)
-        r1b = fg * (strain1b + 1.0d0)
-        r2a = fg * (strain2a + 1.0d0)
-        r2b = fg * (strain2b + 1.0d0)
-        r3a = fg * (strain3a + 1.0d0)
-        r3b = fg * (strain3b + 1.0d0)
-        r4a = fg * (strain4a + 1.0d0)
-        r4b = fg * (strain4b + 1.0d0)
+        r1a = r(1) * (fg(1) * strain1a + 1.0d0)
+        r1b = r(2) * (fg(2) * strain1b + 1.0d0)
+        r2a = r(3) * (fg(3) * strain2a + 1.0d0)
+        r2b = r(4) * (fg(4) * strain2b + 1.0d0)
+        r3a = r(5) * (fg(5) * strain3a + 1.0d0)
+        r3b = r(6) * (fg(6) * strain3b + 1.0d0)
+        r4a = r(7) * (fg(7) * strain4a + 1.0d0)
+        r4b = r(8) * (fg(8) * strain4b + 1.0d0)
 
         r1 = r1a * r1b / (r1a + r1b)
         r2 = r2a * r2b / (r2a + r2b)
@@ -754,8 +754,8 @@ contains
     !! @par
     !! Where
     !! @par
-    !! \f$ R_{a,i} = R f_g (\epsilon_{a,i} + 1) \f$, and 
-    !! \f$ R_{b,i} = R f_g (\epsilon_{b,i} + 1) \f$.
+    !! \f$ R_{a,i} = R (f_g \epsilon_{a,i} + 1) \f$, and 
+    !! \f$ R_{b,i} = R (f_g \epsilon_{b,i} + 1) \f$.
     pure function wheatstone_bridge_parallel_4(fg, r, strain1a, strain1b, &
             strain2a, strain2b, strain3a, strain3b, strain4a, strain4b) &
             result(x)
@@ -770,14 +770,14 @@ contains
             r2a, r2b, r3a, r3b, r4a, r4b
 
         ! Compute the individual leg resistance values
-        r1a = fg * (strain1a + 1.0d0)
-        r1b = fg * (strain1b + 1.0d0)
-        r2a = fg * (strain2a + 1.0d0)
-        r2b = fg * (strain2b + 1.0d0)
-        r3a = fg * (strain3a + 1.0d0)
-        r3b = fg * (strain3b + 1.0d0)
-        r4a = fg * (strain4a + 1.0d0)
-        r4b = fg * (strain4b + 1.0d0)
+        r1a = r(1) * (fg(1) * strain1a + 1.0d0)
+        r1b = r(2) * (fg(2) * strain1b + 1.0d0)
+        r2a = r(3) * (fg(3) * strain2a + 1.0d0)
+        r2b = r(4) * (fg(4) * strain2b + 1.0d0)
+        r3a = r(5) * (fg(5) * strain3a + 1.0d0)
+        r3b = r(6) * (fg(6) * strain3b + 1.0d0)
+        r4a = r(7) * (fg(7) * strain4a + 1.0d0)
+        r4b = r(8) * (fg(8) * strain4b + 1.0d0)
 
         r1 = r1a * r1b / (r1a + r1b)
         r2 = r2a * r2b / (r2a + r2b)
