@@ -10,6 +10,7 @@ module strain
     private
     public :: wheatstone_bridge
     public :: wheatstone_bridge_series
+    public :: wheatstone_bridge_parallel
     public :: strain_transform_x
     public :: strain_transform_y
     public :: strain_transfom_xy
@@ -31,6 +32,16 @@ module strain
         module procedure :: wheatstone_bridge_series_2
         module procedure :: wheatstone_bridge_series_3
         module procedure :: wheatstone_bridge_series_4
+    end interface
+
+! ------------------------------------------------------------------------------
+    !> @brief Computes the output of a wheatstone bridge when two gages are in
+    !! parallel in each leg of the bridge.
+    interface wheatstone_bridge_parallel
+        module procedure :: wheatstone_bridge_parallel_1
+        module procedure :: wheatstone_bridge_parallel_2
+        module procedure :: wheatstone_bridge_parallel_3
+        module procedure :: wheatstone_bridge_parallel_4
     end interface
 
 contains
@@ -474,6 +485,304 @@ contains
         r2 = r(3) * (fg(3) * strain2a + 1.0d0) + r(4) * (fg(4) * strain2b + 1.0d0)
         r3 = r(5) * (fg(5) * strain3a + 1.0d0) + r(6) * (fg(6) * strain3b + 1.0d0)
         r4 = r(7) * (fg(7) * strain4a + 1.0d0) + r(8) * (fg(8) * strain4b + 1.0d0)
+
+        ! Compute the output
+        x = 1.0d3 * ((r3 * r1 - r2 * r4) / ((r2 + r1) * r4 + (r2 + r1) * r3))
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Computes the output of a wheatstone bridge where two strain gages
+    !! are placed in parallel in each leg.
+    !!
+    !! @param[in] fg The gage factor of each strain gage.  Each gage is assigned
+    !!  the same gage factor.
+    !! @param[in] strain1a The strain in leg 1a of the bridge.
+    !! @param[in] strain1b The strain in leg 1b of the bridge.
+    !! @param[in] strain2a The strain in leg 2a of the bridge.
+    !! @param[in] strain2b The strain in leg 2b of the bridge.
+    !! @param[in] strain3a The strain in leg 3a of the bridge.
+    !! @param[in] strain3b The strain in leg 3b of the bridge.
+    !! @param[in] strain4a The strain in leg 4a of the bridge.
+    !! @param[in] strain4b The strain in leg 4b of the bridge.
+    !! @return The output of the bridge, in units of mV/V.
+    !!
+    !! @par Remarks
+    !! The construction of the wheatstone bridge is as follows.
+    !! @verbatim
+    !!             V(+)
+    !!    Leg 1b   /\  Leg 4b
+    !!            /  \
+    !!  Leg 1a   /    \  Leg 4a
+    !! Vout(-) _/      \_ Vout(+) 
+    !!  Leg 2b  \      / Leg 3b
+    !!           \    /
+    !!    Leg 2a  \  /   Leg 3a
+    !!             \/
+    !!            V(-)
+    !! @endverbatim
+    !!
+    !! @par
+    !! The bridge output is computed similarily to that of a traditional
+    !! wheatstone bridge, but the resistance of each leg requires treatment
+    !! of two strain gages in parallel.  The gage resistance in each leg
+    !! is as follows.
+    !! @par
+    !! \f$ R_{eff,i} = \frac{R_{a,i} R_{b,i}}{R_{a,i} + R_{b,i}}  \f$
+    !! @par
+    !! Where
+    !! @par
+    !! \f$ R_{a,i} = R f_g (\epsilon_{a,i} + 1) \f$, and 
+    !! \f$ R_{b,i} = R f_g (\epsilon_{b,i} + 1) \f$.
+    pure function wheatstone_bridge_parallel_1(fg, strain1a, strain1b, &
+            strain2a, strain2b, strain3a, strain3b, strain4a, strain4b) &
+            result(x)
+        ! Arguments
+        real(real64), intent(in) :: fg
+        real(real64), intent(in) :: strain1a, strain1b, &
+            strain2a, strain2b, strain3a, strain3b, strain4a, strain4b
+        real(real64) :: x
+
+        ! Local Variables
+        real(real64) :: r1, r2, r3, r4, r1a, r1b, r2a, r2b, r3a, r3b, r4a, r4b
+
+        ! Compute the individual leg resistance values
+        r1a = fg * (strain1a + 1.0d0)
+        r1b = fg * (strain1b + 1.0d0)
+        r2a = fg * (strain2a + 1.0d0)
+        r2b = fg * (strain2b + 1.0d0)
+        r3a = fg * (strain3a + 1.0d0)
+        r3b = fg * (strain3b + 1.0d0)
+        r4a = fg * (strain4a + 1.0d0)
+        r4b = fg * (strain4b + 1.0d0)
+
+        r1 = r1a * r1b / (r1a + r1b)
+        r2 = r2a * r2b / (r2a + r2b)
+        r3 = r3a * r3b / (r3a + r3b)
+        r4 = r4a * r4b / (r4a + r4b)
+
+        ! Compute the output
+        x = 1.0d3 * ((r3 * r1 - r2 * r4) / ((r2 + r1) * r4 + (r2 + r1) * r3))
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Computes the output of a wheatstone bridge where two strain gages
+    !! are placed in parallel in each leg.
+    !!
+    !! @param[in] fg The gage factor of each strain gage.  Each gage is assigned
+    !!  the same gage factor.
+    !! @param[in] strain1a The strain in leg 1a of the bridge.
+    !! @param[in] strain1b The strain in leg 1b of the bridge.
+    !! @param[in] strain2a The strain in leg 2a of the bridge.
+    !! @param[in] strain2b The strain in leg 2b of the bridge.
+    !! @param[in] strain3a The strain in leg 3a of the bridge.
+    !! @param[in] strain3b The strain in leg 3b of the bridge.
+    !! @param[in] strain4a The strain in leg 4a of the bridge.
+    !! @param[in] strain4b The strain in leg 4b of the bridge.
+    !! @return The output of the bridge, in units of mV/V.
+    !!
+    !! @par Remarks
+    !! The construction of the wheatstone bridge is as follows.
+    !! @verbatim
+    !!             V(+)
+    !!    Leg 1b   /\  Leg 4b
+    !!            /  \
+    !!  Leg 1a   /    \  Leg 4a
+    !! Vout(-) _/      \_ Vout(+) 
+    !!  Leg 2b  \      / Leg 3b
+    !!           \    /
+    !!    Leg 2a  \  /   Leg 3a
+    !!             \/
+    !!            V(-)
+    !! @endverbatim
+    !!
+    !! @par
+    !! The bridge output is computed similarily to that of a traditional
+    !! wheatstone bridge, but the resistance of each leg requires treatment
+    !! of two strain gages in parallel.  The gage resistance in each leg
+    !! is as follows.
+    !! @par
+    !! \f$ R_{eff,i} = \frac{R_{a,i} R_{b,i}}{R_{a,i} + R_{b,i}}  \f$
+    !! @par
+    !! Where
+    !! @par
+    !! \f$ R_{a,i} = R f_g (\epsilon_{a,i} + 1) \f$, and 
+    !! \f$ R_{b,i} = R f_g (\epsilon_{b,i} + 1) \f$.
+    pure function wheatstone_bridge_parallel_2(fg, strain1a, strain1b, &
+            strain2a, strain2b, strain3a, strain3b, strain4a, strain4b) &
+            result(x)
+        ! Arguments
+        real(real64), intent(in) :: fg
+        real(real64), intent(in), dimension(:) :: strain1a, strain1b, &
+            strain2a, strain2b, strain3a, strain3b, strain4a, strain4b
+        real(real64), allocatable, dimension(:) :: x
+
+        ! Local Variables
+        real(real64), allocatable, dimension(:) :: r1, r2, r3, r4, r1a, r1b, &
+            r2a, r2b, r3a, r3b, r4a, r4b
+
+        ! Compute the individual leg resistance values
+        r1a = fg * (strain1a + 1.0d0)
+        r1b = fg * (strain1b + 1.0d0)
+        r2a = fg * (strain2a + 1.0d0)
+        r2b = fg * (strain2b + 1.0d0)
+        r3a = fg * (strain3a + 1.0d0)
+        r3b = fg * (strain3b + 1.0d0)
+        r4a = fg * (strain4a + 1.0d0)
+        r4b = fg * (strain4b + 1.0d0)
+
+        r1 = r1a * r1b / (r1a + r1b)
+        r2 = r2a * r2b / (r2a + r2b)
+        r3 = r3a * r3b / (r3a + r3b)
+        r4 = r4a * r4b / (r4a + r4b)
+
+        ! Compute the output
+        x = 1.0d3 * ((r3 * r1 - r2 * r4) / ((r2 + r1) * r4 + (r2 + r1) * r3))
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Computes the output of a wheatstone bridge where two strain gages
+    !! are placed in parallel in each leg.
+    !!
+    !! @param[in] fg The gage factor of each strain gage [1a, 1b, ... 4a, 4b].
+    !! @param[in] r The resistance of each strain gage [1a, 1b, ... 4a, 4b].
+    !! @param[in] strain1a The strain in leg 1a of the bridge.
+    !! @param[in] strain1b The strain in leg 1b of the bridge.
+    !! @param[in] strain2a The strain in leg 2a of the bridge.
+    !! @param[in] strain2b The strain in leg 2b of the bridge.
+    !! @param[in] strain3a The strain in leg 3a of the bridge.
+    !! @param[in] strain3b The strain in leg 3b of the bridge.
+    !! @param[in] strain4a The strain in leg 4a of the bridge.
+    !! @param[in] strain4b The strain in leg 4b of the bridge.
+    !! @return The output of the bridge, in units of mV/V.
+    !!
+    !! @par Remarks
+    !! The construction of the wheatstone bridge is as follows.
+    !! @verbatim
+    !!             V(+)
+    !!    Leg 1b   /\  Leg 4b
+    !!            /  \
+    !!  Leg 1a   /    \  Leg 4a
+    !! Vout(-) _/      \_ Vout(+) 
+    !!  Leg 2b  \      / Leg 3b
+    !!           \    /
+    !!    Leg 2a  \  /   Leg 3a
+    !!             \/
+    !!            V(-)
+    !! @endverbatim
+    !!
+    !! @par
+    !! The bridge output is computed similarily to that of a traditional
+    !! wheatstone bridge, but the resistance of each leg requires treatment
+    !! of two strain gages in parallel.  The gage resistance in each leg
+    !! is as follows.
+    !! @par
+    !! \f$ R_{eff,i} = \frac{R_{a,i} R_{b,i}}{R_{a,i} + R_{b,i}}  \f$
+    !! @par
+    !! Where
+    !! @par
+    !! \f$ R_{a,i} = R f_g (\epsilon_{a,i} + 1) \f$, and 
+    !! \f$ R_{b,i} = R f_g (\epsilon_{b,i} + 1) \f$.
+    pure function wheatstone_bridge_parallel_3(fg, r, strain1a, strain1b, &
+            strain2a, strain2b, strain3a, strain3b, strain4a, strain4b) &
+            result(x)
+        ! Arguments
+        real(real64), intent(in), dimension(8) :: fg, r
+        real(real64), intent(in) :: strain1a, strain1b, &
+            strain2a, strain2b, strain3a, strain3b, strain4a, strain4b
+        real(real64) :: x
+
+        ! Local Variables
+        real(real64) :: r1, r2, r3, r4, r1a, r1b, r2a, r2b, r3a, r3b, r4a, r4b
+
+        ! Compute the individual leg resistance values
+        r1a = fg * (strain1a + 1.0d0)
+        r1b = fg * (strain1b + 1.0d0)
+        r2a = fg * (strain2a + 1.0d0)
+        r2b = fg * (strain2b + 1.0d0)
+        r3a = fg * (strain3a + 1.0d0)
+        r3b = fg * (strain3b + 1.0d0)
+        r4a = fg * (strain4a + 1.0d0)
+        r4b = fg * (strain4b + 1.0d0)
+
+        r1 = r1a * r1b / (r1a + r1b)
+        r2 = r2a * r2b / (r2a + r2b)
+        r3 = r3a * r3b / (r3a + r3b)
+        r4 = r4a * r4b / (r4a + r4b)
+
+        ! Compute the output
+        x = 1.0d3 * ((r3 * r1 - r2 * r4) / ((r2 + r1) * r4 + (r2 + r1) * r3))
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Computes the output of a wheatstone bridge where two strain gages
+    !! are placed in parallel in each leg.
+    !!
+    !! @param[in] fg The gage factor of each strain gage [1a, 1b, ... 4a, 4b].
+    !! @param[in] r The resistance of each strain gage [1a, 1b, ... 4a, 4b].
+    !! @param[in] strain1a The strain in leg 1a of the bridge.
+    !! @param[in] strain1b The strain in leg 1b of the bridge.
+    !! @param[in] strain2a The strain in leg 2a of the bridge.
+    !! @param[in] strain2b The strain in leg 2b of the bridge.
+    !! @param[in] strain3a The strain in leg 3a of the bridge.
+    !! @param[in] strain3b The strain in leg 3b of the bridge.
+    !! @param[in] strain4a The strain in leg 4a of the bridge.
+    !! @param[in] strain4b The strain in leg 4b of the bridge.
+    !! @return The output of the bridge, in units of mV/V.
+    !!
+    !! @par Remarks
+    !! The construction of the wheatstone bridge is as follows.
+    !! @verbatim
+    !!             V(+)
+    !!    Leg 1b   /\  Leg 4b
+    !!            /  \
+    !!  Leg 1a   /    \  Leg 4a
+    !! Vout(-) _/      \_ Vout(+) 
+    !!  Leg 2b  \      / Leg 3b
+    !!           \    /
+    !!    Leg 2a  \  /   Leg 3a
+    !!             \/
+    !!            V(-)
+    !! @endverbatim
+    !!
+    !! @par
+    !! The bridge output is computed similarily to that of a traditional
+    !! wheatstone bridge, but the resistance of each leg requires treatment
+    !! of two strain gages in parallel.  The gage resistance in each leg
+    !! is as follows.
+    !! @par
+    !! \f$ R_{eff,i} = \frac{R_{a,i} R_{b,i}}{R_{a,i} + R_{b,i}}  \f$
+    !! @par
+    !! Where
+    !! @par
+    !! \f$ R_{a,i} = R f_g (\epsilon_{a,i} + 1) \f$, and 
+    !! \f$ R_{b,i} = R f_g (\epsilon_{b,i} + 1) \f$.
+    pure function wheatstone_bridge_parallel_4(fg, r, strain1a, strain1b, &
+            strain2a, strain2b, strain3a, strain3b, strain4a, strain4b) &
+            result(x)
+        ! Arguments
+        real(real64), intent(in), dimension(8) :: fg, r
+        real(real64), intent(in), dimension(:) :: strain1a, strain1b, &
+            strain2a, strain2b, strain3a, strain3b, strain4a, strain4b
+        real(real64), allocatable, dimension(:) :: x
+
+        ! Local Variables
+        real(real64), allocatable, dimension(:) :: r1, r2, r3, r4, r1a, r1b, &
+            r2a, r2b, r3a, r3b, r4a, r4b
+
+        ! Compute the individual leg resistance values
+        r1a = fg * (strain1a + 1.0d0)
+        r1b = fg * (strain1b + 1.0d0)
+        r2a = fg * (strain2a + 1.0d0)
+        r2b = fg * (strain2b + 1.0d0)
+        r3a = fg * (strain3a + 1.0d0)
+        r3b = fg * (strain3b + 1.0d0)
+        r4a = fg * (strain4a + 1.0d0)
+        r4b = fg * (strain4b + 1.0d0)
+
+        r1 = r1a * r1b / (r1a + r1b)
+        r2 = r2a * r2b / (r2a + r2b)
+        r3 = r3a * r3b / (r3a + r3b)
+        r4 = r4a * r4b / (r4a + r4b)
 
         ! Compute the output
         x = 1.0d3 * ((r3 * r1 - r2 * r4) / ((r2 + r1) * r4 + (r2 + r1) * r3))
