@@ -19,6 +19,10 @@ target_link_libraries(fft_example mecheng fplot)
 add_executable(signals_example signals_example.f90)
 target_link_libraries(signals_example mecheng fplot)
 
+# DIFFERENTIATION EXAMPLE
+add_executable(diff_example diff_example.f90)
+target_link_libraries(diff_example mecheng fplot)
+
 # ------------------------------------------------------------------------------
 if (WIN32)
     # Copy shared libraries necessary to generate plots to the runtime directory

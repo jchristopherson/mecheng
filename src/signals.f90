@@ -2,9 +2,7 @@
 
 ! TO DO:
 ! - Numerical Differntiation:
-!   - Fourier Approach: https://en.wikibooks.org/wiki/Parallel_Spectral_Numerical_Methods/Finding_Derivatives_using_Fourier_Spectral_Methods
-!       https://math.stackexchange.com/questions/740840/derivative-of-function-using-discrete-fourier-transform-matlab
-!       https://math.mit.edu/~stevenj/fft-deriv.pdf
+
 
 
 !> @brief \b signals
@@ -41,6 +39,7 @@ module signals
     public :: buffer
     public :: signal_magnitude
     public :: frequencies
+    public :: fourier_diff
 
 ! ******************************************************************************
 ! GENERAL INTERFACES
@@ -370,6 +369,29 @@ interface
         integer(int32), intent(in) :: npts
         real(real64), allocatable, dimension(:,:) :: y
     end function
+end interface
+
+! ******************************************************************************
+! SIGNALS_DIFF.F90
+! ------------------------------------------------------------------------------
+interface
+    !> @brief Computes the derivative of a data set by utilizing its Fourier
+    !! transform.  Notice, this routine does expect the signal is periodic at
+    !! it's boundaries.  For nonperiodic signals this routine will give 
+    !! erroneous results.  Additionally, it is assumed that the data is
+    !! sampled over equal intervals.
+    !!
+    !! @param[in] a The lower limit of the sample region.
+    !! @param[in] b The upper limit of the sample region.
+    !! @param[in] y An N-element array containing the signal.
+    !! @return An N-element array containing the derivative of @p y with respect
+    !!  to the independent variable bounded by @p a and @p b.
+    module function fourier_diff(a, b, y) result(dydx)
+        real(real64), intent(in) :: a, b
+        real(real64), intent(in), dimension(:) :: y
+        real(real64), dimension(size(y)) :: dydx
+    end function
+
 end interface
 
 end module
