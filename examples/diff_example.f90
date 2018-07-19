@@ -14,9 +14,9 @@ program example
     
     ! Local Variables
     integer(int32) :: i
-    real(real64) :: x(n), y(n), dydx(n), ans(n), dx
+    real(real64) :: x(n), y(n), dydx(n), ans(n), d2ydx2(n), dx
     type(plot_2d) :: plt
-    type(plot_data_2d) :: d1, d2
+    type(plot_data_2d) :: d1, d2, d3
     class(legend), pointer :: lgnd
 
     ! Initialization
@@ -36,8 +36,9 @@ program example
     call lgnd%set_vertical_position(LEGEND_BOTTOM)
     call lgnd%set_draw_border(.false.)
 
-    ! Compute the derivative
+    ! Compute the derivatives
     dydx = fourier_diff(a, b, y)
+    d2ydx2 = fourier_diff2(a, b, y)
 
     ! Plot the results
     call d1%set_name("Fourier")
@@ -50,7 +51,14 @@ program example
     call d2%set_line_color(CLR_RED)
     call d2%define_data(x, ans)
 
+    call d3%set_name("2nd Derivative")
+    call d3%set_line_style(LINE_DASH_DOTTED)
+    call d3%set_line_width(2.0)
+    call d3%set_line_color(CLR_GREEN)
+    call d3%define_data(x, d2ydx2)
+
     call plt%push(d1)
     call plt%push(d2)
+    call plt%push(d3)
     call plt%draw()
 end program

@@ -40,6 +40,7 @@ module signals
     public :: signal_magnitude
     public :: frequencies
     public :: fourier_diff
+    public :: fourier_diff2
 
 ! ******************************************************************************
 ! GENERAL INTERFACES
@@ -392,6 +393,22 @@ interface
         real(real64), dimension(size(y)) :: dydx
     end function
 
+    !> @brief Computes the second derivative of a data set by utilizing its 
+    !! Fourier transform.  Notice, this routine does expect the signal is 
+    !! periodic at it's boundaries.  For nonperiodic signals this routine will 
+    !! give erroneous results.  Additionally, it is assumed that the data is
+    !! sampled over equal intervals.
+    !!
+    !! @param[in] a The lower limit of the sample region.
+    !! @param[in] b The upper limit of the sample region.
+    !! @param[in] y An N-element array containing the signal.
+    !! @return An N-element array containing the second derivative of @p y with
+    !!  respect to the independent variable bounded by @p a and @p b.
+    module function fourier_diff2(a, b, y) result(d2ydx2)
+        real(real64), intent(in) :: a, b
+        real(real64), intent(in), dimension(:) :: y
+        real(real64), dimension(size(y)) :: d2ydx2
+    end function
 end interface
 
 end module
