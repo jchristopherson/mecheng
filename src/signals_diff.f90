@@ -93,4 +93,33 @@ contains
     end function
 
 ! ------------------------------------------------------------------------------
+    !> @brief Computes the derivative of a signal via finite differences.  A
+    !! forward difference is used to step into the problem, a central difference
+    !! is used through the middle section, and a backward difference is used to
+    !! step out of the problem.  Notice, this technique is highly susceptable
+    !! to noise in the signal.
+    !!
+    !! @param[in] x An N-element array containing the values of the independent
+    !!  variable at which the signal was sampled.
+    !! @param[in] y An N-element array containing the signal.
+    !! @return An N-element array containing the derivative.
+    module function finite_diff(x, y) result(dydx)
+        ! Arguments
+        real(real64), intent(in), dimension(:) :: x, y
+        real(real64), dimension(size(y)) :: dydx
+
+        ! Local Variables
+        integer(int32) :: n
+
+        ! Initialization
+        n = min(size(x), size(y))
+
+        ! Process
+        dydx(1) = (y(2) - y(1)) / (x(2) - x(1))
+        do i = 2, n - 1
+            dydx(i) = (y(i+1) - y(i-1)) / (x(i+1) - x(i-1))
+        end do
+        dydx(n) = (y(n) - y(n-1)) / (x(n) - x(n-1))
+    end function
+
 end submodule

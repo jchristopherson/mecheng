@@ -41,6 +41,7 @@ module signals
     public :: frequencies
     public :: fourier_diff
     public :: fourier_diff2
+    public :: finite_diff
 
 ! ******************************************************************************
 ! GENERAL INTERFACES
@@ -408,6 +409,21 @@ interface
         real(real64), intent(in) :: a, b
         real(real64), intent(in), dimension(:) :: y
         real(real64), dimension(size(y)) :: d2ydx2
+    end function
+
+    !> @brief Computes the derivative of a signal via finite differences.  A
+    !! forward difference is used to step into the problem, a central difference
+    !! is used through the middle section, and a backward difference is used to
+    !! step out of the problem.  Notice, this technique is highly susceptable
+    !! to noise in the signal.
+    !!
+    !! @param[in] x An N-element array containing the values of the independent
+    !!  variable at which the signal was sampled.
+    !! @param[in] y An N-element array containing the signal.
+    !! @return An N-element array containing the derivative.
+    module function finite_diff(x, y) result(dydx)
+        real(real64), intent(in), dimension(:) :: x, y
+        real(real64), dimension(size(y)) :: dydx
     end function
 end interface
 
