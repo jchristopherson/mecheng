@@ -14,9 +14,9 @@ program example
     
     ! Local Variables
     integer(int32) :: i
-    real(real64) :: x(n), y(n), dydx(n), ans(n), d2ydx2(n), dx
+    real(real64) :: x(n), y(n), dydx(n), ans(n), d2ydx2(n), dx, fdydx(n)
     type(plot_2d) :: plt
-    type(plot_data_2d) :: d1, d2, d3
+    type(plot_data_2d) :: d1, d2, d3, d4
     class(legend), pointer :: lgnd
 
     ! Initialization
@@ -39,6 +39,7 @@ program example
     ! Compute the derivatives
     dydx = fourier_diff(a, b, y)
     d2ydx2 = fourier_diff2(a, b, y)
+    fdydx = finite_diff(x, y)
 
     ! Plot the results
     call d1%set_name("Fourier")
@@ -56,9 +57,16 @@ program example
     call d3%set_line_width(2.0)
     call d3%set_line_color(CLR_GREEN)
     call d3%define_data(x, d2ydx2)
+    
+    call d4%set_name("Finite Difference")
+    call d4%set_line_style(LINE_DOTTED)
+    call d4%set_line_width(3.0)
+    call d4%set_line_color(CLR_BLACK)
+    call d4%define_data(x, fdydx)
 
     call plt%push(d1)
     call plt%push(d2)
     call plt%push(d3)
+    call plt%push(d4)
     call plt%draw()
 end program
