@@ -1,7 +1,7 @@
 ! signals.f90
 
 ! TO DO:
-! - Numerical Differntiation:
+! - Numerical Integration:
 
 
 
@@ -188,6 +188,28 @@ module signals
 interface signal_magnitude
     module procedure :: signal_magnitude_win
     module procedure :: signal_magnitude_no_win
+end interface
+
+!> @brief Computes the derivative of a data set by utilizing its Fourier
+!! transform.
+interface fourier_diff
+    module procedure :: fourier_diff_a
+    module procedure :: fourier_diff_b
+    module procedure :: fourier_diff_c
+end interface
+
+!> @brief Computes the second derivative of a data set by utilizing its 
+!! Fourier transform.
+interface fourier_diff2
+    module procedure :: fourier_diff2_a
+    module procedure :: fourier_diff2_b
+    module procedure :: fourier_diff2_c
+end interface
+
+!> @brief Computes the derivative of a signal via finite differences.
+interface finite_diff
+    module procedure :: finite_diff_a
+    module procedure :: finite_diff_b
 end interface
 
 ! ******************************************************************************
@@ -596,8 +618,181 @@ interface
     !! @endcode
     !! The above program produces the following output.
     !! @image html fourier_diff_example.png
-    module function fourier_diff(a, b, y) result(dydx)
+    module function fourier_diff_a(a, b, y) result(dydx)
         real(real64), intent(in) :: a, b
+        real(real64), intent(in), dimension(:) :: y
+        real(real64), dimension(size(y)) :: dydx
+    end function
+
+    !> @brief Computes the derivative of a data set by utilizing its Fourier
+    !! transform.  Notice, this routine does expect the signal is periodic at
+    !! it's boundaries.  For nonperiodic signals this routine will give 
+    !! erroneous results.  Additionally, it is assumed that the data is
+    !! sampled over equal intervals.
+    !!
+    !! @param[in] x An N-element array containing the values of the independent
+    !!  variable at which the signal was sampled.  It is assumed that the signal
+    !!  is sampled at equal increments.
+    !! @param[in] y An N-element array containing the signal.
+    !! @return An N-element array containing the derivative of @p y with respect
+    !!  to the independent variable bounded by @p a and @p b.
+    !!
+    !! @par Example
+    !! The following example illustrates how to compute the first and second
+    !! derivatives of a periodic signal.
+    !! @code{.f90}
+    !! program example
+    !!     use iso_fortran_env
+    !!     use fplot_core
+    !!     use signals
+    !!     use constants
+    !!     implicit none
+    !!
+    !!     ! Parameters
+    !!     integer(int32), parameter :: n = 2048
+    !!     real(real64), parameter :: a = 0.0d0
+    !!     real(real64), parameter :: b = 4.0d0 * pi
+    !!
+    !!     ! Local Variables
+    !!     integer(int32) :: i
+    !!     real(real64) :: x(n), y(n), dydx(n), ans(n), d2ydx2(n), dx
+    !!     type(plot_2d) :: plt
+    !!     type(plot_data_2d) :: d1, d2, d3
+    !!     class(legend), pointer :: lgnd
+    !!
+    !!     ! Initialization
+    !!     dx = (b - a) / n
+    !!     do i = 1, n
+    !!         x(i) = a + dx * (i - 1.0d0)
+    !!     end do
+    !!     y = sin(x)
+    !!     ans = cos(x)
+    !!     call plt%initialize()
+    !!     call plt%set_font_size(14)
+    !!
+    !!     lgnd => plt%get_legend()
+    !!     call lgnd%set_is_visible(.true.)
+    !!     call lgnd%set_draw_inside_axes(.false.)
+    !!     call lgnd%set_horizontal_position(LEGEND_CENTER)
+    !!     call lgnd%set_vertical_position(LEGEND_BOTTOM)
+    !!     call lgnd%set_draw_border(.false.)
+    !!
+    !!     ! Compute the derivatives
+    !!     dydx = fourier_diff(x, y)
+    !!     d2ydx2 = fourier_diff2(x, y)
+    !!
+    !!     ! Plot the results
+    !!     call d1%set_name("Fourier")
+    !!     call d1%set_line_width(2.0)
+    !!     call d1%define_data(x, dydx)
+    !!
+    !!     call d2%set_name("Analytic")
+    !!     call d2%set_line_style(LINE_DASHED)
+    !!     call d2%set_line_width(3.0)
+    !!     call d2%set_line_color(CLR_RED)
+    !!     call d2%define_data(x, ans)
+    !!
+    !!     call d3%set_name("2nd Derivative")
+    !!     call d3%set_line_style(LINE_DASH_DOTTED)
+    !!     call d3%set_line_width(2.0)
+    !!     call d3%set_line_color(CLR_GREEN)
+    !!     call d3%define_data(x, d2ydx2)
+    !!
+    !!     call plt%push(d1)
+    !!     call plt%push(d2)
+    !!     call plt%push(d3)
+    !!     call plt%draw()
+    !! end program
+    !! @endcode
+    !! The above program produces the following output.
+    !! @image html fourier_diff_example.png
+    module function fourier_diff_b(x, y) result(dydx)
+        real(real64), intent(in), dimension(:) :: x, y
+        real(real64), dimension(size(y)) :: dydx
+    end function
+
+    !> @brief Computes the derivative of a data set by utilizing its Fourier
+    !! transform.  Notice, this routine does expect the signal is periodic at
+    !! it's boundaries.  For nonperiodic signals this routine will give 
+    !! erroneous results.  Additionally, it is assumed that the data is
+    !! sampled over equal intervals.
+    !!
+    !! @param[in] dx The sample interval.
+    !! @param[in] y An N-element array containing the signal.
+    !! @return An N-element array containing the derivative of @p y with respect
+    !!  to the independent variable bounded by @p a and @p b.
+    !!
+    !! @par Example
+    !! The following example illustrates how to compute the first and second
+    !! derivatives of a periodic signal.
+    !! @code{.f90}
+    !! program example
+    !!     use iso_fortran_env
+    !!     use fplot_core
+    !!     use signals
+    !!     use constants
+    !!     implicit none
+    !!
+    !!     ! Parameters
+    !!     integer(int32), parameter :: n = 2048
+    !!     real(real64), parameter :: a = 0.0d0
+    !!     real(real64), parameter :: b = 4.0d0 * pi
+    !!
+    !!     ! Local Variables
+    !!     integer(int32) :: i
+    !!     real(real64) :: x(n), y(n), dydx(n), ans(n), d2ydx2(n), dx
+    !!     type(plot_2d) :: plt
+    !!     type(plot_data_2d) :: d1, d2, d3
+    !!     class(legend), pointer :: lgnd
+    !!
+    !!     ! Initialization
+    !!     dx = (b - a) / n
+    !!     do i = 1, n
+    !!         x(i) = a + dx * (i - 1.0d0)
+    !!     end do
+    !!     y = sin(x)
+    !!     ans = cos(x)
+    !!     call plt%initialize()
+    !!     call plt%set_font_size(14)
+    !!
+    !!     lgnd => plt%get_legend()
+    !!     call lgnd%set_is_visible(.true.)
+    !!     call lgnd%set_draw_inside_axes(.false.)
+    !!     call lgnd%set_horizontal_position(LEGEND_CENTER)
+    !!     call lgnd%set_vertical_position(LEGEND_BOTTOM)
+    !!     call lgnd%set_draw_border(.false.)
+    !!
+    !!     ! Compute the derivatives
+    !!     dydx = fourier_diff(dx, y)
+    !!     d2ydx2 = fourier_diff2(dx, y)
+    !!
+    !!     ! Plot the results
+    !!     call d1%set_name("Fourier")
+    !!     call d1%set_line_width(2.0)
+    !!     call d1%define_data(x, dydx)
+    !!
+    !!     call d2%set_name("Analytic")
+    !!     call d2%set_line_style(LINE_DASHED)
+    !!     call d2%set_line_width(3.0)
+    !!     call d2%set_line_color(CLR_RED)
+    !!     call d2%define_data(x, ans)
+    !!
+    !!     call d3%set_name("2nd Derivative")
+    !!     call d3%set_line_style(LINE_DASH_DOTTED)
+    !!     call d3%set_line_width(2.0)
+    !!     call d3%set_line_color(CLR_GREEN)
+    !!     call d3%define_data(x, d2ydx2)
+    !!
+    !!     call plt%push(d1)
+    !!     call plt%push(d2)
+    !!     call plt%push(d3)
+    !!     call plt%draw()
+    !! end program
+    !! @endcode
+    !! The above program produces the following output.
+    !! @image html fourier_diff_example.png
+    module function fourier_diff_c(dx, y) result(dydx)
+        real(real64), intent(in) :: dx
         real(real64), intent(in), dimension(:) :: y
         real(real64), dimension(size(y)) :: dydx
     end function
@@ -683,11 +878,185 @@ interface
     !! @endcode
     !! The above program produces the following output.
     !! @image html fourier_diff_example.png
-    module function fourier_diff2(a, b, y) result(d2ydx2)
+    module function fourier_diff2_a(a, b, y) result(d2ydx2)
         real(real64), intent(in) :: a, b
         real(real64), intent(in), dimension(:) :: y
         real(real64), dimension(size(y)) :: d2ydx2
     end function
+
+    !> @brief Computes the second derivative of a data set by utilizing its 
+    !! Fourier transform.  Notice, this routine does expect the signal is 
+    !! periodic at it's boundaries.  For nonperiodic signals this routine will 
+    !! give erroneous results.  Additionally, it is assumed that the data is
+    !! sampled over equal intervals.
+    !!
+    !! @param[in] x An N-element array containing the values of the independent
+    !!  variable at which the signal was sampled.  It is assumed that the signal
+    !!  is sampled at equal increments.
+    !! @param[in] y An N-element array containing the signal.
+    !! @return An N-element array containing the second derivative of @p y with
+    !!  respect to the independent variable bounded by @p a and @p b.
+    !!
+    !! @par Example
+    !! The following example illustrates how to compute the first and second
+    !! derivatives of a periodic signal.
+    !! @code{.f90}
+    !! program example
+    !!     use iso_fortran_env
+    !!     use fplot_core
+    !!     use signals
+    !!     use constants
+    !!     implicit none
+    !!
+    !!     ! Parameters
+    !!     integer(int32), parameter :: n = 2048
+    !!     real(real64), parameter :: a = 0.0d0
+    !!     real(real64), parameter :: b = 4.0d0 * pi
+    !!
+    !!     ! Local Variables
+    !!     integer(int32) :: i
+    !!     real(real64) :: x(n), y(n), dydx(n), ans(n), d2ydx2(n), dx
+    !!     type(plot_2d) :: plt
+    !!     type(plot_data_2d) :: d1, d2, d3
+    !!     class(legend), pointer :: lgnd
+    !!
+    !!     ! Initialization
+    !!     dx = (b - a) / n
+    !!     do i = 1, n
+    !!         x(i) = a + dx * (i - 1.0d0)
+    !!     end do
+    !!     y = sin(x)
+    !!     ans = cos(x)
+    !!     call plt%initialize()
+    !!     call plt%set_font_size(14)
+    !!
+    !!     lgnd => plt%get_legend()
+    !!     call lgnd%set_is_visible(.true.)
+    !!     call lgnd%set_draw_inside_axes(.false.)
+    !!     call lgnd%set_horizontal_position(LEGEND_CENTER)
+    !!     call lgnd%set_vertical_position(LEGEND_BOTTOM)
+    !!     call lgnd%set_draw_border(.false.)
+    !!
+    !!     ! Compute the derivatives
+    !!     dydx = fourier_diff(x, y)
+    !!     d2ydx2 = fourier_diff2(x, y)
+    !!
+    !!     ! Plot the results
+    !!     call d1%set_name("Fourier")
+    !!     call d1%set_line_width(2.0)
+    !!     call d1%define_data(x, dydx)
+    !!
+    !!     call d2%set_name("Analytic")
+    !!     call d2%set_line_style(LINE_DASHED)
+    !!     call d2%set_line_width(3.0)
+    !!     call d2%set_line_color(CLR_RED)
+    !!     call d2%define_data(x, ans)
+    !!
+    !!     call d3%set_name("2nd Derivative")
+    !!     call d3%set_line_style(LINE_DASH_DOTTED)
+    !!     call d3%set_line_width(2.0)
+    !!     call d3%set_line_color(CLR_GREEN)
+    !!     call d3%define_data(x, d2ydx2)
+    !!
+    !!     call plt%push(d1)
+    !!     call plt%push(d2)
+    !!     call plt%push(d3)
+    !!     call plt%draw()
+    !! end program
+    !! @endcode
+    !! The above program produces the following output.
+    !! @image html fourier_diff_example.png
+    module function fourier_diff2_b(x, y) result(d2ydx2)
+        real(real64), intent(in), dimension(:) :: x, y
+        real(real64), dimension(size(y)) :: d2ydx2
+    end function
+
+    !> @brief Computes the second derivative of a data set by utilizing its 
+    !! Fourier transform.  Notice, this routine does expect the signal is 
+    !! periodic at it's boundaries.  For nonperiodic signals this routine will 
+    !! give erroneous results.  Additionally, it is assumed that the data is
+    !! sampled over equal intervals.
+    !!
+    !! @param[in] dx The sample interval.
+    !! @param[in] y An N-element array containing the signal.
+    !! @return An N-element array containing the second derivative of @p y with
+    !!  respect to the independent variable bounded by @p a and @p b.
+    !!
+    !! @par Example
+    !! The following example illustrates how to compute the first and second
+    !! derivatives of a periodic signal.
+    !! @code{.f90}
+    !! program example
+    !!     use iso_fortran_env
+    !!     use fplot_core
+    !!     use signals
+    !!     use constants
+    !!     implicit none
+    !!
+    !!     ! Parameters
+    !!     integer(int32), parameter :: n = 2048
+    !!     real(real64), parameter :: a = 0.0d0
+    !!     real(real64), parameter :: b = 4.0d0 * pi
+    !!
+    !!     ! Local Variables
+    !!     integer(int32) :: i
+    !!     real(real64) :: x(n), y(n), dydx(n), ans(n), d2ydx2(n), dx
+    !!     type(plot_2d) :: plt
+    !!     type(plot_data_2d) :: d1, d2, d3
+    !!     class(legend), pointer :: lgnd
+    !!
+    !!     ! Initialization
+    !!     dx = (b - a) / n
+    !!     do i = 1, n
+    !!         x(i) = a + dx * (i - 1.0d0)
+    !!     end do
+    !!     y = sin(x)
+    !!     ans = cos(x)
+    !!     call plt%initialize()
+    !!     call plt%set_font_size(14)
+    !!
+    !!     lgnd => plt%get_legend()
+    !!     call lgnd%set_is_visible(.true.)
+    !!     call lgnd%set_draw_inside_axes(.false.)
+    !!     call lgnd%set_horizontal_position(LEGEND_CENTER)
+    !!     call lgnd%set_vertical_position(LEGEND_BOTTOM)
+    !!     call lgnd%set_draw_border(.false.)
+    !!
+    !!     ! Compute the derivatives
+    !!     dydx = fourier_diff(dx, y)
+    !!     d2ydx2 = fourier_diff2(dx, y)
+    !!
+    !!     ! Plot the results
+    !!     call d1%set_name("Fourier")
+    !!     call d1%set_line_width(2.0)
+    !!     call d1%define_data(x, dydx)
+    !!
+    !!     call d2%set_name("Analytic")
+    !!     call d2%set_line_style(LINE_DASHED)
+    !!     call d2%set_line_width(3.0)
+    !!     call d2%set_line_color(CLR_RED)
+    !!     call d2%define_data(x, ans)
+    !!
+    !!     call d3%set_name("2nd Derivative")
+    !!     call d3%set_line_style(LINE_DASH_DOTTED)
+    !!     call d3%set_line_width(2.0)
+    !!     call d3%set_line_color(CLR_GREEN)
+    !!     call d3%define_data(x, d2ydx2)
+    !!
+    !!     call plt%push(d1)
+    !!     call plt%push(d2)
+    !!     call plt%push(d3)
+    !!     call plt%draw()
+    !! end program
+    !! @endcode
+    !! The above program produces the following output.
+    !! @image html fourier_diff_example.png
+    module function fourier_diff2_c(dx, y) result(d2ydx2)
+        real(real64), intent(in) :: dx
+        real(real64), intent(in), dimension(:) :: y
+        real(real64), dimension(size(y)) :: d2ydx2
+    end function
+
 
     !> @brief Computes the derivative of a signal via finite differences.  A
     !! forward difference is used to step into the problem, a central difference
@@ -699,8 +1068,23 @@ interface
     !!  variable at which the signal was sampled.
     !! @param[in] y An N-element array containing the signal.
     !! @return An N-element array containing the derivative.
-    module function finite_diff(x, y) result(dydx)
+    module function finite_diff_a(x, y) result(dydx)
         real(real64), intent(in), dimension(:) :: x, y
+        real(real64), dimension(size(y)) :: dydx
+    end function
+
+    !> @brief Computes the derivative of a signal via finite differences.  A
+    !! forward difference is used to step into the problem, a central difference
+    !! is used through the middle section, and a backward difference is used to
+    !! step out of the problem.  Notice, this technique is highly susceptable
+    !! to noise in the signal.
+    !!
+    !! @param[in] dx The sample interval.
+    !! @param[in] y An N-element array containing the signal.
+    !! @return An N-element array containing the derivative.
+    module function finite_diff_b(dx, y) result(dydx)
+        real(real64), intent(in) :: dx
+        real(real64), intent(in), dimension(:) :: y
         real(real64), dimension(size(y)) :: dydx
     end function
 end interface

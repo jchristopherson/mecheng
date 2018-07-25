@@ -37,9 +37,9 @@ program example
     call lgnd%set_draw_border(.false.)
 
     ! Compute the derivatives
-    dydx = fourier_diff(a, b, y)
-    d2ydx2 = fourier_diff2(a, b, y)
-    fdydx = finite_diff(x, y)
+    dydx = fourier_diff(dx, y)
+    d2ydx2 = fourier_diff2(dx, y)
+    fdydx = finite_diff(dx, y)
 
     ! Plot the results
     call d1%set_name("Fourier")

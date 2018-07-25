@@ -7,7 +7,7 @@ contains
 !   - https://en.wikibooks.org/wiki/Parallel_Spectral_Numerical_Methods/Finding_Derivatives_using_Fourier_Spectral_Methods
 !   - https://math.stackexchange.com/questions/740840/derivative-of-function-using-discrete-fourier-transform-matlab
 !   - https://math.mit.edu/~stevenj/fft-deriv.pdf
-    module function fourier_diff(a, b, y) result(dydx)
+    module function fourier_diff_a(a, b, y) result(dydx)
         use constants
 
         ! Arguments
@@ -50,7 +50,42 @@ contains
     end function
 
 ! ------------------------------------------------------------------------------
-    module function fourier_diff2(a, b, y) result(d2ydx2)
+    module function fourier_diff_b(x, y) result(dydx)
+        ! Arguments
+        real(real64), intent(in), dimension(:) :: x, y
+        real(real64), dimension(size(y)) :: dydx
+
+        ! Local Variables
+        real(real64) :: dx, a, b
+
+        ! Process
+        dx = x(2) - x(1)
+        a = x(1)
+        b = x(size(x)) + dx
+        dydx = fourier_diff_a(a, b, y)
+    end function
+
+! ------------------------------------------------------------------------------
+    module function fourier_diff_c(dx, y) result(dydx)
+        ! Arguments
+        real(real64), intent(in) :: dx
+        real(real64), intent(in), dimension(:) :: y
+        real(real64), dimension(size(y)) :: dydx
+
+        ! Local Variables
+        real(real64) :: xMax, a, b
+        integer(int32) :: n
+
+        ! Process
+        n = size(y)
+        a = 0.0d0
+        xMax = dx * (n - 1.0d0)
+        b = xMax + dx
+        dydx = fourier_diff_a(a, b, y)
+    end function
+
+! ------------------------------------------------------------------------------
+    module function fourier_diff2_a(a, b, y) result(d2ydx2)
         use constants
 
         ! Arguments
@@ -93,17 +128,42 @@ contains
     end function
 
 ! ------------------------------------------------------------------------------
-    !> @brief Computes the derivative of a signal via finite differences.  A
-    !! forward difference is used to step into the problem, a central difference
-    !! is used through the middle section, and a backward difference is used to
-    !! step out of the problem.  Notice, this technique is highly susceptable
-    !! to noise in the signal.
-    !!
-    !! @param[in] x An N-element array containing the values of the independent
-    !!  variable at which the signal was sampled.
-    !! @param[in] y An N-element array containing the signal.
-    !! @return An N-element array containing the derivative.
-    module function finite_diff(x, y) result(dydx)
+    module function fourier_diff2_b(x, y) result(dydx)
+        ! Arguments
+        real(real64), intent(in), dimension(:) :: x, y
+        real(real64), dimension(size(y)) :: dydx
+
+        ! Local Variables
+        real(real64) :: dx, a, b
+
+        ! Process
+        dx = x(2) - x(1)
+        a = x(1)
+        b = x(size(x)) + dx
+        dydx = fourier_diff2_a(a, b, y)
+    end function
+
+! ------------------------------------------------------------------------------
+    module function fourier_diff2_c(dx, y) result(dydx)
+        ! Arguments
+        real(real64), intent(in) :: dx
+        real(real64), intent(in), dimension(:) :: y
+        real(real64), dimension(size(y)) :: dydx
+
+        ! Local Variables
+        real(real64) :: xMax, a, b
+        integer(int32) :: n
+
+        ! Process
+        n = size(y)
+        a = 0.0d0
+        xMax = dx * (n - 1.0d0)
+        b = xMax + dx
+        dydx = fourier_diff2_a(a, b, y)
+    end function
+
+! ------------------------------------------------------------------------------
+    module function finite_diff_a(x, y) result(dydx)
         ! Arguments
         real(real64), intent(in), dimension(:) :: x, y
         real(real64), dimension(size(y)) :: dydx
@@ -120,6 +180,29 @@ contains
             dydx(i) = (y(i+1) - y(i-1)) / (x(i+1) - x(i-1))
         end do
         dydx(n) = (y(n) - y(n-1)) / (x(n) - x(n-1))
+    end function
+
+! ------------------------------------------------------------------------------
+    module function finite_diff_b(dx, y) result(dydx)
+        ! Arguments
+        real(real64), intent(in) :: dx
+        real(real64), intent(in), dimension(:) :: y
+        real(real64), dimension(size(y)) :: dydx
+
+        ! Local Variables
+        integer(int32) :: n
+        real(real64) :: dx2
+
+        ! Initialization
+        n = size(y)
+        dx2 = 2.0d0 * dx
+
+        ! Process
+        dydx(1) = (y(2) - y(1)) / dx
+        do i = 2, n - 1
+            dydx(i) = (y(i+1) - y(i-1)) / dx2
+        end do
+        dydx(n) = (y(n) - y(n-1)) / dx
     end function
 
 end submodule
