@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['velocity_5fmtx',['velocity_mtx',['../interfacekinematics_1_1velocity__mtx.html',1,'kinematics']]]
+  ['to_5fskew_5fsymmetric',['to_skew_symmetric',['../interfacekinematics_1_1to__skew__symmetric.html',1,'kinematics']]],
+  ['translate',['translate',['../interfacekinematics_1_1translate.html',1,'kinematics']]]
 ];

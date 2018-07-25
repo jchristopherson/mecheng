@@ -1,5 +1,7 @@
 var searchData=
 [
-  ['signal_5fmagnitude',['signal_magnitude',['../interfacesignals_1_1signal__magnitude.html',1,'signals']]],
-  ['slenderness_5fratio',['slenderness_ratio',['../interfacecolumns_1_1slenderness__ratio.html',1,'columns']]]
+  ['rotate',['rotate',['../interfacekinematics_1_1rotate.html',1,'kinematics']]],
+  ['rotate_5fx',['rotate_x',['../interfacekinematics_1_1rotate__x.html',1,'kinematics']]],
+  ['rotate_5fy',['rotate_y',['../interfacekinematics_1_1rotate__y.html',1,'kinematics']]],
+  ['rotate_5fz',['rotate_z',['../interfacekinematics_1_1rotate__z.html',1,'kinematics']]]
 ];
