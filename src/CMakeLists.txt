@@ -40,6 +40,7 @@ set(mecheng_sources
     signals_windows.f90
     signals_spectral_analysis.f90
     signals_diff.f90
+    signals_integrate.f90
     kinematics.f90
     kinematics_quaternion.f90
     kinematics_transforms.f90
