@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['to_5fskew_5fsymmetric',['to_skew_symmetric',['../interfacekinematics_1_1to__skew__symmetric.html',1,'kinematics']]],
-  ['translate',['translate',['../interfacekinematics_1_1translate.html',1,'kinematics']]]
+  ['signal_5fmagnitude',['signal_magnitude',['../interfacesignals_1_1signal__magnitude.html',1,'signals']]],
+  ['slenderness_5fratio',['slenderness_ratio',['../interfacecolumns_1_1slenderness__ratio.html',1,'columns']]]
 ];

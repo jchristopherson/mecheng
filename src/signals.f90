@@ -1,10 +1,5 @@
 ! signals.f90
 
-! TO DO:
-! - Numerical Integration:
-
-
-
 !> @brief \b signals
 !!
 !! @par Purpose
@@ -348,12 +343,34 @@ interface fourier_diff2
 end interface
 
 !> @brief Computes the derivative of a signal via finite differences.
+!!
+!! @par Remarks
+!! A finite difference scheme is utilized.  The bulk of the problem is 
+!! handled by a central difference method such that
+!! @par
+!! \f$ y'(x_{i}) = \frac{y_{i+1} - y_{i-1}}{x_{i+1} - x_{i-1}} \f$.
+!! @par
+!! To step into the problem, a forward difference method is used such that
+!! @par
+!! \f$ y'(x_{i}) = \frac{y_{i+1} - y_{i}}{x_{i+1} - x_{i}} \f$.
+!! @par
+!! Finally, to step out of the problem, a backward difference method is used
+!! such that
+!! @par
+!! \f$ y'(x_{i}) = \frac{y_{i-1} - y_{i}}{x_{i-1} - x_{i}} \f$.
 interface finite_diff
     module procedure :: finite_diff_a
     module procedure :: finite_diff_b
 end interface
 
 !> @brief Computes the antiderivative of a signal via Euler's method.
+!!
+!! @par Remarks
+!! The integral is determined by using Euler's method with a user defined 
+!! initial value or initial condition.
+!! @par
+!! \f$ \int \! f(x) \, \mathrm{d}x \approx 
+!! F(x_{i+1}) = f(x_{i}) + (x_{i+1} - x_{i}) f_{i} \f$.
 interface integrate
     module procedure :: integrate_a
     module procedure :: integrate_b
@@ -382,7 +399,6 @@ interface
     !! @return An M-element array containing the frequency values.  If @p npts
     !!  is even, M = @p npts / 2 + 1; else, M = (@p npts + 1) / 2.
     module function frequencies(rate, npts) result(f)
-        ! Arguments
         real(real64), intent(in) :: rate
         integer(int32), intent(in) :: npts
         real(real64), allocatable, dimension(:) :: f

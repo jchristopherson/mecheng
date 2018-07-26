@@ -115,10 +115,16 @@ Private Member Functions</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Computes the derivative of a signal via finite differences. </p>
+<dl class="section user"><dt>Remarks</dt><dd>A finite difference scheme is utilized. The bulk of the problem is handled by a central difference method such that </dd></dl>
+<dl class="section user"><dt></dt><dd>\( y&#39;(x_{i}) = \frac{y_{i+1} - y_{i-1}}{x_{i+1} - x_{i-1}} \). </dd></dl>
+<dl class="section user"><dt></dt><dd>To step into the problem, a forward difference method is used such that </dd></dl>
+<dl class="section user"><dt></dt><dd>\( y&#39;(x_{i}) = \frac{y_{i+1} - y_{i}}{x_{i+1} - x_{i}} \). </dd></dl>
+<dl class="section user"><dt></dt><dd>Finally, to step out of the problem, a backward difference method is used such that </dd></dl>
+<dl class="section user"><dt></dt><dd>\( y&#39;(x_{i}) = \frac{y_{i-1} - y_{i}}{x_{i-1} - x_{i}} \). </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="signals_8f90_source.html#l00350">350</a> of file <a class="el" href="signals_8f90_source.html">signals.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="signals_8f90_source.html#l00366">366</a> of file <a class="el" href="signals_8f90_source.html">signals.f90</a>.</p>
 </div><hr/>The documentation for this interface was generated from the following file:<ul>
-<li>C:/Users/christoj/Documents/Code/mecheng/src/<a class="el" href="signals_8f90_source.html">signals.f90</a></li>
+<li>C:/Users/jchri/Documents/github/mecheng/src/<a class="el" href="signals_8f90_source.html">signals.f90</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
