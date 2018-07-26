@@ -113,7 +113,7 @@ contains
 
         ! Local Variables
         integer(int32) :: i, n, lwsave, lwork, flag, nxfrm
-        real(real64), allocatable, dimension(:) :: s, wsave, work
+        real(real64), allocatable, dimension(:) :: wsave, work
         complex(real64) :: num
 
         ! Initialization
@@ -122,12 +122,10 @@ contains
         lwsave = n + int(log(real(n, real64)) / log(two), int32) + 4
         allocate(work(lwork))
         allocate(wsave(lwsave))
-        allocate(s(n))
-        s = x
         call rfft1i(n, wsave, lwsave, flag)
 
         ! Compute the FFT
-        call rfft1f(n, 1, s, n, wsave, lwsave, work, lwork, flag)
+        call rfft1f(n, 1, x, n, wsave, lwsave, work, lwork, flag)
 
         ! Compute the magnitude
         if (mod(n, 2) == 0) then
@@ -135,16 +133,16 @@ contains
             allocate(y(nxfrm))
             y(1) = abs(s(1))
             do i = 2, nxfrm - 1
-                num = cmplx(s(2 * i - 2), s(2 * i - 1), real64)
+                num = cmplx(x(2 * i - 2), x(2 * i - 1), real64)
                 y(i) = abs(num)
             end do
-            y(nxfrm) = abs(s(n))
+            y(nxfrm) = abs(x(n))
         else
             nxfrm = (n + 1) / 2
             allocate(y(nxfrm))
-            y(1) = abs(s(1))
+            y(1) = abs(x(1))
             do i = 2, nxfrm
-                num = cmplx(s(2 * i - 2), s(2 * i - 1), real64)
+                num = cmplx(x(2 * i - 2), x(2 * i - 1), real64)
                 y(i) = abs(num)
             end do
         end if

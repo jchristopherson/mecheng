@@ -75,7 +75,7 @@ contains
 ! ------------------------------------------------------------------------------
     module function rfft(x) result(tf)
         ! Arguments
-        real(real64), intent(inout), dimension(:) :: x
+        real(real64), intent(in), dimension(:) :: x
         complex(real64), allocatable, dimension(:) :: tf
 
         ! Parameters
@@ -85,7 +85,7 @@ contains
         ! Local Variables
         integer(int32) :: i, n, lwsave, lwork, flag, nxfrm
         real(real64) :: ndp
-        real(real64), allocatable, dimension(:) :: wsave, work
+        real(real64), allocatable, dimension(:) :: wsave, work, xc
         
         ! Initialization
         n = size(x)
@@ -99,7 +99,8 @@ contains
         call rfft1i(n, wsave, lwsave, flag)
 
         ! Compute the FFT
-        call rfft1f(n, 1, x, n, wsave, lwsave, work, lwork, flag)
+        xc = x
+        call rfft1f(n, 1, xc, n, wsave, lwsave, work, lwork, flag)
 
         ! Determine the appropriate length for the transformed data set
         if (mod(n, 2) == 0) then
@@ -111,15 +112,15 @@ contains
 
         ! Reposition the data
         if (mod(n, 2) == 0) then
-            tf(1) = cmplx(x(1), zero, real64)
+            tf(1) = cmplx(xc(1), zero, real64)
             do i = 2, nxfrm - 1
-                tf(i) = cmplx(x(2*i-2), x(2*i-1), real64)
+                tf(i) = cmplx(xc(2*i-2), xc(2*i-1), real64)
             end do
-            tf(nxfrm) = cmplx(x(n), zero, real64)
+            tf(nxfrm) = cmplx(xc(n), zero, real64)
         else
-            tf(1) = cmplx(x(1), zero, real64)
+            tf(1) = cmplx(xc(1), zero, real64)
             do i = 2, nxfrm
-                tf(i) = cmplx(x(2*i-2), x(2*i-1), real64)
+                tf(i) = cmplx(xc(2*i-2), xc(2*i-1), real64)
             end do
         end if
     end function

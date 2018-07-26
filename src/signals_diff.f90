@@ -21,7 +21,6 @@ contains
 
         ! Local Variables
         integer(int32) :: n, n2, i, k, m
-        real(real64), allocatable, dimension(:) :: yc
         complex(real64), allocatable, dimension(:) :: ffty
 
         ! Initialization
@@ -29,8 +28,7 @@ contains
 
         ! Compute the FFT of Y - only use the positive half as the data is
         ! real valued
-        yc = y
-        ffty = rfft(yc)
+        ffty = rfft(y)
 
         ! Compute the derivative
         n2 = size(ffty)
@@ -99,7 +97,6 @@ contains
 
         ! Local Variables
         integer(int32) :: n, n2, i, k, m
-        real(real64), allocatable, dimension(:) :: yc
         complex(real64), allocatable, dimension(:) :: ffty
 
         ! Initialization
@@ -107,8 +104,7 @@ contains
 
         ! Compute the FFT of Y - only use the positive half as the data is
         ! real valued
-        yc = y
-        ffty = rfft(yc)
+        ffty = rfft(y)
 
         ! Compute the derivative
         n2 = size(ffty)

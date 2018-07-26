@@ -658,13 +658,11 @@ interface
     !> @brief Computes the Fourier transform of a real-valued data set, and
     !! returns only the positive half of the transform.
     !!
-    !! @param[in,out] x The data set whose transform is to be computed.  On
-    !!  output, the original values are altered as this array is used as
-    !!  in-place storage.
+    !! @param[in,out] x The data set whose transform is to be computed.
     !! @return The complex-valued positive half of the Fourier transform of 
     !!  @p x.
     module function rfft(x) result(tf)
-        real(real64), intent(inout), dimension(:) :: x
+        real(real64), intent(in), dimension(:) :: x
         complex(real64), allocatable, dimension(:) :: tf
     end function
 
