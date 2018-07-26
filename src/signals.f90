@@ -426,6 +426,75 @@ end interface
 !! end program
 !! @endcode
 !! @image html integration_example.png
+!! @par
+!! In the above case a function was chosen such that it's antiderivative
+!! has a value of zero initially.  However, if a non-zero initial value
+!! is needed, there are two options.  Option 1 is to specify the value
+!! as the optional argument to the integrate routine; however, this
+!! requires the user understand the function sufficiently to know this
+!! value.  Option 2 is to leave the value at zero, and remove the mean
+!! from the data set.  The following code illustrates option 2.
+!! @code{.f90}
+!! program example
+!!     use iso_fortran_env
+!!     use signals
+!!     use fplot_core
+!!     implicit none
+!!
+!!     ! Parameters
+!!     integer(int32), parameter :: n = 1000
+!!     real(real64), parameter :: dx = 1.0d-2
+!!
+!!     ! Local Variables
+!!     integer(int32) :: i
+!!     real(real64) :: x(n), y(n), f(n), ans(n)
+!!     type(plot_2d) :: plt
+!!     type(plot_data_2d) :: d1, d2
+!!     class(legend), pointer :: lgnd
+!!
+!!     ! Build the signal
+!!     do i = 1, n
+!!         x(i) = dx * (i - 1.0d0)
+!!         y(i) = sin(x(i))
+!!         ans(i) = -cos(x(i))
+!!     end do
+!!
+!!     ! Compute the integral
+!!     f = integrate(dx, y)
+!!
+!!     ! Remove the DC offset
+!!     call remove_mean(f)
+!!
+!!     ! Plot the results
+!!     call plt%initialize()
+!!     call plt%set_font_size(14)
+!!     lgnd => plt%get_legend()
+!!     call lgnd%set_is_visible(.true.)
+!!     call lgnd%set_horizontal_position(LEGEND_CENTER)
+!!     call lgnd%set_vertical_position(LEGEND_BOTTOM)
+!!     call lgnd%set_draw_inside_axes(.false.)
+!!     call lgnd%set_draw_border(.false.)
+!!
+!!     call d1%set_name("Numerical")
+!!     call d1%set_line_width(2.0)
+!!     call d1%define_data(x, f)
+!!
+!!     call d2%set_name("Analytical")
+!!     call d2%set_line_width(3.0)
+!!     call d2%set_line_color(CLR_RED)
+!!     call d2%set_line_style(LINE_DASHED)
+!!     call d2%define_data(x, ans)
+!!
+!!     call plt%push(d1)
+!!     call plt%push(d2)
+!!     call plt%draw()
+!! end program
+!! @endcode
+!! The above code produces the following output.
+!! @image html integration_example_2_mean_removed.png
+!! However, notice, if the mean value is not removed from the signal,
+!! the following plot is realized.
+!! @image html integration_example_2.png
 interface integrate
     module procedure :: integrate_a
     module procedure :: integrate_b
