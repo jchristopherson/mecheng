@@ -9,7 +9,7 @@ program example
     ! Variables
     integer(int32), parameter :: npts = 4096
     real(real64), parameter :: fs = 1024.0d0
-    integer(int32), parameter :: winSize = 256
+    integer(int32), parameter :: winSize = 1024
 
     real(real64), allocatable, dimension(:,:) :: x
     real(real64), allocatable, dimension(:) :: freq, mag, dx, filtMag
@@ -45,7 +45,7 @@ program example
     call d4%define_data(freq, mag)
 
     ! Filter the data set
-    call low_pass_filter(x(:,2), fs, 1.0d1)
+    call low_pass_filter(x(:,2), fs, 3.0d1)
 
     call d1_filt%set_name("Filtered")
     call d1_filt%define_data(x(:,1), x(:,2))

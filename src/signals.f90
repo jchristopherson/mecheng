@@ -20,7 +20,7 @@
 !!     ! Variables
 !!     integer(int32), parameter :: npts = 4096
 !!     real(real64), parameter :: fs = 1024.0d0
-!!     integer(int32), parameter :: winSize = 256
+!!     integer(int32), parameter :: winSize = 1024
 !!
 !!     real(real64), allocatable, dimension(:,:) :: x
 !!     real(real64), allocatable, dimension(:) :: freq, mag, dx, filtMag
@@ -56,7 +56,7 @@
 !!     call d4%define_data(freq, mag)
 !!
 !!     ! Filter the data set
-!!     call low_pass_filter(x(:,2), fs, 1.0d1)
+!!     call low_pass_filter(x(:,2), fs, 3.0d1)
 !!
 !!     call d1_filt%set_name("Filtered")
 !!     call d1_filt%define_data(x(:,1), x(:,2))
@@ -258,6 +258,9 @@ end interface
 !! @endcode
 !! The above program produces the following output.
 !! @image html fourier_diff_example.png
+!!
+!! @par References
+!!   - https://math.mit.edu/~stevenj/fft-deriv.pdf
 interface fourier_diff
     module procedure :: fourier_diff_a
     module procedure :: fourier_diff_b
@@ -336,6 +339,9 @@ end interface
 !! @endcode
 !! The above program produces the following output.
 !! @image html fourier_diff_example.png
+!!
+!! @par References
+!!   - https://math.mit.edu/~stevenj/fft-deriv.pdf
 interface fourier_diff2
     module procedure :: fourier_diff2_a
     module procedure :: fourier_diff2_b
@@ -370,7 +376,7 @@ end interface
 !! initial value or initial condition.
 !! @par
 !! \f$ \int \! f(x) \, \mathrm{d}x \approx 
-!! F(x_{i+1}) = f(x_{i}) + (x_{i+1} - x_{i}) f_{i} \f$.
+!! F(x_{i+1}) = f(x_{i}) + (x_{i+1} - x_{i}) f(x_{i}) \f$.
 !!
 !! @par Example
 !! The following example illustrates the use of the integration routines.
