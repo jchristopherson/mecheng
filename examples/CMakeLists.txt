@@ -27,6 +27,10 @@ target_link_libraries(diff_example mecheng fplot)
 add_executable(signals_example_2 signals_example_2.f90)
 target_link_libraries(signals_example_2 mecheng fplot)
 
+# INTEGRATION EXAMPLE
+add_executable(integrate_example integrate_example.f90)
+target_link_libraries(integrate_example mecheng fplot)
+
 # ------------------------------------------------------------------------------
 if (WIN32)
     # Copy shared libraries necessary to generate plots to the runtime directory
