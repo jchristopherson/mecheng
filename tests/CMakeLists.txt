@@ -26,3 +26,21 @@ add_custom_command(OUTPUT mecheng_test_kinematics_cmd
     COMMAND mecheng_test_kinematics)
 add_custom_target(run_mecheng_kinematics_tests ALL
     DEPENDS mecheng_test_kinematics_cmd)
+
+
+# ------------------------------------------------------------------------------
+# INTEGRATION TESTS
+# ------------------------------------------------------------------------------
+set(test_integration_source test_integration.f90)
+add_executable(mecheng_test_integration ${test_integration_source})
+target_link_libraries(mecheng_test_integration mecheng)
+
+# Run the tests
+add_custom_command(OUTPUT mecheng_test_integration_cmd
+    DEPENDS ${test_integration_source}
+    COMMAND mecheng_test_integration
+)
+add_custom_target(
+    run_mecheng_integration_tests ALL
+    DEPENDS mecheng_test_integration_cmd
+)
