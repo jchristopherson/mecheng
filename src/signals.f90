@@ -1,5 +1,10 @@
 ! signals.f90
 
+! TO DO:
+! - PSD
+! - Trapezoidal Integration
+! - Figure out how to get doxygen to encompass all of the documentation
+
 !> @brief \b signals
 !!
 !! @par Purpose
@@ -176,6 +181,7 @@ module signals
     public :: fourier_diff2
     public :: finite_diff
     public :: integrate
+    public :: trapz_integrate
 
 ! ******************************************************************************
 ! GENERAL INTERFACES
@@ -504,6 +510,12 @@ end interface
 interface integrate
     module procedure :: integrate_a
     module procedure :: integrate_b
+end interface
+
+!> @brief Computes the integral of a signal via trapezoidal integration.
+interface trapz_integrate
+    module procedure :: trapz_integrate_a
+    module procedure :: trapz_integrate_b
 end interface
 
 ! ******************************************************************************
@@ -1392,7 +1404,7 @@ interface
     !! @param[in] c An optional argument used to specify the initial condition.
     !!  If no value is given, a value of zero is used.
     !! @return An N-element array containing the antiderivative of the signal.
-    module function integrate_a(x, y, c) result(f)
+    pure module function integrate_a(x, y, c) result(f)
         real(real64), intent(in), dimension(:) :: x, y
         real(real64), intent(in), optional :: c
         real(real64), dimension(size(y)) :: f
@@ -1405,12 +1417,35 @@ interface
     !! @param[in] c An optional argument used to specify the initial condition.
     !!  If no value is given, a value of zero is used.
     !! @return An N-element array containing the antiderivative of the signal.
-    module function integrate_b(dx, y, c) result(f)
+    pure module function integrate_b(dx, y, c) result(f)
         real(real64), intent(in) :: dx
         real(real64), intent(in), dimension(:) :: y
         real(real64), intent(in), optional :: c
         real(real64), dimension(size(y)) :: f
     end function
+
+    !> @brief Computes the integral of a signal via trapezoidal integration.
+    !!
+    !! @param[in] x An N-element array containing the values of the independent
+    !!  variable at which the signal was sampled.
+    !! @param[in] y An N-element array containing the signal.
+    !! @return The value of the integral.
+    pure module function trapz_integrate_a(x, y) result(f)
+        real(real64), intent(in), dimension(:) :: x, y
+        real(real64) :: f
+    end function
+
+    !> @brief Computes the integral of a signal via trapezoidal integration.
+    !!
+    !! @param[in] dx The sample interval.
+    !! @param[in] y An N-element array containing the signal.
+    !! @return The value of the integral.
+    pure module function trapz_integrate_b(dx, y) result(f)
+        real(real64), intent(in) :: dx
+        real(real64), intent(in), dimension(:) :: y
+        real(real64) :: f
+    end function
+
 end interface
 
 end module
