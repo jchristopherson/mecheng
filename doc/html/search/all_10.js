@@ -6,5 +6,6 @@ var searchData=
   ['to_5fskew_5fsymmetric',['to_skew_symmetric',['../interfacekinematics_1_1to__skew__symmetric.html',1,'kinematics']]],
   ['to_5fvector',['to_vector',['../structkinematics_1_1quaternion.html#a0652be88ed3f1a36d396916a7d9dbe0f',1,'kinematics::quaternion']]],
   ['transform',['transform',['../structkinematics_1_1quaternion.html#ad5a34ed92965629243447512ac0a6860',1,'kinematics::quaternion']]],
-  ['translate',['translate',['../interfacekinematics_1_1translate.html',1,'kinematics']]]
+  ['translate',['translate',['../interfacekinematics_1_1translate.html',1,'kinematics']]],
+  ['trapz_5fintegrate',['trapz_integrate',['../interfacesignals_1_1trapz__integrate.html',1,'signals']]]
 ];
