@@ -38,6 +38,8 @@ program main
         print '(A)', "INTEGRATION TEST 1 FAILED"
         print '(AF8.5AF8.5A)', "Expected ", ans, ", but found ", f1, "."
     else if (abs(f2 - ans) > tol) then
+        print '(A)', "INTEGRATION TEST 2 FAILED"
+        print '(AF8.5AF8.5A)', "Expected ", ans, ", but found ", f2, "."
     else
         print '(A)', "INTEGRATION TESTS PASSED"
     end if
