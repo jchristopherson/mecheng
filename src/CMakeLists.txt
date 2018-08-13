@@ -173,20 +173,20 @@ set(linalg_sources
 # Define the BLAS sources
 set(blas_sources
     external/lapack/BLAS/SRC/dasum.f
-    # external/lapack/BLAS/SRC/daxpy.f
-    # external/lapack/BLAS/SRC/dcopy.f
-    # external/lapack/BLAS/SRC/ddot.f
+    external/lapack/BLAS/SRC/daxpy.f
+    external/lapack/BLAS/SRC/dcopy.f
+    external/lapack/BLAS/SRC/ddot.f
     external/lapack/BLAS/SRC/dgbmv.f
     external/lapack/BLAS/SRC/dgemm.f
     external/lapack/BLAS/SRC/dgemv.f
     external/lapack/BLAS/SRC/dger.f
-    # external/lapack/BLAS/SRC/dnrm2.f
+    external/lapack/BLAS/SRC/dnrm2.f
     external/lapack/BLAS/SRC/drot.f
     external/lapack/BLAS/SRC/drotg.f
     external/lapack/BLAS/SRC/drotm.f
     external/lapack/BLAS/SRC/drotmg.f
     external/lapack/BLAS/SRC/dsbmv.f
-    # external/lapack/BLAS/SRC/dscal.f
+    external/lapack/BLAS/SRC/dscal.f
     external/lapack/BLAS/SRC/dspmv.f
     external/lapack/BLAS/SRC/dspr.f
     external/lapack/BLAS/SRC/dspr2.f
@@ -205,7 +205,7 @@ set(blas_sources
     external/lapack/BLAS/SRC/dtrmv.f
     external/lapack/BLAS/SRC/dtrsm.f
     external/lapack/BLAS/SRC/dtrsv.f
-    # external/lapack/BLAS/SRC/idamax.f
+    external/lapack/BLAS/SRC/idamax.f
     external/lapack/BLAS/SRC/lsame.f
     external/lapack/BLAS/SRC/xerbla.f
     external/lapack/BLAS/SRC/dcabs1.f
