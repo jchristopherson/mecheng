@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['sections',['sections',['../namespacesections.html',1,'']]],
-  ['signals',['signals',['../namespacesignals.html',1,'']]],
-  ['strain',['strain',['../namespacestrain.html',1,'']]]
+  ['integral_5fcore',['integral_core',['../namespaceintegral__core.html',1,'']]]
 ];

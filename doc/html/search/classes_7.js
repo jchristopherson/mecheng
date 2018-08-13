@@ -1,7 +1,5 @@
 var searchData=
 [
-  ['operator_28_2a_29',['operator(*)',['../interfacekinematics_1_1operator_07_5_08.html',1,'kinematics']]],
-  ['operator_28_2b_29',['operator(+)',['../interfacekinematics_1_1operator_07_09_08.html',1,'kinematics']]],
-  ['operator_28_2d_29',['operator(-)',['../interfacekinematics_1_1operator_07-_08.html',1,'kinematics']]],
-  ['operator_28_2f_29',['operator(/)',['../interfacekinematics_1_1operator_07_2_08.html',1,'kinematics']]]
+  ['hot_5fcolormap',['hot_colormap',['../structfplot__core_1_1hot__colormap.html',1,'fplot_core']]],
+  ['hysteresis',['hysteresis',['../interfacecurvefit__calibration_1_1hysteresis.html',1,'curvefit_calibration']]]
 ];

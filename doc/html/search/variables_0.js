@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['pi',['pi',['../namespaceconstants.html#a25d12bb3441f2773a3a3e42dac41a9c1',1,'constants']]]
+  ['blue',['blue',['../structfplot__core_1_1color.html#a208e32c7d0b0798118575c2234f4cc94',1,'fplot_core::color']]]
 ];

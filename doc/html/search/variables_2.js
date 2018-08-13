@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['x',['x',['../structkinematics_1_1quaternion.html#a9c8df1c8e5c0fd2c1e10a695af3cf881',1,'kinematics::quaternion']]]
+  ['default_5fbuffer_5fsize',['default_buffer_size',['../namespacecollection__list.html#a90b379b85a1afc1479e3296f3fd233b8',1,'collection_list']]]
 ];

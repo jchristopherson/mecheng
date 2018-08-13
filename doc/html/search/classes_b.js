@@ -1,6 +1,20 @@
 var searchData=
 [
-  ['to_5fskew_5fsymmetric',['to_skew_symmetric',['../interfacekinematics_1_1to__skew__symmetric.html',1,'kinematics']]],
-  ['translate',['translate',['../interfacekinematics_1_1translate.html',1,'kinematics']]],
-  ['trapz_5fintegrate',['trapz_integrate',['../interfacesignals_1_1trapz__integrate.html',1,'signals']]]
+  ['mat_5feigen',['mat_eigen',['../interfacelinalg__immutable_1_1mat__eigen.html',1,'linalg_immutable']]],
+  ['mat_5flu',['mat_lu',['../interfacelinalg__immutable_1_1mat__lu.html',1,'linalg_immutable']]],
+  ['mat_5fmult_5fdiag',['mat_mult_diag',['../interfacelinalg__immutable_1_1mat__mult__diag.html',1,'linalg_immutable']]],
+  ['mat_5fmult_5flower_5ftri',['mat_mult_lower_tri',['../interfacelinalg__immutable_1_1mat__mult__lower__tri.html',1,'linalg_immutable']]],
+  ['mat_5fmult_5fupper_5ftri',['mat_mult_upper_tri',['../interfacelinalg__immutable_1_1mat__mult__upper__tri.html',1,'linalg_immutable']]],
+  ['mat_5fsolve_5flower_5ftri',['mat_solve_lower_tri',['../interfacelinalg__immutable_1_1mat__solve__lower__tri.html',1,'linalg_immutable']]],
+  ['mat_5fsolve_5fupper_5ftri',['mat_solve_upper_tri',['../interfacelinalg__immutable_1_1mat__solve__upper__tri.html',1,'linalg_immutable']]],
+  ['mean',['mean',['../interfacecurvefit__statistics_1_1mean.html',1,'curvefit_statistics']]],
+  ['median',['median',['../interfacecurvefit__statistics_1_1median.html',1,'curvefit_statistics']]],
+  ['moving_5faverage',['moving_average',['../interfacecurvefit__regression_1_1moving__average.html',1,'curvefit_regression']]],
+  ['mtx_5finverse',['mtx_inverse',['../interfacelinalg__core_1_1mtx__inverse.html',1,'linalg_core']]],
+  ['mtx_5fmult',['mtx_mult',['../interfacelinalg__core_1_1mtx__mult.html',1,'linalg_core']]],
+  ['mtx_5fpinverse',['mtx_pinverse',['../interfacelinalg__core_1_1mtx__pinverse.html',1,'linalg_core']]],
+  ['mtx_5frank',['mtx_rank',['../interfacelinalg__core_1_1mtx__rank.html',1,'linalg_core']]],
+  ['mult_5fqr',['mult_qr',['../interfacelinalg__core_1_1mult__qr.html',1,'linalg_core']]],
+  ['mult_5frz',['mult_rz',['../interfacelinalg__core_1_1mult__rz.html',1,'linalg_core']]],
+  ['multiplot',['multiplot',['../structfplot__core_1_1multiplot.html',1,'fplot_core']]]
 ];
