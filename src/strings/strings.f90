@@ -2,6 +2,7 @@
 
 module strings
     use, intrinsic :: iso_fortran_env
+    use, intrinsic :: iso_c_binding
     implicit none
     private
     public :: string
@@ -13,6 +14,8 @@ module strings
     public :: remove_char_range
     public :: replace_chars
     public :: to_string
+    public :: cstr_2_fstr
+    public :: fstr_2_cstr
 
 ! ******************************************************************************
 ! TYPES
@@ -679,5 +682,72 @@ contains
         end if
     end function
 
+! ******************************************************************************
+! C STRING CONVERSIONS
 ! ------------------------------------------------------------------------------
+    !> @brief Copies a C string (null terminated) to a Fortran string.
+    !!
+    !! @param[in] cstr The null-terminated C string.
+    !! @param[in] maxlength An optional input that specifies the maximum length
+    !!  of cstr allowed.  Setting this parameter helps prevent issues in 
+    !!  determining the length of the C string if the null terminator character
+    !!  is forgotten.  The default is 10,000 characters.
+    !! @return The Fortran copy.
+    function cstr_2_fstr(cstr, maxlength) result(fstr)
+        ! Arguments
+        character(kind = c_char), intent(in) :: cstr(*)
+        integer(int32), intent(in), optional :: maxlength
+        character(len = :), allocatable :: fstr
+
+        ! Local Variables
+        integer :: i, n, maxchar
+
+        ! Initialization
+        if (present(maxlength)) then
+            maxchar = maxlength
+            if (maxchar < 1) maxchar = 10000
+        else
+            maxchar = 10000
+        end if
+
+        ! Determine the length of the C string
+        n = 0
+        do i = 1, maxchar
+            if (cstr(i) == c_null_char) exit
+            n = n + 1
+        end do
+
+        ! Process
+         if (n == 0) return
+         allocate(character(len = n) :: fstr)
+         do i = 1, n
+            fstr(i:i) = cstr(i)
+         end do
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Copies a Fortran string into a C string.
+    !!
+    !! @param[in] fstr The Fortran string to copy.
+    !! @param[out] cstr The null-terminated C string.
+    !! @param[in,out] csize On input, the size of the character buffer @p cstr.
+    !!  On output, the actual number of characters (not including the null
+    !!  character) writen to @p cstr.
+    subroutine fstr_2_cstr(fstr, cstr, csize)
+        ! Arguments
+        character(len = *), intent(in) :: fstr
+        character(kind = c_char), intent(out) :: cstr(*)
+        integer, intent(inout) :: csize
+
+        ! Local Variables
+        integer :: i, n
+
+        ! Process
+        n = min(len(fstr), csize - 1) ! -1 allows room for the null char
+        do i = 1, n
+            cstr(i) = fstr(i:i)
+        end do
+        cstr(n+1) = c_null_char
+        csize = n
+    end subroutine
 end module
