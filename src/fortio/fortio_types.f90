@@ -29,4 +29,6 @@ module fortio_types
     integer(int32), parameter :: FIO_END_OF_FILE_ERROR = 1002
     !> @brief Denotes a memory availability issue.
     integer(int32), parameter :: FIO_OUT_OF_MEMORY_ERROR = 1003
+    !> @brief Denotes an unsupported file version.
+    integer(int32), parameter :: FIO_UNSUPPORTED_VERSION_ERROR = 1004
 end module
