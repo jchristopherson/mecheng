@@ -45,7 +45,7 @@ module fortio_hbm
         !> The channel location in the HBM database.
         integer(int16) :: channel_location
         !> The channel length.
-        integer(int64) :: channel_length
+        integer(int32) :: channel_length
         !> The data.
         real(real64), allocatable, dimension(:) :: values
     end type
@@ -62,9 +62,9 @@ module fortio_hbm
         !> The number of data channels.
         integer(int16) :: channel_count
         !> The maximum channel length.
-        integer(int64) :: max_channel_length
+        integer(int32) :: max_channel_length
         !> The reduction factor in the event of file compression.
-        integer(int64) :: reduction_factor
+        integer(int32) :: reduction_factor
         !> A list of reserved strings.
         character(len = RESERVED_STRING_LENGTH), &
             dimension(RESERVED_STRING_COUNT) :: reserved_strings
@@ -94,8 +94,7 @@ contains
         real(real64), allocatable, dimension(:,:) :: rst
 
         ! Local Variables
-        integer(int64) :: j, m, n, chanlength
-        integer(int32) :: info
+        integer(int32) :: j, m, n, chanlength, info
         type(errors), target :: deferr
         class(errors), pointer :: errmgr
 
@@ -105,7 +104,7 @@ contains
         else
             errmgr => deferr
         end if
-        n = int(x%channel_count, int64)
+        n = x%channel_count
         m = 0
         do j = 1, n
             m = max(m, x%channels(j)%channel_length)
@@ -155,12 +154,11 @@ contains
         type(errors), target :: deferr
         type(binary_reader) :: file
         character(len = 256) :: errmsg
-        integer(int64) :: li, dataOffset, offsetChannel, dummyLong
+        integer(int32) :: info, li, dataOffset, offsetChannel, dummyLong
         integer(int16) :: si, sj, commentLength, dummyShort, lres(RESERVED_STRING_COUNT)
         character(len = :), allocatable :: restring
         character :: dummyChar
         real(real64) :: dummyDouble
-        integer(int32) :: info
 
         ! Initialization
         if (present(err)) then
@@ -186,18 +184,15 @@ contains
         end if
 
         ! Determine the data offset, and file comment length
-        dataOffset = file%read_int64(errmgr)
+        dataOffset = file%read_int32(errmgr)
         if (errmgr%has_error_occurred()) return
 
         commentLength = file%read_int16(errmgr)
         if (errmgr%has_error_occurred()) return
 
         ! Read in the comments
-        allocate(character(len = commentLength) :: rst%comments)
-        do si = 1, commentLength
-            rst%comments(si:si) = file%read_char(errmgr)
-            if (errmgr%has_error_occurred()) return
-        end do
+        rst%comments = file%read_char_array(commentLength, errmgr)
+        if (errmgr%has_error_occurred()) return
 
         ! Read in the file, taking care for version specifics
         if (rst%version == MINIMUM_VERSION) then ! Version 4.5
@@ -206,26 +201,25 @@ contains
             if (errmgr%has_error_occurred()) return
 
             ! Maximum channel length
-            rst%max_channel_length = file%read_int64(errmgr)
+            rst%max_channel_length = file%read_int32(errmgr)
             if (errmgr%has_error_occurred()) return
 
             ! Offset channel
-            offsetChannel = file%read_int64(errmgr)
+            offsetChannel = file%read_int32(errmgr)
             if (errmgr%has_error_occurred()) return
 
             ! Reduction factor
-            rst%reduction_factor = file%read_int64(errmgr)
+            rst%reduction_factor = file%read_int32(errmgr)
             if (errmgr%has_error_occurred()) return
         else ! Version 5.0+
+            lres = 0
             do si = 1, RESERVED_STRING_COUNT
                 lres(si) = file%read_int16(errmgr)
                 if (errmgr%has_error_occurred()) return
-                if (allocated(restring)) deallocate(restring)
-                allocate(character(len = lres(si)) :: restring)
-                do sj = 1, lres(si)
-                    restring(sj:sj) = file%read_char(errmgr)
-                    if (errmgr%has_error_occurred()) return
-                end do
+
+                restring = file%read_char_array(lres(si), errmgr)
+                if (errmgr%has_error_occurred()) return
+
                 dummyShort = min(RESERVED_STRING_LENGTH, lres(si))
                 rst%reserved_strings(si) = restring(1:dummyShort)
             end do
@@ -235,15 +229,15 @@ contains
             if (errmgr%has_error_occurred()) return
 
             ! Maximum channel length
-            rst%max_channel_length = file%read_int64(errmgr)
+            rst%max_channel_length = file%read_int32(errmgr)
             if (errmgr%has_error_occurred()) return
 
             ! Offset channel
-            offsetChannel = file%read_int64(errmgr)
+            offsetChannel = file%read_int32(errmgr)
             if (errmgr%has_error_occurred()) return
 
             ! Reduction factor
-            rst%reduction_factor = file%read_int64(errmgr)
+            rst%reduction_factor = file%read_int32(errmgr)
             if (errmgr%has_error_occurred()) return
         end if
 
@@ -255,40 +249,31 @@ contains
             rst%channels(si)%channel_location = file%read_int16(errmgr)
             if (errmgr%has_error_occurred()) return
             
-            rst%channels(si)%channel_length = file%read_int64(errmgr)
+            rst%channels(si)%channel_length = file%read_int32(errmgr)
             if (errmgr%has_error_occurred()) return
 
             ! Channel Name
             dummyShort = file%read_int16(errmgr) ! Channel name length
             if (errmgr%has_error_occurred()) return
             if (dummyShort > 0) then
-                allocate(character(len = dummyShort) :: rst%channels(si)%name)
-                do sj = 1, dummyShort
-                    rst%channels(si)%name(sj:sj) = file%read_char(errmgr)
-                    if (errmgr%has_error_occurred()) return
-                end do
+                rst%channels(si)%name = file%read_char_array(dummyShort, errmgr)
+                if (errmgr%has_error_occurred()) return
             end if
 
             ! Unit of Measure
             dummyShort = file%read_int16(errmgr)
             if (errmgr%has_error_occurred()) return
             if (dummyShort > 0) then
-                allocate(character(len = dummyShort) :: rst%channels(si)%unit)
-                do sj = 1, dummyShort
-                    rst%channels(si)%unit(sj:sj) = file%read_char(errmgr)
-                    if (errmgr%has_error_occurred()) return
-                end do
+                rst%channels(si)%unit = file%read_char_array(dummyShort, errmgr)
+                if (errmgr%has_error_occurred()) return
             end if
 
             ! Channel Comment
             dummyShort = file%read_int16(errmgr)
             if (errmgr%has_error_occurred()) return
             if (dummyShort > 0) then
-                allocate(character(len = dummyShort) :: rst%channels(si)%comments)
-                do sj = 1, dummyShort
-                    rst%channels(si)%comments(sj:sj) = file%read_char(errmgr)
-                    if (errmgr%has_error_occurred()) return
-                end do
+                rst%channels(si)%comments = file%read_char_array(dummyShort, errmgr)
+                if (errmgr%has_error_occurred()) return
             end if
 
             ! Channel Format
@@ -303,12 +288,13 @@ contains
             if (errmgr%has_error_occurred()) return
 
             ! Extended Header Info
-            dummyLong = file%read_int64(errmgr)
+            dummyLong = file%read_int32(errmgr)
             if (errmgr%has_error_occurred()) return
             do li = 1, dummyLong
                 dummyChar = file%read_char(errmgr)
                 if (errmgr%has_error_occurred()) return
             end do
+
 
             ! Linearization Info
             dummyChar = file%read_char(errmgr)
@@ -341,7 +327,7 @@ contains
 
             ! Sensor Information
             if (rst%version >= 5012) then
-                dummyLong = file%read_int64(errmgr)
+                dummyLong = file%read_int32(errmgr)
                 if (errmgr%has_error_occurred()) return
                 if (dummyLong > 0) then
                     allocate(character(len = dummyLong) :: rst%channels(si)%sensor_info)
