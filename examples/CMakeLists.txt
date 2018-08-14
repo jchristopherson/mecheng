@@ -25,3 +25,7 @@ target_link_libraries(signals_example_2 mecheng)
 # INTEGRATION EXAMPLE
 add_executable(integrate_example integrate_example.f90)
 target_link_libraries(integrate_example mecheng)
+
+# HBM FILE READ EXAMPLE
+add_executable(hbm_file_read_example hbm_file_read_example.f90)
+target_link_libraries(hbm_file_read_example mecheng)
