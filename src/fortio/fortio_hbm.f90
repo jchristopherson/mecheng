@@ -11,6 +11,17 @@ module fortio_hbm
     use fortio_binary
     use fortio_types
     implicit none
+    private
+    public :: hbm_data_channel
+    public :: hbm_data_file
+    public :: read_catman_file
+    public :: hbm_data_to_matrix
+
+! ******************************************************************************
+! CONSTANTS
+! ------------------------------------------------------------------------------
+    integer(int16), parameter :: RESERVED_STRING_COUNT = 32
+    integer(int16), parameter :: RESERVED_STRING_LENGTH = 256
 
 ! ******************************************************************************
 ! TYPES
@@ -55,18 +66,80 @@ module fortio_hbm
         !> The reduction factor in the event of file compression.
         integer(int64) :: reduction_factor
         !> A list of reserved strings.
-        character(len = 256), dimension(32) :: reserved_strings
+        character(len = RESERVED_STRING_LENGTH), &
+            dimension(RESERVED_STRING_COUNT) :: reserved_strings
         !> A list of channel data.
-        type(hbm_data_channel), allocatable :: channels
+        type(hbm_data_channel), allocatable, dimension(:) :: channels
     end type
 
 contains
+! ------------------------------------------------------------------------------
+    !> @brief Returns the contents of an HBM data file in the form of a
+    !! matrix.
+    !!
+    !! @param[in] x The hbm_data_file object containing the file contents.
+    !! @param[in,out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_OUT_OF_MEMORY_ERROR: Occurs if there isn't sufficient memory 
+    !!      available.
+    !!
+    !! @return The resulting matrix with each channel in its own column.
+    function hbm_data_to_matrix(x, err) result(rst)
+        ! Arguments
+        class(hbm_data_file), intent(in) :: x
+        class(errors), intent(inout), optional, target :: err
+        real(real64), allocatable, dimension(:,:) :: rst
+
+        ! Local Variables
+        integer(int64) :: j, m, n, chanlength
+        integer(int32) :: info
+        type(errors), target :: deferr
+        class(errors), pointer :: errmgr
+
+        ! Initialization
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+        n = int(x%channel_count, int64)
+        m = 0
+        do j = 1, n
+            m = max(m, x%channels(j)%channel_length)
+        end do
+        allocate(rst(m, n), stat = info)
+        if (info /= 0) then
+            call errmgr%report_error("hbm_data_to_matrix", &
+                "Insufficient memory available.", FIO_OUT_OF_MEMORY_ERROR)
+            return
+        end if
+
+        ! Process
+        do j = 1, n
+            chanlength = min(m, x%channels(j)%channel_length)
+            rst(1:chanlength,j) = x%channels(j)%values(1:chanlength)
+        end do
+    end function
+
 ! ------------------------------------------------------------------------------
     !> @brief Reads an HBM Catman data file.  
     !!
     !! @param[in] fname The complete filename, including the full path and
     !!  file extension.
-    !! @param[in] err
+    !! @param[in,out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_FILE_IO_ERROR: Occurs if the file could not be opened.
+    !!  - FIO_UNSUPPORTED_VERSION_ERROR: Occurs if the file is not of a 
+    !!      supported version.
+    !!  - FIO_OUT_OF_MEMORY_ERROR: Occurs if there isn't sufficient memory 
+    !!      available.
+    !!
     !! @return The contents of the file.
     function read_catman_file(fname, err) result(rst)
         ! Arguments
@@ -76,7 +149,6 @@ contains
 
         ! Parameters
         integer(int16), parameter :: MINIMUM_VERSION = 5010
-        integer(int16), parameter :: RESERVED_STRING_COUNT = 32
 
         ! Local Variables
         class(errors), pointer :: errmgr
@@ -154,7 +226,8 @@ contains
                     restring(sj:sj) = file%read_char(errmgr)
                     if (errmgr%has_error_occurred()) return
                 end do
-                rst%reserved_strings(i) = restring(min(256:lres(si)))
+                dummyShort = min(RESERVED_STRING_LENGTH, lres(si))
+                rst%reserved_strings(si) = restring(1:dummyShort)
             end do
 
             ! # of channels
@@ -189,9 +262,9 @@ contains
             dummyShort = file%read_int16(errmgr) ! Channel name length
             if (errmgr%has_error_occurred()) return
             if (dummyShort > 0) then
-                allocate(character(len = dummyShort) :: rst%channels(si)%names)
+                allocate(character(len = dummyShort) :: rst%channels(si)%name)
                 do sj = 1, dummyShort
-                    rst%channels(si)%names(sj:sj) = file%read_char(errmgr)
+                    rst%channels(si)%name(sj:sj) = file%read_char(errmgr)
                     if (errmgr%has_error_occurred()) return
                 end do
             end if
