@@ -37,7 +37,7 @@ module fortio_binary
         !> @brief Gets the current position in the file.
         procedure, public :: get_position => bfm_get_position
         !> @brief Sets the position within the file.
-        procedure, public :: set_position => bfm_set_position
+        generic, public :: set_position => bfm_set_position, bfm_set_position_i64
         !> @brief Moves the current position to the start of the file.
         procedure, public :: move_to_start => bfm_move_to_start
         !> @brief Gets a logical value determining if the file writes in little
@@ -51,6 +51,9 @@ module fortio_binary
         !> @brief Cleans up the resources used by the binary_file_manager 
         !! instance.
         final :: bfm_clean_up
+
+        procedure :: bfm_set_position
+        procedure :: bfm_set_position_i64
     end type
 
 ! ------------------------------------------------------------------------------
@@ -347,6 +350,33 @@ contains
             p = 1
         else
             p = x
+        end if
+
+        ! Process
+        this%m_position = p
+    end subroutine
+
+! ------------------------------------------------------------------------------
+    !> @brief Sets the current position within the file.
+    !!
+    !! @param[in,out] this The binary_file_manager object.
+    !! @param[in] x The file position, in bytes.
+    subroutine bfm_set_position_i64(this, x)
+        ! Arguments
+        class(binary_file_manager), intent(inout) :: this
+        integer(int64), intent(in) :: x
+
+        ! Local Variables
+        integer(int32) :: p
+
+        ! Quick Return
+        if (.not.this%m_streamOpen) return
+
+        ! Initialization
+        if (x < 1) then
+            p = 1
+        else
+            p = int(x, int32)
         end if
 
         ! Process
