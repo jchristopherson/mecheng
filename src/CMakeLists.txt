@@ -54,6 +54,7 @@ set(fortio_sources
     fortio/fortio_types.f90
     fortio/fortio_binary.f90
     fortio/fortio_text.f90
+    fortio/fortio_hbm.f90
 )
 
 # Define the fplot sources
