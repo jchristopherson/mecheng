@@ -129,8 +129,16 @@ module fortio_binary
         procedure, public :: read_int8 => br_read_int8
         !> @brief Reads a single character from the currently open file.
         procedure, public :: read_char => br_read_char
+        !> @brief Reads an array of character values from the currently open 
+        !! file.
+        generic, public :: read_char_array => br_read_char_array, &
+            br_read_char_array_i16, br_read_char_array_i64
         !> @brief Tests to see if the current position denotes the end-of-file.
         procedure, public :: end_of_file => br_eof
+
+        procedure :: br_read_char_array
+        procedure :: br_read_char_array_i16
+        procedure :: br_read_char_array_i64
     end type
 
 
@@ -2619,6 +2627,128 @@ contains
         this%m_position = this%m_position + storage_size(x) / 8
     end function
 
+! ------------------------------------------------------------------------------
+    !> @brief Reads an array of characters from the currently open file.
+    !!
+    !! @param[in,out] this The binary_reader object.
+    !! @param[in] nchar The number of characters to read.
+    !! @param[out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_FILE_IO_ERROR: Occurs if an error occurs when attempting to read
+    !!      the data.
+    !!  - FIO_END_OF_FILE_ERROR: Occurs if the read is requested at or passed 
+    !!      the end of the file.
+    !!
+    !! @return The character array.
+    function br_read_char_array(this, nchar, err) result(x)
+        ! Arguments
+        class(binary_reader), intent(inout) :: this
+        integer(int32), intent(in) :: nchar
+        class(errors), intent(inout), optional, target :: err
+        character(len = nchar) :: x
+
+        ! Local Variables
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+        character(len = 256) :: errmsg
+        integer(int32) :: i, flag
+        character :: tempchar
+
+        ! Initialization
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+
+        ! Ensure there's an open stream to which we may write
+        if (.not.this%m_streamOpen) then
+            call errmgr%report_error("br_read_char_array", &
+                "The file is not opened.", FIO_UNOPENED_ERROR)
+            return
+        end if
+
+        ! Process
+        do i = 1, nchar
+            read(this%m_id, pos = this%m_position, iostat = flag) tempchar
+            if (flag < 0) then
+                ! End Of File
+                call errmgr%report_error(&
+                    "br_read_char_array", "End of file encountered.", &
+                    FIO_END_OF_FILE_ERROR)
+                return
+            else if (flag > 0) then
+                ! Somethings wrong
+                write(errmsg, "(AI0A)") &
+                    "An error was encountered while attempting to " // &
+                    "perform the read operation.  Error code ", flag, &
+                    " was encountered."
+                call errmgr%report_error("br_read_char_array", trim(errmsg), &
+                    FIO_FILE_IO_ERROR)
+                return
+            end if
+            this%m_position = this%m_position + storage_size(x) / 8
+            x(i:i) = tempchar
+        end do
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Reads an array of characters from the currently open file.
+    !!
+    !! @param[in,out] this The binary_reader object.
+    !! @param[in] nchar The number of characters to read.
+    !! @param[out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_FILE_IO_ERROR: Occurs if an error occurs when attempting to read
+    !!      the data.
+    !!  - FIO_END_OF_FILE_ERROR: Occurs if the read is requested at or passed 
+    !!      the end of the file.
+    !!
+    !! @return The character array.
+    function br_read_char_array_i16(this, nchar, err) result(x)
+        ! Arguments
+        class(binary_reader), intent(inout) :: this
+        integer(int16), intent(in) :: nchar
+        class(errors), intent(inout), optional, target :: err
+        character(len = nchar) :: x
+
+        ! Process
+        x = br_read_char_array(this, int(nchar, int32), err)
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Reads an array of characters from the currently open file.
+    !!
+    !! @param[in,out] this The binary_reader object.
+    !! @param[in] nchar The number of characters to read.
+    !! @param[out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_FILE_IO_ERROR: Occurs if an error occurs when attempting to read
+    !!      the data.
+    !!  - FIO_END_OF_FILE_ERROR: Occurs if the read is requested at or passed 
+    !!      the end of the file.
+    !!
+    !! @return The character array.
+    function br_read_char_array_i64(this, nchar, err) result(x)
+        ! Arguments
+        class(binary_reader), intent(inout) :: this
+        integer(int64), intent(in) :: nchar
+        class(errors), intent(inout), optional, target :: err
+        character(len = nchar) :: x
+
+        ! Process
+        x = br_read_char_array(this, int(nchar, int32), err)
+    end function
+    
 ! ------------------------------------------------------------------------------
     !> @brief Tests to see if the current position denotes the end-of-file.
     !!
