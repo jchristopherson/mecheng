@@ -148,6 +148,79 @@ contains
     !!      available.
     !!
     !! @return The contents of the file.
+    !!
+    !! @par References
+    !! This routine is a Fortran implementation of the MATLAB routine "catman_read"
+    !! that can be found at: 
+    !! https://www.mathworks.com/matlabcentral/fileexchange/6780-catman-file-importer?s_tid=srchtitle.
+    !!
+    !! @par Example
+    !! The following example illustrates how to read an HBM Catman data file,
+    !! and how to access the stored data.
+    !! @code{.f90}
+    !! program example
+    !!     use iso_fortran_env
+    !!     use fortio_hbm
+    !!     use fplot_core
+    !!     use strings
+    !!     implicit none
+    !!
+    !!     ! Local Variables
+    !!     type(hbm_data_file) :: file
+    !!     type(plot_2d) :: plt
+    !!     type(plot_data_2d) :: d1
+    !!     integer(int16) :: i
+    !!     character(len = :), allocatable :: name
+    !!
+    !!     ! Read the file - change the path to suit your needs
+    !!     file = read_catman_file("C:\\Users\\christoj\\Documents\\Code\\mecheng\\examples\\Files\\Example_HBM_Data_File.BIN")
+    !!
+    !!     ! Display outputs from the file
+    !!     print '(A)', "File: " // file%filename // " read completed."
+    !!     print '(AI0)', "Channel Count: ", file%channel_count
+    !!
+    !!     ! Initialize a plot
+    !!     call plt%initialize()
+    !!     call plt%set_font_size(14)
+    !!
+    !!     ! Plot each data channel
+    !!     do i = 1, file%channel_count
+    !!         name = "Channel " // to_string(file%channels(i)%channel_location) // " " // file%channels(i)%name
+    !!         print '(AI0A)', char(9), i, ". " // name
+    !!         call plt%set_title(name)
+    !!         call d1%define_data(file%channels(1)%values, file%channels(i)%values)
+    !!         if (i /= 1) call plt%clear_all()
+    !!         call plt%push(d1)
+    !!         call plt%draw()
+    !!     end do
+    !! end program
+    !! @endcode
+    !! The output of the above program is as follows.
+    !! @code{.txt}
+    !! Channel Count: 11
+    !!     1. Channel 2 Time  1 - slow sample rate
+    !!     2. Channel 4 FX1
+    !!     3. Channel 5 FX2
+    !!     4. Channel 6 FY1
+    !!     5. Channel 7 FY2
+    !!     6. Channel 9 Time  2 - slow sample rate
+    !!     7. Channel 11 RTD1
+    !!     8. Channel 15 FZ1
+    !!     9. Channel 16 FZ2
+    !!     10. Channel 17 FZ3
+    !!     11. Channel 18 FZ4
+    !! @endcode
+    !! @image html hbm_1.png
+    !! @image html hbm_2.png
+    !! @image html hbm_3.png
+    !! @image html hbm_4.png
+    !! @image html hbm_5.png
+    !! @image html hbm_6.png
+    !! @image html hbm_7.png
+    !! @image html hbm_8.png
+    !! @image html hbm_9.png
+    !! @image html hbm_10.png
+    !! @image html hbm_11.png
     function read_catman_file(fname, err) result(rst)
         ! Arguments
         character(len = *), intent(in) :: fname
