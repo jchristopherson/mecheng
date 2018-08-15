@@ -48,6 +48,14 @@ module fortio_hbm
         integer(int32) :: channel_length
         !> The data.
         real(real64), allocatable, dimension(:) :: values
+        !> Header data.
+        character(len = :), allocatable :: header
+        !> Linearization mode.
+        integer(int8) :: linearization_mode
+        !> User scaling information.
+        integer(int8) :: user_scale
+        !> User scaling points.
+        real(real64), allocatable, dimension(:) :: user_scale_points
     end type
 
 ! ------------------------------------------------------------------------------
@@ -154,11 +162,11 @@ contains
         type(errors), target :: deferr
         type(binary_reader) :: file
         character(len = 256) :: errmsg
-        integer(int32) :: info, li, dataOffset, offsetChannel, dummyLong
-        integer(int16) :: si, sj, commentLength, dummyShort, lres(RESERVED_STRING_COUNT)
+        integer(int32) :: info, li, dataOffset, dummyLong
+        integer(int32), allocatable, dimension(:) :: offsetChannel
+        integer(int16) :: si, commentLength, dummyShort, lres(RESERVED_STRING_COUNT)
         character(len = :), allocatable :: restring
-        character :: dummyChar
-        real(real64) :: dummyDouble
+        character(len = :), allocatable :: dummyString
 
         ! Initialization
         if (present(err)) then
@@ -233,7 +241,7 @@ contains
             if (errmgr%has_error_occurred()) return
 
             ! Offset channel
-            offsetChannel = file%read_int32(errmgr)
+            offsetChannel = file%read_int32_array(rst%channel_count, errmgr)
             if (errmgr%has_error_occurred()) return
 
             ! Reduction factor
@@ -255,31 +263,29 @@ contains
             ! Channel Name
             dummyShort = file%read_int16(errmgr) ! Channel name length
             if (errmgr%has_error_occurred()) return
-            if (dummyShort > 0) then
-                rst%channels(si)%name = file%read_char_array(dummyShort, errmgr)
-                if (errmgr%has_error_occurred()) return
-            end if
+            
+            rst%channels(si)%name = file%read_char_array(dummyShort, errmgr)
+            if (errmgr%has_error_occurred()) return
 
             ! Unit of Measure
             dummyShort = file%read_int16(errmgr)
             if (errmgr%has_error_occurred()) return
-            if (dummyShort > 0) then
-                rst%channels(si)%unit = file%read_char_array(dummyShort, errmgr)
-                if (errmgr%has_error_occurred()) return
-            end if
+            
+            rst%channels(si)%unit = file%read_char_array(dummyShort, errmgr)
+            if (errmgr%has_error_occurred()) return
 
             ! Channel Comment
             dummyShort = file%read_int16(errmgr)
             if (errmgr%has_error_occurred()) return
-            if (dummyShort > 0) then
-                rst%channels(si)%comments = file%read_char_array(dummyShort, errmgr)
-                if (errmgr%has_error_occurred()) return
-            end if
+            
+            rst%channels(si)%comments = file%read_char_array(dummyShort, errmgr)
+            if (errmgr%has_error_occurred()) return
 
             ! Channel Format
             rst%channels(si)%data_format = file%read_int16(errmgr)
             if (errmgr%has_error_occurred()) return
             
+            ! Data Width
             rst%channels(si)%data_width = file%read_int16(errmgr)
             if (errmgr%has_error_occurred()) return
 
@@ -290,28 +296,24 @@ contains
             ! Extended Header Info
             dummyLong = file%read_int32(errmgr)
             if (errmgr%has_error_occurred()) return
-            do li = 1, dummyLong
-                dummyChar = file%read_char(errmgr)
-                if (errmgr%has_error_occurred()) return
-            end do
 
+            rst%channels(si)%header = file%read_char_array(dummyLong, errmgr)
+            if (errmgr%has_error_occurred()) return
 
             ! Linearization Info
-            dummyChar = file%read_char(errmgr)
+            rst%channels(si)%linearization_mode = file%read_int8(errmgr)
             if (errmgr%has_error_occurred()) return
 
             ! User Scaling
-            dummyChar = file%read_char(errmgr)
+            rst%channels(si)%user_scale = file%read_int8(errmgr)
             if (errmgr%has_error_occurred()) return
 
             ! # of points used for user scale
             dummyShort = file%read_int16(errmgr)
             if (errmgr%has_error_occurred()) return
 
-            do sj = 1, dummyShort
-                dummyDouble = file%read_real64(errmgr)
-                if (errmgr%has_error_occurred()) return
-            end do
+            rst%channels(si)%user_scale_points = file%read_real64_array(dummyShort, errmgr)
+            if (errmgr%has_error_occurred()) return
 
             ! Thermo Type
             dummyShort = file%read_int16(errmgr)
@@ -320,27 +322,22 @@ contains
             ! Length of formula
             dummyShort = file%read_int16(errmgr)
             if (errmgr%has_error_occurred()) return
-            do sj = 1, dummyShort
-                dummyChar = file%read_char(errmgr)
-                if (errmgr%has_error_occurred()) return
-            end do
+
+            dummyString = file%read_char_array(dummyShort, errmgr)
+            if (errmgr%has_error_occurred()) return
 
             ! Sensor Information
             if (rst%version >= 5012) then
                 dummyLong = file%read_int32(errmgr)
                 if (errmgr%has_error_occurred()) return
-                if (dummyLong > 0) then
-                    allocate(character(len = dummyLong) :: rst%channels(si)%sensor_info)
-                    do li = 1, dummyLong
-                        rst%channels(si)%sensor_info(li:li) = file%read_char(errmgr)
-                        if (errmgr%has_error_occurred()) return
-                    end do
-                end if
+
+                rst%channels(si)%sensor_info = file%read_char_array(dummyLong, errmgr)
+                if (errmgr%has_error_occurred()) return
             end if
         end do
 
         ! Move the beginning of the actual data
-        call file%set_position(dataOffset)
+        call file%set_position(dataOffset + 1)
 
         ! Read in the data
         do si = 1, rst%channel_count
@@ -358,5 +355,7 @@ contains
             end do
         end do
     end function
+
+! ------------------------------------------------------------------------------
 
 end module
