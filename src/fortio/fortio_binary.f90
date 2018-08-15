@@ -37,7 +37,7 @@ module fortio_binary
         !> @brief Gets the current position in the file.
         procedure, public :: get_position => bfm_get_position
         !> @brief Sets the position within the file.
-        generic, public :: set_position => bfm_set_position, bfm_set_position_i64
+        procedure, public :: set_position => bfm_set_position
         !> @brief Moves the current position to the start of the file.
         procedure, public :: move_to_start => bfm_move_to_start
         !> @brief Gets a logical value determining if the file writes in little
@@ -51,9 +51,6 @@ module fortio_binary
         !> @brief Cleans up the resources used by the binary_file_manager 
         !! instance.
         final :: bfm_clean_up
-
-        procedure :: bfm_set_position
-        procedure :: bfm_set_position_i64
     end type
 
 ! ------------------------------------------------------------------------------
@@ -133,12 +130,54 @@ module fortio_binary
         !! file.
         generic, public :: read_char_array => br_read_char_array, &
             br_read_char_array_i16, br_read_char_array_i64
+        !> @brief Reads an array of 8-bit integer values from the currently
+        !!  open file.
+        generic, public :: read_int8_array => br_read_int8_array_i16, &
+            br_read_int8_array_i32, br_read_int8_array_i64
+        !> @brief Reads an array of 16-bit integer values from the currently
+        !!  open file.
+        generic, public :: read_int16_array => br_read_int16_array_i16, &
+            br_read_int16_array_i32, br_read_int16_array_i64
+        !> @brief Reads an array of 32-bit integer values from the currently
+        !!  open file.
+        generic, public :: read_int32_array => br_read_int32_array_i16, &
+            br_read_int32_array_i32, br_read_int32_array_i64
+        !> @brief Reads an array of 64-bit integer values from the currently
+        !!  open file.
+        generic, public :: read_int64_array => br_read_int64_array_i16, &
+            br_read_int64_array_i32, br_read_int64_array_i64
+        !> @brief Reads an array 32-bit floating-point values from the currently 
+        !!  open file.
+        generic, public :: read_real32_array => br_read_sngl_array_i16, &
+            br_read_sngl_array_i32, br_read_sngl_array_i64
+        !> @brief Reads an array 64-bit floating-point values from the currently 
+        !!  open file.
+        generic, public :: read_real64_array => br_read_dbl_array_i16, &
+            br_read_dbl_array_i32, br_read_dbl_array_i64
         !> @brief Tests to see if the current position denotes the end-of-file.
         procedure, public :: end_of_file => br_eof
 
         procedure :: br_read_char_array
         procedure :: br_read_char_array_i16
         procedure :: br_read_char_array_i64
+        procedure :: br_read_int8_array_i16
+        procedure :: br_read_int8_array_i32
+        procedure :: br_read_int8_array_i64
+        procedure :: br_read_int16_array_i16
+        procedure :: br_read_int16_array_i32
+        procedure :: br_read_int16_array_i64
+        procedure :: br_read_int32_array_i16
+        procedure :: br_read_int32_array_i32
+        procedure :: br_read_int32_array_i64
+        procedure :: br_read_int64_array_i16
+        procedure :: br_read_int64_array_i32
+        procedure :: br_read_int64_array_i64
+        procedure :: br_read_sngl_array_i16
+        procedure :: br_read_sngl_array_i32
+        procedure :: br_read_sngl_array_i64
+        procedure :: br_read_dbl_array_i16
+        procedure :: br_read_dbl_array_i32
+        procedure :: br_read_dbl_array_i64
     end type
 
 
@@ -358,33 +397,6 @@ contains
             p = 1
         else
             p = x
-        end if
-
-        ! Process
-        this%m_position = p
-    end subroutine
-
-! ------------------------------------------------------------------------------
-    !> @brief Sets the current position within the file.
-    !!
-    !! @param[in,out] this The binary_file_manager object.
-    !! @param[in] x The file position, in bytes.
-    subroutine bfm_set_position_i64(this, x)
-        ! Arguments
-        class(binary_file_manager), intent(inout) :: this
-        integer(int64), intent(in) :: x
-
-        ! Local Variables
-        integer(int32) :: p
-
-        ! Quick Return
-        if (.not.this%m_streamOpen) return
-
-        ! Initialization
-        if (x < 1) then
-            p = 1
-        else
-            p = int(x, int32)
         end if
 
         ! Process
@@ -2566,6 +2578,136 @@ contains
     end function
 
 ! ------------------------------------------------------------------------------
+    !> @brief Reads an array of 8-bit integer values from the currently open 
+    !!  file.
+    !!
+    !! @param[in,out] this The binary_reader object.
+    !! @param[in] n The number of values to read.
+    !! @param[out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_FILE_IO_ERROR: Occurs if an error occurs when attempting to read
+    !!      the data.
+    !!  - FIO_END_OF_FILE_ERROR: Occurs if the read is requested at or passed 
+    !!      the end of the file.
+    !!
+    !! @return The value.
+    function br_read_int8_array_i64(this, n, err) result(x)
+        ! Arguments
+        class(binary_reader), intent(inout) :: this
+        integer(int64), intent(in) :: n
+        class(errors), intent(inout), optional, target :: err
+        integer(int8), dimension(n) :: x
+
+        ! Local Variables
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+        character(len = 256) :: errmsg
+        integer(int64) :: i
+        integer(int32) :: flag
+        integer(int8) :: temp
+
+        ! Quick Return
+        if (n <= 0) return
+
+        ! Initialization
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+        x = 0
+
+        ! Ensure there's an open stream to which we may write
+        if (.not.this%m_streamOpen) then
+            call errmgr%report_error("br_read_int8_array_i64", &
+                "The file is not opened.", FIO_UNOPENED_ERROR)
+            return
+        end if
+
+        ! Process
+        do i = 1, n
+            read(this%m_id, pos = this%m_position, iostat = flag) temp
+            if (flag < 0) then
+                ! End Of File
+                call errmgr%report_error(&
+                    "br_read_int8_array_i64", "End of file encountered.", &
+                    FIO_END_OF_FILE_ERROR)
+                return
+            else if (flag > 0) then
+                ! Somethings wrong
+                write(errmsg, "(AI0A)") &
+                    "An error was encountered while attempting to " // &
+                    "perform the read operation.  Error code ", flag, &
+                    " was encountered."
+                call errmgr%report_error("br_read_int8_array_i64", trim(errmsg), &
+                    FIO_FILE_IO_ERROR)
+                return
+            end if
+            this%m_position = this%m_position + storage_size(temp) / 8
+            x(i) = temp
+        end do
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Reads an array of 8-bit integer values from the currently open 
+    !!  file.
+    !!
+    !! @param[in,out] this The binary_reader object.
+    !! @param[in] n The number of values to read.
+    !! @param[out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_FILE_IO_ERROR: Occurs if an error occurs when attempting to read
+    !!      the data.
+    !!  - FIO_END_OF_FILE_ERROR: Occurs if the read is requested at or passed 
+    !!      the end of the file.
+    !!
+    !! @return The value.
+    function br_read_int8_array_i16(this, n, err) result(x)
+        ! Arguments
+        class(binary_reader), intent(inout) :: this
+        integer(int16), intent(in) :: n
+        class(errors), intent(inout), optional, target :: err
+        integer(int8), dimension(n) :: x
+
+        ! Process
+        x = br_read_int8_array_i64(this, int(n, int64), err)
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Reads an array of 8-bit integer values from the currently open 
+    !!  file.
+    !!
+    !! @param[in,out] this The binary_reader object.
+    !! @param[in] n The number of values to read.
+    !! @param[out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_FILE_IO_ERROR: Occurs if an error occurs when attempting to read
+    !!      the data.
+    !!  - FIO_END_OF_FILE_ERROR: Occurs if the read is requested at or passed 
+    !!      the end of the file.
+    !!
+    !! @return The value.
+    function br_read_int8_array_i32(this, n, err) result(x)
+        ! Arguments
+        class(binary_reader), intent(inout) :: this
+        integer(int32), intent(in) :: n
+        class(errors), intent(inout), optional, target :: err
+        integer(int8), dimension(n) :: x
+
+        ! Process
+        x = br_read_int8_array_i64(this, int(n, int64), err)
+    end function
+
+! ------------------------------------------------------------------------------
     !> @brief Reads a single character from the currently open file.
     !!
     !! @param[in,out] this The binary_reader object.
@@ -2643,10 +2785,10 @@ contains
     !!      the end of the file.
     !!
     !! @return The character array.
-    function br_read_char_array(this, nchar, err) result(x)
+    function br_read_char_array_i64(this, nchar, err) result(x)
         ! Arguments
         class(binary_reader), intent(inout) :: this
-        integer(int32), intent(in) :: nchar
+        integer(int64), intent(in) :: nchar
         class(errors), intent(inout), optional, target :: err
         character(len = nchar) :: x
 
@@ -2654,8 +2796,12 @@ contains
         class(errors), pointer :: errmgr
         type(errors), target :: deferr
         character(len = 256) :: errmsg
-        integer(int32) :: i, flag
+        integer(int64) :: i
+        integer(int32) :: flag
         character :: tempchar
+
+        ! Quick Return
+        if (nchar == 0) return
 
         ! Initialization
         if (present(err)) then
@@ -2666,7 +2812,7 @@ contains
 
         ! Ensure there's an open stream to which we may write
         if (.not.this%m_streamOpen) then
-            call errmgr%report_error("br_read_char_array", &
+            call errmgr%report_error("br_read_char_array_i64", &
                 "The file is not opened.", FIO_UNOPENED_ERROR)
             return
         end if
@@ -2677,7 +2823,7 @@ contains
             if (flag < 0) then
                 ! End Of File
                 call errmgr%report_error(&
-                    "br_read_char_array", "End of file encountered.", &
+                    "br_read_char_array_i64", "End of file encountered.", &
                     FIO_END_OF_FILE_ERROR)
                 return
             else if (flag > 0) then
@@ -2686,11 +2832,11 @@ contains
                     "An error was encountered while attempting to " // &
                     "perform the read operation.  Error code ", flag, &
                     " was encountered."
-                call errmgr%report_error("br_read_char_array", trim(errmsg), &
-                    FIO_FILE_IO_ERROR)
+                call errmgr%report_error("br_read_char_array_i64", &
+                    trim(errmsg), FIO_FILE_IO_ERROR)
                 return
             end if
-            this%m_position = this%m_position + storage_size(x) / 8
+            this%m_position = this%m_position + storage_size(tempchar) / 8
             x(i:i) = tempchar
         end do
     end function
@@ -2719,7 +2865,7 @@ contains
         character(len = nchar) :: x
 
         ! Process
-        x = br_read_char_array(this, int(nchar, int32), err)
+        x = br_read_char_array_i64(this, int(nchar, int64), err)
     end function
 
 ! ------------------------------------------------------------------------------
@@ -2738,15 +2884,15 @@ contains
     !!      the end of the file.
     !!
     !! @return The character array.
-    function br_read_char_array_i64(this, nchar, err) result(x)
+    function br_read_char_array(this, nchar, err) result(x)
         ! Arguments
         class(binary_reader), intent(inout) :: this
-        integer(int64), intent(in) :: nchar
+        integer(int32), intent(in) :: nchar
         class(errors), intent(inout), optional, target :: err
         character(len = nchar) :: x
 
         ! Process
-        x = br_read_char_array(this, int(nchar, int32), err)
+        x = br_read_char_array_i64(this, int(nchar, int64), err)
     end function
     
 ! ------------------------------------------------------------------------------
@@ -2768,6 +2914,667 @@ contains
         ! Process - do not increment the position!
         read(this%m_id, pos = this%m_position, iostat = flag) temp
         x = flag < 0
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Reads an array of 16-bit integer values from the currently open 
+    !!  file.
+    !!
+    !! @param[in,out] this The binary_reader object.
+    !! @param[in] n The number of values to read.
+    !! @param[out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_FILE_IO_ERROR: Occurs if an error occurs when attempting to read
+    !!      the data.
+    !!  - FIO_END_OF_FILE_ERROR: Occurs if the read is requested at or passed 
+    !!      the end of the file.
+    !!
+    !! @return The value.
+    function br_read_int16_array_i64(this, n, err) result(x)
+        ! Arguments
+        class(binary_reader), intent(inout) :: this
+        integer(int64), intent(in) :: n
+        class(errors), intent(inout), optional, target :: err
+        integer(int16), dimension(n) :: x
+
+        ! Local Variables
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+        character(len = 256) :: errmsg
+        integer(int64) :: i
+        integer(int32) :: flag
+        integer(int16) :: temp
+
+        ! Quick Return
+        if (n <= 0) return
+
+        ! Initialization
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+        x = 0
+
+        ! Ensure there's an open stream to which we may write
+        if (.not.this%m_streamOpen) then
+            call errmgr%report_error("br_read_int16_array_i64", &
+                "The file is not opened.", FIO_UNOPENED_ERROR)
+            return
+        end if
+
+        ! Process
+        do i = 1, n
+            read(this%m_id, pos = this%m_position, iostat = flag) temp
+            if (flag < 0) then
+                ! End Of File
+                call errmgr%report_error(&
+                    "br_read_int16_array_i64", "End of file encountered.", &
+                    FIO_END_OF_FILE_ERROR)
+                return
+            else if (flag > 0) then
+                ! Somethings wrong
+                write(errmsg, "(AI0A)") &
+                    "An error was encountered while attempting to " // &
+                    "perform the read operation.  Error code ", flag, &
+                    " was encountered."
+                call errmgr%report_error("br_read_int16_array_i64", trim(errmsg), &
+                    FIO_FILE_IO_ERROR)
+                return
+            end if
+            this%m_position = this%m_position + storage_size(temp) / 8
+            x(i) = temp
+        end do
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Reads an array of 16-bit integer values from the currently open 
+    !!  file.
+    !!
+    !! @param[in,out] this The binary_reader object.
+    !! @param[in] n The number of values to read.
+    !! @param[out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_FILE_IO_ERROR: Occurs if an error occurs when attempting to read
+    !!      the data.
+    !!  - FIO_END_OF_FILE_ERROR: Occurs if the read is requested at or passed 
+    !!      the end of the file.
+    !!
+    !! @return The value.
+    function br_read_int16_array_i16(this, n, err) result(x)
+        ! Arguments
+        class(binary_reader), intent(inout) :: this
+        integer(int16), intent(in) :: n
+        class(errors), intent(inout), optional, target :: err
+        integer(int16), dimension(n) :: x
+
+        ! Process
+        x = br_read_int16_array_i64(this, int(n, int64), err)
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Reads an array of 16-bit integer values from the currently open 
+    !!  file.
+    !!
+    !! @param[in,out] this The binary_reader object.
+    !! @param[in] n The number of values to read.
+    !! @param[out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_FILE_IO_ERROR: Occurs if an error occurs when attempting to read
+    !!      the data.
+    !!  - FIO_END_OF_FILE_ERROR: Occurs if the read is requested at or passed 
+    !!      the end of the file.
+    !!
+    !! @return The value.
+    function br_read_int16_array_i32(this, n, err) result(x)
+        ! Arguments
+        class(binary_reader), intent(inout) :: this
+        integer(int32), intent(in) :: n
+        class(errors), intent(inout), optional, target :: err
+        integer(int16), dimension(n) :: x
+
+        ! Process
+        x = br_read_int16_array_i64(this, int(n, int64), err)
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Reads an array of 32-bit integer values from the currently open 
+    !!  file.
+    !!
+    !! @param[in,out] this The binary_reader object.
+    !! @param[in] n The number of values to read.
+    !! @param[out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_FILE_IO_ERROR: Occurs if an error occurs when attempting to read
+    !!      the data.
+    !!  - FIO_END_OF_FILE_ERROR: Occurs if the read is requested at or passed 
+    !!      the end of the file.
+    !!
+    !! @return The values.
+    function br_read_int32_array_i64(this, n, err) result(x)
+        ! Arguments
+        class(binary_reader), intent(inout) :: this
+        integer(int64), intent(in) :: n
+        class(errors), intent(inout), optional, target :: err
+        integer(int32), dimension(n) :: x
+
+        ! Local Variables
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+        character(len = 256) :: errmsg
+        integer(int64) :: i
+        integer(int32) :: flag, temp
+
+        ! Quick Return
+        if (n <= 0) return
+
+        ! Initialization
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+        x = 0
+
+        ! Ensure there's an open stream to which we may write
+        if (.not.this%m_streamOpen) then
+            call errmgr%report_error("br_read_int32_array_i64", &
+                "The file is not opened.", FIO_UNOPENED_ERROR)
+            return
+        end if
+
+        ! Process
+        do i = 1, n
+            read(this%m_id, pos = this%m_position, iostat = flag) temp
+            if (flag < 0) then
+                ! End Of File
+                call errmgr%report_error(&
+                    "br_read_int32_array_i64", "End of file encountered.", &
+                    FIO_END_OF_FILE_ERROR)
+                return
+            else if (flag > 0) then
+                ! Somethings wrong
+                write(errmsg, "(AI0A)") &
+                    "An error was encountered while attempting to " // &
+                    "perform the read operation.  Error code ", flag, &
+                    " was encountered."
+                call errmgr%report_error("br_read_int32_array_i64", trim(errmsg), &
+                    FIO_FILE_IO_ERROR)
+                return
+            end if
+            this%m_position = this%m_position + storage_size(temp) / 8
+            x(i) = temp
+        end do
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Reads an array of 8-bit integer values from the currently open 
+    !!  file.
+    !!
+    !! @param[in,out] this The binary_reader object.
+    !! @param[in] n The number of values to read.
+    !! @param[out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_FILE_IO_ERROR: Occurs if an error occurs when attempting to read
+    !!      the data.
+    !!  - FIO_END_OF_FILE_ERROR: Occurs if the read is requested at or passed 
+    !!      the end of the file.
+    !!
+    !! @return The values.
+    function br_read_int32_array_i16(this, n, err) result(x)
+        ! Arguments
+        class(binary_reader), intent(inout) :: this
+        integer(int16), intent(in) :: n
+        class(errors), intent(inout), optional, target :: err
+        integer(int32), dimension(n) :: x
+
+        ! Process
+        x = br_read_int32_array_i64(this, int(n, int64), err)
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Reads an array of 32-bit integer values from the currently open 
+    !!  file.
+    !!
+    !! @param[in,out] this The binary_reader object.
+    !! @param[in] n The number of values to read.
+    !! @param[out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_FILE_IO_ERROR: Occurs if an error occurs when attempting to read
+    !!      the data.
+    !!  - FIO_END_OF_FILE_ERROR: Occurs if the read is requested at or passed 
+    !!      the end of the file.
+    !!
+    !! @return The values.
+    function br_read_int32_array_i32(this, n, err) result(x)
+        ! Arguments
+        class(binary_reader), intent(inout) :: this
+        integer(int32), intent(in) :: n
+        class(errors), intent(inout), optional, target :: err
+        integer(int32), dimension(n) :: x
+
+        ! Process
+        x = br_read_int32_array_i64(this, int(n, int64), err)
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Reads an array of 64-bit integer values from the currently open 
+    !!  file.
+    !!
+    !! @param[in,out] this The binary_reader object.
+    !! @param[in] n The number of values to read.
+    !! @param[out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_FILE_IO_ERROR: Occurs if an error occurs when attempting to read
+    !!      the data.
+    !!  - FIO_END_OF_FILE_ERROR: Occurs if the read is requested at or passed 
+    !!      the end of the file.
+    !!
+    !! @return The values.
+    function br_read_int64_array_i64(this, n, err) result(x)
+        ! Arguments
+        class(binary_reader), intent(inout) :: this
+        integer(int64), intent(in) :: n
+        class(errors), intent(inout), optional, target :: err
+        integer(int64), dimension(n) :: x
+
+        ! Local Variables
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+        character(len = 256) :: errmsg
+        integer(int64) :: i
+        integer(int32) :: flag
+        integer(int64) :: temp
+
+        ! Quick Return
+        if (n <= 0) return
+
+        ! Initialization
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+        x = 0
+
+        ! Ensure there's an open stream to which we may write
+        if (.not.this%m_streamOpen) then
+            call errmgr%report_error("br_read_int64_array_i64", &
+                "The file is not opened.", FIO_UNOPENED_ERROR)
+            return
+        end if
+
+        ! Process
+        do i = 1, n
+            read(this%m_id, pos = this%m_position, iostat = flag) temp
+            if (flag < 0) then
+                ! End Of File
+                call errmgr%report_error(&
+                    "br_read_int64_array_i64", "End of file encountered.", &
+                    FIO_END_OF_FILE_ERROR)
+                return
+            else if (flag > 0) then
+                ! Somethings wrong
+                write(errmsg, "(AI0A)") &
+                    "An error was encountered while attempting to " // &
+                    "perform the read operation.  Error code ", flag, &
+                    " was encountered."
+                call errmgr%report_error("br_read_int64_array_i64", trim(errmsg), &
+                    FIO_FILE_IO_ERROR)
+                return
+            end if
+            this%m_position = this%m_position + storage_size(temp) / 8
+            x(i) = temp
+        end do
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Reads an array of 64-bit integer values from the currently open 
+    !!  file.
+    !!
+    !! @param[in,out] this The binary_reader object.
+    !! @param[in] n The number of values to read.
+    !! @param[out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_FILE_IO_ERROR: Occurs if an error occurs when attempting to read
+    !!      the data.
+    !!  - FIO_END_OF_FILE_ERROR: Occurs if the read is requested at or passed 
+    !!      the end of the file.
+    !!
+    !! @return The value.
+    function br_read_int64_array_i16(this, n, err) result(x)
+        ! Arguments
+        class(binary_reader), intent(inout) :: this
+        integer(int16), intent(in) :: n
+        class(errors), intent(inout), optional, target :: err
+        integer(int64), dimension(n) :: x
+
+        ! Process
+        x = br_read_int64_array_i64(this, int(n, int64), err)
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Reads an array of 64-bit integer values from the currently open 
+    !!  file.
+    !!
+    !! @param[in,out] this The binary_reader object.
+    !! @param[in] n The number of values to read.
+    !! @param[out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_FILE_IO_ERROR: Occurs if an error occurs when attempting to read
+    !!      the data.
+    !!  - FIO_END_OF_FILE_ERROR: Occurs if the read is requested at or passed 
+    !!      the end of the file.
+    !!
+    !! @return The value.
+    function br_read_int64_array_i32(this, n, err) result(x)
+        ! Arguments
+        class(binary_reader), intent(inout) :: this
+        integer(int32), intent(in) :: n
+        class(errors), intent(inout), optional, target :: err
+        integer(int64), dimension(n) :: x
+
+        ! Process
+        x = br_read_int64_array_i64(this, int(n, int64), err)
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Reads a array 32-bit floating-point values from the currently 
+    !! open file.
+    !!
+    !! @param[in,out] this The binary_reader object.
+    !! @param[in] n The number of values to read.
+    !! @param[out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_FILE_IO_ERROR: Occurs if an error occurs when attempting to read
+    !!      the data.
+    !!  - FIO_END_OF_FILE_ERROR: Occurs if the read is requested at or passed 
+    !!      the end of the file.
+    !!
+    !! @return The values.
+    function br_read_sngl_array_i64(this, n, err) result(x)
+        ! Arguments
+        class(binary_reader), intent(inout) :: this
+        integer(int64), intent(in) :: n
+        class(errors), intent(inout), optional, target :: err
+        real(real32), dimension(n) :: x
+
+        ! Local Variables
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+        character(len = 256) :: errmsg
+        logical :: littleEndian
+        integer(int32) :: flag
+        integer(int64) :: i
+        real(real32) :: temp
+
+        ! Quick Return
+        if (n == 0) return
+
+        ! Initialization
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+        littleEndian = is_little_endian()
+        temp = 0.0
+
+        ! Ensure there's an open stream to which we may write
+        if (.not.this%m_streamOpen) then
+            call errmgr%report_error("br_read_sngl_array_i64", &
+                "The file is not opened.", FIO_UNOPENED_ERROR)
+            return
+        end if
+
+        ! Process
+        do i = 1, n
+            read(this%m_id, pos = this%m_position, iostat = flag) temp
+            if (flag < 0) then
+                ! End Of File
+                call errmgr%report_error(&
+                    "br_read_sngl_array_i64", "End of file encountered.", &
+                    FIO_END_OF_FILE_ERROR)
+                return
+            else if (flag > 0) then
+                ! Somethings wrong
+                write(errmsg, "(AI0A)") &
+                    "An error was encountered while attempting to " // &
+                    "perform the read operation.  Error code ", flag, &
+                    " was encountered."
+                call errmgr%report_error("br_read_sngl_array_i64", trim(errmsg), &
+                    FIO_FILE_IO_ERROR)
+                return
+            end if
+            this%m_position = this%m_position + storage_size(temp) / 8
+            if ((this%m_littleEndian .and. .not.littleEndian) .or. &
+                    (.not.this%m_littleEndian .and. littleEndian)) then
+                call swap_bytes(temp)
+            end if
+            x(i) = temp
+        end do
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Reads a array 32-bit floating-point values from the currently 
+    !! open file.
+    !!
+    !! @param[in,out] this The binary_reader object.
+    !! @param[in] n The number of values to read.
+    !! @param[out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_FILE_IO_ERROR: Occurs if an error occurs when attempting to read
+    !!      the data.
+    !!  - FIO_END_OF_FILE_ERROR: Occurs if the read is requested at or passed 
+    !!      the end of the file.
+    !!
+    !! @return The values.
+    function br_read_sngl_array_i32(this, n, err) result(x)
+        ! Arguments
+        class(binary_reader), intent(inout) :: this
+        integer(int32), intent(in) :: n
+        class(errors), intent(inout), optional, target :: err
+        real(real32), dimension(n) :: x
+
+        ! Process
+        x = br_read_sngl_array_i64(this, int(n, int64), err)
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Reads a array 32-bit floating-point values from the currently 
+    !! open file.
+    !!
+    !! @param[in,out] this The binary_reader object.
+    !! @param[in] n The number of values to read.
+    !! @param[out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_FILE_IO_ERROR: Occurs if an error occurs when attempting to read
+    !!      the data.
+    !!  - FIO_END_OF_FILE_ERROR: Occurs if the read is requested at or passed 
+    !!      the end of the file.
+    !!
+    !! @return The values.
+    function br_read_sngl_array_i16(this, n, err) result(x)
+        ! Arguments
+        class(binary_reader), intent(inout) :: this
+        integer(int16), intent(in) :: n
+        class(errors), intent(inout), optional, target :: err
+        real(real32), dimension(n) :: x
+
+        ! Process
+        x = br_read_sngl_array_i64(this, int(n, int64), err)
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Reads a array 64-bit floating-point values from the currently 
+    !! open file.
+    !!
+    !! @param[in,out] this The binary_reader object.
+    !! @param[in] n The number of values to read.
+    !! @param[out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_FILE_IO_ERROR: Occurs if an error occurs when attempting to read
+    !!      the data.
+    !!  - FIO_END_OF_FILE_ERROR: Occurs if the read is requested at or passed 
+    !!      the end of the file.
+    !!
+    !! @return The values.
+    function br_read_dbl_array_i64(this, n, err) result(x)
+        ! Arguments
+        class(binary_reader), intent(inout) :: this
+        integer(int64), intent(in) :: n
+        class(errors), intent(inout), optional, target :: err
+        real(real64), dimension(n) :: x
+
+        ! Local Variables
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+        character(len = 256) :: errmsg
+        logical :: littleEndian
+        integer(int32) :: flag
+        integer(int64) :: i
+        real(real64) :: temp
+
+        ! Quick Return
+        if (n == 0) return
+
+        ! Initialization
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+        littleEndian = is_little_endian()
+        temp = 0.0d0
+
+        ! Ensure there's an open stream to which we may write
+        if (.not.this%m_streamOpen) then
+            call errmgr%report_error("br_read_dbl_array_i64", &
+                "The file is not opened.", FIO_UNOPENED_ERROR)
+            return
+        end if
+
+        ! Process
+        do i = 1, n
+            read(this%m_id, pos = this%m_position, iostat = flag) temp
+            if (flag < 0) then
+                ! End Of File
+                call errmgr%report_error(&
+                    "br_read_dbl_array_i64", "End of file encountered.", &
+                    FIO_END_OF_FILE_ERROR)
+                return
+            else if (flag > 0) then
+                ! Somethings wrong
+                write(errmsg, "(AI0A)") &
+                    "An error was encountered while attempting to " // &
+                    "perform the read operation.  Error code ", flag, &
+                    " was encountered."
+                call errmgr%report_error("br_read_dbl_array_i64", trim(errmsg), &
+                    FIO_FILE_IO_ERROR)
+                return
+            end if
+            this%m_position = this%m_position + storage_size(temp) / 8
+            if ((this%m_littleEndian .and. .not.littleEndian) .or. &
+                    (.not.this%m_littleEndian .and. littleEndian)) then
+                call swap_bytes(temp)
+            end if
+            x(i) = temp
+        end do
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Reads a array 64-bit floating-point values from the currently 
+    !! open file.
+    !!
+    !! @param[in,out] this The binary_reader object.
+    !! @param[in] n The number of values to read.
+    !! @param[out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_FILE_IO_ERROR: Occurs if an error occurs when attempting to read
+    !!      the data.
+    !!  - FIO_END_OF_FILE_ERROR: Occurs if the read is requested at or passed 
+    !!      the end of the file.
+    !!
+    !! @return The values.
+    function br_read_dbl_array_i32(this, n, err) result(x)
+        ! Arguments
+        class(binary_reader), intent(inout) :: this
+        integer(int32), intent(in) :: n
+        class(errors), intent(inout), optional, target :: err
+        real(real64), dimension(n) :: x
+
+        ! Process
+        x = br_read_dbl_array_i64(this, int(n, int64), err)
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Reads a array 64-bit floating-point values from the currently 
+    !! open file.
+    !!
+    !! @param[in,out] this The binary_reader object.
+    !! @param[in] n The number of values to read.
+    !! @param[out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_FILE_IO_ERROR: Occurs if an error occurs when attempting to read
+    !!      the data.
+    !!  - FIO_END_OF_FILE_ERROR: Occurs if the read is requested at or passed 
+    !!      the end of the file.
+    !!
+    !! @return The values.
+    function br_read_dbl_array_i16(this, n, err) result(x)
+        ! Arguments
+        class(binary_reader), intent(inout) :: this
+        integer(int16), intent(in) :: n
+        class(errors), intent(inout), optional, target :: err
+        real(real64), dimension(n) :: x
+
+        ! Process
+        x = br_read_dbl_array_i64(this, int(n, int64), err)
     end function
 
 ! ------------------------------------------------------------------------------
