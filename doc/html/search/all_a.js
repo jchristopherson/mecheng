@@ -33,6 +33,7 @@ var searchData=
   ['linear_5fleast_5fsquares',['linear_least_squares',['../interfacecurvefit__regression_1_1linear__least__squares.html',1,'curvefit_regression']]],
   ['linear_5fleast_5fsquares_5f1var',['linear_least_squares_1var',['../interfacecurvefit__regression_1_1linear__least__squares.html#a1fcb5f620aa2e29e109af4839f93359e',1,'curvefit_regression::linear_least_squares::linear_least_squares_1var()'],['../namespacecurvefit__regression.html#a04bcdddf9069db3b4fc50b140776de90',1,'curvefit_regression::linear_least_squares_1var()']]],
   ['linear_5fleast_5fsquares_5fnvar',['linear_least_squares_nvar',['../interfacecurvefit__regression_1_1linear__least__squares.html#a1c7a3f939afadb318debec45843f12a2',1,'curvefit_regression::linear_least_squares::linear_least_squares_nvar()'],['../namespacecurvefit__regression.html#a076cd4eeed386abcc4e8cd9410d693ef',1,'curvefit_regression::linear_least_squares_nvar()']]],
+  ['linearization_5fmode',['linearization_mode',['../structfortio__hbm_1_1hbm__data__channel.html#aea0d6d641d395aa3f73bd25750eaf1bf',1,'fortio_hbm::hbm_data_channel']]],
   ['linked_5flist',['linked_list',['../structcollection__linked__list_1_1linked__list.html',1,'collection_linked_list']]],
   ['list',['list',['../structcollection__list_1_1list.html',1,'collection_list']]],
   ['list_5fclear',['list_clear',['../namespacecollection__list.html#a5817a43f1e0281c741c7d23811f0118e',1,'collection_list']]],

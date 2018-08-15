@@ -9,6 +9,10 @@ var searchData=
   ['cf_5fnonmonotonic_5farray_5ferror',['cf_nonmonotonic_array_error',['../namespacecurvefit__core.html#abb07cf23e3f25dfd6bf70e0f4e440c91',1,'curvefit_core']]],
   ['cf_5fout_5fof_5fmemory_5ferror',['cf_out_of_memory_error',['../namespacecurvefit__core.html#ac600655a741b9bebc1983ff18e2457b9',1,'curvefit_core']]],
   ['cf_5ftolerance_5ftoo_5fsmall_5ferror',['cf_tolerance_too_small_error',['../namespacecurvefit__core.html#afe30dec2a61088e9fa4a85f2e0227ac7',1,'curvefit_core']]],
+  ['channel_5fcount',['channel_count',['../structfortio__hbm_1_1hbm__data__file.html#a4bcae3cf768aa512a526e01562fb8348',1,'fortio_hbm::hbm_data_file']]],
+  ['channel_5flength',['channel_length',['../structfortio__hbm_1_1hbm__data__channel.html#a2ea51c0077b99a80a49fd8e1c4b75277',1,'fortio_hbm::hbm_data_channel']]],
+  ['channel_5flocation',['channel_location',['../structfortio__hbm_1_1hbm__data__channel.html#a4be859504ab796a51add3ed683249801',1,'fortio_hbm::hbm_data_channel']]],
+  ['channels',['channels',['../structfortio__hbm_1_1hbm__data__file.html#a1a1a3300b7a03afbb6c92d35a64a7091',1,'fortio_hbm::hbm_data_file']]],
   ['clr_5fblack',['clr_black',['../namespacefplot__core.html#a3f8775edb06de2a90c24009a67ef4f96',1,'fplot_core']]],
   ['clr_5fblue',['clr_blue',['../namespacefplot__core.html#ae9f20ca4d21fdf9ba84f3b363f3e7d20',1,'fplot_core']]],
   ['clr_5fcyan',['clr_cyan',['../namespacefplot__core.html#a700047d632ac642f6a949e44451bbc80',1,'fplot_core']]],
@@ -29,6 +33,7 @@ var searchData=
   ['collection_5finvalid_5finput_5ferror',['collection_invalid_input_error',['../namespacecollection__errors.html#ae253e3a59ae452c91c4ee08114c2a61f',1,'collection_errors']]],
   ['collection_5finvalid_5foperation_5ferror',['collection_invalid_operation_error',['../namespacecollection__errors.html#a9724fb7663c20bea2186948468f24267',1,'collection_errors']]],
   ['collection_5fout_5fof_5fmemory_5ferror',['collection_out_of_memory_error',['../namespacecollection__errors.html#a5501f951e710a0716ee408cf15c232e5',1,'collection_errors']]],
+  ['comments',['comments',['../structfortio__hbm_1_1hbm__data__channel.html#a9c7693506637b4129effa0ecb03d01ea',1,'fortio_hbm::hbm_data_channel::comments()'],['../structfortio__hbm_1_1hbm__data__file.html#a3cf22b314569967fb961d370a729d4a6',1,'fortio_hbm::hbm_data_file::comments()']]],
   ['converge_5fon_5fchng',['converge_on_chng',['../structnonlin__core_1_1iteration__behavior.html#a59717056c1bfebca82b41c613082abec',1,'nonlin_core::iteration_behavior']]],
   ['converge_5fon_5ffcn',['converge_on_fcn',['../structnonlin__core_1_1iteration__behavior.html#a757c280d32ca19e94aae1e712967baf8',1,'nonlin_core::iteration_behavior']]],
   ['converge_5fon_5fzero_5fdiff',['converge_on_zero_diff',['../structnonlin__core_1_1iteration__behavior.html#afd0d9d5f04d17bc9e3be467ebd93a1b1',1,'nonlin_core::iteration_behavior']]]

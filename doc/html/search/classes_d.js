@@ -9,7 +9,7 @@ var searchData=
   ['ode_5fintegrator_5freset',['ode_integrator_reset',['../interfaceintegral__core_1_1ode__integrator__reset.html',1,'integral_core']]],
   ['ode_5fjacobian',['ode_jacobian',['../interfaceintegral__core_1_1ode__jacobian.html',1,'integral_core']]],
   ['operator_28_2a_29',['operator(*)',['../interfacenonlin__polynomials_1_1operator_07_5_08.html',1,'nonlin_polynomials::operator(*)'],['../interfacekinematics_1_1operator_07_5_08.html',1,'kinematics::operator(*)']]],
-  ['operator_28_2b_29',['operator(+)',['../interfacekinematics_1_1operator_07_09_08.html',1,'kinematics::operator(+)'],['../interfacenonlin__polynomials_1_1operator_07_09_08.html',1,'nonlin_polynomials::operator(+)']]],
+  ['operator_28_2b_29',['operator(+)',['../interfacenonlin__polynomials_1_1operator_07_09_08.html',1,'nonlin_polynomials::operator(+)'],['../interfacekinematics_1_1operator_07_09_08.html',1,'kinematics::operator(+)']]],
   ['operator_28_2d_29',['operator(-)',['../interfacekinematics_1_1operator_07-_08.html',1,'kinematics::operator(-)'],['../interfacenonlin__polynomials_1_1operator_07-_08.html',1,'nonlin_polynomials::operator(-)']]],
   ['operator_28_2f_29',['operator(/)',['../interfacekinematics_1_1operator_07_2_08.html',1,'kinematics']]]
 ];

@@ -9,6 +9,7 @@ var searchData=
   ['seb_5fresults',['seb_results',['../structcurvefit__calibration_1_1seb__results.html',1,'curvefit_calibration']]],
   ['second_5fderivative',['second_derivative',['../structcurvefit__interp_1_1spline__interp.html#aba652ce901ed162e4e319f80f0193517',1,'curvefit_interp::spline_interp']]],
   ['sections',['sections',['../namespacesections.html',1,'']]],
+  ['sensor_5finfo',['sensor_info',['../structfortio__hbm_1_1hbm__data__channel.html#ad2bda90efdfbd3eab915b6123ad8c79d',1,'fortio_hbm::hbm_data_channel']]],
   ['set',['set',['../structcollection__list_1_1list.html#ae7adb65f667f68d69f77f28a471f2ed9',1,'collection_list::list::set()'],['../structcollection__list_1_1persistent__list.html#a7a628d8b787e8bc7c0e9049ebd5e022f',1,'collection_list::persistent_list::set()'],['../structfplot__core_1_1plot.html#a8ee01b37ca833b399067f4be3faea378',1,'fplot_core::plot::set()'],['../structfplot__core_1_1multiplot.html#ae7a6b16e810271f67cc9efc8f957d230',1,'fplot_core::multiplot::set()'],['../structnonlin__polynomials_1_1polynomial.html#ab589ca8bc5c99a0b18f8df3a877790fd',1,'nonlin_polynomials::polynomial::set()']]],
   ['set_5fabs_5ftol',['set_abs_tol',['../structintegral__core_1_1integrator__base.html#a02629801d7a497a024da658de30a7745',1,'integral_core::integrator_base']]],
   ['set_5fabsolute_5ftolerances',['set_absolute_tolerances',['../structintegral__core_1_1ode__integrator.html#a1247861c7b4178b1503f2b2eec911539',1,'integral_core::ode_integrator']]],

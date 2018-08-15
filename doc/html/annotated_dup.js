@@ -11,6 +11,7 @@ var annotated_dup =
     [ "curvefit_statistics", "namespacecurvefit__statistics.html", "namespacecurvefit__statistics" ],
     [ "ferror", "namespaceferror.html", "namespaceferror" ],
     [ "fortio_binary", "namespacefortio__binary.html", "namespacefortio__binary" ],
+    [ "fortio_hbm", "namespacefortio__hbm.html", "namespacefortio__hbm" ],
     [ "fortio_text", "namespacefortio__text.html", "namespacefortio__text" ],
     [ "fplot_core", "namespacefplot__core.html", "namespacefplot__core" ],
     [ "integral_core", "namespaceintegral__core.html", "namespaceintegral__core" ],

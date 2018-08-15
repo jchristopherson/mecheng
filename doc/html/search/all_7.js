@@ -2,6 +2,10 @@ var searchData=
 [
   ['has_5ferror_5foccurred',['has_error_occurred',['../structferror_1_1errors.html#a7150a5cddd8b96eaecaf8a4d2ca1aa59',1,'ferror::errors']]],
   ['has_5fwarning_5foccurred',['has_warning_occurred',['../structferror_1_1errors.html#ad165f873adee10565b162d72f43730aa',1,'ferror::errors']]],
+  ['hbm_5fdata_5fchannel',['hbm_data_channel',['../structfortio__hbm_1_1hbm__data__channel.html',1,'fortio_hbm']]],
+  ['hbm_5fdata_5ffile',['hbm_data_file',['../structfortio__hbm_1_1hbm__data__file.html',1,'fortio_hbm']]],
+  ['hbm_5fdata_5fto_5fmatrix',['hbm_data_to_matrix',['../namespacefortio__hbm.html#a00a48345c13088a8e30f7590926d8a62',1,'fortio_hbm']]],
+  ['header',['header',['../structfortio__hbm_1_1hbm__data__channel.html#a850f9e9b0d2ad2e79f3705f13ac29c21',1,'fortio_hbm::hbm_data_channel']]],
   ['hollow_5fcircle_5fsection',['hollow_circle_section',['../namespacesections.html#a0171bd63c07254727ac23587c49d1f13',1,'sections']]],
   ['hot_5fcolormap',['hot_colormap',['../structfplot__core_1_1hot__colormap.html',1,'fplot_core']]],
   ['hunt',['hunt',['../structcurvefit__interp_1_1interp__manager.html#ae12777c0b8296d1df8ad98a030beb716',1,'curvefit_interp::interp_manager']]],

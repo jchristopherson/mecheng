@@ -13,6 +13,7 @@ var namespaces_dup =
     [ "curvefit_statistics", "namespacecurvefit__statistics.html", null ],
     [ "ferror", "namespaceferror.html", null ],
     [ "fortio_binary", "namespacefortio__binary.html", null ],
+    [ "fortio_hbm", "namespacefortio__hbm.html", null ],
     [ "fortio_text", "namespacefortio__text.html", null ],
     [ "fortio_types", "namespacefortio__types.html", null ],
     [ "fplot_core", "namespacefplot__core.html", null ],

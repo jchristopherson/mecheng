@@ -1,5 +1,8 @@
 var searchData=
 [
+  ['data_5fformat',['data_format',['../structfortio__hbm_1_1hbm__data__channel.html#a9f4b6df5c27b38c38ffdb3f4e1fc0e7d',1,'fortio_hbm::hbm_data_channel']]],
+  ['data_5fwidth',['data_width',['../structfortio__hbm_1_1hbm__data__channel.html#ae18d170491460782da6570c363a934df',1,'fortio_hbm::hbm_data_channel']]],
+  ['date',['date',['../structfortio__hbm_1_1hbm__data__channel.html#a83b35ba75d5f864f1e175e85e132da6e',1,'fortio_hbm::hbm_data_channel']]],
   ['dbl_5fpoly_5fmult',['dbl_poly_mult',['../interfacenonlin__polynomials_1_1operator_07_5_08.html#a6b49c2080eeab1817c53f2d3a7fb4736',1,'nonlin_polynomials::operator(*)::dbl_poly_mult()'],['../namespacenonlin__polynomials.html#ae8c0ac75d5ebeb66d6c0cf339a22be2c',1,'nonlin_polynomials::dbl_poly_mult()']]],
   ['default_5fbuffer_5fsize',['default_buffer_size',['../namespacecollection__list.html#a90b379b85a1afc1479e3296f3fd233b8',1,'collection_list']]],
   ['define_5fconstraints',['define_constraints',['../structintegral__core_1_1ode__helper.html#aa163a6e0231a59ff2cd93124b899047e',1,'integral_core::ode_helper']]],
