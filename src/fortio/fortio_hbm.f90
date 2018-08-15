@@ -162,11 +162,12 @@ contains
         type(errors), target :: deferr
         type(binary_reader) :: file
         character(len = 256) :: errmsg
-        integer(int32) :: info, li, dataOffset, dummyLong
+        integer(int32) :: dataOffset, dummyLong
         integer(int32), allocatable, dimension(:) :: offsetChannel
         integer(int16) :: si, commentLength, dummyShort, lres(RESERVED_STRING_COUNT)
         character(len = :), allocatable :: restring
         character(len = :), allocatable :: dummyString
+        integer(int8) :: dummyByte
 
         ! Initialization
         if (present(err)) then
@@ -309,10 +310,10 @@ contains
             if (errmgr%has_error_occurred()) return
 
             ! # of points used for user scale
-            dummyShort = file%read_int16(errmgr)
+            dummyByte = file%read_int8(errmgr)
             if (errmgr%has_error_occurred()) return
 
-            rst%channels(si)%user_scale_points = file%read_real64_array(dummyShort, errmgr)
+            rst%channels(si)%user_scale_points = file%read_real64_array(int(dummyByte, int32), errmgr)
             if (errmgr%has_error_occurred()) return
 
             ! Thermo Type
@@ -342,17 +343,8 @@ contains
         ! Read in the data
         do si = 1, rst%channel_count
             dummyLong = rst%channels(si)%channel_length
-            if (dummyLong <= 0) cycle
-            allocate(rst%channels(si)%values(dummyLong), stat = info)
-            if (info /= 0) then
-                call errmgr%report_error("read_catman_file", &
-                    "Insufficient memory available.", FIO_OUT_OF_MEMORY_ERROR)
-                return
-            end if
-            do li = 1, dummyLong
-                rst%channels(si)%values(li) = file%read_real64(errmgr)
-                if (errmgr%has_error_occurred()) return
-            end do
+            rst%channels(si)%values = file%read_real64_array(dummyLong, errmgr)
+            if (errmgr%has_error_occurred()) return
         end do
     end function
 
