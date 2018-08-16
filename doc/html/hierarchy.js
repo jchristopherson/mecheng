@@ -80,6 +80,7 @@ var hierarchy =
     [ "nonlin_core::iteration_behavior", "structnonlin__core_1_1iteration__behavior.html", null ],
     [ "nonlin_core::jacobianfcn", "interfacenonlin__core_1_1jacobianfcn.html", null ],
     [ "columns::johnson_buckling", "interfacecolumns_1_1johnson__buckling.html", null ],
+    [ "geometry::line", "structgeometry_1_1line.html", null ],
     [ "nonlin_linesearch::line_search", "structnonlin__linesearch_1_1line__search.html", null ],
     [ "curvefit_regression::linear_least_squares", "interfacecurvefit__regression_1_1linear__least__squares.html", null ],
     [ "collection_linked_list::linked_list", "structcollection__linked__list_1_1linked__list.html", [
@@ -130,6 +131,7 @@ var hierarchy =
     [ "kinematics::operator(/)", "interfacekinematics_1_1operator_07_2_08.html", null ],
     [ "fplot_core::pa_get_string_result", "interfacefplot__core_1_1pa__get__string__result.html", null ],
     [ "fplot_core::pd_get_string_result", "interfacefplot__core_1_1pd__get__string__result.html", null ],
+    [ "geometry::plane", "structgeometry_1_1plane.html", null ],
     [ "fplot_core::plot_object", "structfplot__core_1_1plot__object.html", [
       [ "fplot_core::colormap", "structfplot__core_1_1colormap.html", [
         [ "fplot_core::cool_colormap", "structfplot__core_1_1cool__colormap.html", null ],

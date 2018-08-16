@@ -5,6 +5,7 @@ var dir_68267d1309a1af8e8297ef4c3efbcdba =
     [ "ferror", "dir_df1727fda69080e8ff2932293b2bb1b4.html", "dir_df1727fda69080e8ff2932293b2bb1b4" ],
     [ "fortio", "dir_cf7e33b00f6ad073a4629d4573bc9c37.html", "dir_cf7e33b00f6ad073a4629d4573bc9c37" ],
     [ "fplot", "dir_273bf7acc4ba4f4d2ebf5c76f02211ca.html", "dir_273bf7acc4ba4f4d2ebf5c76f02211ca" ],
+    [ "geometry", "dir_405fd32de3649961a5f009c7a3fe84df.html", "dir_405fd32de3649961a5f009c7a3fe84df" ],
     [ "integral", "dir_2412a378b4d3b6d0b7f4b681d58458e4.html", "dir_2412a378b4d3b6d0b7f4b681d58458e4" ],
     [ "kinematics", "dir_5d532859189d94b37937c3bee33a301a.html", "dir_5d532859189d94b37937c3bee33a301a" ],
     [ "linalg", "dir_5dff776341474e546195e534ccdc31ab.html", "dir_5dff776341474e546195e534ccdc31ab" ],

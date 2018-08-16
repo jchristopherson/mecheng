@@ -1,5 +1,9 @@
 var NAVTREEINDEX3 =
 {
+"structcurvefit__interp_1_1spline__interp.html#aba652ce901ed162e4e319f80f0193517":[2,0,6,4,5],
+"structcurvefit__regression_1_1lowess__smoothing.html":[2,0,7,1],
+"structcurvefit__regression_1_1lowess__smoothing.html#a2166350170897113846865993f9717d7":[2,0,7,1,4],
+"structcurvefit__regression_1_1lowess__smoothing.html#a3b690b6e7fc3b860010da3a2b591e99c":[2,0,7,1,10],
 "structcurvefit__regression_1_1lowess__smoothing.html#a6b36b25690a4f6b91c08b398bdf78af8":[2,0,7,1,6],
 "structcurvefit__regression_1_1lowess__smoothing.html#a766833a30922648aa4be233cc56d626d":[2,0,7,1,5],
 "structcurvefit__regression_1_1lowess__smoothing.html#a80d4b4512027f66e7405c3b950b0f60e":[2,0,7,1,3],
@@ -245,9 +249,5 @@ var NAVTREEINDEX3 =
 "structfplot__core_1_1multiplot.html#a4b770678c2469fc0be1648ad372c5d00":[2,0,13,8,6],
 "structfplot__core_1_1multiplot.html#a4fc3681e3bf594b4b318d77e2a1bb140":[2,0,13,8,11],
 "structfplot__core_1_1multiplot.html#a56d9b4338c6a95ccfc7d94a81f715f1e":[2,0,13,8,17],
-"structfplot__core_1_1multiplot.html#a65d63e8ce7aa0d1976f8bca150bb33d3":[2,0,13,8,21],
-"structfplot__core_1_1multiplot.html#a6d0402f03382c3bf29b50d4f06fad597":[2,0,13,8,19],
-"structfplot__core_1_1multiplot.html#a6fa6464d4c130c6102c63c7fd32f81cf":[2,0,13,8,7],
-"structfplot__core_1_1multiplot.html#a950bd7a421f69a6a02c2308ae45827b6":[2,0,13,8,9],
-"structfplot__core_1_1multiplot.html#a9bae2b4eddaa75ff61ac0abe77175eb1":[2,0,13,8,22]
+"structfplot__core_1_1multiplot.html#a65d63e8ce7aa0d1976f8bca150bb33d3":[2,0,13,8,21]
 };

@@ -1,5 +1,9 @@
 var NAVTREEINDEX4 =
 {
+"structfplot__core_1_1multiplot.html#a6d0402f03382c3bf29b50d4f06fad597":[2,0,13,8,19],
+"structfplot__core_1_1multiplot.html#a6fa6464d4c130c6102c63c7fd32f81cf":[2,0,13,8,7],
+"structfplot__core_1_1multiplot.html#a950bd7a421f69a6a02c2308ae45827b6":[2,0,13,8,9],
+"structfplot__core_1_1multiplot.html#a9bae2b4eddaa75ff61ac0abe77175eb1":[2,0,13,8,22],
 "structfplot__core_1_1multiplot.html#aaf27adb6a7316eda5c1f9276f2d967e5":[2,0,13,8,12],
 "structfplot__core_1_1multiplot.html#abd13c862e28feb772d7d7e6217705e41":[2,0,13,8,16],
 "structfplot__core_1_1multiplot.html#abe6cf967df926de68a5d129fb1bbc27c":[2,0,13,8,1],
@@ -245,9 +249,5 @@ var NAVTREEINDEX4 =
 "structfplot__core_1_1surface__plot.html#ae449da228b62d103860df52de42d97a4":[2,0,13,30,14],
 "structfplot__core_1_1surface__plot.html#aec8302d17a46422414bad3ba5e0cd57f":[2,0,13,30,11],
 "structfplot__core_1_1surface__plot.html#aeef99673df7159bd8bff00b7d95cdb05":[2,0,13,30,16],
-"structfplot__core_1_1surface__plot.html#af5a50d73ae72ee8cac08b4051ac0c39a":[2,0,13,30,0],
-"structfplot__core_1_1surface__plot.html#af799380aeea4cefe1ebe4b824ea12605":[2,0,13,30,13],
-"structfplot__core_1_1surface__plot__data.html":[2,0,13,31],
-"structfplot__core_1_1surface__plot__data.html#a0e2ca381f5d923ef23609c690b2f0475":[2,0,13,31,9],
-"structfplot__core_1_1surface__plot__data.html#a165b01559b9ea89b8278dcc0edbc1b75":[2,0,13,31,11]
+"structfplot__core_1_1surface__plot.html#af5a50d73ae72ee8cac08b4051ac0c39a":[2,0,13,30,0]
 };

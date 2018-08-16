@@ -14,6 +14,10 @@ var annotated_dup =
     [ "fortio_hbm", "namespacefortio__hbm.html", "namespacefortio__hbm" ],
     [ "fortio_text", "namespacefortio__text.html", "namespacefortio__text" ],
     [ "fplot_core", "namespacefplot__core.html", "namespacefplot__core" ],
+    [ "geometry", null, [
+      [ "line", "structgeometry_1_1line.html", "structgeometry_1_1line" ],
+      [ "plane", "structgeometry_1_1plane.html", "structgeometry_1_1plane" ]
+    ] ],
     [ "integral_core", "namespaceintegral__core.html", "namespaceintegral__core" ],
     [ "kinematics", null, [
       [ "acceleration_mtx", "interfacekinematics_1_1acceleration__mtx.html", "interfacekinematics_1_1acceleration__mtx" ],

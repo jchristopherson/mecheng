@@ -21,6 +21,7 @@ var searchData=
   ['linalg_5fconstants',['linalg_constants',['../namespacelinalg__constants.html',1,'']]],
   ['linalg_5fcore',['linalg_core',['../namespacelinalg__core.html',1,'']]],
   ['linalg_5fimmutable',['linalg_immutable',['../namespacelinalg__immutable.html',1,'']]],
+  ['line',['line',['../structgeometry_1_1line.html',1,'geometry']]],
   ['line_5fdash_5fdot_5fdot',['line_dash_dot_dot',['../namespacefplot__core.html#ad6f904d0b43c5063d0f6b41d90abdbea',1,'fplot_core']]],
   ['line_5fdash_5fdotted',['line_dash_dotted',['../namespacefplot__core.html#a18af0338b6f5f050d826afcf78918bc2',1,'fplot_core']]],
   ['line_5fdashed',['line_dashed',['../namespacefplot__core.html#ae9305c0a47c3fb21e45154a0b9457353',1,'fplot_core']]],
