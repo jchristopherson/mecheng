@@ -446,6 +446,10 @@ set(strings_sources
     strings/strings.f90
 )
 
+set(geometry_sources
+    geometry/geometry.f90
+)
+
 # Define the MECHENG source files
 set(mecheng_sources
     constants.f90
@@ -467,6 +471,7 @@ set(mecheng_sources
     ${nonlin_sources}
     ${signals_sources}
     ${strings_sources}
+    ${geometry_sources}
 )
 
 # Build the library
