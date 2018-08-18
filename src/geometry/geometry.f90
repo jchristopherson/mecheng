@@ -7,7 +7,10 @@ module geometry
     public :: cross
     public :: proj
     public :: plane
+    public :: line
     public :: plane_from_3_points
+    public :: plane_from_line_and_point
+    public :: plane_from_angle_axis
 
 ! ******************************************************************************
 ! TYPES
@@ -34,6 +37,8 @@ module geometry
         procedure, public :: distance_to_point => pln_point_distance
         !> @brief Returns the normal vector of the plane of unit magnitude.
         procedure, public :: normal_vector => pln_normal
+        !> @brief Projects a point onto the plane.
+        procedure, public :: project_point => pln_proj_point_2_plane
     end type
 
 ! ------------------------------------------------------------------------------
@@ -119,8 +124,60 @@ contains
     end function
 
 ! ------------------------------------------------------------------------------
+    !> @brief Creates a plane from a line and a point.
+    !!
+    !! @param[in] l1 The line.
+    !! @param[in] p1 The point.  The point must not lie on the line.
+    !! @return The resulting plane.
+    pure function plane_from_line_and_point(l1, p1) result(p)
+        ! Arguments
+        class(line), intent(in) :: l1
+        real(real64), intent(in), dimension(3) :: p1
+        type(plane) :: p
+
+        ! Local Variables
+        real(real64), dimension(3) :: pl1, pl2
+
+        ! Process
+        pl1 = l1%a
+        pl2 = l1%b
+        p = plane_from_3_points(pl1, pl2, p1)
+    end function
 
 ! ------------------------------------------------------------------------------
+    !> @brief Constructs a plane from an axis, and an angle of rotation 
+    !! as measured from a supplied point.
+    !!
+    !! @param[in] axis The axis of rotation.
+    !! @param[in] angle The angle of rotation, in radians.
+    !! @param[in] pt The reference point.  This point must not lie on the axis
+    !!  of rotation.
+    !! @return The resulting plane.
+    function plane_from_angle_axis(axis, angle, pt) result(p)
+        ! Local Variables
+        use kinematics
+        real(real64), intent(in), dimension(3) :: axis, pt
+        real(real64), intent(in) :: angle
+        type(plane) :: p
+
+        ! Local Variables
+        type(quaternion) :: q
+        real(real64), dimension(3) :: rpt
+
+        ! Construct a quaternion using the supplied angle and axis information
+        call q%from_angle_axis(angle, axis)
+
+        ! Normalize the quaternion to ensure we're dealing with a unit
+        ! quaternion
+        call q%normalize()
+
+        ! Apply the rotation to the point.  After this, we'll have a line that
+        ! defines 2 points, and a 3rd point to define the plane.
+        rpt = q%transform(pt)
+
+        ! Define the plane from the 3 points we now have
+        p = plane_from_3_points(axis, 2.0d0 * axis, rpt)
+    end function
 
 ! ******************************************************************************
 ! PLANE TYPE MEMBER ROUTINES
@@ -146,7 +203,7 @@ contains
         real(real64) :: nMag
 
         ! Extract the normal vector of the plane
-        n = (this%a, this%b, this%c)
+        n = [this%a, this%b, this%c]
         nMag = norm2(n)
 
         ! Compute the distance from the plane
@@ -164,8 +221,34 @@ contains
         real(real64), dimension(3) :: n
 
         ! Process
-        n = (this%a, this%b, this%d)
+        n = [this%a, this%b, this%c]
         n = n / norm2(n)
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Projects a point onto the plane.
+    !!
+    !! @param[in] this The plane.
+    !! @param[in] pt The point to project.
+    !! @return The projected point.
+    pure function pln_proj_point_2_plane(this, pt) result(v)
+        ! Arguments
+        class(plane), intent(in) :: this
+        real(real64), intent(in), dimension(3) :: pt
+        real(real64), dimension(3) :: v
+
+        ! Local Variables
+        real(real64), dimension(3) :: n
+        real(real64) :: dist
+
+        ! Compute the normal vector of the plane
+        n = this%normal_vector()
+
+        ! Compute the distance the point lies from the plane
+        dist = this%distance_to_point(pt)
+
+        ! Project the point onto the plane
+        v = pt - dist * n
     end function
 
 ! ------------------------------------------------------------------------------
