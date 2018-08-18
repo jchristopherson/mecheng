@@ -152,12 +152,15 @@ contains
     !! @param[in] angle The angle of rotation, in radians.
     !! @param[in] pt The reference point.  This point must not lie on the axis
     !!  of rotation.
+    !! @param[in] opt An optional point defining the origin location.  If not
+    !!  given, the origin will be assumed at (0, 0, 0).
     !! @return The resulting plane.
-    function plane_from_angle_axis(axis, angle, pt) result(p)
+    function plane_from_angle_axis(axis, angle, pt, opt) result(p)
         ! Local Variables
         use kinematics
         real(real64), intent(in), dimension(3) :: axis, pt
         real(real64), intent(in) :: angle
+        real(real64), intent(in), optional, dimension(:) :: opt
         type(plane) :: p
 
         ! Local Variables
@@ -176,7 +179,11 @@ contains
         rpt = q%transform(pt)
 
         ! Define the plane from the 3 points we now have
-        p = plane_from_3_points(axis, 2.0d0 * axis, rpt)
+        if (present(opt)) then
+            p = plane_from_3_points(opt, axis + opt, rpt)
+        else
+            p = plane_from_3_points([0.0d0, 0.0d0, 0.0d0], axis, rpt)
+        end if
     end function
 
 ! ******************************************************************************
