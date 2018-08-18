@@ -31,6 +31,9 @@ contains
         ! Do not display the legend
         lgnd => this%get_legend()
         call lgnd%set_is_visible(.false.)
+
+        ! Nullify the colormap
+        nullify(this%m_colormap)
     end subroutine
 
 ! ------------------------------------------------------------------------------
