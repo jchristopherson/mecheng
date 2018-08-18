@@ -510,11 +510,7 @@ contains
         character(len = 128) :: buffer
 
         ! Process
-        if (x < 0.0) then
-            write(buffer, '(1p,e14.7)') x
-        else
-            write(buffer, '(1p,e13.7)') x
-        end if
+        write(buffer, *) x
         str = trim(buffer)
     end function
 
@@ -552,11 +548,7 @@ contains
         character(len = 128) :: buffer
 
         ! Process
-        if (x < 0.0d0) then
-            write(buffer, '(1p,e14.7)') x
-        else
-            write(buffer, '(1p,e13.7)') x
-        end if
+        write(buffer, *) x
         str = trim(buffer)
     end function
 
