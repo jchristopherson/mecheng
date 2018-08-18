@@ -187,7 +187,7 @@ contains
 
         r(1,2) = dot_product(i, cj)
         r(2,2) = dot_product(j, cj)
-        r(3,3) = dot_product(k, cj)
+        r(3,2) = dot_product(k, cj)
 
         r(1,3) = dot_product(i, ck)
         r(2,3) = dot_product(j, ck)
