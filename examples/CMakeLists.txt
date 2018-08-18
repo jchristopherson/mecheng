@@ -29,3 +29,7 @@ target_link_libraries(integrate_example mecheng)
 # HBM FILE READ EXAMPLE
 add_executable(hbm_file_read_example hbm_file_read_example.f90)
 target_link_libraries(hbm_file_read_example mecheng)
+
+# PLANE GEOMETRY EXAMPLE 1
+add_executable(plane_geometry_example_1 plane_geometry_example_1.f90)
+target_link_libraries(plane_geometry_example_1 mecheng)
