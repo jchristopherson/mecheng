@@ -57,8 +57,7 @@ module geometry
     !!     call yAxis%set_title("Y")
     !!     call zAxis%set_title("Z")
     !!
-    !!     axis = [1.0d0, 1.0d0, 0.0d0]
-    !!     axis = axis / norm2(axis)
+    !!     axis = [0.0d0, 1.0d0, 0.0d0]
     !!     angle = pi / 4.0d0          ! 45 degree angle
     !!     if (abs(axis(1) - axis(2)) < epsilon(angle)) then
     !!         refpt = [axis(3), 0.0d0, axis(1)]   ! Reference point
@@ -159,7 +158,7 @@ module geometry
     !! The above program produces the following output.
     !! @code{.txt}
     !! The equation of the plane:
-    !! ( 500.000E-03, -500.000E-03, -707.107E-03,   -0.000E+00)
+    !! (-707.107E-03,    0.000E+00, -707.107E-03,   -0.000E+00)
     !! @endcode
     !! @image html rotated_plane_example.png
     type plane
@@ -338,8 +337,7 @@ contains
     !!     call yAxis%set_title("Y")
     !!     call zAxis%set_title("Z")
     !!
-    !!     axis = [1.0d0, 1.0d0, 0.0d0]
-    !!     axis = axis / norm2(axis)
+    !!     axis = [0.0d0, 1.0d0, 0.0d0]
     !!     angle = pi / 4.0d0          ! 45 degree angle
     !!     if (abs(axis(1) - axis(2)) < epsilon(angle)) then
     !!         refpt = [axis(3), 0.0d0, axis(1)]   ! Reference point
@@ -440,7 +438,7 @@ contains
     !! The above program produces the following output.
     !! @code{.txt}
     !! The equation of the plane:
-    !! ( 500.000E-03, -500.000E-03, -707.107E-03,   -0.000E+00)
+    !! (-707.107E-03,    0.000E+00, -707.107E-03,   -0.000E+00)
     !! @endcode
     !! @image html rotated_plane_example.png
     function plane_from_angle_axis(axis, angle, pt, opt) result(p)

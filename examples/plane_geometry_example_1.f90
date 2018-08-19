@@ -34,8 +34,7 @@ program example
     call yAxis%set_title("Y")
     call zAxis%set_title("Z")
 
-    axis = [1.0d0, 1.0d0, 0.0d0]
-    axis = axis / norm2(axis)
+    axis = [0.0d0, 1.0d0, 0.0d0]
     angle = pi / 4.0d0          ! 45 degree angle
     if (abs(axis(1) - axis(2)) < epsilon(angle)) then
         refpt = [axis(3), 0.0d0, axis(1)]   ! Reference point
