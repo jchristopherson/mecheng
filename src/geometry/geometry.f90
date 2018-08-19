@@ -11,6 +11,8 @@ module geometry
     public :: plane_from_3_points
     public :: plane_from_line_and_point
     public :: plane_from_angle_axis
+    public :: line_from_2_points
+    public :: line_from_2_planes
 
 ! ******************************************************************************
 ! TYPES
@@ -542,6 +544,72 @@ contains
 
         ! Project the point onto the plane
         v = pt - dist * n
+    end function
+
+! ******************************************************************************
+! LINE RELATED ROUTINES
+! ------------------------------------------------------------------------------
+    !> @brief Constructs a line from two points.
+    !!
+    !! @param[in] pt1 The first point.
+    !! @param[in] pt2 The second point.
+    !! @return The resulting line.
+    pure function line_from_2_points(pt1, pt2) result(r)
+        ! Arguments
+        real(real64), intent(in), dimension(3) :: pt1, pt2
+        type(line) :: r
+
+        ! Process
+        r%a = pt1
+        r%b = pt2 - pt1
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Constructs a line from the intersection of two planes.
+    !!
+    !! @param[in] p1 The first plane.
+    !! @param[in] p2 The second plane.
+    !! @return The resulting line.  If the two planes are parallel, no line is
+    !!  formed, and all zeros are returned.
+    function line_from_2_planes(p1, p2) result(r)
+        ! Arguments
+        use linalg_immutable
+        class(plane) :: p1, p2
+        type(line) :: r
+
+        ! Local Variables
+        real(real64) :: tol
+        real(real64), dimension(3) :: n1, n2, n1n2, pt
+        real(real64), dimension(2) :: d
+        real(real64), dimension(2, 3) :: c
+
+        ! Compute the normal vectors of each plane
+        n1 = p1%normal_vector()
+        n2 = p2%normal_vector()
+
+        ! Ensure the planes are not parallel
+        tol = 2.0d0 * epsilon(tol)
+        n1n2 = cross(n1, n2)
+        if (norm2(n1n2) < tol) then
+            ! The two planes are parallel
+            r%a = 0.0d0
+            r%b = 0.0d0
+            return
+        end if
+
+        ! Notice, N1 cross N2 is parallel to the line of intersection between
+        ! the two planes.  As such, the problem now is to find a point that
+        ! lies on both planes.  This may be achieved by solving the two
+        ! plane equations simultaneously.  
+        c = reshape([p1%a, p2%a, p1%b, p2%b, p1%c, p2%c], [2, 3])
+        d = -[p1%d, p2%d]
+
+        ! Solve the system of equations via a least-squares technique
+        pt = matmul(mat_pinverse(c), d)
+
+        ! Now that we have a point on the line, and the direction of the line,
+        ! we know the line
+        r = line_from_2_points(pt, n1n2 + pt)
     end function
 
 ! ------------------------------------------------------------------------------
