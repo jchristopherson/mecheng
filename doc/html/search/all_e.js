@@ -60,6 +60,7 @@ var searchData=
   ['pop_5flabel',['pop_label',['../structfplot__core_1_1plot.html#a72556bd3398bf491d2aa192ceaab9807',1,'fplot_core::plot']]],
   ['previous',['previous',['../structcollection__containers_1_1dll__node.html#a13e06c69b64a092b8be6a1e9b2bd720f',1,'collection_containers::dll_node::previous()'],['../structcollection__linked__list_1_1linked__list.html#a51fec081ab6d9e83ba41c3c70a849acd',1,'collection_linked_list::linked_list::previous()']]],
   ['print_5fstatus',['print_status',['../namespacenonlin__core.html#ac9637db13c24f15661e80eb42b225ea7',1,'nonlin_core']]],
+  ['project_5fpoint',['project_point',['../structgeometry_1_1plane.html#aa6979f0f5908bd261422f2f0be697bb7',1,'geometry::plane']]],
   ['push',['push',['../structcollection__linked__list_1_1linked__list.html#a315f3da31d5aaa579e3a6dcf74e69bbb',1,'collection_linked_list::linked_list::push()'],['../structcollection__linked__list_1_1persistent__linked__list.html#a89db2d0f5a2965e4383e55c8e50e0db1',1,'collection_linked_list::persistent_linked_list::push()'],['../structcollection__list_1_1list.html#a5e27250a2c342befde23957588281c66',1,'collection_list::list::push()'],['../structfplot__core_1_1plot.html#a5066eea4fa7b7d5bf557e46652ef20fd',1,'fplot_core::plot::push()']]],
   ['push_5flabel',['push_label',['../structfplot__core_1_1plot.html#a89f704e48794d3805d2f13c96082096c',1,'fplot_core::plot']]]
 ];
