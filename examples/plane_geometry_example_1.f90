@@ -34,9 +34,14 @@ program example
     call yAxis%set_title("Y")
     call zAxis%set_title("Z")
 
-    axis = [0.0d0, 1.0d0, 0.0d0]
+    axis = [1.0d0, 1.0d0, 0.0d0]
+    axis = axis / norm2(axis)
     angle = pi / 4.0d0          ! 45 degree angle
-    refpt = [axis(2), axis(1), 0.0d0]   ! Reference point
+    if (abs(axis(1) - axis(2)) < epsilon(angle)) then
+        refpt = [axis(3), 0.0d0, axis(1)]   ! Reference point
+    else
+        refpt = [axis(2), axis(1), 0.0d0]   ! Reference point
+    end if
 
     ! Construct a plane
     pln = plane_from_angle_axis(axis, angle, refpt)
