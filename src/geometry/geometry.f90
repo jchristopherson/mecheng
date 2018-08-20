@@ -11,8 +11,12 @@ module geometry
     public :: plane_from_3_points
     public :: plane_from_line_and_point
     public :: plane_from_angle_axis
+    public :: plane_to_point_distance
+    public :: proj_point_2_plane
     public :: line_from_2_points
     public :: line_from_2_planes
+    public :: shortest_line
+    public :: line_to_point_distance
 
 ! ******************************************************************************
 ! TYPES
@@ -20,6 +24,42 @@ module geometry
     !> @brief Defines a plane in 3D Euclidean space that may be described by 
     !! the equation:
     !! \f$ a x + b y + c z + d = 0 \f$.
+    type plane
+        !> The x-coefficient in the plane equation.
+        real(real64) :: a
+        !> The y-coefficient in the plane equation.
+        real(real64) :: b
+        !> The z-coefficient in the plane equation.
+        real(real64) :: c
+        !> The plane offset along the unit vector defined by (a, b, c).
+        real(real64) :: d
+    contains
+        !> @brief Returns the normal vector of the plane of unit magnitude.
+        procedure, public :: normal_vector => pln_normal
+    end type
+
+! ------------------------------------------------------------------------------
+    !> @brief Defines a line in 3D Euclidean space that may be described by the
+    !! vector equation: \f$ \mathbf{r} = \mathbf{a} + t \left( \mathbf{b} - 
+    !! \mathbf{a} \right) \f$, where \f$ t \f$ is a parametric variable.
+    type line
+        !> The origin point (t = 0).
+        real(real64), dimension(3) :: a
+        !> The target point (t = 1).
+        real(real64), dimension(3) :: b
+    contains
+        !> @brief Evaluates the parametric line equation.
+        procedure, public :: evaluate => ln_eval
+        !> @brief Returns a direction vector along the line whose length is from
+        !!  t = 0 to t = 1.
+        procedure, public :: direction => ln_dir
+    end type
+
+! ******************************************************************************
+! INTERFACES
+! ------------------------------------------------------------------------------
+    !> @brief Constructs a plane from an axis, and an angle of rotation 
+    !! as measured from a supplied point.
     !!
     !! @par Example
     !! The following example illustrates how to create a plane by rotation about
@@ -163,41 +203,11 @@ module geometry
     !! (-707.107E-03,    0.000E+00, -707.107E-03,   -0.000E+00)
     !! @endcode
     !! @image html rotated_plane_example.png
-    type plane
-        !> The x-coefficient in the plane equation.
-        real(real64) :: a
-        !> The y-coefficient in the plane equation.
-        real(real64) :: b
-        !> The z-coefficient in the plane equation.
-        real(real64) :: c
-        !> The plane offset along the unit vector defined by (a, b, c).
-        real(real64) :: d
-    contains
-        !> @brief Computes the distance between the plane and a point.
-        !!
-        !! @par Details
-        !! The distance between the plane and a point can be defined as follows:
-        !! @par
-        !! \f$ D = \frac{|a x + b y + c z + d|}{\sqrt{a^{2} + b^{2} + c^{2}}} \f$.
-        procedure, public :: distance_to_point => pln_point_distance
-        !> @brief Returns the normal vector of the plane of unit magnitude.
-        procedure, public :: normal_vector => pln_normal
-        !> @brief Projects a point onto the plane.
-        procedure, public :: project_point => pln_proj_point_2_plane
-    end type
+    interface plane_from_angle_axis
+        module procedure :: plane_from_angle_axis_1
+        module procedure :: plane_from_angle_axis_2
+    end interface
 
-! ------------------------------------------------------------------------------
-    !> @brief Defines a line in 3D Euclidean space that may be described by the
-    !! vector equation: \f$ \mathbf{r} = \mathbf{a} + t \left( \mathbf{b} - 
-    !! \mathbf{a} \right) \f$, where \f$ t \f$ is a parametric variable.
-    type line
-        !> The origin point (t = 0).
-        real(real64), dimension(3) :: a
-        !> The target point (t = 1).
-        real(real64), dimension(3) :: b
-    end type
-
-! ------------------------------------------------------------------------------
 contains
 ! ******************************************************************************
 ! VECTOR RELATED ROUTINES
@@ -297,154 +307,11 @@ contains
     !! @param[in] angle The angle of rotation, in radians.
     !! @param[in] pt The reference point.  This point must not lie on the axis
     !!  of rotation.
-    !! @param[in] opt An optional point defining the origin location.  If not
-    !!  given, the origin will be assumed at (0, 0, 0).
+    !! @param[in] opt An optional point defining the a location along the axis. 
+    !!  If not given, the axis will pass through the point (0, 0, 0).
     !! @return The resulting plane.
-    !!
-    !! @par Example
-    !! The following example illustrates how to create a plane by rotation about
-    !! an axis by a specified angle.
-    !! @code{.f90}
-    !! program example
-    !!     use iso_fortran_env
-    !!     use geometry
-    !!     use fplot_core
-    !!     use constants
-    !!     use kinematics
-    !!     implicit none
-    !!
-    !!     ! Local Variables
-    !!     real(real64), dimension(3) :: i, j, k, axis, refpt, origin, &
-    !!         cp1, cp2, cp3, cp4, rp1, rp2, rp3, rp4
-    !!     type(quaternion) :: q
-    !!     real(real64), dimension(2, 2) :: x, y, z
-    !!     real(real64) :: angle
-    !!     type(plane) :: pln
-    !!     type(surface_plot_data) :: sd1
-    !!     type(plot_data_3d) :: pd1, pdi, pdj, pdk, ppt
-    !!     type(surface_plot) :: plt
-    !!     class(plot_axis), pointer :: xAxis, yAxis, zAxis
-    !!
-    !!     ! Initialization
-    !!     call plt%initialize()
-    !!     call plt%set_show_colorbar(.false.)
-    !!     call plt%set_font_size(14)
-    !!     call plt%set_show_hidden(.true.)
-    !!
-    !!     xAxis => plt%get_x_axis()
-    !!     yAxis => plt%get_y_axis()
-    !!     zAxis => plt%get_z_axis()
-    !!
-    !!     call xAxis%set_title("X")
-    !!     call yAxis%set_title("Y")
-    !!     call zAxis%set_title("Z")
-    !!
-    !!     axis = [0.0d0, 1.0d0, 0.0d0]
-    !!     angle = pi / 4.0d0          ! 45 degree angle
-    !!     if (abs(axis(1) - axis(2)) < epsilon(angle)) then
-    !!         refpt = [axis(3), 0.0d0, axis(1)]   ! Reference point
-    !!     else
-    !!         refpt = [axis(2), axis(1), 0.0d0]   ! Reference point
-    !!     end if
-    !!
-    !!     ! Construct a plane
-    !!     pln = plane_from_angle_axis(axis, angle, refpt)
-    !!
-    !!     ! Display the equation of the plane
-    !!     print '(A)', "The equation of the plane:"
-    !!     print '(AEN12.3AEN12.3AEN12.3AEN12.3A)', "(", pln%a, ", ", pln%b, ", ", &
-    !!         pln%c, ", ", pln%d, ")"
-    !!
-    !!     ! Determine a local coordinate system that exists on the plane, and has
-    !!     ! a z-axis parallel to the plane normal
-    !!     k = pln%normal_vector()
-    !!     origin = -pln%d * k ! This is the location of the origin on the plane
-    !!
-    !!     ! Let the rotation axis be the x axis of the local coordinate system
-    !!     i = axis
-    !!
-    !!     ! Construct J = K cross I
-    !!     j = cross(k, i)
-    !!
-    !!     ! Define a rotation matrix based upon the above unit vectors
-    !!     call q%from_angle_axis(angle, axis)
-    !!
-    !!     ! Define 4 points on the plane in order to provide a visual representation
-    !!     ! of the plane
-    !!     cp1 = [1.0d0, 1.0d0, 0.0d0]
-    !!     cp2 = [1.0d0, -1.0d0, 0.0d0]
-    !!     cp3 = [-1.0d0, -1.0d0, 0.0d0]
-    !!     cp4 = [-1.0d0, 1.0d0, 0.0d0]
-    !!
-    !!     ! Apply the transformation to move the points onto the plane
-    !!     rp1 = q%transform(cp1) + origin
-    !!     rp2 = q%transform(cp2) + origin
-    !!     rp3 = q%transform(cp3) + origin
-    !!     rp4 = q%transform(cp4) + origin
-    !!
-    !!     ! Draw the plane
-    !!     x = reshape([rp3(1), rp4(1), rp2(1), rp1(1)], [2, 2])
-    !!     y = reshape([rp3(2), rp4(2), rp2(2), rp1(2)], [2, 2])
-    !!     z = reshape([rp3(3), rp4(3), rp2(3), rp1(3)], [2, 2])
-    !!     call sd1%define_data(x, y, z)
-    !!     call sd1%set_use_wireframe(.true.)
-    !!
-    !!     ! Draw the rotation axis
-    !!     call pd1%define_data( &
-    !!         [origin(1), axis(1) + origin(1)], &
-    !!         [origin(2), axis(2) + origin(2)], &
-    !!         [origin(3), axis(3) + origin(3)])
-    !!     call pd1%set_line_color(CLR_BLACK)
-    !!     call pd1%set_line_width(3.0)
-    !!    call pd1%set_line_style(LINE_DASHED)
-    !!
-    !!     ! Draw the coordinate frame
-    !!     call pdi%define_data( &
-    !!         [origin(1), i(1) + origin(1)], &
-    !!         [origin(2), i(2) + origin(2)], &
-    !!         [origin(3), i(3) + origin(3)])
-    !!     call pdi%set_line_color(CLR_BLUE)
-    !!     call pdi%set_line_width(2.0)
-    !!
-    !!     call pdj%define_data( &
-    !!         [origin(1), j(1) + origin(1)], &
-    !!         [origin(2), j(2) + origin(2)], &
-    !!         [origin(3), j(3) + origin(3)])
-    !!     call pdj%set_line_color(CLR_RED)
-    !!     call pdj%set_line_width(2.0)
-    !!
-    !!     call pdk%define_data( &
-    !!         [origin(1), k(1) + origin(1)], &
-    !!         [origin(2), k(2) + origin(2)], &
-    !!         [origin(3), k(3) + origin(3)])
-    !!     call pdk%set_line_color(CLR_GREEN)
-    !!     call pdk%set_line_width(2.0)
-    !!
-    !!     call ppt%define_data([refpt(1)], [refpt(2)], [refpt(3)])
-    !!     call ppt%set_draw_line(.false.)
-    !!     call ppt%set_draw_markers(.true.)
-    !!     call ppt%set_marker_style(MARKER_EMPTY_CIRCLE)
-    !!     call ppt%set_marker_scaling(2.0)
-    !!     call ppt%set_line_width(2.0)
-    !!     call ppt%set_line_color(CLR_BLACK)
-    !!
-    !!     call plt%push(sd1)
-    !!     call plt%push(pd1)
-    !!     call plt%push(pdi)
-    !!     call plt%push(pdj)
-    !!     call plt%push(pdk)
-    !!     call plt%push(ppt)
-    !!     call plt%draw()
-    !! end program
-    !! @endcode
-    !! The above program produces the following output.
-    !! @code{.txt}
-    !! The equation of the plane:
-    !! (-707.107E-03,    0.000E+00, -707.107E-03,   -0.000E+00)
-    !! @endcode
-    !! @image html rotated_plane_example.png
-    function plane_from_angle_axis(axis, angle, pt, opt) result(p)
-        ! Local Variables
+    function plane_from_angle_axis_1(axis, angle, pt, opt) result(p)
+        ! Arguments
         use kinematics
         real(real64), intent(in), dimension(3) :: axis, pt
         real(real64), intent(in) :: angle
@@ -474,12 +341,30 @@ contains
         end if
     end function
 
-! ******************************************************************************
-! PLANE TYPE MEMBER ROUTINES
+! --------------------
+    !> @brief Constructs a plane from an axis, and an angle of rotation 
+    !! as measured from a supplied point.
+    !!
+    !! @param[in] ln The line representing the axis of rotation.
+    !! @param[in] angle The angle of rotation, in radians.
+    !! @param[in] pt The reference point.  This point must not lie on the axis
+    !!  of rotation.
+    !! @return The resulting plane.
+    function plane_from_angle_axis_2(ln, angle, pt) result(p)
+        ! Arguments
+        class(line), intent(in) :: ln
+        real(real64), intent(in) :: angle
+        real(real64), intent(in), dimension(3) :: pt
+        type(plane) :: p
+
+        ! Process
+        p = plane_from_angle_axis_1(ln%b - ln%a, angle, pt, ln%a)
+    end function
+
 ! ------------------------------------------------------------------------------
     !> @brief Computes the distance between the plane and a point.
     !!
-    !! @param[in] this The plane.
+    !! @param[in] pln The plane.
     !! @param[in] p The point of interest.
     !! @return The distance between the point and plane.
     !!
@@ -487,9 +372,9 @@ contains
     !! The distance between the plane and a point can be defined as follows:
     !! @par
     !! \f$ D = \frac{|a x + b y + c z + d|}{\sqrt{a^{2} + b^{2} + c^{2}}} \f$.
-    pure function pln_point_distance(this, p) result(d)
+    pure function plane_to_point_distance(pln, p) result(d)
         ! Arguments
-        class(plane), intent(in) :: this
+        class(plane), intent(in) :: pln
         real(real64), intent(in), dimension(3) :: p
         real(real64) :: d
 
@@ -498,13 +383,41 @@ contains
         real(real64) :: nMag
 
         ! Extract the normal vector of the plane
-        n = [this%a, this%b, this%c]
+        n = [pln%a, pln%b, pln%c]
         nMag = norm2(n)
 
         ! Compute the distance from the plane
-        d = abs(this%a * p(1) + this%b * p(2) + this%c * p(3) + this%d) / nMag
+        d = abs(pln%a * p(1) + pln%b * p(2) + pln%c * p(3) + pln%d) / nMag
     end function
 
+! ------------------------------------------------------------------------------
+    !> @brief Projects a point onto the plane.
+    !!
+    !! @param[in] pln The plane.
+    !! @param[in] pt The point to project.
+    !! @return The projected point.
+    pure function proj_point_2_plane(pln, pt) result(v)
+        ! Arguments
+        class(plane), intent(in) :: pln
+        real(real64), intent(in), dimension(3) :: pt
+        real(real64), dimension(3) :: v
+
+        ! Local Variables
+        real(real64), dimension(3) :: n
+        real(real64) :: dist
+
+        ! Compute the normal vector of the plane
+        n = pln%normal_vector()
+
+        ! Compute the distance the point lies from the plane
+        dist = plane_to_point_distance(pln, pt)
+
+        ! Project the point onto the plane
+        v = pt - dist * n
+    end function
+
+! ******************************************************************************
+! PLANE TYPE MEMBER ROUTINES
 ! ------------------------------------------------------------------------------
     !> @brief Returns the normal vector of the plane of unit magnitude.
     !!
@@ -518,32 +431,6 @@ contains
         ! Process
         n = [this%a, this%b, this%c]
         n = n / norm2(n)
-    end function
-
-! ------------------------------------------------------------------------------
-    !> @brief Projects a point onto the plane.
-    !!
-    !! @param[in] this The plane.
-    !! @param[in] pt The point to project.
-    !! @return The projected point.
-    pure function pln_proj_point_2_plane(this, pt) result(v)
-        ! Arguments
-        class(plane), intent(in) :: this
-        real(real64), intent(in), dimension(3) :: pt
-        real(real64), dimension(3) :: v
-
-        ! Local Variables
-        real(real64), dimension(3) :: n
-        real(real64) :: dist
-
-        ! Compute the normal vector of the plane
-        n = this%normal_vector()
-
-        ! Compute the distance the point lies from the plane
-        dist = this%distance_to_point(pt)
-
-        ! Project the point onto the plane
-        v = pt - dist * n
     end function
 
 ! ******************************************************************************
@@ -561,7 +448,7 @@ contains
 
         ! Process
         r%a = pt1
-        r%b = pt2 - pt1
+        r%b = pt2
     end function
 
 ! ------------------------------------------------------------------------------
@@ -613,6 +500,85 @@ contains
     end function
 
 ! ------------------------------------------------------------------------------
+    !> @brief Determines the shortest line segment between a point and another
+    !! line.
+    !!
+    !! @param[in] ln The line.
+    !! @param[in] pt The point.
+    !! @return The resulting shortest line segment determined such that at 
+    !!  t = 0, this line intersects point @p pt, and at t = 1, this line
+    !!  intersects the nearest point on the original line.
+    pure function shortest_line(ln, pt) result(r)
+        ! Arguments
+        class(line), intent(in) :: ln
+        real(real64), intent(in), dimension(3) :: pt
+        type(line) :: r
+
+        ! Local Variables
+        real(real64), dimension(3) :: n, x
+        real(real64) :: t
+
+        ! Process
+        n = ln%b - ln%a
+        t = dot_product(ln%a - pt, n)
+        x = ln%a - pt - t * n
+
+        ! Define the new line
+        r = line_from_2_points(pt, x + pt)
+    end function
 
 ! ------------------------------------------------------------------------------
+    !> @brief Determines the shortest distance between a line and a point.
+    !!
+    !! @param[in] ln The line.
+    !! @param[in] pt The point.
+    !! @return The distance.
+    pure function line_to_point_distance(ln, pt) result(x)
+        ! Arguments
+        class(line), intent(in) :: ln
+        real(real64), intent(in), dimension(3) :: pt
+        real(real64) :: x
+
+        ! Local Variables
+        type(line) :: r
+
+        ! Process
+        r = shortest_line(ln, pt)
+        x = norm2(r%direction())
+    end function
+
+! ******************************************************************************
+! LINE TYPE MEMBER ROUTINES
+! ------------------------------------------------------------------------------
+    !> @brief Evaluates the parametric line equation.
+    !!
+    !! @param[in] this The line.
+    !! @param[in] t The parameter.
+    !! @return The position of @p t along the line.
+    pure function ln_eval(this, t) result(x)
+        ! Arguments
+        class(line), intent(in) :: this
+        real(real64), intent(in) :: t
+        real(real64), dimension(3) :: x
+
+        ! Process
+        x = this%a + t * (this%b - this%a)
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Returns a direction vector along the line whose length is from
+    !!  t = 0 to t = 1.
+    !!
+    !! @param[in] this The line.
+    !! @return The direction vector.
+    pure function ln_dir(this) result(x)
+        ! Arguments
+        class(line), intent(in) :: this
+        real(real64), dimension(3) :: x
+
+        ! Process
+        x = this%b - this%a
+    end function
+
+
 end module
