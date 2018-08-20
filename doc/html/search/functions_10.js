@@ -95,6 +95,7 @@ var searchData=
   ['set_5fz_5fintersect_5fxy',['set_z_intersect_xy',['../structfplot__core_1_1plot__3d.html#a90b555f32aea599e425ea77d93025c7d',1,'fplot_core::plot_3d']]],
   ['set_5fzero_5faxis',['set_zero_axis',['../structfplot__core_1_1plot__axis.html#a10d7654247b02c1a217dccd921372547',1,'fplot_core::plot_axis']]],
   ['set_5fzero_5faxis_5fline_5fwidth',['set_zero_axis_line_width',['../structfplot__core_1_1plot__axis.html#af127eb5a3275d0c93f471fa03a536569',1,'fplot_core::plot_axis']]],
+  ['shortest_5fline',['shortest_line',['../namespacegeometry.html#a8d55e4627ec45aed7592689c77a66817',1,'geometry']]],
   ['si_5fdiff1',['si_diff1',['../namespacecurvefit__interp.html#abc2a0a8c0f64fd3f16163de441cadbf6',1,'curvefit_interp']]],
   ['si_5fdiff1_5farray',['si_diff1_array',['../namespacecurvefit__interp.html#a00d35656643d6444b2c8dbc872b8aeca',1,'curvefit_interp']]],
   ['si_5fdiff2',['si_diff2',['../namespacecurvefit__interp.html#af7e5f0160e34ac235e78916ceb2678a9',1,'curvefit_interp']]],

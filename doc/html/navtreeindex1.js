@@ -1,5 +1,7 @@
 var NAVTREEINDEX1 =
 {
+"interfacegeometry_1_1plane__from__angle__axis.html#acd908aaa231dbf0ad9e926fcc6b4f734":[2,0,14,2,1],
+"interfacegeometry_1_1plane__from__angle__axis.html#ae78e5caa3690a09ff801aa244117ad62":[2,0,14,2,0],
 "interfaceintegral__core_1_1finite__interval__fcn.html":[2,0,15,1],
 "interfaceintegral__core_1_1finite__interval__fcn.html#a2505437500ff2702585f4ed9e152bef8":[2,0,15,1,0],
 "interfaceintegral__core_1_1integrand.html":[2,0,15,3],
@@ -247,7 +249,5 @@ var NAVTREEINDEX1 =
 "interfacestrain_1_1wheatstone__bridge__series.html#a018c34a84c489ee597147c8947bb4b4e":[2,0,26,2,2],
 "interfacestrain_1_1wheatstone__bridge__series.html#a6635d023a6021f3fe36384cb1273dbfa":[2,0,26,2,3],
 "interfacestrain_1_1wheatstone__bridge__series.html#a684f0d3742eb4a67f0272d0fe114ea07":[2,0,26,2,0],
-"interfacestrain_1_1wheatstone__bridge__series.html#a98a317c75c9bfbdbf38715dcaffb2f88":[2,0,26,2,1],
-"interfacestrings_1_1string__to__number.html":[2,0,27,2],
-"interfacestrings_1_1string__to__number.html#a770e7db91aa9899685c507dd21b30a9f":[2,0,27,2,0]
+"interfacestrain_1_1wheatstone__bridge__series.html#a98a317c75c9bfbdbf38715dcaffb2f88":[2,0,26,2,1]
 };

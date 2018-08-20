@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['geometry',['geometry',['../namespacegeometry.html',1,'']]],
   ['get',['get',['../structcollection__list_1_1list.html#a7b48c8a565b0f823c46dc5ecfed0abf4',1,'collection_list::list::get()'],['../structfplot__core_1_1plot.html#a30a4fa1b97fa41f413d3324714b3827b',1,'fplot_core::plot::get()'],['../structfplot__core_1_1multiplot.html#abe6cf967df926de68a5d129fb1bbc27c',1,'fplot_core::multiplot::get()'],['../structnonlin__polynomials_1_1polynomial.html#acf1d9028ac1f3ee1832daf1297d65b4c',1,'nonlin_polynomials::polynomial::get()']]],
   ['get_5fabs_5ftol',['get_abs_tol',['../structintegral__core_1_1integrator__base.html#a3419ecad11f4f24e9c23c9e840c0fe1f',1,'integral_core::integrator_base']]],
   ['get_5fabsolute_5ftolerances',['get_absolute_tolerances',['../structintegral__core_1_1ode__integrator.html#aa25b79e8d03f0a9e36ba7e01db873755',1,'integral_core::ode_integrator']]],

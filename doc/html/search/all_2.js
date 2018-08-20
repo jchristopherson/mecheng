@@ -66,6 +66,7 @@ var searchData=
   ['covariance',['covariance',['../interfacecurvefit__statistics_1_1covariance.html',1,'curvefit_statistics']]],
   ['covariance_5f2sets',['covariance_2sets',['../interfacecurvefit__statistics_1_1covariance.html#aa24de050980097e394e5724757924ec1',1,'curvefit_statistics::covariance::covariance_2sets()'],['../namespacecurvefit__statistics.html#a52aaf71ba781c4888e177dcfb55506a1',1,'curvefit_statistics::covariance_2sets()']]],
   ['covariance_5fmtx',['covariance_mtx',['../interfacecurvefit__statistics_1_1covariance.html#af7548259a15267667ab060600c675300',1,'curvefit_statistics::covariance::covariance_mtx()'],['../namespacecurvefit__statistics.html#a835786cb3448ddf739cf4de1b3500adf',1,'curvefit_statistics::covariance_mtx()']]],
+  ['cross',['cross',['../namespacegeometry.html#a200fad9ae1778c2c660eaf5d77ad899d',1,'geometry']]],
   ['crosstalk',['crosstalk',['../interfacecurvefit__calibration_1_1crosstalk.html',1,'curvefit_calibration']]],
   ['current',['current',['../structcollection__linked__list_1_1linked__list.html#a5db724b2fd2bc31ae50761ac6d9e31ed',1,'collection_linked_list::linked_list']]],
   ['curvefit_5fcalibration',['curvefit_calibration',['../namespacecurvefit__calibration.html',1,'']]],

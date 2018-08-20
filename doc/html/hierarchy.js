@@ -126,12 +126,13 @@ var hierarchy =
     [ "kinematics::operator(*)", "interfacekinematics_1_1operator_07_5_08.html", null ],
     [ "nonlin_polynomials::operator(+)", "interfacenonlin__polynomials_1_1operator_07_09_08.html", null ],
     [ "kinematics::operator(+)", "interfacekinematics_1_1operator_07_09_08.html", null ],
-    [ "kinematics::operator(-)", "interfacekinematics_1_1operator_07-_08.html", null ],
     [ "nonlin_polynomials::operator(-)", "interfacenonlin__polynomials_1_1operator_07-_08.html", null ],
+    [ "kinematics::operator(-)", "interfacekinematics_1_1operator_07-_08.html", null ],
     [ "kinematics::operator(/)", "interfacekinematics_1_1operator_07_2_08.html", null ],
     [ "fplot_core::pa_get_string_result", "interfacefplot__core_1_1pa__get__string__result.html", null ],
     [ "fplot_core::pd_get_string_result", "interfacefplot__core_1_1pd__get__string__result.html", null ],
     [ "geometry::plane", "structgeometry_1_1plane.html", null ],
+    [ "geometry::plane_from_angle_axis", "interfacegeometry_1_1plane__from__angle__axis.html", null ],
     [ "fplot_core::plot_object", "structfplot__core_1_1plot__object.html", [
       [ "fplot_core::colormap", "structfplot__core_1_1colormap.html", [
         [ "fplot_core::cool_colormap", "structfplot__core_1_1cool__colormap.html", null ],

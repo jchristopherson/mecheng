@@ -1,5 +1,9 @@
 ! geometry.f90
 
+!> @brief \b geometry
+!!
+!! @par Purpose
+!! This module contains geometric types and relating calculations.
 module geometry
     use iso_fortran_env
     implicit none

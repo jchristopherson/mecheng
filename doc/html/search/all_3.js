@@ -16,7 +16,7 @@ var searchData=
   ['dh_5fmtx',['dh_mtx',['../interfacekinematics_1_1dh__mtx.html',1,'kinematics']]],
   ['diag_5fmtx_5fmult',['diag_mtx_mult',['../interfacelinalg__core_1_1diag__mtx__mult.html',1,'linalg_core']]],
   ['diff',['diff',['../structnonlin__core_1_1fcn1var__helper.html#a798d9b180392537c564ac69cc1b81952',1,'nonlin_core::fcn1var_helper']]],
-  ['distance_5fto_5fpoint',['distance_to_point',['../structgeometry_1_1plane.html#adeaa1bf4db131172b5af9c9287647e4f',1,'geometry::plane']]],
+  ['direction',['direction',['../structgeometry_1_1line.html#a011553f65390130eb45053a7888de9a7',1,'geometry::line']]],
   ['dll_5fnode',['dll_node',['../structcollection__containers_1_1dll__node.html',1,'collection_containers']]],
   ['draw',['draw',['../structfplot__core_1_1plot.html#a537d2c8fe375c61f1cdd94ed702c9eac',1,'fplot_core::plot::draw()'],['../structfplot__core_1_1multiplot.html#a2a92376d9c066576040fe4bbb159195d',1,'fplot_core::multiplot::draw()']]]
 ];
