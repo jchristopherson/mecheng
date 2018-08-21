@@ -244,7 +244,7 @@ Functions/Subroutines</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The resulting line. If the two planes are parallel, no line is formed, and all zeros are returned. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00466">466</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00505">505</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
 
 </div>
 </div>
@@ -284,7 +284,7 @@ Functions/Subroutines</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The resulting line. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00449">449</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00488">488</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
 
 </div>
 </div>
@@ -324,7 +324,7 @@ Functions/Subroutines</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The distance. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00610">610</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00649">649</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
 
 </div>
 </div>
@@ -361,7 +361,7 @@ Functions/Subroutines</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The direction vector. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00648">648</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00687">687</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
 
 </div>
 </div>
@@ -409,7 +409,7 @@ Functions/Subroutines</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The position of <code>t</code> along the line. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00632">632</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00671">671</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
 
 </div>
 </div>
@@ -454,9 +454,10 @@ Functions/Subroutines</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The resulting plane. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The resulting plane. If the three points lie along the same line, the plane is returned with all zero coefficients.</dd></dl>
+<dl class="section user"><dt>Remarks</dt><dd>The plane is constructed such that it's normal acts along the vector: \( \mathbf{n} = a \mathbf{i} + b \mathbf{j} + c \mathbf{k} = \left(\mathbf{p_2} - \mathbf{p_1} \right) \times \left(\mathbf{p_3} - \mathbf{p_1} \right)\). </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00266">266</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00278">278</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
 
 </div>
 </div>
@@ -518,7 +519,7 @@ Functions/Subroutines</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The resulting plane. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00318">318</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00347">347</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
 
 </div>
 </div>
@@ -565,7 +566,7 @@ Functions/Subroutines</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The resulting plane. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00358">358</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00387">387</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
 
 </div>
 </div>
@@ -603,9 +604,10 @@ Functions/Subroutines</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The resulting plane. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The resulting plane. If <code>p1</code> lies along <code>l1</code>, then the plane is returned with all zero coefficients.</dd></dl>
+<dl class="section user"><dt>Remarks</dt><dd>The plane is constructed such that it's normal acts along the vector: \( \mathbf{n} = a \mathbf{i} + b \mathbf{j} + c \mathbf{k} = \left(\mathbf{p_b} - \mathbf{p_a} \right) \times \left(\mathbf{p_1} - \mathbf{p_a} \right)\) where \( p_{a} \) is the point on the line where \( t = 0 \), and \( p_{b} \) is the point on the line where \( t = 1 \) ( \( t \) is the parametric variable of the line equation). </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00292">292</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00321">321</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
 
 </div>
 </div>
@@ -647,7 +649,7 @@ Functions/Subroutines</h2></td></tr>
 <dl class="section user"><dt>Details</dt><dd>The distance between the plane and a point can be defined as follows: </dd></dl>
 <dl class="section user"><dt></dt><dd>\( D = \frac{|a x + b y + c z + d|}{\sqrt{a^{2} + b^{2} + c^{2}}} \). </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00380">380</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00409">409</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
 
 </div>
 </div>
@@ -684,7 +686,7 @@ Functions/Subroutines</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The normal vector of unit magnitude. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00431">431</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00470">470</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
 
 </div>
 </div>
@@ -722,9 +724,10 @@ Functions/Subroutines</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The projected vector. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The projected vector.</dd></dl>
+<dl class="section user"><dt>Remarks</dt><dd>The projection of a vector (<code>x</code>) onto another vector (<code>y</code>) is given by: \( \mathbf{p} = \mathbf{x} \cdot \mathbf{y} \frac{ \mathbf{y} }{\| \mathbf{y} \|} \). </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00242">242</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00247">247</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
 
 </div>
 </div>
@@ -762,9 +765,13 @@ Functions/Subroutines</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The projected point. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The projected point.</dd></dl>
+<dl class="section user"><dt>Remarks</dt><dd>The projection of a point onto a plane is given as follows. </dd></dl>
+<dl class="section user"><dt></dt><dd>\( \mathbf{p} = \mathbf{p_t} - d \mathbf{n} \), where </dd></dl>
+<dl class="section user"><dt></dt><dd>\( \mathbf{n} = \frac{a \mathbf{i} + b \mathbf{j} + c \mathbf{k}} {\sqrt{a^{2} + b^{2} + c^{2}}} \), and </dd></dl>
+<dl class="section user"><dt></dt><dd>\( d = \frac{|a x + b y + c z + d|}{\sqrt{a^{2} + b^{2} + c^{2}}} \). </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00404">404</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00443">443</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
 
 </div>
 </div>
@@ -808,7 +815,7 @@ Functions/Subroutines</h2></td></tr>
 </div>
  </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00585">585</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00624">624</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
 
 </div>
 </div>

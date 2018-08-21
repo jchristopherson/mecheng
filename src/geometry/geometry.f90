@@ -238,6 +238,11 @@ contains
     !! @param[in] x The vector to project.
     !! @param[in] y The vector onto which @p x is to be projected.
     !! @return The projected vector.
+    !!
+    !! @par Remarks
+    !! The projection of a vector (@p x) onto another vector (@p y) is given by:
+    !! \f$ \mathbf{p} = \mathbf{x} \cdot \mathbf{y} 
+    !! \frac{ \mathbf{y} }{\| \mathbf{y} \|} \f$.
     pure function proj(x, y) result(z)
         ! Arguments
         real(real64), intent(in), dimension(3) :: x, y
@@ -261,7 +266,14 @@ contains
     !! @param[in] p1 The first point.
     !! @param[in] p2 The second point.
     !! @param[in] p3 The third point.
-    !! @return The resulting plane.
+    !! @return The resulting plane.  If the three points lie along the same 
+    !!  line, the plane is returned with all zero coefficients.
+    !!
+    !! @par Remarks
+    !! The plane is constructed such that it's normal acts along the vector:
+    !! \f$ \mathbf{n} = a \mathbf{i} + b \mathbf{j} + c \mathbf{k} = 
+    !! \left(\mathbf{p_2} - \mathbf{p_1} \right) \times \left(\mathbf{p_3} - 
+    !! \mathbf{p_1} \right)\f$.
     pure function plane_from_3_points(p1, p2, p3) result(p)
         ! Arguments
         real(real64), intent(in), dimension(3) :: p1, p2, p3
@@ -272,6 +284,13 @@ contains
 
         ! Compute the normal vector of the plane
         n = cross(p2 - p1, p3 - p1)
+        if (n < 2.0d0 * epsilon(2.0d0)) then
+            p%a = 0.0d0
+            p%b = 0.0d0
+            p%c = 0.0d0
+            p%d = 0.0d0
+            return
+        end if
         n = n / norm2(n)
 
         p%a = n(1)
@@ -287,7 +306,17 @@ contains
     !!
     !! @param[in] l1 The line.
     !! @param[in] p1 The point.  The point must not lie on the line.
-    !! @return The resulting plane.
+    !! @return The resulting plane.  If @p p1 lies along @p l1, then the 
+    !!  plane is returned with all zero coefficients.
+    !!
+    !! @par Remarks
+    !! The plane is constructed such that it's normal acts along the vector:
+    !! \f$ \mathbf{n} = a \mathbf{i} + b \mathbf{j} + c \mathbf{k} = 
+    !! \left(\mathbf{p_b} - \mathbf{p_a} \right) \times \left(\mathbf{p_1} - 
+    !! \mathbf{p_a} \right)\f$ where \f$ p_{a} \f$ is the point on the line
+    !! where \f$ t = 0 \f$, and \f$ p_{b} \f$ is the point on the line where
+    !! \f$ t = 1 \f$ (\f$ t \f$ is the parametric variable of the line
+    !! equation).
     pure function plane_from_line_and_point(l1, p1) result(p)
         ! Arguments
         class(line), intent(in) :: l1
@@ -400,6 +429,16 @@ contains
     !! @param[in] pln The plane.
     !! @param[in] pt The point to project.
     !! @return The projected point.
+    !!
+    !! @par Remarks
+    !! The projection of a point onto a plane is given as follows.
+    !! @par
+    !! \f$ \mathbf{p} = \mathbf{p_t} - d \mathbf{n} \f$, where
+    !! @par
+    !! \f$ \mathbf{n} = \frac{a \mathbf{i} + b \mathbf{j} + c \mathbf{k}}
+    !! {\sqrt{a^{2} + b^{2} + c^{2}}} \f$, and 
+    !! @par
+    !! \f$ d = \frac{|a x + b y + c z + d|}{\sqrt{a^{2} + b^{2} + c^{2}}} \f$.
     pure function proj_point_2_plane(pln, pt) result(v)
         ! Arguments
         class(plane), intent(in) :: pln
