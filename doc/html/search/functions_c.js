@@ -1,7 +1,6 @@
 var searchData=
 [
   ['next',['next',['../structcollection__linked__list_1_1linked__list.html#ac5bd49baca2a07f6d952ef2b61ef141e',1,'collection_linked_list::linked_list']]],
-  ['normal_5fvector',['normal_vector',['../structgeometry_1_1plane.html#a6287aec27b336c2e3fee9a896a2a4b2c',1,'geometry::plane']]],
   ['normalize',['normalize',['../structkinematics_1_1quaternion.html#a7d0a335574063cadc07d9c0f842f43b4',1,'kinematics::quaternion']]],
   ['nr_5ffcn',['nr_fcn',['../namespacecurvefit__regression.html#acae16cf9e6239dda326ae64d7c4e5ac3',1,'curvefit_regression']]],
   ['nr_5fget_5feqn_5fcount',['nr_get_eqn_count',['../namespacecurvefit__regression.html#ae040edd399e66673773e69287de5b79e',1,'curvefit_regression']]],

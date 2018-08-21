@@ -2,9 +2,6 @@ var searchData=
 [
   ['li_5fraw_5finterp',['li_raw_interp',['../namespacecurvefit__interp.html#ab8da5a7266c74980e65543880ef4f401',1,'curvefit_interp']]],
   ['limit_5fsearch_5fvector',['limit_search_vector',['../namespacenonlin__linesearch.html#a2562dd3acca3f7f7bc2d22b7490d7b1a',1,'nonlin_linesearch']]],
-  ['line_5ffrom_5f2_5fplanes',['line_from_2_planes',['../namespacegeometry.html#aacf1060fb1b9a5a6233563f730de25fe',1,'geometry']]],
-  ['line_5ffrom_5f2_5fpoints',['line_from_2_points',['../namespacegeometry.html#a7452c77156d1c154a6b19ab8d81cac3a',1,'geometry']]],
-  ['line_5fto_5fpoint_5fdistance',['line_to_point_distance',['../namespacegeometry.html#a216803360b1dfeca8d3833ea2f5e3fc2',1,'geometry']]],
   ['linear_5fleast_5fsquares_5f1var',['linear_least_squares_1var',['../interfacecurvefit__regression_1_1linear__least__squares.html#a1fcb5f620aa2e29e109af4839f93359e',1,'curvefit_regression::linear_least_squares::linear_least_squares_1var()'],['../namespacecurvefit__regression.html#a04bcdddf9069db3b4fc50b140776de90',1,'curvefit_regression::linear_least_squares_1var()']]],
   ['linear_5fleast_5fsquares_5fnvar',['linear_least_squares_nvar',['../interfacecurvefit__regression_1_1linear__least__squares.html#a1c7a3f939afadb318debec45843f12a2',1,'curvefit_regression::linear_least_squares::linear_least_squares_nvar()'],['../namespacecurvefit__regression.html#a076cd4eeed386abcc4e8cd9410d693ef',1,'curvefit_regression::linear_least_squares_nvar()']]],
   ['list_5fclear',['list_clear',['../namespacecollection__list.html#a5817a43f1e0281c741c7d23811f0118e',1,'collection_list']]],
@@ -34,8 +31,6 @@ var searchData=
   ['lmfactor',['lmfactor',['../namespacenonlin__least__squares.html#ad4e4f6036867660fa6ad45ee6000fd47',1,'nonlin_least_squares']]],
   ['lmpar',['lmpar',['../namespacenonlin__least__squares.html#aff0b0333d5da3f2c6f9418faf9bed743',1,'nonlin_least_squares']]],
   ['lmsolve',['lmsolve',['../namespacenonlin__least__squares.html#aa04692a475a2845cd5f05e8798696483',1,'nonlin_least_squares']]],
-  ['ln_5fdir',['ln_dir',['../namespacegeometry.html#a4006621f8b87f33cdaaa3dfc64f5e1d7',1,'geometry']]],
-  ['ln_5feval',['ln_eval',['../namespacegeometry.html#a489656511006d2e22ec3662b6fa46137',1,'geometry']]],
   ['locate',['locate',['../structcurvefit__interp_1_1interp__manager.html#ad9d316136df389796808f264b29fb056',1,'curvefit_interp::interp_manager']]],
   ['log_5ferror',['log_error',['../structferror_1_1errors.html#ab32df49905d64a99afbbc5fca7e04292',1,'ferror::errors']]],
   ['lowess',['lowess',['../namespacecurvefit__regression.html#a0deed1310ae9f9c705afe34532e0850d',1,'curvefit_regression']]],

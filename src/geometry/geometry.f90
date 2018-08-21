@@ -22,6 +22,7 @@ module geometry
     public :: shortest_line
     public :: line_to_point_distance
     public :: shortest_line_to_line
+    public :: line_to_line_distance
 
 ! ******************************************************************************
 ! TYPES
@@ -721,6 +722,23 @@ contains
     end function
 
 ! ------------------------------------------------------------------------------
+    !> @brief Computes the shortest distance between two lines.
+    !!
+    !! @param[in] l1 The first line.
+    !! @param[in] l2 The second line.
+    !! @return The shortest distance between @p ln1 and @p ln2.
+    function line_to_line_distance(ln1, ln2) result(d)
+        ! Arguments
+        class(line), intent(in) :: ln1, ln2
+        real(real64) :: d
+
+        ! Local Variables
+        type(line) :: shortLine
+
+        ! Process
+        shortLine = shortest_line_to_line(ln1, ln2)
+        d = norm2(shortLine%direction())
+    end function
 
 ! ******************************************************************************
 ! LINE TYPE MEMBER ROUTINES

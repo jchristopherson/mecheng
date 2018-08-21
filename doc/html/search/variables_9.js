@@ -1,4 +1,22 @@
 var searchData=
 [
-  ['jacobian_5fcount',['jacobian_count',['../structnonlin__core_1_1iteration__behavior.html#af90b6cb7ec48985314430c5a12c15dc2',1,'nonlin_core::iteration_behavior']]]
+  ['l',['l',['../structlinalg__immutable_1_1lu__results.html#a7a11c264a8858527ebc021e609600cbb',1,'linalg_immutable::lu_results::l()'],['../structlinalg__immutable_1_1lu__results__cmplx.html#a0634e363082d3c94fab5d5c73755f4ae',1,'linalg_immutable::lu_results_cmplx::l()']]],
+  ['la_5farray_5fsize_5ferror',['la_array_size_error',['../namespacelinalg__constants.html#ab386cf77a1f7d7461d8d84788488bfd4',1,'linalg_constants']]],
+  ['la_5fconvergence_5ferror',['la_convergence_error',['../namespacelinalg__constants.html#aee6bab378c354622ec672e5098c91931',1,'linalg_constants']]],
+  ['la_5finvalid_5finput_5ferror',['la_invalid_input_error',['../namespacelinalg__constants.html#ae8deb3aa896d9dbaed1d67fd051cc40f',1,'linalg_constants']]],
+  ['la_5finvalid_5foperation_5ferror',['la_invalid_operation_error',['../namespacelinalg__constants.html#ae63c9cce9e167aed51e87e0a202eb929',1,'linalg_constants']]],
+  ['la_5fmatrix_5fformat_5ferror',['la_matrix_format_error',['../namespacelinalg__constants.html#a7f486be4cebd7e76639f1adfac5b7b38',1,'linalg_constants']]],
+  ['la_5fout_5fof_5fmemory_5ferror',['la_out_of_memory_error',['../namespacelinalg__constants.html#a8e74f1668032bcaf14926e7922835ab9',1,'linalg_constants']]],
+  ['la_5fsingular_5fmatrix_5ferror',['la_singular_matrix_error',['../namespacelinalg__constants.html#a148955f3cedb137453b00f829914e1f7',1,'linalg_constants']]],
+  ['legend_5fbottom',['legend_bottom',['../namespacefplot__core.html#afaa74509b5150505854f6f411109dfdb',1,'fplot_core']]],
+  ['legend_5fcenter',['legend_center',['../namespacefplot__core.html#a0ec74b411859c62e7bf0c1df535d39a5',1,'fplot_core']]],
+  ['legend_5fleft',['legend_left',['../namespacefplot__core.html#a63d667dd9f14cc6ec61c999dd5dda272',1,'fplot_core']]],
+  ['legend_5fright',['legend_right',['../namespacefplot__core.html#a99373c8db502d4106c9597f3303b6fa9',1,'fplot_core']]],
+  ['legend_5ftop',['legend_top',['../namespacefplot__core.html#aeddce321c79b9d2e69356b06ba656c88',1,'fplot_core']]],
+  ['line_5fdash_5fdot_5fdot',['line_dash_dot_dot',['../namespacefplot__core.html#ad6f904d0b43c5063d0f6b41d90abdbea',1,'fplot_core']]],
+  ['line_5fdash_5fdotted',['line_dash_dotted',['../namespacefplot__core.html#a18af0338b6f5f050d826afcf78918bc2',1,'fplot_core']]],
+  ['line_5fdashed',['line_dashed',['../namespacefplot__core.html#ae9305c0a47c3fb21e45154a0b9457353',1,'fplot_core']]],
+  ['line_5fdotted',['line_dotted',['../namespacefplot__core.html#ab81a32face043abe51b8740e56c816b2',1,'fplot_core']]],
+  ['line_5fsolid',['line_solid',['../namespacefplot__core.html#ac41508e74ce45d09f835bd676ea7d3d6',1,'fplot_core']]],
+  ['linearization_5fmode',['linearization_mode',['../structfortio__hbm_1_1hbm__data__channel.html#aea0d6d641d395aa3f73bd25750eaf1bf',1,'fortio_hbm::hbm_data_channel']]]
 ];
