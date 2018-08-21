@@ -286,7 +286,7 @@ contains
 
         ! Compute the normal vector of the plane
         n = cross(p2 - p1, p3 - p1)
-        if (n < 2.0d0 * epsilon(2.0d0)) then
+        if (norm2(n) < 2.0d0 * epsilon(2.0d0)) then
             p%a = 0.0d0
             p%b = 0.0d0
             p%c = 0.0d0
