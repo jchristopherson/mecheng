@@ -21,6 +21,7 @@ module geometry
     public :: line_from_2_planes
     public :: shortest_line
     public :: line_to_point_distance
+    public :: shortest_line_to_line
 
 ! ******************************************************************************
 ! TYPES
@@ -658,6 +659,68 @@ contains
         r = shortest_line(ln, pt)
         x = norm2(r%direction())
     end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Determines the shortest line segment between two lines.  The
+    !! line segment is defined such that \f$ t = 0 \f$ at the intersection with
+    !! line 1 (@p l1), and \f$ t = 1 \f$ at the intersection with line 2
+    !! (@p l2).
+    !!
+    !! @param[in] l1 The first line.
+    !! @param[in] l2 The second line.
+    !! @return The resulting line segment.
+    !!
+    !! @par Remarks
+    !! The line segment is determined assuming that line 1 is defined as
+    !! \f$ \mathbf{r_{1}} \left( s \right) = \mathbf{a} + s \mathbf{v} \f$, and
+    !! line 2 is defined as \f$ \mathbf{r_{2}} \left( s \right) = \mathbf{x} + 
+    !! s \mathbf{u} \f$.
+    !! @par
+    !! Then the location on each line nearest the other is determined as 
+    !! follows.
+    !! @par
+    !! \f$ s = \frac{\det{\mathbf{a} - \mathbf{x}, \mathbf{u}, \mathbf{u} \times 
+    !! \mathbf{v}}{\left| \mathbf{u} \times \mathbf{v} \right|},
+    !! @par
+    !! and
+    !! @par
+    !! \f$ t = \frac{\det{\mathbf{a} - \mathbf{x}, \mathbf{v}, \mathbf{u} \times 
+    !! \mathbf{v}}{\left| \mathbf{u} \times \mathbf{v} \right|}.
+    function shortest_line_to_line(ln1, ln2) result(r)
+        ! Arguments
+        use linalg_core
+        class(line), intent(in) :: ln1, ln2
+        type(line) :: r
+
+        ! Local Variables
+        real(real64), dimension(3, 3) :: a1, a2
+        real(real64), dimension(3) :: cp, u, v
+        real(real64) :: s, t, denom
+
+        ! Initialization
+        u = ln2%direction()
+        v = ln1%direction()
+        cp = cross(u, v)
+
+        a1(:,1) = ln1%a - ln2%a
+        a1(:,2) = u
+        a1(:,3) = cp
+
+        a2(:,1) = a1(:,1)
+        a2(:,2) = v
+        a2(:,3) = cp
+
+        denom = norm2(cp)**2
+
+        ! Compute the parameter on each line
+        s = det(a1) / denom
+        t = det(a2) / denom
+
+        ! Compute the new line as we now have 2 points
+        r = line_from_2_points(ln1%evaluate(s), ln2%evaluate(t))
+    end function
+
+! ------------------------------------------------------------------------------
 
 ! ******************************************************************************
 ! LINE TYPE MEMBER ROUTINES
