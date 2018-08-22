@@ -554,6 +554,16 @@ contains
     !!  t = 0, this line intersects point @p pt, and at t = 1, this line
     !!  intersects the nearest point on the original line.
     !!
+    !! @par Remarks
+    !! The shortest line segment between a point and a line is computed assuming
+    !! the line is given as \f$ \mathbf{r} \left( t \right) = \mathbf{a} + 
+    !!  t \mathbf{x} \f$, and that the point is given by \f$ \mathbf{p} \f$.
+    !! @par
+    !! Then, a new line segment (\f$ \mathbf{q} \left( s \right) \f$) may be
+    !! defined as \f$ \mathbf{q} \left( s \right) = \mathbf{p} + s \left( 
+    !! \mathbf{a} - \left( \left( \mathbf{a} - \mathbf{p} \right) \cdot 
+    !! \mathbf{x} \right) \mathbf{x} - \mathbf{p} \right) \f$.
+    !!
     !! @par Example
     !! The following example illustrates how to find the shortest line segment
     !! between another line and a point.

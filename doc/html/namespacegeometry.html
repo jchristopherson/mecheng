@@ -330,7 +330,7 @@ Functions/Subroutines</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The shortest distance between <code>ln1</code> and <code>ln2</code>. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00731">731</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00741">741</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
 
 </div>
 </div>
@@ -370,7 +370,7 @@ Functions/Subroutines</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The distance. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00651">651</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00661">661</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
 
 </div>
 </div>
@@ -407,7 +407,7 @@ Functions/Subroutines</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The direction vector. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00768">768</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00778">778</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
 
 </div>
 </div>
@@ -455,7 +455,7 @@ Functions/Subroutines</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The position of <code>t</code> along the line. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00752">752</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00762">762</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
 
 </div>
 </div>
@@ -856,12 +856,14 @@ Functions/Subroutines</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The resulting shortest line segment determined such that at t = 0, this line intersects point <code>pt</code>, and at t = 1, this line intersects the nearest point on the original line.</dd></dl>
+<dl class="section user"><dt>Remarks</dt><dd>The shortest line segment between a point and a line is computed assuming the line is given as \( \mathbf{r} \left( t \right) = \mathbf{a} + t \mathbf{x} \), and that the point is given by \( \mathbf{p} \). </dd></dl>
+<dl class="section user"><dt></dt><dd>Then, a new line segment ( \( \mathbf{q} \left( s \right) \)) may be defined as \( \mathbf{q} \left( s \right) = \mathbf{p} + s \left( \mathbf{a} - \left( \left( \mathbf{a} - \mathbf{p} \right) \cdot \mathbf{x} \right) \mathbf{x} - \mathbf{p} \right) \).</dd></dl>
 <dl class="section user"><dt>Example</dt><dd>The following example illustrates how to find the shortest line segment between another line and a point. <div class="fragment"><div class="line"><span class="keyword">program</span> example</div><div class="line">    <span class="keywordtype">use </span>iso_fortran_env</div><div class="line">    <span class="keywordtype">use </span><a class="code" href="namespacegeometry.html">geometry</a></div><div class="line">    <span class="keywordtype">use </span><a class="code" href="namespacefplot__core.html">fplot_core</a></div><div class="line">    <span class="keywordtype">implicit none</span></div><div class="line"></div><div class="line">    <span class="comment">! Local Variables</span></div><div class="line">    <span class="keywordtype">type</span>(line) :: l1, ls</div><div class="line">    <span class="keywordtype">real(real64)</span>, <span class="keywordtype">dimension(3)</span> :: pt1, pt2, pt3</div><div class="line">    <span class="keywordtype">type</span>(plot_3d) :: plt</div><div class="line">    <span class="keywordtype">class</span>(plot_axis), <span class="keywordtype">pointer</span> :: xAxis, yAxis, zAxis</div><div class="line">    <span class="keywordtype">type</span>(plot_data_3d) :: d1, d2, d3</div><div class="line"></div><div class="line">    <span class="comment">! Initialization</span></div><div class="line">    <span class="keyword">call </span>random_number(pt1)</div><div class="line">    <span class="keyword">call </span>random_number(pt2)</div><div class="line">    <span class="keyword">call </span>random_number(pt3)</div><div class="line"></div><div class="line">    <span class="keyword">call </span>plt%initialize()</div><div class="line">    <span class="keyword">call </span>plt%set_font_size(14)</div><div class="line">    xaxis =&gt; plt%get_x_axis()</div><div class="line">    yaxis =&gt; plt%get_y_axis()</div><div class="line">    zaxis =&gt; plt%get_z_axis()</div><div class="line"></div><div class="line">    <span class="keyword">call </span>xaxis%set_title(<span class="stringliteral">&quot;X&quot;</span>)</div><div class="line">    <span class="keyword">call </span>yaxis%set_title(<span class="stringliteral">&quot;Y&quot;</span>)</div><div class="line">    <span class="keyword">call </span>zaxis%set_title(<span class="stringliteral">&quot;Z&quot;</span>)</div><div class="line"></div><div class="line">    <span class="comment">! Construct the line from PT1 and PT2</span></div><div class="line">    l1 = line_from_2_points(pt1, pt2)</div><div class="line"></div><div class="line">    <span class="comment">! Determine the shortest line between the line L1 and PT3</span></div><div class="line">    ls = shortest_line(l1, pt3)</div><div class="line"></div><div class="line">    <span class="comment">! Plot the results</span></div><div class="line">    <span class="keyword">call </span>d1%define_data( &amp;</div><div class="line">        [l1%a(1), l1%b(1)], &amp;   <span class="comment">! X components of line 1 (L1)</span></div><div class="line">        [l1%a(2), l1%b(2)], &amp;   <span class="comment">! Y components of line 1 (L1)</span></div><div class="line">        [l1%a(3), l1%b(3)])     <span class="comment">! Z components of line 1 (L1)</span></div><div class="line">    <span class="keyword">call </span>d1%set_draw_markers(.true.)</div><div class="line">    <span class="keyword">call </span>d1%set_line_width(2.0)</div><div class="line">    <span class="keyword">call </span>d1%set_marker_style(marker_x)</div><div class="line"></div><div class="line">    <span class="keyword">call </span>d2%define_data([pt3(1)], [pt3(2)], [pt3(3)])   <span class="comment">! Point 3</span></div><div class="line">    <span class="keyword">call </span>d2%set_draw_line(.false.)</div><div class="line">    <span class="keyword">call </span>d2%set_draw_markers(.true.)</div><div class="line">    <span class="keyword">call </span>d2%set_line_width(2.0)</div><div class="line">    <span class="keyword">call </span>d2%set_marker_style(marker_empty_circle)</div><div class="line"></div><div class="line">    <span class="keyword">call </span>d3%define_data( &amp;</div><div class="line">        [ls%a(1), ls%b(1)], &amp;   <span class="comment">! X components of the shortest line</span></div><div class="line">        [ls%a(2), ls%b(2)], &amp;   <span class="comment">! Y components of the shortest line</span></div><div class="line">        [ls%a(3), ls%b(3)])     <span class="comment">! Z components of the shortest line</span></div><div class="line">    <span class="keyword">call </span>d3%set_line_style(line_dashed)</div><div class="line">    <span class="keyword">call </span>d3%set_line_width(2.0)</div><div class="line"></div><div class="line">    <span class="keyword">call </span>plt%push(d1)</div><div class="line">    <span class="keyword">call </span>plt%push(d2)</div><div class="line">    <span class="keyword">call </span>plt%push(d3)</div><div class="line">    <span class="keyword">call </span>plt%draw()</div><div class="line"><span class="keyword">end program</span></div></div><!-- fragment --> The above program produces the following output. <div class="image">
 <img src="shortest_line_example.png" alt="shortest_line_example.png"/>
 </div>
  </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00626">626</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00636">636</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
 
 </div>
 </div>
@@ -906,7 +908,7 @@ Functions/Subroutines</h2></td></tr>
 <dl class="section user"><dt></dt><dd>and </dd></dl>
 <dl class="section user"><dt></dt><dd>\( t = \frac{\det{\left( \mathbf{a} - \mathbf{x}, \mathbf{v}, \mathbf{u} \times \mathbf{v} \right)}}{\| \mathbf{u} \times \mathbf{v} \|^2} \). </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00691">691</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00701">701</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
 
 </div>
 </div>
