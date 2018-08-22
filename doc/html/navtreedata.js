@@ -52,12 +52,12 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"interfaceintegral__core_1_1integrand.html",
-"interfacestrings_1_1string__to__number.html#ad2c8392eaed84fc111cd9d35db7af3aa",
-"structcurvefit__regression_1_1lowess__smoothing.html#a2166350170897113846865993f9717d7",
-"structfplot__core_1_1multiplot.html#a950bd7a421f69a6a02c2308ae45827b6",
-"structfplot__core_1_1surface__plot__data.html#a0e2ca381f5d923ef23609c690b2f0475",
-"structnonlin__core_1_1iteration__behavior.html#af90b6cb7ec48985314430c5a12c15dc2"
+"interfacegeometry_1_1plane__from__angle__axis.html#acd908aaa231dbf0ad9e926fcc6b4f734",
+"interfacestrings_1_1string__to__number.html",
+"structcurvefit__interp_1_1spline__interp.html#a84ac6638d7800c26523b367cb3b187bb",
+"structfplot__core_1_1multiplot.html#a4b770678c2469fc0be1648ad372c5d00",
+"structfplot__core_1_1surface__plot.html#ae449da228b62d103860df52de42d97a4",
+"structnonlin__core_1_1fcnnvar__helper.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

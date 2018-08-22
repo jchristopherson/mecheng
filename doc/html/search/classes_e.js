@@ -4,6 +4,8 @@ var searchData=
   ['pd_5fget_5fstring_5fresult',['pd_get_string_result',['../interfacefplot__core_1_1pd__get__string__result.html',1,'fplot_core']]],
   ['persistent_5flinked_5flist',['persistent_linked_list',['../structcollection__linked__list_1_1persistent__linked__list.html',1,'collection_linked_list']]],
   ['persistent_5flist',['persistent_list',['../structcollection__list_1_1persistent__list.html',1,'collection_list']]],
+  ['plane',['plane',['../structgeometry_1_1plane.html',1,'geometry']]],
+  ['plane_5ffrom_5fangle_5faxis',['plane_from_angle_axis',['../interfacegeometry_1_1plane__from__angle__axis.html',1,'geometry']]],
   ['plot',['plot',['../structfplot__core_1_1plot.html',1,'fplot_core']]],
   ['plot_5f2d',['plot_2d',['../structfplot__core_1_1plot__2d.html',1,'fplot_core']]],
   ['plot_5f3d',['plot_3d',['../structfplot__core_1_1plot__3d.html',1,'fplot_core']]],

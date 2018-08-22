@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['integral_5fcore',['integral_core',['../namespaceintegral__core.html',1,'']]]
+  ['geometry',['geometry',['../namespacegeometry.html',1,'']]]
 ];

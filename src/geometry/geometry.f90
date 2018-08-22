@@ -674,19 +674,19 @@ contains
     !! @par Remarks
     !! The line segment is determined assuming that line 1 is defined as
     !! \f$ \mathbf{r_{1}} \left( s \right) = \mathbf{a} + s \mathbf{v} \f$, and
-    !! line 2 is defined as \f$ \mathbf{r_{2}} \left( s \right) = \mathbf{x} + 
-    !! s \mathbf{u} \f$.
+    !! line 2 is defined as \f$ \mathbf{r_{2}} \left( t \right) = \mathbf{x} + 
+    !! t \mathbf{u} \f$.
     !! @par
     !! Then the location on each line nearest the other is determined as 
     !! follows.
     !! @par
-    !! \f$ s = \frac{\det{\mathbf{a} - \mathbf{x}, \mathbf{u}, \mathbf{u} \times 
-    !! \mathbf{v}}{\left| \mathbf{u} \times \mathbf{v} \right|},
+    !! \f$ s = \frac{\det{\left( \mathbf{a} - \mathbf{x}, \mathbf{u}, \mathbf{u}
+    !!  \times \mathbf{v} \right)}}{\| \mathbf{u} \times \mathbf{v} \|^2} \f$,
     !! @par
     !! and
     !! @par
-    !! \f$ t = \frac{\det{\mathbf{a} - \mathbf{x}, \mathbf{v}, \mathbf{u} \times 
-    !! \mathbf{v}}{\left| \mathbf{u} \times \mathbf{v} \right|}.
+    !! \f$ t = \frac{\det{\left( \mathbf{a} - \mathbf{x}, \mathbf{v}, \mathbf{u}
+    !!  \times \mathbf{v} \right)}}{\| \mathbf{u} \times \mathbf{v} \|^2} \f$.
     function shortest_line_to_line(ln1, ln2) result(r)
         ! Arguments
         use linalg_core

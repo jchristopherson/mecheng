@@ -157,6 +157,12 @@ Functions/Subroutines</h2></td></tr>
 <tr class="memitem:a216803360b1dfeca8d3833ea2f5e3fc2"><td class="memItemLeft" align="right" valign="top">pure real(real64) function, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacegeometry.html#a216803360b1dfeca8d3833ea2f5e3fc2">line_to_point_distance</a> (ln, pt)</td></tr>
 <tr class="memdesc:a216803360b1dfeca8d3833ea2f5e3fc2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines the shortest distance between a line and a point.  <a href="#a216803360b1dfeca8d3833ea2f5e3fc2">More...</a><br /></td></tr>
 <tr class="separator:a216803360b1dfeca8d3833ea2f5e3fc2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a13c4f00de7378b8dcee6fd132aaed7b5"><td class="memItemLeft" align="right" valign="top">type(<a class="el" href="structgeometry_1_1line.html">line</a>) function, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacegeometry.html#a13c4f00de7378b8dcee6fd132aaed7b5">shortest_line_to_line</a> (ln1, ln2)</td></tr>
+<tr class="memdesc:a13c4f00de7378b8dcee6fd132aaed7b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines the shortest line segment between two lines. The line segment is defined such that \( t = 0 \) at the intersection with line 1 (<code>l1</code>), and \( t = 1 \) at the intersection with line 2 (<code>l2</code>).  <a href="#a13c4f00de7378b8dcee6fd132aaed7b5">More...</a><br /></td></tr>
+<tr class="separator:a13c4f00de7378b8dcee6fd132aaed7b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a13f56220d15daa309026ac794cf47bde"><td class="memItemLeft" align="right" valign="top">real(real64) function, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacegeometry.html#a13f56220d15daa309026ac794cf47bde">line_to_line_distance</a> (ln1, ln2)</td></tr>
+<tr class="memdesc:a13f56220d15daa309026ac794cf47bde"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the shortest distance between two lines.  <a href="#a13f56220d15daa309026ac794cf47bde">More...</a><br /></td></tr>
+<tr class="separator:a13f56220d15daa309026ac794cf47bde"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a489656511006d2e22ec3662b6fa46137"><td class="memItemLeft" align="right" valign="top">pure real(real64) function, dimension(3)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacegeometry.html#a489656511006d2e22ec3662b6fa46137">ln_eval</a> (this, t)</td></tr>
 <tr class="memdesc:a489656511006d2e22ec3662b6fa46137"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluates the parametric line equation.  <a href="#a489656511006d2e22ec3662b6fa46137">More...</a><br /></td></tr>
 <tr class="separator:a489656511006d2e22ec3662b6fa46137"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -204,7 +210,7 @@ Functions/Subroutines</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The resulting vector. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00225">225</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00227">227</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
 
 </div>
 </div>
@@ -244,7 +250,7 @@ Functions/Subroutines</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The resulting line. If the two planes are parallel, no line is formed, and all zeros are returned. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00505">505</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00507">507</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
 
 </div>
 </div>
@@ -284,7 +290,47 @@ Functions/Subroutines</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The resulting line. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00488">488</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00490">490</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
+
+</div>
+</div>
+<a id="a13f56220d15daa309026ac794cf47bde"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a13f56220d15daa309026ac794cf47bde">&#9670;&nbsp;</a></span>line_to_line_distance()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">real(real64) function, public geometry::line_to_line_distance </td>
+          <td>(</td>
+          <td class="paramtype">class(<a class="el" href="structgeometry_1_1line.html">line</a>), intent(in)&#160;</td>
+          <td class="paramname"><em>ln1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">class(<a class="el" href="structgeometry_1_1line.html">line</a>), intent(in)&#160;</td>
+          <td class="paramname"><em>ln2</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Computes the shortest distance between two lines. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">l1</td><td>The first line. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">l2</td><td>The second line. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The shortest distance between <code>ln1</code> and <code>ln2</code>. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00731">731</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
 
 </div>
 </div>
@@ -324,7 +370,7 @@ Functions/Subroutines</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The distance. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00649">649</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00651">651</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
 
 </div>
 </div>
@@ -361,7 +407,7 @@ Functions/Subroutines</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The direction vector. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00687">687</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00768">768</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
 
 </div>
 </div>
@@ -409,7 +455,7 @@ Functions/Subroutines</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The position of <code>t</code> along the line. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00671">671</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00752">752</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
 
 </div>
 </div>
@@ -457,7 +503,7 @@ Functions/Subroutines</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>The resulting plane. If the three points lie along the same line, the plane is returned with all zero coefficients.</dd></dl>
 <dl class="section user"><dt>Remarks</dt><dd>The plane is constructed such that it's normal acts along the vector: \( \mathbf{n} = a \mathbf{i} + b \mathbf{j} + c \mathbf{k} = \left(\mathbf{p_2} - \mathbf{p_1} \right) \times \left(\mathbf{p_3} - \mathbf{p_1} \right)\). </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00278">278</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00280">280</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
 
 </div>
 </div>
@@ -519,7 +565,7 @@ Functions/Subroutines</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The resulting plane. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00347">347</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00349">349</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
 
 </div>
 </div>
@@ -566,7 +612,7 @@ Functions/Subroutines</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The resulting plane. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00387">387</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00389">389</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
 
 </div>
 </div>
@@ -607,7 +653,7 @@ Functions/Subroutines</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>The resulting plane. If <code>p1</code> lies along <code>l1</code>, then the plane is returned with all zero coefficients.</dd></dl>
 <dl class="section user"><dt>Remarks</dt><dd>The plane is constructed such that it's normal acts along the vector: \( \mathbf{n} = a \mathbf{i} + b \mathbf{j} + c \mathbf{k} = \left(\mathbf{p_b} - \mathbf{p_a} \right) \times \left(\mathbf{p_1} - \mathbf{p_a} \right)\) where \( p_{a} \) is the point on the line where \( t = 0 \), and \( p_{b} \) is the point on the line where \( t = 1 \) ( \( t \) is the parametric variable of the line equation). </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00321">321</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00323">323</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
 
 </div>
 </div>
@@ -649,7 +695,7 @@ Functions/Subroutines</h2></td></tr>
 <dl class="section user"><dt>Details</dt><dd>The distance between the plane and a point can be defined as follows: </dd></dl>
 <dl class="section user"><dt></dt><dd>\( D = \frac{|a x + b y + c z + d|}{\sqrt{a^{2} + b^{2} + c^{2}}} \). </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00409">409</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00411">411</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
 
 </div>
 </div>
@@ -686,7 +732,7 @@ Functions/Subroutines</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The normal vector of unit magnitude. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00470">470</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00472">472</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
 
 </div>
 </div>
@@ -727,7 +773,7 @@ Functions/Subroutines</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>The projected vector.</dd></dl>
 <dl class="section user"><dt>Remarks</dt><dd>The projection of a vector (<code>x</code>) onto another vector (<code>y</code>) is given by: \( \mathbf{p} = \mathbf{x} \cdot \mathbf{y} \frac{ \mathbf{y} }{\| \mathbf{y} \|} \). </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00247">247</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00249">249</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
 
 </div>
 </div>
@@ -771,7 +817,7 @@ Functions/Subroutines</h2></td></tr>
 <dl class="section user"><dt></dt><dd>\( \mathbf{n} = \frac{a \mathbf{i} + b \mathbf{j} + c \mathbf{k}} {\sqrt{a^{2} + b^{2} + c^{2}}} \), and </dd></dl>
 <dl class="section user"><dt></dt><dd>\( d = \frac{|a x + b y + c z + d|}{\sqrt{a^{2} + b^{2} + c^{2}}} \). </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00443">443</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00445">445</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
 
 </div>
 </div>
@@ -815,7 +861,52 @@ Functions/Subroutines</h2></td></tr>
 </div>
  </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00624">624</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00626">626</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
+
+</div>
+</div>
+<a id="a13c4f00de7378b8dcee6fd132aaed7b5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a13c4f00de7378b8dcee6fd132aaed7b5">&#9670;&nbsp;</a></span>shortest_line_to_line()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">type(<a class="el" href="structgeometry_1_1line.html">line</a>) function, public geometry::shortest_line_to_line </td>
+          <td>(</td>
+          <td class="paramtype">class(<a class="el" href="structgeometry_1_1line.html">line</a>), intent(in)&#160;</td>
+          <td class="paramname"><em>ln1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">class(<a class="el" href="structgeometry_1_1line.html">line</a>), intent(in)&#160;</td>
+          <td class="paramname"><em>ln2</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Determines the shortest line segment between two lines. The line segment is defined such that \( t = 0 \) at the intersection with line 1 (<code>l1</code>), and \( t = 1 \) at the intersection with line 2 (<code>l2</code>). </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">l1</td><td>The first line. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">l2</td><td>The second line. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The resulting line segment.</dd></dl>
+<dl class="section user"><dt>Remarks</dt><dd>The line segment is determined assuming that line 1 is defined as \( \mathbf{r_{1}} \left( s \right) = \mathbf{a} + s \mathbf{v} \), and line 2 is defined as \( \mathbf{r_{2}} \left( t \right) = \mathbf{x} + t \mathbf{u} \). </dd></dl>
+<dl class="section user"><dt></dt><dd>Then the location on each line nearest the other is determined as follows. </dd></dl>
+<dl class="section user"><dt></dt><dd>\( s = \frac{\det{\left( \mathbf{a} - \mathbf{x}, \mathbf{u}, \mathbf{u} \times \mathbf{v} \right)}}{\| \mathbf{u} \times \mathbf{v} \|^2} \), </dd></dl>
+<dl class="section user"><dt></dt><dd>and </dd></dl>
+<dl class="section user"><dt></dt><dd>\( t = \frac{\det{\left( \mathbf{a} - \mathbf{x}, \mathbf{v}, \mathbf{u} \times \mathbf{v} \right)}}{\| \mathbf{u} \times \mathbf{v} \|^2} \). </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="geometry_8f90_source.html#l00691">691</a> of file <a class="el" href="geometry_8f90_source.html">geometry.f90</a>.</p>
 
 </div>
 </div>
