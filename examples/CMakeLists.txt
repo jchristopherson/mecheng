@@ -37,3 +37,7 @@ target_link_libraries(plane_geometry_example_1 mecheng)
 # LINE EXAMPLE 1
 add_executable(line_example_1 line_example_1.f90)
 target_link_libraries(line_example_1 mecheng)
+
+# LINE-PLANE EXAMPLE 1
+add_executable(plane_line_example_1 plane_line_example_1.f90)
+target_link_libraries(plane_line_example_1 mecheng)
