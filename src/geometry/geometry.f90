@@ -42,6 +42,11 @@ module geometry
     contains
         !> @brief Returns the normal vector of the plane of unit magnitude.
         procedure, public :: normal_vector => pln_normal
+        !> @brief Evaluates the plane equation at the specified point.
+        generic, public :: evaluate => pln_eval_1, pln_eval_2
+        
+        procedure, private :: pln_eval_1
+        procedure, private :: pln_eval_2
     end type
 
 ! ------------------------------------------------------------------------------
@@ -229,9 +234,10 @@ contains
         real(real64), dimension(3) :: z
 
         ! Process
-        z(1) = x(2) * y(3) - x(3) * y(2)
-        z(2) = x(3) * y(1) - x(1) * y(3)
-        z(3) = x(1) * y(2) - x(2) * y(1)
+        z = [ &
+            x(2) * y(3) - x(3) * y(2), &
+            x(3) * y(1) - x(1) * y(3), &
+            x(1) * y(2) - x(2) * y(1)]
     end function
 
 ! ------------------------------------------------------------------------------
@@ -293,7 +299,6 @@ contains
             p%d = 0.0d0
             return
         end if
-        n = n / norm2(n)
 
         p%a = n(1)
         p%b = n(2)
@@ -422,7 +427,7 @@ contains
         nMag = norm2(n)
 
         ! Compute the distance from the plane
-        d = abs(pln%a * p(1) + pln%b * p(2) + pln%c * p(3) + pln%d) / nMag
+        d = abs(pln%evaluate(p)) / nMag
     end function
 
 ! ------------------------------------------------------------------------------
@@ -431,16 +436,6 @@ contains
     !! @param[in] pln The plane.
     !! @param[in] pt The point to project.
     !! @return The projected point.
-    !!
-    !! @par Remarks
-    !! The projection of a point onto a plane is given as follows.
-    !! @par
-    !! \f$ \mathbf{p} = \mathbf{p_t} - d \mathbf{n} \f$, where
-    !! @par
-    !! \f$ \mathbf{n} = \frac{a \mathbf{i} + b \mathbf{j} + c \mathbf{k}}
-    !! {\sqrt{a^{2} + b^{2} + c^{2}}} \f$, and 
-    !! @par
-    !! \f$ d = \frac{|a x + b y + c z + d|}{\sqrt{a^{2} + b^{2} + c^{2}}} \f$.
     pure function proj_point_2_plane(pln, pt) result(v)
         ! Arguments
         class(plane), intent(in) :: pln
@@ -449,16 +444,22 @@ contains
 
         ! Local Variables
         real(real64), dimension(3) :: n
-        real(real64) :: dist
+        real(real64) :: t, nMag
 
-        ! Compute the normal vector of the plane
-        n = pln%normal_vector()
+        ! Extract the normal vector
+        n = [pln%a, pln%b, pln%c]
+        nMag = norm2(n)
 
-        ! Compute the distance the point lies from the plane
-        dist = plane_to_point_distance(pln, pt)
+        ! Compute the parametric line variable
+        t = -(pln%evaluate(pt)) / nMag**2
 
-        ! Project the point onto the plane
-        v = pt - dist * n
+        ! Compute the location of the point on the plane
+        v = [ &
+            pt(1) + t * pln%a, &
+            pt(2) + t * pln%b, &
+            pt(3) + t * pln%c]
+        
+        ! See http://www.nabla.hr/CG-LinesPlanesIn3DB5.htm for an example
     end function
 
 ! ******************************************************************************
@@ -476,6 +477,40 @@ contains
         ! Process
         n = [this%a, this%b, this%c]
         n = n / norm2(n)
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Evaluates the plane equation at the specified point.
+    !!
+    !! @param[in] this The plane.
+    !! @param[in] pt The point.
+    !! @return The value of the plane equation at the specified point.
+    pure function pln_eval_1(this, pt) result(p)
+        ! Arguments
+        class(plane), intent(in) :: this
+        real(real64), intent(in), dimension(3) :: pt
+        real(real64) :: p
+
+        ! Process
+        p = this%a * pt(1) + this%b * pt(2) + this%c * pt(3) + this%d
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Evaluates the plane equation at the specified point.
+    !!
+    !! @param[in] this The plane.
+    !! @param[in] x The x-coordinate of the point.
+    !! @param[in] y The y-coordinate of the point.
+    !! @param[in] z The z-coordinate of the point.
+    !! @return The value of the plane equation at the specified point.
+    pure function pln_eval_2(this, x, y, z) result(p)
+        ! Arguments
+        class(plane), intent(in) :: this
+        real(real64), intent(in) :: x, y, z
+        real(real64) :: p
+
+        ! Process
+        p = this%a * x+ this%b * y + this%c * z + this%d
     end function
 
 ! ******************************************************************************
