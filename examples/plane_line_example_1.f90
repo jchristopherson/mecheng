@@ -64,19 +64,16 @@ contains
         real(real64), intent(in) :: sp
         type(surface_plot_data), intent(inout) :: pd
 
-        ! Parameters
-        real(real64), dimension(3) :: ii = [1.0d0, 0.0d0, 0.0d0]
-        real(real64), dimension(3) :: jj = [0.0d0, 1.0d0, 0.0d0]
-        real(real64), dimension(3) :: kk = [0.0d0, 0.0d0, 1.0d0]
-
         ! Local Variables
-        real(real64), dimension(3) :: n, origin, i, j, p1, p2, p3, p4
+        real(real64), dimension(3) :: n, origin, i, j, p1, p2, p3, p4, ii, jj, &
+            kk
         real(real64), dimension(3, 3) :: r
         real(real64), dimension(2, 2) :: x, y, z
-        real(real64) :: d, eps
 
         ! Initialization
-        eps = 2.0d0 * epsilon(eps)
+        ii = [1.0d0, 0.0d0, 0.0d0]
+        jj = [0.0d0, 1.0d0, 0.0d0]
+        kk = [0.0d0, 0.0d0, 1.0d0]
 
         ! Determine the normal to the plane
         n = pln%normal_vector()
@@ -84,7 +81,7 @@ contains
         ! Locate an "origin" point on the plane
         origin = proj_point_2_plane(pln, [0.0d0, 0.0d0, 0.0d0])
 
-        ! Determine either an x or y axis of the plane
+        ! Determine the x or y axes of the plane
         if (abs(pln%a - pln%b) > abs(pln%a - pln%c)) then
             ! Project a point onto the plane to construct an x axis
             i = proj_point_2_plane(pln, [pln%b, pln%a, pln%c]) - origin
@@ -115,36 +112,12 @@ contains
         p3 = matmul(r, p3) + origin
         p4 = matmul(r, p4) + origin
 
-        ! Ensure the rotated points lie on the plane
-        d = plane_to_point_distance(pln, p1)
-        if (d > eps) then
-            print '(AEN12.4)', &
-                "Point 1 does not lie on the plane.  The offset is ", d
-        end if
-
-        d = plane_to_point_distance(pln, p2)
-        if (d > eps) then
-            print '(AEN12.4)', &
-                "Point 2 does not lie on the plane.  The offset is ", d
-        end if
-
-        d = plane_to_point_distance(pln, p3)
-        if (d > eps) then
-            print '(AEN12.4)', &
-                "Point 3 does not lie on the plane.  The offset is ", d
-        end if
-
-        d = plane_to_point_distance(pln, p4)
-        if (d > eps) then
-            print '(AEN12.4)', &
-                "Point 4 does not lie on the plane.  The offset is ", d
-        end if
-
         ! Populate the surface_plot_data object
         x = reshape([p3(1), p2(1), p4(1), p1(1)], [2, 2])
         y = reshape([p3(2), p2(2), p4(2), p1(2)], [2, 2])
         z = reshape([p3(3), p2(3), p4(3), p1(3)], [2, 2])
 
+        ! Define the plot data
         call pd%define_data(x, y, z)
     end subroutine
 
