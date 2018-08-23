@@ -25,7 +25,7 @@ program example
 
     ! Set up the plot
     call plt%initialize()
-    call plt%set_show_hidden(.true.)
+    call plt%set_transparency(0.6)
     call plt%set_show_colorbar(.false.)
     call plt%set_font_size(14)
     xAxis => plt%get_x_axis()
@@ -39,9 +39,6 @@ program example
     ! Draw the planes
     call draw_plane(pln1, pd1, 1.0d0)
     call draw_plane(pln2, pd2, 1.0d0)
-
-    call pd1%set_use_wireframe(.true.)
-    call pd2%set_use_wireframe(.true.)
 
     ! Draw the lines
     call draw_line(l1, ld1, -2.0d0, 2.0d0)
