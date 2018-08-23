@@ -6433,6 +6433,8 @@ module fplot_core
         real(real32) :: m_lightIntensity = 0.5
         !> Specular highlight intensity (0 - 1)
         real(real32) :: m_specular = 0.5
+        !> Defines the translucency value.  Must exist on (0, 1].
+        real(real32) :: m_transparency = 1.0
     contains
         !> @brief Cleans up resources held by the surface_plot object.
         !!
@@ -7024,6 +7026,30 @@ module fplot_core
         !! @par Example
         !! See set_use_lighting for example useage.
         procedure, public :: set_specular_intensity => surf_set_specular_intensity
+        !> @brief Gets a factor defining the transparency of plotted surfaces.
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! pure real(real32) function get_transparency(class(surface_plot) this)
+        !! @endcode
+        !!
+        !! @param[in] this The surface_plot object.
+        !! @return A value existing on the set (0 1] defining the level of
+        !!  transparency.  A value of 1 indicates a fully opaque surface.
+        procedure, public :: get_transparency => surf_get_transparency
+        !> @brief Sets a factor defining the transparency of plotted surfaces.
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! subroutine set_transparency(class(surface_plot) this, real(real32) x)
+        !! @endcode
+        !!
+        !! @param[in,out] this The surface_plot object.
+        !! @param[in] x A value existing on the set (0 1] defining the level of
+        !!  transparency.  A value of 1 indicates a fully opaque surface.  
+        !!  Any values supplied outside of the set are clipped to fit within
+        !!  (0 1].
+        procedure, public :: set_transparency => surf_set_transparency
     end type
 
 ! ------------------------------------------------------------------------------
@@ -7121,6 +7147,16 @@ module fplot_core
         end function
 
         module subroutine surf_set_specular_intensity(this, x)
+            class(surface_plot), intent(inout) :: this
+            real(real32), intent(in) :: x
+        end subroutine
+
+        pure module function surf_get_transparency(this) result(x)
+            class(surface_plot), intent(in) :: this
+            real(real32) :: x
+        end function
+
+        module subroutine surf_set_transparency(this, x)
             class(surface_plot), intent(inout) :: this
             real(real32), intent(in) :: x
         end subroutine
