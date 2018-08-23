@@ -21,6 +21,8 @@ var searchData=
   ['pll_5fpop',['pll_pop',['../namespacecollection__linked__list.html#a47ada37de8c88e960561b3098811ff66',1,'collection_linked_list']]],
   ['pll_5fpush',['pll_push',['../namespacecollection__linked__list.html#adcafb49d76a536e2534b4c3443c516bf',1,'collection_linked_list']]],
   ['pll_5fremove',['pll_remove',['../namespacecollection__linked__list.html#a0e1028856cb026dcd9c694f327b577f7',1,'collection_linked_list']]],
+  ['pln_5feval_5f1',['pln_eval_1',['../namespacegeometry.html#ab945b82a34a434c57bb87aa3d49a67ad',1,'geometry']]],
+  ['pln_5feval_5f2',['pln_eval_2',['../namespacegeometry.html#a24aa690bb53353dc5640f459857cc0e2',1,'geometry']]],
   ['pln_5fnormal',['pln_normal',['../namespacegeometry.html#a7f2d8e72b3f63379e29b4d7ce3d1def8',1,'geometry']]],
   ['poly_5fcompanion_5fmtx',['poly_companion_mtx',['../namespacenonlin__polynomials.html#a73e15b4ed645b9f672085fdf0c35256a',1,'nonlin_polynomials']]],
   ['poly_5fdbl_5fequals',['poly_dbl_equals',['../interfacenonlin__polynomials_1_1assignment_07_0A_08.html#aece2a1a5690e79ae3868f5f2461028a7',1,'nonlin_polynomials::assignment(=)::poly_dbl_equals()'],['../namespacenonlin__polynomials.html#a966529b4b45ad23dae7fe3b7e842ca08',1,'nonlin_polynomials::poly_dbl_equals()']]],

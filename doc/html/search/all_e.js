@@ -29,6 +29,8 @@ var searchData=
   ['pll_5fpop',['pll_pop',['../namespacecollection__linked__list.html#a47ada37de8c88e960561b3098811ff66',1,'collection_linked_list']]],
   ['pll_5fpush',['pll_push',['../namespacecollection__linked__list.html#adcafb49d76a536e2534b4c3443c516bf',1,'collection_linked_list']]],
   ['pll_5fremove',['pll_remove',['../namespacecollection__linked__list.html#a0e1028856cb026dcd9c694f327b577f7',1,'collection_linked_list']]],
+  ['pln_5feval_5f1',['pln_eval_1',['../namespacegeometry.html#ab945b82a34a434c57bb87aa3d49a67ad',1,'geometry']]],
+  ['pln_5feval_5f2',['pln_eval_2',['../namespacegeometry.html#a24aa690bb53353dc5640f459857cc0e2',1,'geometry']]],
   ['pln_5fnormal',['pln_normal',['../namespacegeometry.html#a7f2d8e72b3f63379e29b4d7ce3d1def8',1,'geometry']]],
   ['plot',['plot',['../structfplot__core_1_1plot.html',1,'fplot_core']]],
   ['plot_5f2d',['plot_2d',['../structfplot__core_1_1plot__2d.html',1,'fplot_core']]],

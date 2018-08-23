@@ -1,5 +1,8 @@
 var NAVTREEINDEX6 =
 {
+"structnonlin__core_1_1fcn1var__helper.html#ae8e92bea80019e27bdea08ed600e6271":[2,0,19,4,5],
+"structnonlin__core_1_1fcn1var__helper.html#aee47d4795f22dad4bbf602073e5abf4d":[2,0,19,4,4],
+"structnonlin__core_1_1fcn1var__helper.html#aee8fdfd1502ae3c5b38b1ce96eb5ec93":[2,0,19,4,1],
 "structnonlin__core_1_1fcnnvar__helper.html":[2,0,19,6],
 "structnonlin__core_1_1fcnnvar__helper.html#a08e6e6f24db4d2f971aae68cfa7fc031":[2,0,19,6,7],
 "structnonlin__core_1_1fcnnvar__helper.html#a18683497b25cf991e39104b4d8ac0d3e":[2,0,19,6,9],

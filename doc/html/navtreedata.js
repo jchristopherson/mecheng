@@ -57,7 +57,7 @@ var NAVTREEINDEX =
 "structcurvefit__interp_1_1spline__interp.html#a84ac6638d7800c26523b367cb3b187bb",
 "structfplot__core_1_1multiplot.html#a4b770678c2469fc0be1648ad372c5d00",
 "structfplot__core_1_1surface__plot.html#ae449da228b62d103860df52de42d97a4",
-"structnonlin__core_1_1fcnnvar__helper.html"
+"structnonlin__core_1_1fcn1var__helper.html#ae8e92bea80019e27bdea08ed600e6271"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
