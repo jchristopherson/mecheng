@@ -1,13 +1,10 @@
 var searchData=
 [
-  ['sections',['sections',['../namespacesections.html',1,'']]],
-  ['signal_5fmagnitude',['signal_magnitude',['../interfacesignals_1_1signal__magnitude.html',1,'signals']]],
-  ['signals',['signals',['../namespacesignals.html',1,'']]],
-  ['slenderness_5fratio',['slenderness_ratio',['../interfacecolumns_1_1slenderness__ratio.html',1,'columns']]],
-  ['slenderness_5fratio_5f1',['slenderness_ratio_1',['../interfacecolumns_1_1slenderness__ratio.html#a4b520644b9140c1d9eb5e25bd2bacba7',1,'columns::slenderness_ratio::slenderness_ratio_1()'],['../namespacecolumns.html#a140df9105e2a8d57f0efe21e12d12ac7',1,'columns::slenderness_ratio_1()']]],
-  ['slenderness_5fratio_5f2',['slenderness_ratio_2',['../interfacecolumns_1_1slenderness__ratio.html#a965ec8e87d426e01ae879a6df9127660',1,'columns::slenderness_ratio::slenderness_ratio_2()'],['../namespacecolumns.html#a20b3f28070ab015688f384d6d553818a',1,'columns::slenderness_ratio_2()']]],
-  ['strain',['strain',['../namespacestrain.html',1,'']]],
-  ['strain_5ftransfom_5fxy',['strain_transfom_xy',['../namespacestrain.html#aa1e6812d4453a9aae9f51b72b5b8cbc7',1,'strain']]],
-  ['strain_5ftransform_5fx',['strain_transform_x',['../namespacestrain.html#a96a6f847cedbd7efac9a990d472df7e4',1,'strain']]],
-  ['strain_5ftransform_5fy',['strain_transform_y',['../namespacestrain.html#ad5894c36f2f7da4bf06333dc50f49218',1,'strain']]]
+  ['q',['q',['../structlinalg__immutable_1_1qr__results.html#a91547ec8def57c0cc59271ccf59b3a01',1,'linalg_immutable::qr_results']]],
+  ['qr_5ffactor',['qr_factor',['../interfacelinalg__core_1_1qr__factor.html',1,'linalg_core']]],
+  ['qr_5frank1_5fupdate',['qr_rank1_update',['../interfacelinalg__core_1_1qr__rank1__update.html',1,'linalg_core']]],
+  ['qr_5fresults',['qr_results',['../structlinalg__immutable_1_1qr__results.html',1,'linalg_immutable']]],
+  ['qt_5fterminal',['qt_terminal',['../structfplot__core_1_1qt__terminal.html',1,'fplot_core']]],
+  ['quasi_5fnewton_5fsolver',['quasi_newton_solver',['../structnonlin__solve_1_1quasi__newton__solver.html',1,'nonlin_solve']]],
+  ['quaternion',['quaternion',['../structkinematics_1_1quaternion.html',1,'kinematics']]]
 ];

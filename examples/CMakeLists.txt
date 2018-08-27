@@ -1,8 +1,3 @@
-# Link in dependencies necessary to generate plots
-find_package(fplot)
-find_package(ferror)
-find_package(collections)
-
 # FORWARD_KINEMATICS_EXAMPLE
 add_executable(forward_kinematics_example forward_kinematics_example.f90)
 target_link_libraries(forward_kinematics_example mecheng)
@@ -13,30 +8,40 @@ target_link_libraries(quaternion_example mecheng)
 
 # FFT EXAMPLE
 add_executable(fft_example fft_example.f90)
-target_link_libraries(fft_example mecheng fplot)
+target_link_libraries(fft_example mecheng)
 
 # SIGNALS EXAMPLE
 add_executable(signals_example signals_example.f90)
-target_link_libraries(signals_example mecheng fplot)
+target_link_libraries(signals_example mecheng)
 
-# ------------------------------------------------------------------------------
-if (WIN32)
-    # Copy shared libraries necessary to generate plots to the runtime directory
-    get_target_property(ferror_LibLocation ferror LOCATION)
-    add_custom_command(TARGET fft_example POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        ${ferror_LibLocation} $<TARGET_FILE_DIR:fft_example>
-    )
+# DIFFERENTIATION EXAMPLE
+add_executable(diff_example diff_example.f90)
+target_link_libraries(diff_example mecheng)
 
-    get_target_property(fplot_LibLocation fplot LOCATION)
-    add_custom_command(TARGET fft_example POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        ${fplot_LibLocation} $<TARGET_FILE_DIR:fft_example>
-    )
+# SIGNALS EXAMPLE #2
+add_executable(signals_example_2 signals_example_2.f90)
+target_link_libraries(signals_example_2 mecheng)
 
-    get_target_property(collections_LibLocation collections LOCATION)
-    add_custom_command(TARGET fft_example POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        ${collections_LibLocation} $<TARGET_FILE_DIR:fft_example>
-    )
-endif()
+# INTEGRATION EXAMPLE
+add_executable(integrate_example integrate_example.f90)
+target_link_libraries(integrate_example mecheng)
+
+# HBM FILE READ EXAMPLE
+add_executable(hbm_file_read_example hbm_file_read_example.f90)
+target_link_libraries(hbm_file_read_example mecheng)
+
+# PLANE GEOMETRY EXAMPLE 1
+add_executable(plane_geometry_example_1 plane_geometry_example_1.f90)
+target_link_libraries(plane_geometry_example_1 mecheng)
+
+# LINE EXAMPLE 1
+add_executable(line_example_1 line_example_1.f90)
+target_link_libraries(line_example_1 mecheng)
+
+# LINE-PLANE EXAMPLE 1
+add_executable(plane_line_example_1 plane_line_example_1.f90)
+target_link_libraries(plane_line_example_1 mecheng)
+
+# LINE EXAMPLE 2
+add_executable(line_example_2 line_example_2.f90)
+target_link_libraries(line_example_2 mecheng)

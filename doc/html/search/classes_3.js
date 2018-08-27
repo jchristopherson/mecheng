@@ -1,4 +1,7 @@
 var searchData=
 [
-  ['euler_5fbuckling',['euler_buckling',['../interfacecolumns_1_1euler__buckling.html',1,'columns']]]
+  ['det',['det',['../interfacelinalg__core_1_1det.html',1,'linalg_core']]],
+  ['dh_5fmtx',['dh_mtx',['../interfacekinematics_1_1dh__mtx.html',1,'kinematics']]],
+  ['diag_5fmtx_5fmult',['diag_mtx_mult',['../interfacelinalg__core_1_1diag__mtx__mult.html',1,'linalg_core']]],
+  ['dll_5fnode',['dll_node',['../structcollection__containers_1_1dll__node.html',1,'collection_containers']]]
 ];

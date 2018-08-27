@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['to_5fskew_5fsymmetric',['to_skew_symmetric',['../interfacekinematics_1_1to__skew__symmetric.html',1,'kinematics']]],
-  ['translate',['translate',['../interfacekinematics_1_1translate.html',1,'kinematics']]]
+  ['jacobianfcn',['jacobianfcn',['../interfacenonlin__core_1_1jacobianfcn.html',1,'nonlin_core']]],
+  ['johnson_5fbuckling',['johnson_buckling',['../interfacecolumns_1_1johnson__buckling.html',1,'columns']]]
 ];

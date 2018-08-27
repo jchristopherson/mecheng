@@ -36,7 +36,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">mecheng
-   &#160;<span id="projectnumber">1.0.0</span>
+   &#160;<span id="projectnumber">1.1.0</span>
    </div>
    <div id="projectbrief">A library providing common mechanical engineering related calculations.</div>
   </td>
@@ -109,6 +109,9 @@ Data Types</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">interface &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interfacestrain_1_1wheatstone__bridge.html">wheatstone_bridge</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the output of a wheatstone bridge.  <a href="interfacestrain_1_1wheatstone__bridge.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">interface &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interfacestrain_1_1wheatstone__bridge__parallel.html">wheatstone_bridge_parallel</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the output of a wheatstone bridge when two gages are in parallel in each leg of the bridge.  <a href="interfacestrain_1_1wheatstone__bridge__parallel.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">interface &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="interfacestrain_1_1wheatstone__bridge__series.html">wheatstone_bridge_series</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the output of a wheatstone bridge when two gages are in series in each leg of the bridge.  <a href="interfacestrain_1_1wheatstone__bridge__series.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -139,6 +142,18 @@ Functions/Subroutines</h2></td></tr>
 <tr class="memitem:a16a72818e3f8dcf6bed748e3eab91863"><td class="memItemLeft" align="right" valign="top">pure real(real64) function, dimension(:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestrain.html#a16a72818e3f8dcf6bed748e3eab91863">wheatstone_bridge_series_4</a> (fg, r, strain1a, strain1b, strain2a, strain2b, strain3a, strain3b, strain4a, strain4b)</td></tr>
 <tr class="memdesc:a16a72818e3f8dcf6bed748e3eab91863"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the output of a wheatstone bridge where two strain gages are placed in series in each leg.  <a href="#a16a72818e3f8dcf6bed748e3eab91863">More...</a><br /></td></tr>
 <tr class="separator:a16a72818e3f8dcf6bed748e3eab91863"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a490e2efc37ea1ef585c3de5670c48d10"><td class="memItemLeft" align="right" valign="top">pure real(real64) function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestrain.html#a490e2efc37ea1ef585c3de5670c48d10">wheatstone_bridge_parallel_1</a> (fg, strain1a, strain1b, strain2a, strain2b, strain3a, strain3b, strain4a, strain4b)</td></tr>
+<tr class="memdesc:a490e2efc37ea1ef585c3de5670c48d10"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the output of a wheatstone bridge where two strain gages are placed in parallel in each leg.  <a href="#a490e2efc37ea1ef585c3de5670c48d10">More...</a><br /></td></tr>
+<tr class="separator:a490e2efc37ea1ef585c3de5670c48d10"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a07adcda688229b7c9f9cd6e801da7a98"><td class="memItemLeft" align="right" valign="top">pure real(real64) function, dimension(:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestrain.html#a07adcda688229b7c9f9cd6e801da7a98">wheatstone_bridge_parallel_2</a> (fg, strain1a, strain1b, strain2a, strain2b, strain3a, strain3b, strain4a, strain4b)</td></tr>
+<tr class="memdesc:a07adcda688229b7c9f9cd6e801da7a98"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the output of a wheatstone bridge where two strain gages are placed in parallel in each leg.  <a href="#a07adcda688229b7c9f9cd6e801da7a98">More...</a><br /></td></tr>
+<tr class="separator:a07adcda688229b7c9f9cd6e801da7a98"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad5a8793fde7711702361cc5704e78abf"><td class="memItemLeft" align="right" valign="top">pure real(real64) function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestrain.html#ad5a8793fde7711702361cc5704e78abf">wheatstone_bridge_parallel_3</a> (fg, r, strain1a, strain1b, strain2a, strain2b, strain3a, strain3b, strain4a, strain4b)</td></tr>
+<tr class="memdesc:ad5a8793fde7711702361cc5704e78abf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the output of a wheatstone bridge where two strain gages are placed in parallel in each leg.  <a href="#ad5a8793fde7711702361cc5704e78abf">More...</a><br /></td></tr>
+<tr class="separator:ad5a8793fde7711702361cc5704e78abf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa5fa30927a9e762119e952d792d4a6ff"><td class="memItemLeft" align="right" valign="top">pure real(real64) function, dimension(:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestrain.html#aa5fa30927a9e762119e952d792d4a6ff">wheatstone_bridge_parallel_4</a> (fg, r, strain1a, strain1b, strain2a, strain2b, strain3a, strain3b, strain4a, strain4b)</td></tr>
+<tr class="memdesc:aa5fa30927a9e762119e952d792d4a6ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the output of a wheatstone bridge where two strain gages are placed in parallel in each leg.  <a href="#aa5fa30927a9e762119e952d792d4a6ff">More...</a><br /></td></tr>
+<tr class="separator:aa5fa30927a9e762119e952d792d4a6ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a96a6f847cedbd7efac9a990d472df7e4"><td class="memItemLeft" align="right" valign="top">pure elemental real(real64) function, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestrain.html#a96a6f847cedbd7efac9a990d472df7e4">strain_transform_x</a> (ex, ey, gxy, theta)</td></tr>
 <tr class="memdesc:a96a6f847cedbd7efac9a990d472df7e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Applies a rotation transformation to the x-direction strain.  <a href="#a96a6f847cedbd7efac9a990d472df7e4">More...</a><br /></td></tr>
 <tr class="separator:a96a6f847cedbd7efac9a990d472df7e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -204,7 +219,7 @@ Functions/Subroutines</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>The transformed strain.</dd></dl>
 <dl class="section user"><dt>Definition</dt><dd>\( \gamma_{x&#39;y&#39;} = 2 (\epsilon_{x} - \epsilon_{y}) \sin\theta \cos\theta + \gamma_{xy} (\cos^{2}\theta - \sin^{2}\theta) \) </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="strain_8f90_source.html#l00537">537</a> of file <a class="el" href="strain_8f90_source.html">strain.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="strain_8f90_source.html#l00846">846</a> of file <a class="el" href="strain_8f90_source.html">strain.f90</a>.</p>
 
 </div>
 </div>
@@ -259,7 +274,7 @@ Functions/Subroutines</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>The transformed strain.</dd></dl>
 <dl class="section user"><dt>Definition</dt><dd>\( \epsilon_{x&#39;} = \epsilon_{x} \cos^{2}\theta + \epsilon_{y} \sin^{2}\theta + \gamma_{xy} \sin\theta \cos\theta \) </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="strain_8f90_source.html#l00497">497</a> of file <a class="el" href="strain_8f90_source.html">strain.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="strain_8f90_source.html#l00806">806</a> of file <a class="el" href="strain_8f90_source.html">strain.f90</a>.</p>
 
 </div>
 </div>
@@ -314,7 +329,7 @@ Functions/Subroutines</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>The transformed strain.</dd></dl>
 <dl class="section user"><dt>Definition</dt><dd>\( \epsilon_{y&#39;} = \epsilon_{x} \sin^{2}\theta + \epsilon_{y} \cos^{2}\theta - \gamma_{xy} \sin\theta \cos\theta \) </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="strain_8f90_source.html#l00517">517</a> of file <a class="el" href="strain_8f90_source.html">strain.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="strain_8f90_source.html#l00826">826</a> of file <a class="el" href="strain_8f90_source.html">strain.f90</a>.</p>
 
 </div>
 </div>
@@ -393,7 +408,7 @@ Functions/Subroutines</h2></td></tr>
 <dl class="section user"><dt></dt><dd>The output of the bridge assuming each gage has the same resistance and the same gage factor is as follows. </dd></dl>
 <dl class="section user"><dt></dt><dd>\( \frac{V_{out}}{V} = \frac{f_{g}(f_{g}(\epsilon_{1}\epsilon_{3} - \epsilon_{2}\epsilon_{4}) - (\epsilon_{4} - \epsilon_{3} + \epsilon_{2} - \epsilon_{1}))}{4 + f_{g}(f_{g}(\epsilon_{3} (\epsilon_{2} + \epsilon_{1}) + \epsilon_{4} (\epsilon_{2} + \epsilon_{1})) + 2 (\epsilon_{1} + \epsilon_{2} + \epsilon_{3} + \epsilon_{4}))} \) </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="strain_8f90_source.html#l00072">72</a> of file <a class="el" href="strain_8f90_source.html">strain.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="strain_8f90_source.html#l00083">83</a> of file <a class="el" href="strain_8f90_source.html">strain.f90</a>.</p>
 
 </div>
 </div>
@@ -472,7 +487,7 @@ Functions/Subroutines</h2></td></tr>
 <dl class="section user"><dt></dt><dd>The output of the bridge assuming each gage has the same resistance and the same gage factor is as follows. </dd></dl>
 <dl class="section user"><dt></dt><dd>\( \frac{V_{out}}{V} = \frac{f_{g}(f_{g}(\epsilon_{1}\epsilon_{3} - \epsilon_{2}\epsilon_{4}) - (\epsilon_{4} - \epsilon_{3} + \epsilon_{2} - \epsilon_{1}))}{4 + f_{g}(f_{g}(\epsilon_{3} (\epsilon_{2} + \epsilon_{1}) + \epsilon_{4} (\epsilon_{2} + \epsilon_{1})) + 2 (\epsilon_{1} + \epsilon_{2} + \epsilon_{3} + \epsilon_{4}))} \) </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="strain_8f90_source.html#l00117">117</a> of file <a class="el" href="strain_8f90_source.html">strain.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="strain_8f90_source.html#l00128">128</a> of file <a class="el" href="strain_8f90_source.html">strain.f90</a>.</p>
 
 </div>
 </div>
@@ -559,7 +574,7 @@ Functions/Subroutines</h2></td></tr>
 <dl class="section user"><dt></dt><dd>\( \frac{V_{out}}{V} = \frac{R_{3} + \Delta R_{3}}{R_{3} + \Delta R_{3} + R_{4} + \Delta R_{4}} - \frac{R_{2} + \Delta R_{2}}{R_{2} + \Delta R_{2} + R_{1} + \Delta R_{1}}\) </dd></dl>
 <dl class="section user"><dt></dt><dd>Where: \( \Delta R_{i} = f_{g,i} R_{i} \epsilon_{i}, i = 1..4 \). </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="strain_8f90_source.html#l00166">166</a> of file <a class="el" href="strain_8f90_source.html">strain.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="strain_8f90_source.html#l00177">177</a> of file <a class="el" href="strain_8f90_source.html">strain.f90</a>.</p>
 
 </div>
 </div>
@@ -646,7 +661,465 @@ Functions/Subroutines</h2></td></tr>
 <dl class="section user"><dt></dt><dd>\( \frac{V_{out}}{V} = \frac{R_{3} + \Delta R_{3}}{R_{3} + \Delta R_{3} + R_{4} + \Delta R_{4}} - \frac{R_{2} + \Delta R_{2}}{R_{2} + \Delta R_{2} + R_{1} + \Delta R_{1}}\) </dd></dl>
 <dl class="section user"><dt></dt><dd>Where: \( \Delta R_{i} = f_{g,i} R_{i} \epsilon_{i}, i = 1..4 \). </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="strain_8f90_source.html#l00219">219</a> of file <a class="el" href="strain_8f90_source.html">strain.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="strain_8f90_source.html#l00230">230</a> of file <a class="el" href="strain_8f90_source.html">strain.f90</a>.</p>
+
+</div>
+</div>
+<a id="a490e2efc37ea1ef585c3de5670c48d10"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a490e2efc37ea1ef585c3de5670c48d10">&#9670;&nbsp;</a></span>wheatstone_bridge_parallel_1()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">pure real(real64) function strain::wheatstone_bridge_parallel_1 </td>
+          <td>(</td>
+          <td class="paramtype">real(real64), intent(in)&#160;</td>
+          <td class="paramname"><em>fg</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">real(real64), intent(in)&#160;</td>
+          <td class="paramname"><em>strain1a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">real(real64), intent(in)&#160;</td>
+          <td class="paramname"><em>strain1b</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">real(real64), intent(in)&#160;</td>
+          <td class="paramname"><em>strain2a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">real(real64), intent(in)&#160;</td>
+          <td class="paramname"><em>strain2b</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">real(real64), intent(in)&#160;</td>
+          <td class="paramname"><em>strain3a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">real(real64), intent(in)&#160;</td>
+          <td class="paramname"><em>strain3b</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">real(real64), intent(in)&#160;</td>
+          <td class="paramname"><em>strain4a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">real(real64), intent(in)&#160;</td>
+          <td class="paramname"><em>strain4b</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Computes the output of a wheatstone bridge where two strain gages are placed in parallel in each leg. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">fg</td><td>The gage factor of each strain gage. Each gage is assigned the same gage factor. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">strain1a</td><td>The strain in leg 1a of the bridge. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">strain1b</td><td>The strain in leg 1b of the bridge. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">strain2a</td><td>The strain in leg 2a of the bridge. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">strain2b</td><td>The strain in leg 2b of the bridge. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">strain3a</td><td>The strain in leg 3a of the bridge. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">strain3b</td><td>The strain in leg 3b of the bridge. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">strain4a</td><td>The strain in leg 4a of the bridge. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">strain4b</td><td>The strain in leg 4b of the bridge. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The output of the bridge, in units of mV/V.</dd></dl>
+<dl class="section user"><dt>Remarks</dt><dd>The construction of the wheatstone bridge is as follows. <pre class="fragment">             V(+)
+    Leg 1b   /\  Leg 4b
+            /  \
+  Leg 1a   /    \  Leg 4a
+ Vout(-) _/      \_ Vout(+) 
+  Leg 2b  \      / Leg 3b
+           \    /
+    Leg 2a  \  /   Leg 3a
+             \/
+            V(-)</pre></dd></dl>
+<dl class="section user"><dt></dt><dd>The bridge output is computed similarily to that of a traditional wheatstone bridge, but the resistance of each leg requires treatment of two strain gages in parallel. The gage resistance in each leg is as follows. </dd></dl>
+<dl class="section user"><dt></dt><dd>\( R_{eff,i} = \frac{R_{a,i} R_{b,i}}{R_{a,i} + R_{b,i}} \) </dd></dl>
+<dl class="section user"><dt></dt><dd>Where </dd></dl>
+<dl class="section user"><dt></dt><dd>\( R_{a,i} = R (f_g \epsilon_{a,i} + 1) \), and \( R_{b,i} = R (f_g \epsilon_{b,i} + 1) \). </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="strain_8f90_source.html#l00539">539</a> of file <a class="el" href="strain_8f90_source.html">strain.f90</a>.</p>
+
+</div>
+</div>
+<a id="a07adcda688229b7c9f9cd6e801da7a98"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a07adcda688229b7c9f9cd6e801da7a98">&#9670;&nbsp;</a></span>wheatstone_bridge_parallel_2()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">pure real(real64) function, dimension(:), allocatable strain::wheatstone_bridge_parallel_2 </td>
+          <td>(</td>
+          <td class="paramtype">real(real64), intent(in)&#160;</td>
+          <td class="paramname"><em>fg</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">real(real64), dimension(:), intent(in)&#160;</td>
+          <td class="paramname"><em>strain1a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">real(real64), dimension(:), intent(in)&#160;</td>
+          <td class="paramname"><em>strain1b</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">real(real64), dimension(:), intent(in)&#160;</td>
+          <td class="paramname"><em>strain2a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">real(real64), dimension(:), intent(in)&#160;</td>
+          <td class="paramname"><em>strain2b</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">real(real64), dimension(:), intent(in)&#160;</td>
+          <td class="paramname"><em>strain3a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">real(real64), dimension(:), intent(in)&#160;</td>
+          <td class="paramname"><em>strain3b</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">real(real64), dimension(:), intent(in)&#160;</td>
+          <td class="paramname"><em>strain4a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">real(real64), dimension(:), intent(in)&#160;</td>
+          <td class="paramname"><em>strain4b</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Computes the output of a wheatstone bridge where two strain gages are placed in parallel in each leg. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">fg</td><td>The gage factor of each strain gage. Each gage is assigned the same gage factor. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">strain1a</td><td>The strain in leg 1a of the bridge. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">strain1b</td><td>The strain in leg 1b of the bridge. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">strain2a</td><td>The strain in leg 2a of the bridge. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">strain2b</td><td>The strain in leg 2b of the bridge. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">strain3a</td><td>The strain in leg 3a of the bridge. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">strain3b</td><td>The strain in leg 3b of the bridge. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">strain4a</td><td>The strain in leg 4a of the bridge. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">strain4b</td><td>The strain in leg 4b of the bridge. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The output of the bridge, in units of mV/V.</dd></dl>
+<dl class="section user"><dt>Remarks</dt><dd>The construction of the wheatstone bridge is as follows. <pre class="fragment">             V(+)
+    Leg 1b   /\  Leg 4b
+            /  \
+  Leg 1a   /    \  Leg 4a
+ Vout(-) _/      \_ Vout(+) 
+  Leg 2b  \      / Leg 3b
+           \    /
+    Leg 2a  \  /   Leg 3a
+             \/
+            V(-)</pre></dd></dl>
+<dl class="section user"><dt></dt><dd>The bridge output is computed similarily to that of a traditional wheatstone bridge, but the resistance of each leg requires treatment of two strain gages in parallel. The gage resistance in each leg is as follows. </dd></dl>
+<dl class="section user"><dt></dt><dd>\( R_{eff,i} = \frac{R_{a,i} R_{b,i}}{R_{a,i} + R_{b,i}} \) </dd></dl>
+<dl class="section user"><dt></dt><dd>Where </dd></dl>
+<dl class="section user"><dt></dt><dd>\( R_{a,i} = R (f_g \epsilon_{a,i} + 1) \), and \( R_{b,i} = R (f_g \epsilon_{b,i} + 1) \). </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="strain_8f90_source.html#l00613">613</a> of file <a class="el" href="strain_8f90_source.html">strain.f90</a>.</p>
+
+</div>
+</div>
+<a id="ad5a8793fde7711702361cc5704e78abf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad5a8793fde7711702361cc5704e78abf">&#9670;&nbsp;</a></span>wheatstone_bridge_parallel_3()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">pure real(real64) function strain::wheatstone_bridge_parallel_3 </td>
+          <td>(</td>
+          <td class="paramtype">real(real64), dimension(8), intent(in)&#160;</td>
+          <td class="paramname"><em>fg</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">real(real64), dimension(8), intent(in)&#160;</td>
+          <td class="paramname"><em>r</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">real(real64), intent(in)&#160;</td>
+          <td class="paramname"><em>strain1a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">real(real64), intent(in)&#160;</td>
+          <td class="paramname"><em>strain1b</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">real(real64), intent(in)&#160;</td>
+          <td class="paramname"><em>strain2a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">real(real64), intent(in)&#160;</td>
+          <td class="paramname"><em>strain2b</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">real(real64), intent(in)&#160;</td>
+          <td class="paramname"><em>strain3a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">real(real64), intent(in)&#160;</td>
+          <td class="paramname"><em>strain3b</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">real(real64), intent(in)&#160;</td>
+          <td class="paramname"><em>strain4a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">real(real64), intent(in)&#160;</td>
+          <td class="paramname"><em>strain4b</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Computes the output of a wheatstone bridge where two strain gages are placed in parallel in each leg. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">fg</td><td>The gage factor of each strain gage [1a, 1b, ... 4a, 4b]. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">r</td><td>The resistance of each strain gage [1a, 1b, ... 4a, 4b]. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">strain1a</td><td>The strain in leg 1a of the bridge. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">strain1b</td><td>The strain in leg 1b of the bridge. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">strain2a</td><td>The strain in leg 2a of the bridge. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">strain2b</td><td>The strain in leg 2b of the bridge. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">strain3a</td><td>The strain in leg 3a of the bridge. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">strain3b</td><td>The strain in leg 3b of the bridge. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">strain4a</td><td>The strain in leg 4a of the bridge. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">strain4b</td><td>The strain in leg 4b of the bridge. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The output of the bridge, in units of mV/V.</dd></dl>
+<dl class="section user"><dt>Remarks</dt><dd>The construction of the wheatstone bridge is as follows. <pre class="fragment">             V(+)
+    Leg 1b   /\  Leg 4b
+            /  \
+  Leg 1a   /    \  Leg 4a
+ Vout(-) _/      \_ Vout(+) 
+  Leg 2b  \      / Leg 3b
+           \    /
+    Leg 2a  \  /   Leg 3a
+             \/
+            V(-)</pre></dd></dl>
+<dl class="section user"><dt></dt><dd>The bridge output is computed similarily to that of a traditional wheatstone bridge, but the resistance of each leg requires treatment of two strain gages in parallel. The gage resistance in each leg is as follows. </dd></dl>
+<dl class="section user"><dt></dt><dd>\( R_{eff,i} = \frac{R_{a,i} R_{b,i}}{R_{a,i} + R_{b,i}} \) </dd></dl>
+<dl class="section user"><dt></dt><dd>Where </dd></dl>
+<dl class="section user"><dt></dt><dd>\( R_{a,i} = R (f_g \epsilon_{a,i} + 1) \), and \( R_{b,i} = R (f_g \epsilon_{b,i} + 1) \). </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="strain_8f90_source.html#l00688">688</a> of file <a class="el" href="strain_8f90_source.html">strain.f90</a>.</p>
+
+</div>
+</div>
+<a id="aa5fa30927a9e762119e952d792d4a6ff"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa5fa30927a9e762119e952d792d4a6ff">&#9670;&nbsp;</a></span>wheatstone_bridge_parallel_4()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">pure real(real64) function, dimension(:), allocatable strain::wheatstone_bridge_parallel_4 </td>
+          <td>(</td>
+          <td class="paramtype">real(real64), dimension(8), intent(in)&#160;</td>
+          <td class="paramname"><em>fg</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">real(real64), dimension(8), intent(in)&#160;</td>
+          <td class="paramname"><em>r</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">real(real64), dimension(:), intent(in)&#160;</td>
+          <td class="paramname"><em>strain1a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">real(real64), dimension(:), intent(in)&#160;</td>
+          <td class="paramname"><em>strain1b</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">real(real64), dimension(:), intent(in)&#160;</td>
+          <td class="paramname"><em>strain2a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">real(real64), dimension(:), intent(in)&#160;</td>
+          <td class="paramname"><em>strain2b</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">real(real64), dimension(:), intent(in)&#160;</td>
+          <td class="paramname"><em>strain3a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">real(real64), dimension(:), intent(in)&#160;</td>
+          <td class="paramname"><em>strain3b</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">real(real64), dimension(:), intent(in)&#160;</td>
+          <td class="paramname"><em>strain4a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">real(real64), dimension(:), intent(in)&#160;</td>
+          <td class="paramname"><em>strain4b</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Computes the output of a wheatstone bridge where two strain gages are placed in parallel in each leg. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">fg</td><td>The gage factor of each strain gage [1a, 1b, ... 4a, 4b]. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">r</td><td>The resistance of each strain gage [1a, 1b, ... 4a, 4b]. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">strain1a</td><td>The strain in leg 1a of the bridge. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">strain1b</td><td>The strain in leg 1b of the bridge. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">strain2a</td><td>The strain in leg 2a of the bridge. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">strain2b</td><td>The strain in leg 2b of the bridge. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">strain3a</td><td>The strain in leg 3a of the bridge. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">strain3b</td><td>The strain in leg 3b of the bridge. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">strain4a</td><td>The strain in leg 4a of the bridge. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">strain4b</td><td>The strain in leg 4b of the bridge. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The output of the bridge, in units of mV/V.</dd></dl>
+<dl class="section user"><dt>Remarks</dt><dd>The construction of the wheatstone bridge is as follows. <pre class="fragment">             V(+)
+    Leg 1b   /\  Leg 4b
+            /  \
+  Leg 1a   /    \  Leg 4a
+ Vout(-) _/      \_ Vout(+) 
+  Leg 2b  \      / Leg 3b
+           \    /
+    Leg 2a  \  /   Leg 3a
+             \/
+            V(-)</pre></dd></dl>
+<dl class="section user"><dt></dt><dd>The bridge output is computed similarily to that of a traditional wheatstone bridge, but the resistance of each leg requires treatment of two strain gages in parallel. The gage resistance in each leg is as follows. </dd></dl>
+<dl class="section user"><dt></dt><dd>\( R_{eff,i} = \frac{R_{a,i} R_{b,i}}{R_{a,i} + R_{b,i}} \) </dd></dl>
+<dl class="section user"><dt></dt><dd>Where </dd></dl>
+<dl class="section user"><dt></dt><dd>\( R_{a,i} = R (f_g \epsilon_{a,i} + 1) \), and \( R_{b,i} = R (f_g \epsilon_{b,i} + 1) \). </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="strain_8f90_source.html#l00762">762</a> of file <a class="el" href="strain_8f90_source.html">strain.f90</a>.</p>
 
 </div>
 </div>
@@ -754,7 +1227,7 @@ Functions/Subroutines</h2></td></tr>
             V(-)</pre></dd></dl>
 <dl class="section user"><dt></dt><dd>The bridge output is computed similarily to that of a traditional wheatstone bridge, but the resistance of each leg requires treatment of two strain gages in series. The gage resistance in each leg is as follows. \( R_{eff,i} = f_{a,i} R_{a,i} \epsilon_{a,i} + R_{a,i} + f_{b,i} R_{b,i} \epsilon_{b,i} + R_{b,i} \) When the gage factor and nominal resistance is the same for each gage the relationship simplifies to the following form. \( R_{eff,i} = R_i (f_i (\epsilon_{a,i} + \epsilon_{b,i}) + 2) \) </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="strain_8f90_source.html#l00280">280</a> of file <a class="el" href="strain_8f90_source.html">strain.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="strain_8f90_source.html#l00291">291</a> of file <a class="el" href="strain_8f90_source.html">strain.f90</a>.</p>
 
 </div>
 </div>
@@ -862,7 +1335,7 @@ Functions/Subroutines</h2></td></tr>
             V(-)</pre></dd></dl>
 <dl class="section user"><dt></dt><dd>The bridge output is computed similarily to that of a traditional wheatstone bridge, but the resistance of each leg requires treatment of two strain gages in series. The gage resistance in each leg is as follows. \( R_{eff,i} = f_{a,i} R_{a,i} \epsilon_{a,i} + R_{a,i} + f_{b,i} R_{b,i} \epsilon_{b,i} + R_{b,i} \) When the gage factor and nominal resistance is the same for each gage the relationship simplifies to the following form. \( R_{eff,i} = f_i R_i ((\epsilon_{a,i} + \epsilon_{b,i}) + 2) \) </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="strain_8f90_source.html#l00343">343</a> of file <a class="el" href="strain_8f90_source.html">strain.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="strain_8f90_source.html#l00354">354</a> of file <a class="el" href="strain_8f90_source.html">strain.f90</a>.</p>
 
 </div>
 </div>
@@ -977,7 +1450,7 @@ Functions/Subroutines</h2></td></tr>
             V(-)</pre></dd></dl>
 <dl class="section user"><dt></dt><dd>The bridge output is computed similarily to that of a traditional wheatstone bridge, but the resistance of each leg requires treatment of two strain gages in series. The gage resistance in each leg is as follows. \( R_{eff,i} = f_{a,i} R_{a,i} \epsilon_{a,i} + R_{a,i} + f_{b,i} R_{b,i} \epsilon_{b,i} + R_{b,i} \) </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="strain_8f90_source.html#l00403">403</a> of file <a class="el" href="strain_8f90_source.html">strain.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="strain_8f90_source.html#l00414">414</a> of file <a class="el" href="strain_8f90_source.html">strain.f90</a>.</p>
 
 </div>
 </div>
@@ -1092,7 +1565,7 @@ Functions/Subroutines</h2></td></tr>
             V(-)</pre></dd></dl>
 <dl class="section user"><dt></dt><dd>The bridge output is computed similarily to that of a traditional wheatstone bridge, but the resistance of each leg requires treatment of two strain gages in series. The gage resistance in each leg is as follows. \( R_{eff,i} = f_{a,i} R_{a,i} \epsilon_{a,i} + R_{a,i} + f_{b,i} R_{b,i} \epsilon_{b,i} + R_{b,i} \) </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="strain_8f90_source.html#l00463">463</a> of file <a class="el" href="strain_8f90_source.html">strain.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="strain_8f90_source.html#l00474">474</a> of file <a class="el" href="strain_8f90_source.html">strain.f90</a>.</p>
 
 </div>
 </div>

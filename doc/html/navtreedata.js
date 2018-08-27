@@ -27,18 +27,19 @@ var NAVTREE =
     [ "Modules", "namespaces.html", [
       [ "Modules List", "namespaces.html", "namespaces_dup" ],
       [ "Module Members", "namespacemembers.html", [
-        [ "All", "namespacemembers.html", null ],
-        [ "Functions/Subroutines", "namespacemembers_func.html", null ],
+        [ "All", "namespacemembers.html", "namespacemembers_dup" ],
+        [ "Functions/Subroutines", "namespacemembers_func.html", "namespacemembers_func" ],
         [ "Variables", "namespacemembers_vars.html", null ]
       ] ]
     ] ],
     [ "Data Types List", "annotated.html", [
       [ "Data Types List", "annotated.html", "annotated_dup" ],
       [ "Data Types", "classes.html", null ],
+      [ "Class Hierarchy", "hierarchy.html", "hierarchy" ],
       [ "Data Fields", "functions.html", [
-        [ "All", "functions.html", null ],
-        [ "Functions/Subroutines", "functions_func.html", null ],
-        [ "Variables", "functions_vars.html", null ]
+        [ "All", "functions.html", "functions_dup" ],
+        [ "Functions/Subroutines", "functions_func.html", "functions_func" ],
+        [ "Variables", "functions_vars.html", "functions_vars" ]
       ] ]
     ] ],
     [ "Files", "files.html", [
@@ -49,7 +50,13 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-".html"
+".html",
+"interfacegeometry_1_1plane__from__angle__axis.html#ae78e5caa3690a09ff801aa244117ad62",
+"interfacestrings_1_1string__to__number.html#a770e7db91aa9899685c507dd21b30a9f",
+"structcurvefit__interp_1_1spline__interp.html#a855b787ccc8515b737a2f17993e971a1",
+"structfplot__core_1_1multiplot.html#a4fc3681e3bf594b4b318d77e2a1bb140",
+"structfplot__core_1_1surface__plot.html#ae34fa3cbc672b43575cd68f48f25098a",
+"structnonlin__core_1_1fcn1var__helper.html#a798d9b180392537c564ac69cc1b81952"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
