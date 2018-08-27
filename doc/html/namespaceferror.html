@@ -181,7 +181,13 @@ Functions/Subroutines</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><b>ferror</b> </p>
-<dl class="section user"><dt>Purpose</dt><dd>Provides a series of error codes and error handling mechanisms. </dd></dl>
+<dl class="section user"><dt>Purpose</dt><dd>FERROR is a library to assist with error handling in Fortran projects. The error handling capabilities also have been extended to be called from C thereby providing both an error handling mechanism for C projects as well as allowing C interop with Fortran projects that use this library to handle errors.</dd></dl>
+<dl class="section user"><dt>Example</dt><dd>The following piece of code offers a simple introduction to the use of this library. <div class="fragment"><div class="line"><span class="keyword">program</span> example</div><div class="line">    <span class="keywordtype">use </span><a class="code" href="namespaceferror.html">ferror</a></div><div class="line">    use, <span class="keywordtype">intrinsic</span> :: iso_fortran_env, only : int32</div><div class="line">    <span class="keywordtype">implicit none</span></div><div class="line"></div><div class="line">    <span class="comment">! Variables</span></div><div class="line">    <span class="keywordtype">type</span>(errors) :: err_mgr</div><div class="line"></div><div class="line">    <span class="comment">! Ensure the error reporting doesn&#39;t terminate the application.  The default</span></div><div class="line">    <span class="comment">! behavior terminates the application.</span></div><div class="line">    <span class="keyword">call </span>err_mgr%set_exit_on_error(.false.)</div><div class="line"></div><div class="line">    <span class="comment">! Don&#39;t print the error message to the command line.  The default behavior</span></div><div class="line">    <span class="comment">! prints the error information to the command line.</span></div><div class="line">    <span class="keyword">call </span>err_mgr%set_suppress_printing(.true.)</div><div class="line"></div><div class="line">    <span class="comment">! Call the routine that causes the error</span></div><div class="line">    <span class="keyword">call </span>causes_error(err_mgr)</div><div class="line"></div><div class="line">    <span class="comment">! Print the error information</span></div><div class="line">    print <span class="stringliteral">&#39;(A)&#39;</span>, <span class="stringliteral">&quot;An error occurred in the following subroutine: &quot;</span> // &amp;</div><div class="line">        err_mgr%get_error_fcn_name()</div><div class="line">    print <span class="stringliteral">&#39;(A)&#39;</span>, <span class="stringliteral">&quot;The error message is: &quot;</span> // err_mgr%get_error_message()</div><div class="line">    print <span class="stringliteral">&#39;(AI0)&#39;</span>, <span class="stringliteral">&quot;The error code is: &quot;</span>, err_mgr%get_error_flag()</div><div class="line"><span class="keyword">contains</span></div><div class="line"></div><div class="line"><span class="comment">! The purpose of this subroutine is to simply trigger an error condition.</span></div><div class="line"><span class="keyword">subroutine </span>causes_error(err)</div><div class="line">    <span class="comment">! Arguments</span></div><div class="line">    <span class="keywordtype">class</span>(errors), <span class="keywordtype">intent(inout)</span> :: err</div><div class="line"></div><div class="line">    <span class="comment">! Define an error flag</span></div><div class="line">    <span class="keywordtype">integer(int32)</span>, <span class="keywordtype">parameter</span> :: error_flag = 200</div><div class="line"></div><div class="line">    <span class="comment">! Trigger the error condition</span></div><div class="line">    <span class="keyword">call </span>err%report_error(&amp;</div><div class="line">        <span class="stringliteral">&quot;causes_error&quot;</span>, &amp;                   <span class="comment">! The subroutine or function name</span></div><div class="line">        <span class="stringliteral">&quot;This is a test error message.&quot;</span>, &amp;  <span class="comment">! The error message.</span></div><div class="line">        error_flag)                         <span class="comment">! The error flag</span></div><div class="line"><span class="keyword">end subroutine</span></div><div class="line"></div><div class="line"><span class="keyword">end program</span></div></div><!-- fragment --></dd></dl>
+<dl class="section user"><dt></dt><dd>The above program produces the following output. <div class="fragment"><div class="line">An error occurred in the following subroutine: causes_error</div><div class="line">The error message is: This is a test error message.</div><div class="line">The error code is: 200</div></div><!-- fragment --></dd></dl>
+<dl class="section user"><dt></dt><dd>The above program also creates a log file. The log file is titled error_log.txt by default, but can be named whatever by the user. The contents of the file written from the above program are as follows. <div class="fragment"><div class="line">***** ERROR *****</div><div class="line">1/2/2018; 16:49:40</div><div class="line">Function: causes_error</div><div class="line">Error Flag: 200</div><div class="line">Message:</div><div class="line">This is a test error message.</div></div><!-- fragment --></dd></dl>
+<dl class="section user"><dt></dt><dd>If additional errors are encountered, the information is simply appended to the end of the file.</dd></dl>
+<dl class="section user"><dt></dt><dd>The same example above can be written in C. The C implementation is as follows. <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;stdio.h&gt;</span></div><div class="line"><span class="preprocessor">#include &quot;ferror.h&quot;</span></div><div class="line"></div><div class="line"><span class="keywordtype">void</span> causes_error(errorhandler *err);</div><div class="line"></div><div class="line"><span class="keywordtype">int</span> main(<span class="keywordtype">void</span>) {</div><div class="line">    <span class="comment">// Variables</span></div><div class="line">    errorhandler err_mgr;</div><div class="line">    <span class="keywordtype">char</span> fname[256], msg[256];</div><div class="line">    <span class="keywordtype">int</span> flag, fnamelength = 256, msglength = 256;</div><div class="line"></div><div class="line">    <span class="comment">// Initialization</span></div><div class="line">    alloc_errorhandler(&amp;err_mgr);</div><div class="line"></div><div class="line">    <span class="comment">// Ensure the error reporting doesn&#39;t terminate the application</span></div><div class="line">    set_exit_on_error(&amp;err_mgr, <span class="keyword">false</span>);</div><div class="line"></div><div class="line">    <span class="comment">// Don&#39;t print the error message to the command line</span></div><div class="line">    set_suppress_printing(&amp;err_mgr, <span class="keyword">true</span>);</div><div class="line"></div><div class="line">    <span class="comment">// Call the routine that causes the error</span></div><div class="line">    causes_error(&amp;err_mgr);</div><div class="line"></div><div class="line">    <span class="comment">// Retrieve the error information</span></div><div class="line">    get_error_fcn_name(&amp;err_mgr, fname, &amp;fnamelength);</div><div class="line">    get_error_message(&amp;err_mgr, msg, &amp;msglength);</div><div class="line">    flag = get_error_flag(&amp;err_mgr);</div><div class="line"></div><div class="line">    <span class="comment">// Print the error information</span></div><div class="line">    printf(<span class="stringliteral">&quot;An error occurred in the following subroutine: %s\nThe error message is: %s\nThe error code is: %i\n&quot;</span>,</div><div class="line">        fname, msg, flag);</div><div class="line"></div><div class="line">    <span class="comment">// End</span></div><div class="line">    free_errorhandler(&amp;err_mgr);</div><div class="line">    <span class="keywordflow">return</span> 0;</div><div class="line">}</div><div class="line"></div><div class="line"><span class="keywordtype">void</span> causes_error(errorhandler *err) {</div><div class="line">    report_error(err,                       <span class="comment">// The errorhandler object</span></div><div class="line">        <span class="stringliteral">&quot;causes_error&quot;</span>,                     <span class="comment">// The function name</span></div><div class="line">        <span class="stringliteral">&quot;This is a test error message.&quot;</span>,    <span class="comment">// The error message</span></div><div class="line">        200);                               <span class="comment">// The error flag</span></div><div class="line">}</div></div><!-- fragment --></dd></dl>
+<dl class="section user"><dt></dt><dd>The above C program produces exactly the same output as the Fortran example. </dd></dl>
 </div><h2 class="groupheader">Function/Subroutine Documentation</h2>
 <a id="aa628dd0900ea087d7991fbf2314caa54"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa628dd0900ea087d7991fbf2314caa54">&#9670;&nbsp;</a></span>er_get_err_fcn()</h2>
@@ -216,7 +222,7 @@ Functions/Subroutines</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The routine or function name. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="ferror_8f90_source.html#l00584">584</a> of file <a class="el" href="ferror_8f90_source.html">ferror.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ferror_8f90_source.html#l00579">579</a> of file <a class="el" href="ferror_8f90_source.html">ferror.f90</a>.</p>
 
 </div>
 </div>
@@ -253,7 +259,7 @@ Functions/Subroutines</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A pointer to the routine. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="ferror_8f90_source.html#l00616">616</a> of file <a class="el" href="ferror_8f90_source.html">ferror.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ferror_8f90_source.html#l00611">611</a> of file <a class="el" href="ferror_8f90_source.html">ferror.f90</a>.</p>
 
 </div>
 </div>
@@ -290,7 +296,7 @@ Functions/Subroutines</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The error message. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="ferror_8f90_source.html#l00552">552</a> of file <a class="el" href="ferror_8f90_source.html">ferror.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ferror_8f90_source.html#l00547">547</a> of file <a class="el" href="ferror_8f90_source.html">ferror.f90</a>.</p>
 
 </div>
 </div>
@@ -327,7 +333,7 @@ Functions/Subroutines</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The current error flag. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="ferror_8f90_source.html#l00478">478</a> of file <a class="el" href="ferror_8f90_source.html">ferror.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ferror_8f90_source.html#l00473">473</a> of file <a class="el" href="ferror_8f90_source.html">ferror.f90</a>.</p>
 
 </div>
 </div>
@@ -364,7 +370,7 @@ Functions/Subroutines</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Returns true if the application should be terminated; else, false. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="ferror_8f90_source.html#l00502">502</a> of file <a class="el" href="ferror_8f90_source.html">ferror.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ferror_8f90_source.html#l00497">497</a> of file <a class="el" href="ferror_8f90_source.html">ferror.f90</a>.</p>
 
 </div>
 </div>
@@ -401,7 +407,7 @@ Functions/Subroutines</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The filename. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="ferror_8f90_source.html#l00249">249</a> of file <a class="el" href="ferror_8f90_source.html">ferror.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ferror_8f90_source.html#l00244">244</a> of file <a class="el" href="ferror_8f90_source.html">ferror.f90</a>.</p>
 
 </div>
 </div>
@@ -438,7 +444,7 @@ Functions/Subroutines</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True if message printing should be suppressed; else, false to allow printing. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="ferror_8f90_source.html#l00528">528</a> of file <a class="el" href="ferror_8f90_source.html">ferror.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ferror_8f90_source.html#l00523">523</a> of file <a class="el" href="ferror_8f90_source.html">ferror.f90</a>.</p>
 
 </div>
 </div>
@@ -475,7 +481,7 @@ Functions/Subroutines</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The routine or function name. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="ferror_8f90_source.html#l00600">600</a> of file <a class="el" href="ferror_8f90_source.html">ferror.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ferror_8f90_source.html#l00595">595</a> of file <a class="el" href="ferror_8f90_source.html">ferror.f90</a>.</p>
 
 </div>
 </div>
@@ -512,7 +518,7 @@ Functions/Subroutines</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The current warning flag. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="ferror_8f90_source.html#l00489">489</a> of file <a class="el" href="ferror_8f90_source.html">ferror.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ferror_8f90_source.html#l00484">484</a> of file <a class="el" href="ferror_8f90_source.html">ferror.f90</a>.</p>
 
 </div>
 </div>
@@ -549,7 +555,7 @@ Functions/Subroutines</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The warning message. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="ferror_8f90_source.html#l00568">568</a> of file <a class="el" href="ferror_8f90_source.html">ferror.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ferror_8f90_source.html#l00563">563</a> of file <a class="el" href="ferror_8f90_source.html">ferror.f90</a>.</p>
 
 </div>
 </div>
@@ -586,7 +592,7 @@ Functions/Subroutines</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Returns true if an error has been encountered; else, false. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="ferror_8f90_source.html#l00430">430</a> of file <a class="el" href="ferror_8f90_source.html">ferror.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ferror_8f90_source.html#l00425">425</a> of file <a class="el" href="ferror_8f90_source.html">ferror.f90</a>.</p>
 
 </div>
 </div>
@@ -623,7 +629,7 @@ Functions/Subroutines</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Returns true if a warning has been encountered; else, false. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="ferror_8f90_source.html#l00454">454</a> of file <a class="el" href="ferror_8f90_source.html">ferror.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ferror_8f90_source.html#l00449">449</a> of file <a class="el" href="ferror_8f90_source.html">ferror.f90</a>.</p>
 
 </div>
 </div>
@@ -684,7 +690,7 @@ Functions/Subroutines</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="ferror_8f90_source.html#l00394">394</a> of file <a class="el" href="ferror_8f90_source.html">ferror.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ferror_8f90_source.html#l00389">389</a> of file <a class="el" href="ferror_8f90_source.html">ferror.f90</a>.</p>
 
 </div>
 </div>
@@ -753,7 +759,7 @@ Functions/Subroutines</h2></td></tr>
 </dl>
 <dl class="section user"><dt>Remarks</dt><dd>The default behavior prints an error message, appends the supplied information to a log file, and terminates the program. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="ferror_8f90_source.html#l00283">283</a> of file <a class="el" href="ferror_8f90_source.html">ferror.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ferror_8f90_source.html#l00278">278</a> of file <a class="el" href="ferror_8f90_source.html">ferror.f90</a>.</p>
 
 </div>
 </div>
@@ -815,7 +821,7 @@ Functions/Subroutines</h2></td></tr>
 </dl>
 <dl class="section user"><dt>Remarks</dt><dd>The default behavior prints the warning message, and returns control back to the calling code. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="ferror_8f90_source.html#l00349">349</a> of file <a class="el" href="ferror_8f90_source.html">ferror.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ferror_8f90_source.html#l00344">344</a> of file <a class="el" href="ferror_8f90_source.html">ferror.f90</a>.</p>
 
 </div>
 </div>
@@ -851,7 +857,7 @@ Functions/Subroutines</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="ferror_8f90_source.html#l00441">441</a> of file <a class="el" href="ferror_8f90_source.html">ferror.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ferror_8f90_source.html#l00436">436</a> of file <a class="el" href="ferror_8f90_source.html">ferror.f90</a>.</p>
 
 </div>
 </div>
@@ -887,7 +893,7 @@ Functions/Subroutines</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="ferror_8f90_source.html#l00465">465</a> of file <a class="el" href="ferror_8f90_source.html">ferror.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ferror_8f90_source.html#l00460">460</a> of file <a class="el" href="ferror_8f90_source.html">ferror.f90</a>.</p>
 
 </div>
 </div>
@@ -934,7 +940,7 @@ Functions/Subroutines</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="ferror_8f90_source.html#l00627">627</a> of file <a class="el" href="ferror_8f90_source.html">ferror.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ferror_8f90_source.html#l00622">622</a> of file <a class="el" href="ferror_8f90_source.html">ferror.f90</a>.</p>
 
 </div>
 </div>
@@ -981,7 +987,7 @@ Functions/Subroutines</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="ferror_8f90_source.html#l00515">515</a> of file <a class="el" href="ferror_8f90_source.html">ferror.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ferror_8f90_source.html#l00510">510</a> of file <a class="el" href="ferror_8f90_source.html">ferror.f90</a>.</p>
 
 </div>
 </div>
@@ -1028,7 +1034,7 @@ Functions/Subroutines</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="ferror_8f90_source.html#l00260">260</a> of file <a class="el" href="ferror_8f90_source.html">ferror.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ferror_8f90_source.html#l00255">255</a> of file <a class="el" href="ferror_8f90_source.html">ferror.f90</a>.</p>
 
 </div>
 </div>
@@ -1075,7 +1081,7 @@ Functions/Subroutines</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="ferror_8f90_source.html#l00541">541</a> of file <a class="el" href="ferror_8f90_source.html">ferror.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ferror_8f90_source.html#l00536">536</a> of file <a class="el" href="ferror_8f90_source.html">ferror.f90</a>.</p>
 
 </div>
 </div>

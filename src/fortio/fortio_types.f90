@@ -1,14 +1,5 @@
 ! fortio_types.f90
 
-!> @mainpage
-!!
-!! @section intro_sec Introduction
-!! FORTIO is a library that provides routines to assist in reading and writing 
-!! unformatted binary files from Fortran.
-!!
-!! @author Jason Christopherson
-!! @version 2.0.0
-
 !> @brief \b fortio_types
 !!
 !! @par Purpose

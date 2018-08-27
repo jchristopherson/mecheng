@@ -24,7 +24,6 @@ for the JavaScript code in this file
 var NAVTREE =
 [
   [ "mecheng", "index.html", [
-    [ "Introduction", "index.html#intro_sec", null ],
     [ "Modules", "namespaces.html", [
       [ "Modules List", "namespaces.html", "namespaces_dup" ],
       [ "Module Members", "namespacemembers.html", [
@@ -52,12 +51,12 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"interfacegeometry_1_1plane__from__angle__axis.html#acd908aaa231dbf0ad9e926fcc6b4f734",
-"interfacestrings_1_1string__to__number.html",
-"structcurvefit__interp_1_1spline__interp.html#a84ac6638d7800c26523b367cb3b187bb",
-"structfplot__core_1_1multiplot.html#a4b770678c2469fc0be1648ad372c5d00",
-"structfplot__core_1_1surface__plot.html#ae449da228b62d103860df52de42d97a4",
-"structnonlin__core_1_1fcn1var__helper.html#ae8e92bea80019e27bdea08ed600e6271"
+"interfacegeometry_1_1plane__from__angle__axis.html#ae78e5caa3690a09ff801aa244117ad62",
+"interfacestrings_1_1string__to__number.html#a770e7db91aa9899685c507dd21b30a9f",
+"structcurvefit__interp_1_1spline__interp.html#a855b787ccc8515b737a2f17993e971a1",
+"structfplot__core_1_1multiplot.html#a4fc3681e3bf594b4b318d77e2a1bb140",
+"structfplot__core_1_1surface__plot.html#ae34fa3cbc672b43575cd68f48f25098a",
+"structnonlin__core_1_1fcn1var__helper.html#a798d9b180392537c564ac69cc1b81952"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

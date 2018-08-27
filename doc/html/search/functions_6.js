@@ -101,6 +101,7 @@ var searchData=
   ['get_5ftics_5finward',['get_tics_inward',['../structfplot__core_1_1plot.html#a5170ade0385b37d360a438afdb070b3a',1,'fplot_core::plot']]],
   ['get_5ftitle',['get_title',['../structfplot__core_1_1terminal.html#ae54edec329fbe6fa478f8bc4be04c883',1,'fplot_core::terminal::get_title()'],['../structfplot__core_1_1plot__axis.html#ae38a0eda2c49631976ab83d398ca74eb',1,'fplot_core::plot_axis::get_title()'],['../structfplot__core_1_1plot.html#a1174c0dae88544081f212f1b28e6f39d',1,'fplot_core::plot::get_title()'],['../structfplot__core_1_1multiplot.html#a950bd7a421f69a6a02c2308ae45827b6',1,'fplot_core::multiplot::get_title()']]],
   ['get_5ftolerance',['get_tolerance',['../structnonlin__core_1_1equation__optimizer.html#abf732e2442a2671c22a277cb433195d1',1,'nonlin_core::equation_optimizer']]],
+  ['get_5ftransparency',['get_transparency',['../structfplot__core_1_1surface__plot.html#a00bd91ec8903a0eeebaa032bbd4cb735',1,'fplot_core::surface_plot']]],
   ['get_5fuse_5fbreakpoints',['get_use_breakpoints',['../structintegral__core_1_1adaptive__integrator.html#af870c19ade670c0721cec39cb5a3409f',1,'integral_core::adaptive_integrator']]],
   ['get_5fuse_5ferror_5fbox',['get_use_error_box',['../structfplot__core_1_1plot__data__error__bars.html#a556fec0042994a5aaad2e928825d4735',1,'fplot_core::plot_data_error_bars']]],
   ['get_5fuse_5flighting',['get_use_lighting',['../structfplot__core_1_1surface__plot.html#ade7581582432846ff3428f7e81c58bda',1,'fplot_core::surface_plot']]],

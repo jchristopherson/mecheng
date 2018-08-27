@@ -1,15 +1,10 @@
 ! curvefit_core.f90
 
-!> @mainpage
-!!
-!! @section intro_sec Introduction
-!! CURVEFIT is a library for fitting functions to sets of data.
-!! @image html lowess_example_1.png
-
 !> @brief \b curvefit_core
 !!
 !! @par Purpose
-!! To provide core types and routines for the CURVEFIT library.
+!! CURVEFIT is a library for fitting functions to sets of data.
+!! @image html lowess_example_1.png
 module curvefit_core
     use, intrinsic :: iso_fortran_env, only : int32, real64
     use nonlin_constants

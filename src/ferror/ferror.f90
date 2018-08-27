@@ -1,8 +1,8 @@
 ! ferror.f90
 
-!> @mainpage
+!> @brief \b ferror
 !!
-!! @section intro_sec Introduction
+!! @par Purpose
 !! FERROR is a library to assist with error handling in Fortran projects.  The 
 !! error handling capabilities also have been extended to be called from C
 !! thereby providing both an error handling mechanism for C projects as well as
@@ -133,11 +133,6 @@
 !!
 !! @par
 !! The above C program produces exactly the same output as the Fortran example.
-
-!> @brief \b ferror
-!!
-!! @par Purpose
-!! Provides a series of error codes and error handling mechanisms.
 module ferror
     use, intrinsic :: iso_fortran_env, only : int32
     implicit none

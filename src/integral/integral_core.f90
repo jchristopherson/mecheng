@@ -1,20 +1,14 @@
 ! integral_core.f90
 
-!> @mainpage
+!> @brief \b integral_core
 !!
-!! @section intro_sec Introduction
+!! @par Purpose
 !! INTEGRAL is a Fortran library providing an easy-to-use, object-oriented
 !! interface to several integration routines.  Integration of functions of one
 !! variable are provided by the QUADPACK library.  Integration of systems of
 !! ordinary differential equations are provided by the ODEPACK library.
 !!
 !! @image html double_pendulum_example_short_time_no_legend.png
-
-!> @brief \b integral_core
-!!
-!! @par Purpose
-!! Provides types and routines allowing for the integration of functions and
-!! systems of ordinary differential equations.
 module integral_core
     use, intrinsic :: iso_fortran_env, only : int32, real64
     use ferror

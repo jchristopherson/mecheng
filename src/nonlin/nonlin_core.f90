@@ -1,12 +1,23 @@
 ! nonlin_core.f90
 
-!> @mainpage
+!> @brief \b nonlin_core
 !!
-!! @section intro_sec Introduction
+!! @par Purpose
 !! NONLIN is a library that provides routines for solving least squares
 !! problems, systems of equations, and single equations. The library provides
 !! function optimization routines.  There are also specific routines and data
-!! types optimized for operation on polynomials.
+!! types optimized for operation on polynomials. Actual solvers are located in 
+!! the following modules.
+!! - Module: nonlin_solve
+!!  - quasi_newton_solver
+!!  - newton_solver
+!!  - brent_solver
+!!  - newton_1var_solver
+!! - Module: nonlin_least_squares
+!!  - least_squares_solver
+!! - Module: nonlin_optimize
+!!  - nelder_mead
+!!  - bfgs
 !!
 !! @par
 !! The example below illustrates two techniques of determining the roots of a
@@ -146,24 +157,6 @@
 !! Root 2 = (-0.618034,  0.000000)
 !! Root 3 = ( 1.618034,  0.000000)
 !! @endcode
-
-! ------------------------------------------------------------------------------
-
-!> @brief \b nonlin_core
-!!
-!! @par Purpose
-!! To provide various routines to solve equations of one or many variables.
-!! Actual solvers are located in the following modules.
-!! - Module: nonlin_solve
-!!  - quasi_newton_solver
-!!  - newton_solver
-!!  - brent_solver
-!!  - newton_1var_solver
-!! - Module: nonlin_least_squares
-!!  - least_squares_solver
-!! - Module: nonlin_optimize
-!!  - nelder_mead
-!!  - bfgs
 module nonlin_core
     use, intrinsic :: iso_fortran_env, only : real64, int32
     use nonlin_constants
