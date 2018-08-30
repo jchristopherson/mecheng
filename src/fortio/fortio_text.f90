@@ -689,6 +689,11 @@ contains
 
         ! Determine the size of the file, in bytes
         inquire(file = fname, size = filesize)
+        if (filesize == 0) then
+            call errmgr%report_error("read_numeric_text_file", &
+                "The supplied file has no contents.", FIO_FILE_IO_ERROR)
+            return
+        end if
 
         ! Cycle through the contents of the file until and end of file situation
         ! is encountered
@@ -749,6 +754,11 @@ contains
         end do
 
         ! Trim down the buffer if necessary
+        if (i == 0) then
+            call errmgr%report_error("read_numeric_text_file", &
+                "The supplied file has no contents.", FIO_FILE_IO_ERROR)
+            return
+        end if
         x = buffer(1:i,:)
     end function
 
