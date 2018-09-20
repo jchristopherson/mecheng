@@ -51,6 +51,7 @@ var searchData=
   ['list_5fremove',['list_remove',['../namespacecollection__list.html#a3235bbc366d40e35b22ec976ad01d771',1,'collection_list']]],
   ['list_5fset',['list_set',['../namespacecollection__list.html#a65ffb71aad46461cba4dfb00da46e679',1,'collection_list']]],
   ['list_5fset_5fcapacity',['list_set_capacity',['../namespacecollection__list.html#a7bd6fc970a9233243d022528c2622374',1,'collection_list']]],
+  ['list_5fstore_5fitem',['list_store_item',['../namespacecollection__list.html#a34eec5ceab9943dbefe07fc7d5ebb63f',1,'collection_list']]],
   ['ll_5fclear',['ll_clear',['../namespacecollection__linked__list.html#a98c80785f72aaa1ccac423b7e234fa01',1,'collection_linked_list']]],
   ['ll_5fdestroy',['ll_destroy',['../structcollection__linked__list_1_1linked__list.html#ad2144ed714a6de72541b5a0d103043ae',1,'collection_linked_list::linked_list::ll_destroy()'],['../namespacecollection__linked__list.html#aec940800cd36a4612453b2ac75294840',1,'collection_linked_list::ll_destroy()']]],
   ['ll_5fget_5fcount',['ll_get_count',['../namespacecollection__linked__list.html#acdc1103b5d5ff124765dec57ba074b00',1,'collection_linked_list']]],

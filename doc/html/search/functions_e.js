@@ -12,7 +12,9 @@ var searchData=
   ['plane_5fto_5fpoint_5fdistance',['plane_to_point_distance',['../namespacegeometry.html#a10ae3d2fe6dc2f0b5ce6003bccb418e7',1,'geometry']]],
   ['plist_5fclear',['plist_clear',['../namespacecollection__list.html#aff5b8efd7993871dc735e9e6f3a8c39b',1,'collection_list']]],
   ['plist_5fdestroy',['plist_destroy',['../structcollection__list_1_1persistent__list.html#a4184dfe8d1ed0194a30efc191ced7725',1,'collection_list::persistent_list::plist_destroy()'],['../namespacecollection__list.html#aa3121ec47bc4485de4a6ec8285cba638',1,'collection_list::plist_destroy()']]],
+  ['plist_5finsert',['plist_insert',['../namespacecollection__list.html#af415991b3fa4768d67e4821a205e5203',1,'collection_list']]],
   ['plist_5fpop',['plist_pop',['../namespacecollection__list.html#a6bf533430a7cba600f612d6f1f137d38',1,'collection_list']]],
+  ['plist_5fpush',['plist_push',['../namespacecollection__list.html#afc0962403e14fa6e1c0d3c3861907f90',1,'collection_list']]],
   ['plist_5fremove',['plist_remove',['../namespacecollection__list.html#a1638c96b1b6b57c874f5d7e4a13acc24',1,'collection_list']]],
   ['plist_5fset',['plist_set',['../namespacecollection__list.html#ab428111e9f97dd3e9d515b27c425d157',1,'collection_list']]],
   ['pll_5fclear',['pll_clear',['../namespacecollection__linked__list.html#a2913948fa733500d418331b380247b54',1,'collection_linked_list']]],
@@ -43,6 +45,6 @@ var searchData=
   ['print_5fstatus',['print_status',['../namespacenonlin__core.html#ac9637db13c24f15661e80eb42b225ea7',1,'nonlin_core']]],
   ['proj',['proj',['../namespacegeometry.html#ad5cf5fd151e428ed558c3c8509f43035',1,'geometry']]],
   ['proj_5fpoint_5f2_5fplane',['proj_point_2_plane',['../namespacegeometry.html#a064a3dfaa8289362a3675df781d823d0',1,'geometry']]],
-  ['push',['push',['../structcollection__linked__list_1_1linked__list.html#a315f3da31d5aaa579e3a6dcf74e69bbb',1,'collection_linked_list::linked_list::push()'],['../structcollection__linked__list_1_1persistent__linked__list.html#a89db2d0f5a2965e4383e55c8e50e0db1',1,'collection_linked_list::persistent_linked_list::push()'],['../structcollection__list_1_1list.html#a5e27250a2c342befde23957588281c66',1,'collection_list::list::push()'],['../structfplot__core_1_1plot.html#a5066eea4fa7b7d5bf557e46652ef20fd',1,'fplot_core::plot::push()']]],
+  ['push',['push',['../structcollection__linked__list_1_1linked__list.html#a315f3da31d5aaa579e3a6dcf74e69bbb',1,'collection_linked_list::linked_list::push()'],['../structcollection__linked__list_1_1persistent__linked__list.html#a89db2d0f5a2965e4383e55c8e50e0db1',1,'collection_linked_list::persistent_linked_list::push()'],['../structcollection__list_1_1list.html#a5e27250a2c342befde23957588281c66',1,'collection_list::list::push()'],['../structcollection__list_1_1persistent__list.html#a04514ab95aa58ab90b6a91e300f33239',1,'collection_list::persistent_list::push()'],['../structfplot__core_1_1plot.html#a5066eea4fa7b7d5bf557e46652ef20fd',1,'fplot_core::plot::push()']]],
   ['push_5flabel',['push_label',['../structfplot__core_1_1plot.html#a89f704e48794d3805d2f13c96082096c',1,'fplot_core::plot']]]
 ];

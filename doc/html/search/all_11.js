@@ -143,6 +143,7 @@ var searchData=
   ['std_5fnorm_5fdist_5fz_5fscore',['std_norm_dist_z_score',['../interfacecurvefit__statistics_1_1z__value.html#a5fae20877ed7f1babe028f1aa375dee6',1,'curvefit_statistics::z_value::std_norm_dist_z_score()'],['../namespacecurvefit__statistics.html#a773d2b83b5f84c34cdf99f1d5dbcf5fb',1,'curvefit_statistics::std_norm_dist_z_score()']]],
   ['stdev_5fdbl',['stdev_dbl',['../interfacecurvefit__statistics_1_1standard__deviation.html#a1cb5a256a256b433a41f1f33ee7418d6',1,'curvefit_statistics::standard_deviation::stdev_dbl()'],['../namespacecurvefit__statistics.html#ab7408c6b143d8e92ed900a18c1923791',1,'curvefit_statistics::stdev_dbl()']]],
   ['step',['step',['../structintegral__core_1_1ode__integrator.html#a806e215e8938b37ceabdd1a0e605c15c',1,'integral_core::ode_integrator::step()'],['../structintegral__core_1_1ode__auto.html#aa750d26ae0ae31b5e7c1d45a11a4a5f0',1,'integral_core::ode_auto::step()']]],
+  ['store',['store',['../structcollection__list_1_1list.html#a54085577425a27493db8b01c02fb10d5',1,'collection_list::list']]],
   ['str',['str',['../structstrings_1_1string.html#ae60ba1127c72e3705c5030d5a113bf3b',1,'strings::string']]],
   ['strain',['strain',['../namespacestrain.html',1,'']]],
   ['strain_5ftransfom_5fxy',['strain_transfom_xy',['../namespacestrain.html#aa1e6812d4453a9aae9f51b72b5b8cbc7',1,'strain']]],

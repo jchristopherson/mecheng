@@ -53,10 +53,10 @@ var NAVTREEINDEX =
 ".html",
 "interfacegeometry_1_1plane__from__angle__axis.html#ae78e5caa3690a09ff801aa244117ad62",
 "interfacestrings_1_1string__to__number.html#a770e7db91aa9899685c507dd21b30a9f",
-"structcurvefit__interp_1_1spline__interp.html#a855b787ccc8515b737a2f17993e971a1",
-"structfplot__core_1_1multiplot.html#a4fc3681e3bf594b4b318d77e2a1bb140",
-"structfplot__core_1_1surface__plot.html#ae34fa3cbc672b43575cd68f48f25098a",
-"structnonlin__core_1_1fcn1var__helper.html#a798d9b180392537c564ac69cc1b81952"
+"structcurvefit__interp_1_1spline__interp.html#a64a4ab2d3eb5d5028c142c92aeb499cb",
+"structfplot__core_1_1multiplot.html#a2a92376d9c066576040fe4bbb159195d",
+"structfplot__core_1_1surface__plot.html#acf55e49e1212536b0bca656c8d5f302d",
+"structnonlin__core_1_1fcn1var__helper.html#a3ac77259ff44c2c92cdd1f80b5b4421d"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

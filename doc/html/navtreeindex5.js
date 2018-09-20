@@ -1,5 +1,8 @@
 var NAVTREEINDEX5 =
 {
+"structfplot__core_1_1surface__plot.html#acf55e49e1212536b0bca656c8d5f302d":[1,0,13,30,28],
+"structfplot__core_1_1surface__plot.html#ad25c21f74ffc0f3b18bce8207621ba70":[1,0,13,30,29],
+"structfplot__core_1_1surface__plot.html#ade7581582432846ff3428f7e81c58bda":[1,0,13,30,9],
 "structfplot__core_1_1surface__plot.html#ae34fa3cbc672b43575cd68f48f25098a":[1,0,13,30,7],
 "structfplot__core_1_1surface__plot.html#ae449da228b62d103860df52de42d97a4":[1,0,13,30,15],
 "structfplot__core_1_1surface__plot.html#aec8302d17a46422414bad3ba5e0cd57f":[1,0,13,30,12],
@@ -246,8 +249,5 @@ var NAVTREEINDEX5 =
 "structnonlin__core_1_1equation__solver__1var.html#ae3411b67af00133c791364e8c053774b":[1,0,19,2,12],
 "structnonlin__core_1_1equation__solver__1var.html#aea34033d4aac455d3a594b121e02bc89":[1,0,19,2,4],
 "structnonlin__core_1_1equation__solver__1var.html#aedf6fe06fbfe663afd49994f9c660a95":[1,0,19,2,9],
-"structnonlin__core_1_1fcn1var__helper.html":[1,0,19,4],
-"structnonlin__core_1_1fcn1var__helper.html#a3ac77259ff44c2c92cdd1f80b5b4421d":[1,0,19,4,6],
-"structnonlin__core_1_1fcn1var__helper.html#a6c02a892c66ac75a6dba7a0fd5d641ce":[1,0,19,4,3],
-"structnonlin__core_1_1fcn1var__helper.html#a77004284243a6f28ce78d908864e8da7":[1,0,19,4,7]
+"structnonlin__core_1_1fcn1var__helper.html":[1,0,19,4]
 };

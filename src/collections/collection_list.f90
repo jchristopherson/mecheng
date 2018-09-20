@@ -121,6 +121,8 @@ module collection_list
         procedure, public :: remove => list_remove
         !> @brief Clears the contents of the list.
         procedure, public :: clear => list_clear
+        !> @brief A private routine used to store items in the list.
+        procedure, private :: store => list_store_item
     end type
 
 ! ------------------------------------------------------------------------------
@@ -202,6 +204,10 @@ module collection_list
         procedure, public :: remove => plist_remove
         !> @brief Clears the contents of the list.
         procedure, public :: clear => plist_clear
+        !> @brief Pushes an item onto the end of the list.
+        procedure, public :: push => plist_push
+        !> @brief Inserts an item into the list.
+        procedure, public :: insert => plist_insert
     end type
 
 contains
@@ -324,6 +330,21 @@ contains
         class(*), intent(in), target :: x
 
         ! Store the object
+        call this%store(i, x)
+    end subroutine
+
+    !> @brief Stores an item in the list.
+    !!
+    !! @param[in,out] this The list object.
+    !! @param[in] i The index of the item.
+    !! @param[in] x The item to place into the list.
+    subroutine list_store_item(this, i, x)
+        ! Arguments
+        class(list), intent(inout) :: this
+        integer(int32), intent(in) :: i
+        class(*), intent(in), target :: x
+
+        ! Store the object
         type(container) :: obj
         obj%item => x
         this%m_list(i) = obj
@@ -354,7 +375,7 @@ contains
 
         ! Store the value
         this%m_count = this%m_count + 1
-        call this%set(this%get_count(), x)
+        call this%store(this%get_count(), x)
     end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -425,9 +446,9 @@ contains
         ! Shift everything back by one element, and insert the specified item
         this%m_count = this%m_count + 1
         do j = n, i, -1
-            call this%set(j + 1, this%get(j))
+            call this%store(j + 1, this%get(j))
         end do
-        call this%set(i, x)
+        call this%store(i, x)
     end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -509,9 +530,14 @@ contains
         class(*), intent(in), target :: x
 
         ! Local Variables
-        class(*), pointer :: cpy
+        class(*), pointer :: cpy, old
 
         ! Create a copy and store the object
+        old => this%get(i)
+        if (associated(old)) then
+            deallocate(old)
+            nullify(old)
+        end if
         allocate(cpy, source = x)
         call this%list%set(i, cpy)
     end subroutine
@@ -604,6 +630,64 @@ contains
             end if
         end do
         this%m_count = 0
+    end subroutine
+
+! ------------------------------------------------------------------------------
+    !> @brief Pushes an item onto the end of the list.
+    !!
+    !! @param[in,out] this THe persistent_list object.
+    !! @param[in] x The object to add to the list.
+    !! @param[out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !! - COLLECTION_OUT_OF_MEMORY_ERROR: Occurs if insufficient memory is 
+    !!      available.
+    subroutine plist_push(this, x, err)
+        ! Arguments
+        class(persistent_list), intent(inout) :: this
+        class(*), intent(in) :: x
+        class(errors), intent(inout), target, optional :: err
+
+        ! Local Variables
+        class(*), pointer :: cpy
+
+        ! Process
+        allocate(cpy, source = x)
+        call this%list%push(cpy, err)
+    end subroutine
+
+! ------------------------------------------------------------------------------
+    !> @brief Inserts an item into the list.
+    !!
+    !! @param[in,out] this The list object.
+    !! @param[in] i The index at which to insert the item.  Items at, and beyond
+    !!  this index are shifted back in the list.
+    !! @param[in] x The item to insert.
+    !! @param[out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !! - COLLECTION_INVALID_INPUT_ERROR: Occurs if @p i is less than or equal to
+    !!      0, or if @p i is larger than 1 element beyond the current size of
+    !!      the list.
+    !! - COLLECTION_OUT_OF_MEMORY_ERROR: Occurs if insufficient memory is 
+    !!      available.
+    subroutine plist_insert(this, i, x, err)
+        ! Arguments
+        class(persistent_list), intent(inout) :: this
+        integer(int32), intent(in) :: i
+        class(*), intent(in) :: x
+        class(errors), intent(inout), optional, target :: err
+
+        ! Local Variables
+        class(*), pointer :: cpy
+        
+        ! Process
+        allocate(cpy, source = x)
+        call this%list%insert(i, cpy, err)
     end subroutine
 
 ! ------------------------------------------------------------------------------
