@@ -621,7 +621,7 @@ contains
         integer(int32) :: i, n
 
         ! Process
-        n = size(this%m_list)
+        n = this%get_count()
         do i = 1, n
             ptr => this%m_list(i)%item
             if (associated(ptr)) then
