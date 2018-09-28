@@ -450,6 +450,16 @@ set(geometry_sources
     geometry/geometry.f90
 )
 
+set(neuralnet_sources
+    neuralnet/neural_net_constants.f90
+    neuralnet/neural_net_core.f90
+    neuralnet/neural_net_neuron.f90
+    neuralnet/neural_net_sigmoid.f90
+    neuralnet/neural_net_layer.f90
+    neuralnet/neural_net_network.f90
+    neuralnet/neural_net_ff_network.f90
+)
+
 # Define the MECHENG source files
 set(mecheng_sources
     constants.f90
@@ -472,6 +482,7 @@ set(mecheng_sources
     ${signals_sources}
     ${strings_sources}
     ${geometry_sources}
+    ${neuralnet_sources}
 )
 
 # Build the library
