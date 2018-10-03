@@ -282,10 +282,8 @@ module neural_net_core
         !!  the number of neurons in layer 1, item 2 defines the number
         !!  of neurons in layer 2, etc.  There must be at least 3
         !!  items; hence, 3 layers, in this array (network).
-        !! @param[in,out] model The model neuron type.  Notice, the neuron
-        !!  model is modified at each layer to ensure the neurons of
-        !!  each layer accept the appropriate number of inputs to ensure
-        !!  a functional network.
+        !! @param[in] lmodel The model layer type.
+        !! @param[in] nmodel The model neuron type.
         !! @param[in,out] err An errors-based object used for error handling.
         !!  Possible errors are as follows.
         !!  - NN_ARRAY_SIZE_ERROR: Occurs if @p lyrs isn't at least 3 elements 
@@ -295,10 +293,11 @@ module neural_net_core
         !!      1 neuron.
         !!  - NN_OUT_OF_MEMORY_ERROR: Occurs if there is insufficient memory
         !!      available.
-        module subroutine network_init(this, lyrs, model, err)
+        module subroutine network_init(this, lyrs, lmodel, nmodel, err)
             class(neural_network), intent(inout) :: this
             integer(int32), intent(in), dimension(:) :: lyrs
-            class(neuron), intent(in) :: model
+            class(layer), intent(in) :: lmodel
+            class(neuron), intent(in) :: nmodel
             class(errors), intent(inout), target, optional :: err
         end subroutine
 

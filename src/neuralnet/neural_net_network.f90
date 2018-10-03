@@ -3,11 +3,12 @@
 submodule (neural_net_core) neural_net_network
 contains
 ! ------------------------------------------------------------------------------
-    module subroutine network_init(this, lyrs, model, err)
+    module subroutine network_init(this, lyrs, lmodel, nmodel, err)
         ! Arguments
         class(neural_network), intent(inout) :: this
         integer(int32), intent(in), dimension(:) :: lyrs
-        class(neuron), intent(in) :: model
+        class(layer), intent(in) :: lmodel
+        class(neuron), intent(in) :: nmodel
         class(errors), intent(inout), target, optional :: err
 
         ! Local Variables
@@ -16,7 +17,6 @@ contains
         type(errors), target :: deferr
         character(len = 256) :: errmsg
         class(neuron), allocatable :: nrn
-        type(layer) :: lyr
         class(layer), pointer :: ptr
 
         ! Initialization
@@ -55,10 +55,10 @@ contains
             end if
 
             ! Place the layer into the collection of layers.  The push
-            ! method will create a copy of lyr, and store its copy.
-            ! As such, it is irrelevant what we do with lyr after
+            ! method will create a copy of the lmodel, and store its copy.
+            ! As such, it is irrelevant what we do with lmodel after
             ! this call.
-            call this%push(lyr, errmgr)
+            call this%push(lmodel, errmgr)
             if (errmgr%has_error_occurred()) return
         end do
 
@@ -67,7 +67,7 @@ contains
         do i = 1, n
             ! Update the input count for the model neuron for this layer
             if (allocated(nrn)) deallocate(nrn)
-            allocate(nrn, source = model, stat = flag)
+            allocate(nrn, source = nmodel, stat = flag)
             if (flag /= 0) then
                 call errmgr%report_error("network_init", &
                     "Insufficient memory available.", &
