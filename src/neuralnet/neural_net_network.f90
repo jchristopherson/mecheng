@@ -207,7 +207,6 @@ contains
         integer(int32) :: nlayers, nin, nout, flag
         logical :: valid
         class(layer), pointer :: lyr
-        class(neuron), pointer :: nrn
         real(real64), allocatable, dimension(:) :: coeffs, residuals
         type(vecfcn_helper) :: obj
         procedure(vecfcn), pointer :: fcn
@@ -230,21 +229,23 @@ contains
         end if
 
         ! Ensure the inputs and outputs arrays are properly sized
-        nin = this%get_layer(1)%get_count()
+        lyr => this%get_layer(1)
+        nin = lyr%get_count()
         if (size(inputs) /= nin) then
             write(errmsg, '(AI0AI0A)') "The input array size (", &
                 size(inputs), ") does not match the number of neurons (", &
-                sizes(1, 1), ") in the input layer."
+                nin, ") in the input layer."
             call errmgr%report_error("network_fit", trim(errmsg), &
                 NN_ARRAY_SIZE_ERROR)
             return
         end if
 
-        nout = this%get_layer(nlayers)%get_count()
+        lyr => this%get_layer(nlayers)
+        nout = lyr%get_count()
         if (size(outputs) /= nout) then
             write(errmsg, '(AI0AI0A)') "The output array size (", &
                 size(outputs), ") does not match the number of neurons (", &
-                sizes(nlayers, 1), ") in the output layer."
+                nout, ") in the output layer."
             call errmgr%report_error("network_fit", trim(errmsg), &
                 NN_ARRAY_SIZE_ERROR)
             return
@@ -276,10 +277,11 @@ contains
         call this%populate(coeffs)
 
         ! %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% !
+    contains
         subroutine fit_routine(x, f)
             ! Arguments
             real(real64), intent(in), dimension(:) :: x
-            real(real64), intent(out) :: f
+            real(real64), intent(out), dimension(:) :: f
 
             ! Populate the network with coefficients
             call this%populate(x)
@@ -298,7 +300,7 @@ contains
         class(errors), intent(inout), target, optional :: err
 
         ! Local Variables
-        integer(int32) :: i, j, k, nlayers, nneurons, ncoeffs, nin, flag
+        integer(int32) :: i, j, k, nlayers, nneurons, ncoeffs, nin
         class(layer), pointer :: lyr
         class(neuron), pointer :: nrn
         class(errors), pointer :: errmgr
@@ -338,7 +340,7 @@ contains
             nneurons = lyr%get_count()
             do j = 1, nneurons
                 nrn => lyr%get_neuron(j)
-                nin => nrn%get_input_count()
+                nin = nrn%get_input_count()
                 call nrn%set_weights(x(k:k+nin-1))
                 call nrn%set_bias(x(k+nin))
                 k = k + nin + 1
@@ -392,7 +394,7 @@ contains
             nneurons = lyr%get_count()
             do j = 1, nneurons
                 nrn => lyr%get_neuron(j)
-                nin => nrn%get_input_count()
+                nin = nrn%get_input_count()
                 x(k:k+nin-1) = nrn%get_weights()
                 x(k+nin) = nrn%get_bias()
                 k = k + nin + 1
@@ -446,7 +448,7 @@ contains
 
                 ! Ensure the pointer is valid
                 if (.not.associated(nrn)) then
-                    write(msg, '(AI0AI0A)'), "Neuron ", j, " in layer ", i, &
+                    write(msg, '(AI0AI0A)') "Neuron ", j, " in layer ", i, &
                         " is not properly initialized."
                     return
                 end if
@@ -480,6 +482,7 @@ contains
         
         ! Initialization
         ncoeff = 0
+        nlayers = this%get_count()
         if (present(err)) then
             errmgr => err
         else
