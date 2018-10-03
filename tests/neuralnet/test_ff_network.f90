@@ -28,6 +28,10 @@ contains
         integer(int32), dimension(4) :: indices
         type(feedforward_network) :: network
         type(sigmoid_neuron) :: neuronModel
+        type(layer) :: layerModel
+        integer(int32) :: i, j
+        class(layer), pointer :: lptr
+        class(neuron), pointer :: nptr
 
         ! Initialization
         rst = .true.
@@ -41,7 +45,62 @@ contains
         indices = [3, 8, 6, 1]
 
         ! Initialize the network
-        call network%initialize(indices, neuronModel)
+        call network%initialize(indices, layerModel, neuronModel)
+
+        ! Check to ensure the layer structure is correct
+        if (network%get_count() /= 4) then
+            rst = .false.
+            print '(AI0A)', "TEST FAILED (TEST_NETWORK_1): " // &
+                "Incorrect number of layers.  Expected 4, but found ", &
+                network%get_count(), "."
+            return
+        end if
+
+        ! Cycle over each layer and determine if it has the correct number
+        ! of neurons, and that each neuron has the correct number of inputs.
+        do i = 1, network%get_count()
+            ! Get a pointer to the layer
+            lptr => network%get_layer(i)
+
+            ! Ensure the proper number of neurons
+            if (lptr%get_count() /= indices(i)) then
+                rst = .false.
+                print '(AI0AI0AI0A)', "TEST FAILED (TEST_NETWORK_1): " // &
+                    "Improper neuron count on layer ", i, &
+                    ".  Expected to find ", indices(i), &
+                    " neurons, but found ", lptr%get_count(), &
+                    " instead."
+                return
+            end if
+
+            ! Ensure each neuron accepts the appropriate number of inputs
+            do j = 1, lptr%get_count()
+                ! Get a pointer to the neuron
+                nptr => lptr%get_neuron(j)
+
+                ! Ensure the proper number of inputs.  The input layer should only
+                ! accept 1 input per neuron.
+                if (i == 1) then
+                    if (nptr%get_input_count() /= 1) then
+                        rst = .false.
+                        print '(AI0A)', "TEST FAILED (TEST_NETWORK_1): " // &
+                            "Improper neuron input count on the input layer.  " // &
+                            "Expected a single input, but found ", &
+                            nptr%get_input_count(), "."
+                        return
+                    end if
+                else
+                    if (nptr%get_input_count() /= indices(i-1)) then
+                        rst = .false.
+                        print '(AI0AI0AI0AI0A)', "TEST FAILED (TEST_NETWORK_1): " // &
+                            "Improper neuron input count on layer ", i, " neuron ", j, &
+                            ".  Expected to find ", indices(i-1), " inputs, but found ", &
+                            nptr%get_input_count(), " instead."
+                        return
+                    end if
+                end if
+            end do
+        end do
     end function
 
     function test_layer_container() result(rst)
