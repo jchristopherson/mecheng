@@ -237,10 +237,6 @@ module neural_net_core
 ! ******************************************************************************
 ! NEURAL_NET_NETWORK.F90
 ! ------------------------------------------------------------------------------
-    type :: layer_pointer
-        class(layer), pointer :: item => null()
-    end type
-
     !> @brief A structure for a basic neural network type.
     type, extends(persistent_list), abstract :: neural_network
     contains
