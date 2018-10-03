@@ -19,4 +19,6 @@ module neural_net_constants
     integer(int32), parameter :: NN_ARRAY_SIZE_ERROR = 1006
     !> An error flag denoting an uninitialized object error.
     integer(int32), parameter :: NN_UNINITIALIZED_ERROR = 1007
+    !> An error flag indicating the supplied index was outside the bounds of the collection.
+    integer(int32), parameter :: NN_INDEX_OUT_OF_RANGE_ERROR = 1008
 end module

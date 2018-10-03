@@ -12,7 +12,7 @@ program test
     ! Introduction
     print *, ""
     print '(A)', "**********************************************"
-    print '(A)', "WELCOME TO THE NEURAL_NETWORK TEST APPLICATION"
+    print '(A)', "WELCOME TO THE NEURAL NETWORK TEST APPLICATION"
     print '(A)', "**********************************************"
     print *, ""
 
@@ -26,15 +26,18 @@ program test
     rst = test_layer()
     if (.not.rst) overall = .false.
 
+    rst = test_layer_container()
+    if (.not.rst) overall = .false.
+
     rst = test_network_1()
     if (.not.rst) overall = .false.
 
 
     ! Report
     if (overall) then
-        print '(A)', "ALL TESTS PASSED."
+        print '(A)', "ALL NEURAL NETWORK TESTS PASSED."
     else
-        print '(A)', "TESTS HAVE FAILED."
+        print '(A)', "NEURAL NETWORK TESTS HAVE FAILED."
     end if
     print *, ""
 end program

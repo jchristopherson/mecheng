@@ -235,12 +235,18 @@ module neural_net_core
     end interface
 
 ! ******************************************************************************
-! NEURAL_NET_FF_NETWORK.F90
+! NEURAL_NET_NETWORK.F90
 ! ------------------------------------------------------------------------------
+    type :: layer_pointer
+        class(layer), pointer :: item => null()
+    end type
+
     !> @brief A structure for a basic neural network type.
-    type, abstract, extends(persistent_list) :: neural_network
+    type, extends(persistent_list), abstract :: neural_network
     contains
+        procedure, public :: initialize => network_init
         procedure, public :: get_layer => network_get
+
         procedure, public :: randomize => network_randomize
         procedure(evaluate_network), deferred, public :: evaluate
     end type
@@ -268,15 +274,48 @@ module neural_net_core
             real(real64), allocatable, dimension(:) :: y
         end function
 
+        !> @brief Initializes the neural_network object.
+        !!
+        !! @param[in,out] this The neural_network object.
+        !! @param[in] lyrs An array containing the number of neurons
+        !!  in each layer.  For instance, item 1 in this array defines
+        !!  the number of neurons in layer 1, item 2 defines the number
+        !!  of neurons in layer 2, etc.  There must be at least 3
+        !!  items; hence, 3 layers, in this array (network).
+        !! @param[in,out] model The model neuron type.  Notice, the neuron
+        !!  model is modified at each layer to ensure the neurons of
+        !!  each layer accept the appropriate number of inputs to ensure
+        !!  a functional network.
+        !! @param[in,out] err An errors-based object used for error handling.
+        !!  Possible errors are as follows.
+        !!  - NN_ARRAY_SIZE_ERROR: Occurs if @p lyrs isn't at least 3 elements 
+        !!      in size.
+        !!  - NN_INVALID_INPUT_ERROR: Occurs if any of the values in
+        !!      @p lyrs are less than 1 as each layer must have at least
+        !!      1 neuron.
+        !!  - NN_OUT_OF_MEMORY_ERROR: Occurs if there is insufficient memory
+        !!      available.
+        module subroutine network_init(this, lyrs, model, err)
+            class(neural_network), intent(inout) :: this
+            integer(int32), intent(in), dimension(:) :: lyrs
+            class(neuron), intent(in) :: model
+            class(errors), intent(inout), target, optional :: err
+        end subroutine
+
         !> @brief Gets a layer from the network.
         !!
         !! @param[in] this The neural_network object.
         !! @param[in] i The index of the layer to retrieve.  The input layer is
         !!  layer #1.
+        !! @param[in,out] err An errors-based object used for error handling.  Possible
+        !!  errors are as follows.
+        !!  - NN_INDEX_OUT_OF_RANGE_ERROR: Occurs if @p i is outside the bounds of
+        !!      the collection of layers.
         !! @return A pointer to the requested layer.
-        module function network_get(this, i) result(ptr)
+        module function network_get(this, i, err) result(ptr)
             class(neural_network), intent(in) :: this
             integer(int32), intent(in) :: i
+            class(errors), intent(inout), target, optional :: err
             class(layer), pointer :: ptr
         end function
 
@@ -301,7 +340,6 @@ module neural_net_core
     type, extends(neural_network) :: feedforward_network
     contains
         procedure, public :: evaluate => ff_evaluate
-        procedure, public :: initialize => ff_initialize
     end type
 
 ! ------------------------------------------------------------------------------
@@ -332,34 +370,6 @@ module neural_net_core
             class(errors), intent(inout), target, optional :: err
             real(real64), allocatable, dimension(:) :: y
         end function
-
-        !> @brief Initializes a feedforward neural network.
-        !!
-        !! @param[in,out] this The feedforward_network object.
-        !! @param[in] lyrs An array containing the number of neurons
-        !!  in each layer.  For instance, item 1 in this array defines
-        !!  the number of neurons in layer 1, item 2 defines the number
-        !!  of neurons in layer 2, etc.  There must be at least 3
-        !!  items; hence, 3 layers, in this array (network).
-        !! @param[in,out] model The model neuron type.  Notice, the neuron
-        !!  model is modified at each layer to ensure the neurons of
-        !!  each layer accept the appropriate number of inputs to ensure
-        !!  a functional network.
-        !! @param[in,out] err An errors-based object used for error handling.
-        !!  Possible errors are as follows.
-        !!  - NN_ARRAY_SIZE_ERROR: Occurs if @p lyrs isn't at least 3 elements 
-        !!      in size.
-        !!  - NN_INVALID_INPUT_ERROR: Occurs if any of the values in
-        !!      @p lyrs are less than 1 as each layer must have at least
-        !!      1 neuron.
-        !!  - NN_OUT_OF_MEMORY_ERROR: Occurs if there is insufficient memory
-        !!      available.
-        module subroutine ff_initialize(this, lyrs, model, err)
-            class(feedforward_network), intent(inout) :: this
-            integer(int32), intent(in), dimension(:) :: lyrs
-            class(neuron), intent(inout) :: model
-            class(errors), intent(inout), target, optional :: err
-        end subroutine
     end interface
 
 ! ------------------------------------------------------------------------------

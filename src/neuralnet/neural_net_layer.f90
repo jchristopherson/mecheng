@@ -51,7 +51,7 @@ contains
         end if
 
         ! Clear the existing collection
-        call this%clear()
+        if (this%get_count() > 0) call this%clear()
 
         ! Process - Simply push the model onto the end of the collection
         ! as a copy of model will be stored, not the actual model
