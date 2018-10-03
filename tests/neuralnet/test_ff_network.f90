@@ -103,6 +103,43 @@ contains
         end do
     end function
 
+    function test_network_2() result(rst)
+        ! Local Variables
+        logical :: rst
+        type(feedforward_network) :: network
+        type(sigmoid_neuron) :: neuronModel
+        type(layer) :: layerModel
+        integer(int32) :: i, indices(4)
+        real(real64), allocatable, dimension(:) :: ins, outs
+
+        ! Initialization
+        rst = .true.
+
+        ! Establish a 4 layer network
+        indices = [20, 50, 60, 10]
+
+        ! Construct the network
+        call network%initialize(indices, layerModel, neuronModel)
+
+        ! Randomize the weighting and bias factors for each neuron
+        call network%randomize()
+
+        ! Evaluate the network
+        allocate(ins(indices(1)))
+        call random_number(ins)
+        outs = network%evaluate(ins)
+
+        ! Print the inputs and outputs
+        print '(A)', "NETWORK INPUTS:"
+        do i = 1, size(ins)
+            print *, ins(i)
+        end do
+        print '(A)', "NETWORK OUTPUTS:"
+        do i = 1, size(outs)
+            print *, outs(i)
+        end do
+    end function
+
     function test_layer_container() result(rst)
         ! Local Variables
         logical :: rst

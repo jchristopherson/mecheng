@@ -32,6 +32,9 @@ program test
     rst = test_network_1()
     if (.not.rst) overall = .false.
 
+    rst = test_network_2()
+    if (.not.rst) overall = .false.
+
 
     ! Report
     if (overall) then
