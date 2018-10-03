@@ -242,8 +242,11 @@ module neural_net_core
     contains
         procedure, public :: initialize => network_init
         procedure, public :: get_layer => network_get
-
         procedure, public :: randomize => network_randomize
+        procedure, public :: populate => network_populate
+        procedure, public :: validate => network_validate
+        procedure, public :: get_coefficient_count => network_get_num_coeff
+        procedure, public :: get_coefficients => network_extract
         procedure(evaluate_network), deferred, public :: evaluate
     end type
 
@@ -326,6 +329,54 @@ module neural_net_core
             class(neural_network), intent(inout) :: this
             class(errors), intent(inout), target, optional :: err
         end subroutine
+
+        !> @brief Populates the network with the array of supplied coefficients.
+        !!
+        !! @param[in,out] this The neural_network object.
+        !! @param[in] x
+        !! @param[in,out] err
+        module subroutine network_populate(this, x, err)
+            class(neural_network), intent(inout) :: this
+            real(real64), intent(in), dimension(:) :: x
+            class(errors), intent(inout), target, optional :: err
+        end subroutine
+
+        !> @brief Validates the network construction.
+        !!
+        !! @param[in] this The neural_network object.
+        !! @param[out] msg A buffer of at least 256 characters that
+        !!  will be populated with a message describing the nature of
+        !!  any invalid network construction.
+        !! @return Returns true if the network is constructed correctly;
+        !!  else, false if the network is improperly constructed.
+        module function network_validate(this, msg) result(rst)
+            class(neural_network), intent(in) :: this
+            character(len = *), intent(out) :: msg
+            logical :: rst
+        end function
+
+        !> @brief Determines the number of coefficients required to fully
+        !! define the network.
+        !!
+        !! @param[in] this The neural_network object.
+        !! @param[in,out] err
+        !! @return The number of coefficients.
+        module function network_get_num_coeff(this, err) result(ncoeff)
+            class(neural_network), intent(in) :: this
+            class(errors), intent(inout), target, optional :: err
+            integer(int32) :: ncoeff
+        end function
+
+        !> @brief Extracts all coefficients from the network.
+        !!
+        !! @param[in] this The neural_network object.
+        !! @param[in,out] err
+        !! @return The array of coefficients.
+        module function network_extract(this, err) result(x)
+            class(neural_network), intent(in) :: this
+            class(errors), intent(inout), target, optional :: err
+            real(real64), allocatable, dimension(:) :: x
+        end function
     end interface
 
 ! ******************************************************************************

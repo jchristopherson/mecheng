@@ -190,4 +190,348 @@ contains
     end subroutine
 
 ! ------------------------------------------------------------------------------
+    module subroutine network_fit(this, inputs, outputs, err)
+        ! Required Modules
+        use nonlin_core
+        use nonlin_least_squares
+
+        ! Arguments
+        class(neural_network), intent(inout) :: this
+        real(real64), intent(in), dimension(:) :: inputs, outputs
+        class(errors), intent(inout), target, optional :: err
+
+        ! Local Variables
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+        character(len = 256) :: errmsg
+        integer(int32) :: nlayers, nin, nout, flag
+        logical :: valid
+        class(layer), pointer :: lyr
+        class(neuron), pointer :: nrn
+        real(real64), allocatable, dimension(:) :: coeffs, residuals
+        type(vecfcn_helper) :: obj
+        procedure(vecfcn), pointer :: fcn
+        type(least_squares_solver) :: solver
+        type(iteration_behavior) :: iter
+        
+        ! Initialization
+        nlayers = this%get_count()
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+        
+        ! Validate the network
+        valid = this%validate(errmsg)
+        if (.not.valid) then
+            call errmgr%report_error("network_fit", trim(errmsg), NN_INVALID_NETWORK_ERROR)
+            return
+        end if
+
+        ! Ensure the inputs and outputs arrays are properly sized
+        nin = this%get_layer(1)%get_count()
+        if (size(inputs) /= nin) then
+            write(errmsg, '(AI0AI0A)') "The input array size (", &
+                size(inputs), ") does not match the number of neurons (", &
+                sizes(1, 1), ") in the input layer."
+            call errmgr%report_error("network_fit", trim(errmsg), &
+                NN_ARRAY_SIZE_ERROR)
+            return
+        end if
+
+        nout = this%get_layer(nlayers)%get_count()
+        if (size(outputs) /= nout) then
+            write(errmsg, '(AI0AI0A)') "The output array size (", &
+                size(outputs), ") does not match the number of neurons (", &
+                sizes(nlayers, 1), ") in the output layer."
+            call errmgr%report_error("network_fit", trim(errmsg), &
+                NN_ARRAY_SIZE_ERROR)
+            return
+        end if
+
+        ! Extract the coefficients for the network as they're currently
+        ! defined
+        coeffs = this%get_coefficients(errmgr)
+        if (errmgr%has_error_occurred()) return
+
+        ! Allocate space for the residual information
+        allocate(residuals(nout), stat = flag)
+        if (flag /= 0) then
+            call errmgr%report_error("network_fit", &
+                "Insufficient memory available.", &
+                NN_OUT_OF_MEMORY_ERROR)
+            return
+        end if
+
+        ! Set up the solver, and then determine the best-fit coefficients
+        fcn => fit_routine
+        call obj%set_fcn(fcn, size(coeffs), nout)
+
+        ! Compute the solution
+        call solver%solve(obj, coeffs, residuals, iter, errmgr)
+        if (errmgr%has_error_occurred()) return
+
+        ! Ensure the correct coefficients are utilized
+        call this%populate(coeffs)
+
+        ! %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% !
+        subroutine fit_routine(x, f)
+            ! Arguments
+            real(real64), intent(in), dimension(:) :: x
+            real(real64), intent(out) :: f
+
+            ! Populate the network with coefficients
+            call this%populate(x)
+
+            ! Evaluate the network using the given inputs, and compare against
+            ! the desired outputs
+            f = this%evaluate(inputs) - outputs
+        end subroutine
+    end subroutine
+
+! ------------------------------------------------------------------------------
+    module subroutine network_populate(this, x, err)
+        ! Arguments
+        class(neural_network), intent(inout) :: this
+        real(real64), intent(in), dimension(:) :: x
+        class(errors), intent(inout), target, optional :: err
+
+        ! Local Variables
+        integer(int32) :: i, j, k, nlayers, nneurons, ncoeffs, nin, flag
+        class(layer), pointer :: lyr
+        class(neuron), pointer :: nrn
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+        character(len = 256) :: errmsg
+        
+        ! Initialization
+        nlayers = this%get_count()
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+
+        ! Ensure the network is valid
+        if (.not.this%validate(errmsg)) then
+            call errmgr%report_error("network_populate", trim(errmsg), NN_INVALID_NETWORK_ERROR)
+            return
+        end if
+
+        ! Ensure the input array is properly sized
+        ncoeffs = this%get_coefficient_count()
+        if (size(x) /= ncoeffs) then
+            write(errmsg, '(AI0AI0A)') &
+                "The coefficient array is improperly sized.  An array of ", &
+                ncoeffs, " elements was expected, but an array of ", size(x), &
+                " was found."
+            call errmgr%report_error("network_populate", trim(errmsg),  &
+                NN_ARRAY_SIZE_ERROR)
+            return
+        end if
+
+        ! Process
+        k = 1
+        do i = 1, nlayers
+            lyr => this%get_layer(i)
+            nneurons = lyr%get_count()
+            do j = 1, nneurons
+                nrn => lyr%get_neuron(j)
+                nin => nrn%get_input_count()
+                call nrn%set_weights(x(k:k+nin-1))
+                call nrn%set_bias(x(k+nin))
+                k = k + nin + 1
+            end do
+        end do
+    end subroutine
+
+! ------------------------------------------------------------------------------
+    module function network_extract(this, err) result(x)
+        ! Arguments
+        class(neural_network), intent(in) :: this
+        class(errors), intent(inout), target, optional :: err
+        real(real64), allocatable, dimension(:) :: x
+
+        ! Local Variables
+        integer(int32) :: i, j, k, nlayers, nneurons, ncoeffs, nin, flag
+        class(layer), pointer :: lyr
+        class(neuron), pointer :: nrn
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+        character(len = 256) :: errmsg
+        
+        ! Initialization
+        nlayers = this%get_count()
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+
+        ! Ensure the network is valid
+        if (.not.this%validate(errmsg)) then
+            call errmgr%report_error("network_extract", trim(errmsg), NN_INVALID_NETWORK_ERROR)
+            return
+        end if
+
+        ! Determine the number of coefficients, and then allocate space
+        ncoeffs = this%get_coefficient_count()
+        allocate(x(ncoeffs), stat = flag)
+        if (flag /= 0) then
+            call errmgr%report_error("network_extract", &
+                "Insufficient memory available.", &
+                NN_OUT_OF_MEMORY_ERROR)
+            return
+        end if
+
+        ! Cycle over and collect each coefficient
+        k = 1
+        do i = 1, nlayers
+            lyr => this%get_layer(i)
+            nneurons = lyr%get_count()
+            do j = 1, nneurons
+                nrn => lyr%get_neuron(j)
+                nin => nrn%get_input_count()
+                x(k:k+nin-1) = nrn%get_weights()
+                x(k+nin) = nrn%get_bias()
+                k = k + nin + 1
+            end do
+        end do
+    end function
+
+! ------------------------------------------------------------------------------
+    module function network_validate(this, msg) result(rst)
+        ! Arguments
+        class(neural_network), intent(in) :: this
+        character(len = *), intent(out) :: msg
+        logical :: rst
+
+        ! Local Variables
+        class(layer), pointer :: lyr
+        class(neuron), pointer :: nrn
+        integer(int32) :: i, j, n, nlayers, nin
+
+        ! Initialization
+        rst = .false.
+        nlayers = this%get_count()
+
+        ! Process
+        if (nlayers < 1) then
+            write(msg, '(AI0A)') "Only ", nlayers, " were found."
+            return
+        end if
+        do i = 1, nlayers
+            ! Get a pointer to the layer object
+            lyr => this%get_layer(i)
+
+            ! Ensure the pointer is valid
+            if (.not.associated(lyr)) then
+                write(msg, '(AI0A)') "Layer ", i, " is not defined."
+                return
+            end if
+
+            ! Ensure there's something in the layer
+            n = lyr%get_count()
+            if (n < 1) then
+                write(msg, '(AI0A)') "Layer ", i, " is not properly initialized."
+                return
+            end if
+
+            ! Cycle over each neuron
+            nin = 0
+            do j = 1, n
+                ! Get a pointer to the neuron
+                nrn => lyr%get_neuron(j)
+
+                ! Ensure the pointer is valid
+                if (.not.associated(nrn)) then
+                    write(msg, '(AI0AI0A)'), "Neuron ", j, " in layer ", i, &
+                        " is not properly initialized."
+                    return
+                end if
+
+                ! Ensure there are enough inputs
+                nin = nrn%get_input_count()
+                if (nin < 1) then
+                    write(msg, '(AI0AI0A)') "Neuron ", j, " in layer ", i, &
+                        " does not allow for sufficient inputs."
+                    return
+                end if
+            end do
+        end do
+    end function
+
+! ------------------------------------------------------------------------------
+    module function network_get_num_coeff(this, err) result(ncoeff)
+        ! Arguments
+        class(neural_network), intent(in) :: this
+        class(errors), intent(inout), target, optional :: err
+        integer(int32) :: ncoeff
+
+        ! Local Variables
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+        character(len = 256) :: errmsg
+        integer(int32) :: i, j, nlayers, n, nin, flag
+        integer(int32), allocatable, dimension(:,:) :: sizes
+        class(layer), pointer :: lyr
+        class(neuron), pointer :: nrn
+        
+        ! Initialization
+        ncoeff = 0
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+
+        ! Validate the network
+        if (.not.this%validate(errmsg)) then
+            call errmgr%report_error("network_get_num_coeff", &
+                trim(errmsg), NN_INVALID_NETWORK_ERROR)
+            return
+        end if
+
+        ! Allocate memory
+        allocate(sizes(2, nlayers), stat = flag)
+        if (flag /= 0) then
+            call errmgr%report_error("network_get_num_coeff", &
+                "Insufficient memory available.", &
+                NN_OUT_OF_MEMORY_ERROR)
+            return
+        end if
+
+        ! Count coefficients
+        do i = 1, nlayers
+            ! Get a pointer to the layer object
+            lyr => this%get_layer(i)
+
+            ! Ensure there's something in the layer
+            n = lyr%get_count()
+
+            ! Cycle over each neuron
+            nin = 0
+            do j = 1, n
+                ! Get a pointer to the neuron
+                nrn => lyr%get_neuron(j)
+
+                ! Ensure there are enough inputs
+                nin = nrn%get_input_count()
+            end do
+
+            ! Log the # of neurons in this layer, and how many inputs
+            ! are accepted.
+            sizes(1, i) = n
+            sizes(2, i) = nin
+        end do
+
+        ncoeff = 0
+        do i = 1, nlayers
+            ncoeff = ncoeff + sizes(1, i) * (sizes(2, i) + 1)
+            ! Each neuron has a coefficient for every input it accepts, and a single bias term
+        end do
+    end function
+
+! ------------------------------------------------------------------------------
 end submodule
