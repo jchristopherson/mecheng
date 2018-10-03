@@ -21,4 +21,6 @@ module neural_net_constants
     integer(int32), parameter :: NN_UNINITIALIZED_ERROR = 1007
     !> An error flag indicating the supplied index was outside the bounds of the collection.
     integer(int32), parameter :: NN_INDEX_OUT_OF_RANGE_ERROR = 1008
+    !> An error flag denoting an invalid neuron construction.
+    integer(int32), parameter :: NN_INVALID_NEURON_ERROR = 1009
 end module
