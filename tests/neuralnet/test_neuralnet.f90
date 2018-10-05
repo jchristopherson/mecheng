@@ -38,6 +38,9 @@ program test
     rst = test_network_count()
     if (.not.rst) overall = .false.
 
+    rst = test_network_coeff_transfer()
+    if (.not.rst) overall = .false.
+
 
     ! Report
     if (overall) then

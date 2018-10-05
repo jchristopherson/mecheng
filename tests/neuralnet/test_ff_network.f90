@@ -195,6 +195,47 @@ contains
         end if
     end function
 
+    function test_network_coeff_transfer() result(rst)
+        ! Local Variables
+        logical :: rst
+        type(feedforward_network) :: network
+        type(sigmoid_neuron) :: neuronModel
+        type(layer) :: layerModel
+        integer(int32) :: lyrs(3), ncoeffs, i
+        real(real64), allocatable, dimension(:) :: coeffs, extracted
+
+        ! Parameters
+        real(real64), parameter :: tol = 1.0d-12
+
+        ! Initialization
+        rst = .true.
+        lyrs = [10, 100, 5]
+        call network%initialize(lyrs, layerModel, neuronModel)
+
+        ! Determine the number of coefficients, and define a coefficient array
+        ncoeffs = network%get_coefficient_count()
+        allocate(coeffs(ncoeffs))
+        call random_number(coeffs)
+
+        ! Assign the coefficients to the network
+        call network%populate(coeffs)
+
+        ! Extract the coefficients and compare to the input
+        extracted = network%get_coefficients()
+        if (size(extracted) /= ncoeffs) then
+            rst = .false.
+            print '(AI0AI0A)', "TEST FAILED (TEST_NETWORK_COEFF_TRANSFER): Expected ", ncoeffs, &
+                ", but found ", size(extracted), "."
+            return
+        end if
+        do i = 1, ncoeffs
+            if (abs(extracted(i) - coeffs(i)) > tol) then
+                rst = .false.
+                print '(AI0A)', "TEST FAILED (TEST_NETWORK_COEFF_TRANSFER): Coefficient mismatch at index ", i, "."
+            end if
+        end do
+    end function
+
 ! ------------------------------------------------------------------------------
     function lc_get(this, i) result(x)
         class(layer_container), intent(in) :: this
