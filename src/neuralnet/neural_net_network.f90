@@ -462,6 +462,9 @@ contains
                 end if
             end do
         end do
+
+        ! If we've made it this far, everything's OK
+        rst = .true.
     end function
 
 ! ------------------------------------------------------------------------------
@@ -475,8 +478,7 @@ contains
         class(errors), pointer :: errmgr
         type(errors), target :: deferr
         character(len = 256) :: errmsg
-        integer(int32) :: i, j, nlayers, n, nin, flag
-        integer(int32), allocatable, dimension(:,:) :: sizes
+        integer(int32) :: i, j, nlayers, n, nin
         class(layer), pointer :: lyr
         class(neuron), pointer :: nrn
         
@@ -496,16 +498,8 @@ contains
             return
         end if
 
-        ! Allocate memory
-        allocate(sizes(2, nlayers), stat = flag)
-        if (flag /= 0) then
-            call errmgr%report_error("network_get_num_coeff", &
-                "Insufficient memory available.", &
-                NN_OUT_OF_MEMORY_ERROR)
-            return
-        end if
-
         ! Count coefficients
+        ncoeff = 0
         do i = 1, nlayers
             ! Get a pointer to the layer object
             lyr => this%get_layer(i)
@@ -521,18 +515,10 @@ contains
 
                 ! Ensure there are enough inputs
                 nin = nrn%get_input_count()
+
+                ! Count the coefficients
+                ncoeff = ncoeff + nin + 1   ! +1 accounts for the bias term
             end do
-
-            ! Log the # of neurons in this layer, and how many inputs
-            ! are accepted.
-            sizes(1, i) = n
-            sizes(2, i) = nin
-        end do
-
-        ncoeff = 0
-        do i = 1, nlayers
-            ncoeff = ncoeff + sizes(1, i) * (sizes(2, i) + 1)
-            ! Each neuron has a coefficient for every input it accepts, and a single bias term
         end do
     end function
 

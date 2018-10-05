@@ -166,7 +166,34 @@ contains
             print '(A)', "TEST FAILED (TEST_LAYER_CONTAINER): No differentiation between different layers."
             return
         end if
-    end function 
+    end function
+
+    function test_network_count() result(rst)
+        ! Local Variables
+        logical :: rst
+        type(feedforward_network) :: network
+        type(sigmoid_neuron) :: neuronModel
+        type(layer) :: layerModel
+        integer(int32), dimension(3) :: lyrs
+        integer(int32) :: nCoeff, nCoeffAns
+
+        ! Initialization
+        rst = .true.
+        lyrs = [1, 3, 2]
+        call network%initialize(lyrs, layerModel, neuronModel)
+
+        ! Define how many coefficients are expected
+        nCoeffAns = lyrs(1) * 2 + lyrs(2) * (lyrs(1) + 1) + lyrs(3) * (lyrs(2) + 1)
+
+        ! Compute the number of coefficients
+        nCoeff = network%get_coefficient_count()
+
+        if (nCoeff /= nCoeffAns) then
+            print '(AI0AI0A)', "TEST FAILED (TEST_NETWORK_COUNT): Expected to find ", nCoeffAns, &
+                " coefficients, but found ", nCoeff, " instead."
+            return
+        end if
+    end function
 
 ! ------------------------------------------------------------------------------
     function lc_get(this, i) result(x)
