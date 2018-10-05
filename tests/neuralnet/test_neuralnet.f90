@@ -41,6 +41,8 @@ program test
     rst = test_network_coeff_transfer()
     if (.not.rst) overall = .false.
 
+    call ff_fit_example_1()
+
 
     ! Report
     if (overall) then

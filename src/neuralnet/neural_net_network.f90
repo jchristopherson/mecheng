@@ -198,7 +198,7 @@ contains
         ! Arguments
         class(neural_network), intent(inout) :: this
         class(least_squares_solver), intent(inout) :: solver
-        real(real64), intent(in), dimension(:) :: inputs, outputs
+        real(real64), intent(in), dimension(:,:) :: inputs, outputs
         real(real64), intent(out), dimension(:), target, optional :: res
         class(errors), intent(inout), target, optional :: err
 
@@ -209,7 +209,7 @@ contains
         integer(int32) :: nlayers, nin, nout, flag
         logical :: valid
         class(layer), pointer :: lyr
-        real(real64), allocatable, dimension(:) :: coeffs
+        real(real64), allocatable, dimension(:) :: coeffs, work
         real(real64), allocatable, dimension(:), target :: rsd
         real(real64), pointer, dimension(:) :: residuals
         type(vecfcn_helper) :: obj
@@ -234,9 +234,9 @@ contains
         ! Ensure the inputs and outputs arrays are properly sized
         lyr => this%get_layer(1)
         nin = lyr%get_count()
-        if (size(inputs) /= nin) then
+        if (size(inputs, 2) /= nin) then
             write(errmsg, '(AI0AI0A)') "The input array size (", &
-                size(inputs), ") does not match the number of neurons (", &
+                size(inputs, 2), ") does not match the number of neurons (", &
                 nin, ") in the input layer."
             call errmgr%report_error("network_fit", trim(errmsg), &
                 NN_ARRAY_SIZE_ERROR)
@@ -245,9 +245,9 @@ contains
 
         lyr => this%get_layer(nlayers)
         nout = lyr%get_count()
-        if (size(outputs) /= nout) then
+        if (size(outputs, 2) /= nout) then
             write(errmsg, '(AI0AI0A)') "The output array size (", &
-                size(outputs), ") does not match the number of neurons (", &
+                size(outputs, 2), ") does not match the number of neurons (", &
                 nout, ") in the output layer."
             call errmgr%report_error("network_fit", trim(errmsg), &
                 NN_ARRAY_SIZE_ERROR)
@@ -281,6 +281,15 @@ contains
             end if
             residuals => rsd
         end if
+
+        ! Allocate a workspace array
+        allocate(work(nout), stat = flag)
+        if (flag /= 0) then
+            call errmgr%report_error("network_fit", &
+                "Insufficient memory available.", &
+                NN_OUT_OF_MEMORY_ERROR)
+            return
+        end if
         
         ! Set up the solver, and then determine the best-fit coefficients
         fcn => fit_routine
@@ -300,12 +309,25 @@ contains
             real(real64), intent(in), dimension(:) :: x
             real(real64), intent(out), dimension(:) :: f
 
+            ! Local Variables
+            integer(int32) :: i
+
             ! Populate the network with coefficients
             call this%populate(x)
 
             ! Evaluate the network using the given inputs, and compare against
             ! the desired outputs
-            f = this%evaluate(inputs) - outputs
+            f = 0.0d0
+            do i = 1, size(inputs, 1)
+                work = this%evaluate(inputs(i,:)) - outputs(i,:)
+                f = f + work**2
+            end do
+            f = sqrt(f)
+
+            ! TO DO: Rework this routine to provide a situation where
+            ! there are always more equations than variables (coefficients).
+            ! Also, provide a check for this condition; else, we'll need
+            ! to rewrite as an optimization routine, not a least-squares solver
         end subroutine
     end subroutine
 

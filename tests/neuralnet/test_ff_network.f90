@@ -3,6 +3,7 @@
 module test_ff_network
     use iso_fortran_env
     use neural_net_core
+    use nonlin_least_squares
     implicit none
 
     type layer_obj
@@ -235,6 +236,64 @@ contains
             end if
         end do
     end function
+
+    subroutine ff_fit_example_1()
+        ! Required Modules
+        use fplot_core
+
+        ! Local Variables
+        type(feedforward_network) :: network
+        type(layer) :: layerModel
+        type(sigmoid_neuron) :: neuronModel
+        type(least_squares_solver) :: solver
+        integer(int32) :: lyrs(3), i
+        real(real64), dimension(8,1) :: sensorOutput, calLoads, fittedData, fitErrors
+
+        type(plot_2d) :: graph
+        type(plot_data_2d) :: ds1
+        class(plot_axis), pointer :: xAxis, yAxis
+
+        ! Define the layer structure
+        ! - # of inputs: 1
+        ! - # of outputs: 1
+        lyrs = [1, 20, 1]
+        call network%initialize(lyrs, layerModel, neuronModel)
+
+        ! Define the data
+        calLoads = reshape([0.0d0, 600.7160569d0, 1200.631306d0, 1800.362883d0, 2400.497199d0, &
+            3000.197944d0, 1800.510307d0, -0.210683425d0], [8, 1])
+        sensorOutput = reshape([0.0d0, 0.302820934d0, 0.605285451d0, 0.907848517d0, &
+            1.210417199d0, 1.512626867d0, 0.907987061d0, -5.86675d-05], [8, 1])
+
+        ! Define solver parameters
+        call solver%set_print_status(.true.)
+
+        ! Attempt to fit the data
+        call network%fit(solver, sensorOutput, calLoads)
+
+        ! Apply the fitted network to the data
+        do i = 1, size(sensorOutput, 1)
+            fittedData(i,:) = network%evaluate(sensorOutput(i,:))
+        end do
+
+        ! Compute the errors in the fit
+        fitErrors = fittedData - calLoads
+
+        ! Create a plot of the data
+        call graph%initialize()
+        call graph%set_font_size(14)
+        xAxis => graph%get_x_axis()
+        yAxis => graph%get_y_axis()
+
+        call xAxis%set_title("Applied [N]")
+        call yAxis%set_title("Error [N]")
+
+        call ds1%set_line_width(2.0)
+        call ds1%define_data(calLoads(:,1), fitErrors(:,1))
+
+        call graph%push(ds1)
+        call graph%draw()
+    end subroutine
 
 ! ------------------------------------------------------------------------------
     function lc_get(this, i) result(x)

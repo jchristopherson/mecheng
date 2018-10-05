@@ -383,7 +383,7 @@ module neural_net_core
             use nonlin_least_squares
             class(neural_network), intent(inout) :: this
             class(least_squares_solver), intent(inout) :: solver
-            real(real64), intent(in), dimension(:) :: inputs, outputs
+            real(real64), intent(in), dimension(:,:) :: inputs, outputs
             real(real64), intent(out), dimension(:), target, optional :: res
             class(errors), intent(inout), target, optional :: err
         end subroutine
