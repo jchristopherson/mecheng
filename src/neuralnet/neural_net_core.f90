@@ -247,6 +247,7 @@ module neural_net_core
         procedure, public :: validate => network_validate
         procedure, public :: get_coefficient_count => network_get_num_coeff
         procedure, public :: get_coefficients => network_extract
+        procedure, public :: fit => network_fit
         procedure(evaluate_network), deferred, public :: evaluate
     end type
 
@@ -377,6 +378,15 @@ module neural_net_core
             class(errors), intent(inout), target, optional :: err
             real(real64), allocatable, dimension(:) :: x
         end function
+
+        module subroutine network_fit(this, solver, inputs, outputs, res, err)
+            use nonlin_least_squares
+            class(neural_network), intent(inout) :: this
+            class(least_squares_solver), intent(inout) :: solver
+            real(real64), intent(in), dimension(:) :: inputs, outputs
+            real(real64), intent(out), dimension(:), target, optional :: res
+            class(errors), intent(inout), target, optional :: err
+        end subroutine
     end interface
 
 ! ******************************************************************************

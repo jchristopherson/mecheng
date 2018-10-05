@@ -190,14 +190,16 @@ contains
     end subroutine
 
 ! ------------------------------------------------------------------------------
-    module subroutine network_fit(this, inputs, outputs, err)
+    module subroutine network_fit(this, solver, inputs, outputs, res, err)
         ! Required Modules
         use nonlin_core
         use nonlin_least_squares
 
         ! Arguments
         class(neural_network), intent(inout) :: this
+        class(least_squares_solver), intent(inout) :: solver
         real(real64), intent(in), dimension(:) :: inputs, outputs
+        real(real64), intent(out), dimension(:), target, optional :: res
         class(errors), intent(inout), target, optional :: err
 
         ! Local Variables
@@ -207,10 +209,11 @@ contains
         integer(int32) :: nlayers, nin, nout, flag
         logical :: valid
         class(layer), pointer :: lyr
-        real(real64), allocatable, dimension(:) :: coeffs, residuals
+        real(real64), allocatable, dimension(:) :: coeffs
+        real(real64), allocatable, dimension(:), target :: rsd
+        real(real64), pointer, dimension(:) :: residuals
         type(vecfcn_helper) :: obj
         procedure(vecfcn), pointer :: fcn
-        type(least_squares_solver) :: solver
         type(iteration_behavior) :: iter
         
         ! Initialization
@@ -257,14 +260,28 @@ contains
         if (errmgr%has_error_occurred()) return
 
         ! Allocate space for the residual information
-        allocate(residuals(nout), stat = flag)
-        if (flag /= 0) then
-            call errmgr%report_error("network_fit", &
-                "Insufficient memory available.", &
-                NN_OUT_OF_MEMORY_ERROR)
-            return
+        if (present(res)) then
+            if (size(res) /= nout) then
+                write(errmsg, '(AI0AI0A)') "The residual output array is " // &
+                    "improperly sized.  An array of size ", nout, &
+                    " was expected, but an array of size ", size(res), &
+                    " was found."
+                call errmgr%report_error("network_fit", & 
+                    trim(errmsg), NN_ARRAY_SIZE_ERROR)
+                return
+            end if
+            residuals => res
+        else
+            allocate(rsd(nout), stat = flag)
+            if (flag /= 0) then
+                call errmgr%report_error("network_fit", &
+                    "Insufficient memory available.", &
+                    NN_OUT_OF_MEMORY_ERROR)
+                return
+            end if
+            residuals => rsd
         end if
-
+        
         ! Set up the solver, and then determine the best-fit coefficients
         fcn => fit_routine
         call obj%set_fcn(fcn, size(coeffs), nout)
