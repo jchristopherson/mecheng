@@ -3,7 +3,8 @@
 module test_ff_network
     use iso_fortran_env
     use neural_net_core
-    use nonlin_least_squares
+    use nonlin_optimize
+    use nonlin_core
     implicit none
 
     type layer_obj
@@ -245,7 +246,7 @@ contains
         type(feedforward_network) :: network
         type(layer) :: layerModel
         type(sigmoid_neuron) :: neuronModel
-        type(least_squares_solver) :: solver
+        type(bfgs) :: solver
         integer(int32) :: lyrs(3), i
         real(real64), dimension(8,1) :: sensorOutput, calLoads, fittedData, fitErrors
 
@@ -258,6 +259,9 @@ contains
         ! - # of outputs: 1
         lyrs = [1, 20, 1]
         call network%initialize(lyrs, layerModel, neuronModel)
+
+        ! Randomize the network to provide an initial guess at a solution
+        call network%randomize()
 
         ! Define the data
         calLoads = reshape([0.0d0, 600.7160569d0, 1200.631306d0, 1800.362883d0, 2400.497199d0, &

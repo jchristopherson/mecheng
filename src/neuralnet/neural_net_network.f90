@@ -193,11 +193,10 @@ contains
     module subroutine network_fit(this, solver, inputs, outputs, res, err)
         ! Required Modules
         use nonlin_core
-        use nonlin_least_squares
 
         ! Arguments
         class(neural_network), intent(inout) :: this
-        class(least_squares_solver), intent(inout) :: solver
+        class(equation_optimizer), intent(inout) :: solver
         real(real64), intent(in), dimension(:,:) :: inputs, outputs
         real(real64), intent(out), dimension(:), target, optional :: res
         class(errors), intent(inout), target, optional :: err
@@ -212,8 +211,8 @@ contains
         real(real64), allocatable, dimension(:) :: coeffs, work
         real(real64), allocatable, dimension(:), target :: rsd
         real(real64), pointer, dimension(:) :: residuals
-        type(vecfcn_helper) :: obj
-        procedure(vecfcn), pointer :: fcn
+        type(fcnnvar_helper) :: obj
+        procedure(fcnnvar), pointer :: fcn
         type(iteration_behavior) :: iter
         
         ! Initialization
@@ -293,10 +292,10 @@ contains
         
         ! Set up the solver, and then determine the best-fit coefficients
         fcn => fit_routine
-        call obj%set_fcn(fcn, size(coeffs), nout)
+        call obj%set_fcn(fcn, size(coeffs))
 
         ! Compute the solution
-        call solver%solve(obj, coeffs, residuals, iter, errmgr)
+        call solver%solve(obj, coeffs, ib = iter, err = errmgr)
         if (errmgr%has_error_occurred()) return
 
         ! Ensure the correct coefficients are utilized
@@ -304,31 +303,34 @@ contains
 
         ! %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% !
     contains
-        subroutine fit_routine(x, f)
+        function fit_routine(x) result(f)
             ! Arguments
             real(real64), intent(in), dimension(:) :: x
-            real(real64), intent(out), dimension(:) :: f
+            real(real64) :: f
 
             ! Local Variables
             integer(int32) :: i
+            real(real64) :: scl, ssq, wnrm
 
             ! Populate the network with coefficients
             call this%populate(x)
 
             ! Evaluate the network using the given inputs, and compare against
             ! the desired outputs
-            f = 0.0d0
+            scl = 0.0d0
+            ssq = 1.0d0
             do i = 1, size(inputs, 1)
                 work = this%evaluate(inputs(i,:)) - outputs(i,:)
-                f = f + work**2
+                wnrm = norm2(work)
+                if (scl < wnrm) then
+                    ssq = 1.0d0 + ssq * (scl / wnrm)**2
+                    scl = wnrm
+                else
+                    ssq = ssq + (wnrm / scl)**2
+                end if
             end do
-            f = sqrt(f)
-
-            ! TO DO: Rework this routine to provide a situation where
-            ! there are always more equations than variables (coefficients).
-            ! Also, provide a check for this condition; else, we'll need
-            ! to rewrite as an optimization routine, not a least-squares solver
-        end subroutine
+            f = scl * sqrt(ssq)
+        end function
     end subroutine
 
 ! ------------------------------------------------------------------------------

@@ -380,9 +380,9 @@ module neural_net_core
         end function
 
         module subroutine network_fit(this, solver, inputs, outputs, res, err)
-            use nonlin_least_squares
+            use nonlin_core
             class(neural_network), intent(inout) :: this
-            class(least_squares_solver), intent(inout) :: solver
+            class(equation_optimizer), intent(inout) :: solver
             real(real64), intent(in), dimension(:,:) :: inputs, outputs
             real(real64), intent(out), dimension(:), target, optional :: res
             class(errors), intent(inout), target, optional :: err
