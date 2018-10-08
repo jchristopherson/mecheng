@@ -291,7 +291,7 @@ contains
         end if
         
         ! Set up the solver, and then determine the best-fit coefficients
-        fcn => fit_routine
+        fcn => cost_function
         call obj%set_fcn(fcn, size(coeffs))
 
         ! Compute the solution
@@ -303,33 +303,26 @@ contains
 
         ! %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% !
     contains
-        function fit_routine(x) result(f)
+        ! Cost Function
+        function cost_function(x) result(f)
             ! Arguments
             real(real64), intent(in), dimension(:) :: x
             real(real64) :: f
 
             ! Local Variables
             integer(int32) :: i
-            real(real64) :: scl, ssq, wnrm
 
             ! Populate the network with coefficients
             call this%populate(x)
 
             ! Evaluate the network using the given inputs, and compare against
             ! the desired outputs
-            scl = 0.0d0
-            ssq = 1.0d0
+            f = 0.0d0
             do i = 1, size(inputs, 1)
                 work = this%evaluate(inputs(i,:)) - outputs(i,:)
-                wnrm = norm2(work)
-                if (scl < wnrm) then
-                    ssq = 1.0d0 + ssq * (scl / wnrm)**2
-                    scl = wnrm
-                else
-                    ssq = ssq + (wnrm / scl)**2
-                end if
+                f = f + norm2(work)**2
             end do
-            f = scl * sqrt(ssq)
+            f = f / (2.0d0 * size(inputs, 1))
         end function
     end subroutine
 

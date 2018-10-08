@@ -246,7 +246,7 @@ contains
         type(feedforward_network) :: network
         type(layer) :: layerModel
         type(sigmoid_neuron) :: neuronModel
-        type(bfgs) :: solver
+        type(nelder_mead) :: solver
         integer(int32) :: lyrs(3), i
         real(real64), dimension(8,1) :: sensorOutput, calLoads, fittedData, fitErrors
 
