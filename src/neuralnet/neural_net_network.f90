@@ -156,7 +156,7 @@ contains
         ! Process
         !
         ! TO DO: Investigate how to run this loop in parallel
-        do i = 1, nlyrs
+        do i = 2, nlyrs ! Do not randomize weights or biases for the input layer
             ! Obtain a pointer to the layer
             lyr => this%get_layer(i)
 
@@ -318,8 +318,10 @@ contains
             ! Evaluate the network using the given inputs, and compare against
             ! the desired outputs
             f = 0.0d0
+            print *, ""
             do i = 1, size(inputs, 1)
                 work = this%evaluate(inputs(i,:)) - outputs(i,:)
+                print *, inputs(i,:), outputs(i,:), work
                 f = f + norm2(work)**2
             end do
             f = f / (2.0d0 * size(inputs, 1))

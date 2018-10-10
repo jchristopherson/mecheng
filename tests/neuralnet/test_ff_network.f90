@@ -246,9 +246,10 @@ contains
         type(feedforward_network) :: network
         type(layer) :: layerModel
         type(sigmoid_neuron) :: neuronModel
-        type(nelder_mead) :: solver
+        type(bfgs) :: solver
         integer(int32) :: lyrs(3), i
         real(real64), dimension(8,1) :: sensorOutput, calLoads, fittedData, fitErrors
+        real(real64), allocatable, dimension(:) :: coeffs
 
         type(plot_2d) :: graph
         type(plot_data_2d) :: ds1
@@ -257,11 +258,16 @@ contains
         ! Define the layer structure
         ! - # of inputs: 1
         ! - # of outputs: 1
-        lyrs = [1, 20, 1]
+        lyrs = [1, 1, 1]
         call network%initialize(lyrs, layerModel, neuronModel)
 
-        ! Randomize the network to provide an initial guess at a solution
-        call network%randomize()
+        ! Display the initial coefficients
+        coeffs = network%get_coefficients()
+        print *, ""
+        print '(A)', "Initial Guess:"
+        do i = 1, size(coeffs)
+            print *, coeffs(i)
+        end do
 
         ! Define the data
         calLoads = reshape([0.0d0, 600.7160569d0, 1200.631306d0, 1800.362883d0, 2400.497199d0, &
@@ -274,6 +280,14 @@ contains
 
         ! Attempt to fit the data
         call network%fit(solver, sensorOutput, calLoads)
+
+        ! Display the output coefficients
+        coeffs = network%get_coefficients()
+        print *, ""
+        print '(A)', "Final Coefficients:"
+        do i = 1, size(coeffs)
+            print *, coeffs(i)
+        end do
 
         ! Apply the fitted network to the data
         do i = 1, size(sensorOutput, 1)

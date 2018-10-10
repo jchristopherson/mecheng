@@ -64,7 +64,8 @@ contains
                             NN_OUT_OF_MEMORY_ERROR)
                         return
                     end if
-                    temp(1:npts) = x
+                    temp(1:size(x)) = x
+                    temp(size(x)+1:npts) = 0.0d0
                     ins => temp
                 else
                     ins => x(1:npts)
