@@ -48,6 +48,10 @@ contains
                 NN_OUT_OF_MEMORY_ERROR)
             return
         end if
+
+        ! Set all weighting factors to unity, and all biases to zero
+        this%m_weights = 1.0d0
+        this%m_bias = 0.0d0
     end subroutine
 
 
@@ -420,4 +424,36 @@ contains
         ! Process
         z = matmul(this%m_weights, a) + this%m_bias
     end function
+
+
+
+
+    module subroutine lyr_random(this, err)
+        ! Arguments
+        class(layer), intent(inout) :: this
+        class(errors), intent(inout), target, optional :: err
+
+        ! Local Variables
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+        
+        ! Initialization
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+
+        ! Input Check
+        if (this%get_neuron_count() == 0) then
+            call errmgr%report_error("lyr_random", &
+                "This layer has not been initialized.", &
+                NN_UNINITIALIZED_ERROR)
+            return
+        end if
+
+        ! Process
+        call random_number(this%m_weights)
+        call random_number(this%m_bias)
+    end subroutine
 end submodule

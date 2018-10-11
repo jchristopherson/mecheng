@@ -288,6 +288,22 @@ module neural_network_core
         !!  weighting factors matrix, \f$ b^{l} \f$ is the bias vector, and \f$ a^{l-1} \f$ is the 
         !!  output vector from the previous layer.
         procedure, public :: eval_arguments => lyr_eval_arg
+
+        !> @brief Randomizes the layer weighting and neuron bias factors in the range (0, 1).
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! subroutine randomize(class(layer) this, optional class(errors) err)
+        !! @endcode
+        !!
+        !! @param[in,out] this The layer object.
+        !! @param[in,out] err An optional errors-based object that if provided can be
+        !!  used to retrieve information relating to any errors encountered during
+        !!  execution.  If not provided, a default implementation of the errors
+        !!  class is used internally to provide error handling.  Possible errors and
+        !!  warning messages that may be encountered are as follows.
+        !!  - NN_UNINITIALIZED_ERROR: Occurs if the layer has not been initialized.
+        procedure, public :: randomize => lyr_random
     end type
 
     interface
@@ -372,6 +388,11 @@ module neural_network_core
             class(errors), intent(inout), target, optional :: err
             real(real64), allocatable, dimension(:) :: z
         end function
+
+        module subroutine lyr_random(this, err)
+            class(layer), intent(inout) :: this
+            class(errors), intent(inout), target, optional :: err
+        end subroutine
     end interface
 
 ! ******************************************************************************
