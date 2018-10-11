@@ -8,6 +8,7 @@ module neural_network_core
     use iso_fortran_env
     use ferror
     use collection_errors
+    use collection_list
     implicit none
     private
     public :: NN_OUT_OF_MEMORY_ERROR
@@ -401,7 +402,23 @@ module neural_network_core
     !> @brief A generic feed-forward network.
     type :: network
     private
+        !> The list of layer objects.
+        type(persistent_list) :: m_layers
+        !> The number of input neurons.
+        integer(int32) :: m_nInputs
+    contains
+        procedure, public :: initialize => net_init
     end type
+
+    interface
+        module subroutine net_init(this, layers, model, err)
+            class(network), intent(inout) :: this
+            integer(int32), intent(in) :: layers
+            class(layer), intent(in) :: model
+            class(errors), intent(inout), target, optional :: err
+        end subroutine
+    end interface
+
 
 contains
 
