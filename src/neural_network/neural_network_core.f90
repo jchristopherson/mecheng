@@ -19,6 +19,7 @@ module neural_network_core
     public :: NN_INDEX_OUT_OF_RANGE_ERROR
     public :: sigmoid
     public :: sigmoid_derivative
+    public :: layer
 
 ! ******************************************************************************
 ! ERROR FLAGS
@@ -52,34 +53,26 @@ module neural_network_core
         real(real64), allocatable, dimension(:,:) :: m_weights
         !> An array containing the biases for each neuron in the layer.
         real(real64), allocatable, dimension(:) :: m_bias
-        !> The neural function to utilize.
-        procedure(neural_function), pointer, nopass :: m_fcn
-        !> The first derivative of the neural function being utilized.
-        procedure(neural_function_derivative), pointer, nopass :: m_diff
     contains
         procedure, public :: initialize => lyr_init
         procedure, public :: get_input_count => lyr_get_input_count
         procedure, public :: get_neuron_count => lyr_get_neuron_count
+        procedure, public :: evaluate => lyr_evaluate
+        procedure, public :: get_weights => lyr_get_weights
+        procedure, public :: get_bias_vector => lyr_get_bias_vector
+        procedure, public :: get_weight => lyr_get_weight
+        procedure, public :: set_weight => lyr_set_weight
+        procedure, public :: get_bias => lyr_get_bias
+        procedure, public :: set_bias => lyr_set_bias
+        procedure, public :: eval_neural_function => lyr_fcn
+        procedure, public :: eval_neural_derivative => lyr_diff
+        procedure, public :: eval_arguments => lyr_eval_arg
     end type
 
     interface
-        pure elemental function neural_function(x) result(y)
-            use iso_fortran_env, only : real64
-            real(real64), intent(in) :: x
-            real(real64) :: y
-        end function
-
-        pure elemental function neural_function_derivative(x) result(y)
-            use iso_fortran_env, only : real64
-            real(real64), intent(in) :: x
-            real(real64) :: y
-        end function
-
-        module subroutine lyr_init(this, nInputs, nNeurons, fcn, diff, err)
+        module subroutine lyr_init(this, nInputs, nNeurons, err)
             class(layer), intent(inout) :: this
             integer(int32), intent(in) :: nInputs, nNeurons
-            procedure(neural_function), intent(in), pointer, optional :: fcn
-            procedure(neural_function_derivative), intent(in), pointer, optional :: diff
             class(errors), intent(inout), target, optional :: err
         end subroutine
 
@@ -91,6 +84,72 @@ module neural_network_core
         pure module function lyr_get_neuron_count(this) result(x)
             class(layer), intent(in) :: this
             integer(int32) :: x
+        end function
+
+        module function lyr_evaluate(this, a, err) result(ap)
+            class(layer), intent(in) :: this
+            real(real64), intent(in), dimension(:) :: a
+            class(errors), intent(inout), target, optional :: err
+            real(real64), allocatable, dimension(:) :: ap
+        end function
+
+        pure module function lyr_get_weights(this) result(w)
+            class(layer), intent(in) :: this
+            real(real64), allocatable, dimension(:,:) :: w
+        end function
+
+        pure module function lyr_get_bias_vector(this) result(b)
+            class(layer), intent(in) :: this
+            real(real64), allocatable, dimension(:) :: b
+        end function
+
+        module function lyr_get_weight(this, neuron, input, err) result(x)
+            class(layer), intent(in) :: this
+            integer(int32), intent(in) :: neuron, input
+            class(errors), intent(inout), target, optional :: err
+            real(real64) :: x
+        end function
+
+        module subroutine lyr_set_weight(this, neuron, input, x, err)
+            class(layer), intent(inout) :: this
+            integer(int32), intent(in) :: neuron, input
+            real(real64), intent(in) :: x
+            class(errors), intent(inout), target, optional :: err
+        end subroutine
+
+        module function lyr_get_bias(this, neuron, err) result(x)
+            class(layer), intent(in) :: this
+            integer(int32), intent(in) :: neuron
+            class(errors), intent(inout), target, optional :: err
+            real(real64) :: x
+        end function
+
+        module subroutine lyr_set_bias(this, neuron, x, err)
+            class(layer), intent(inout) :: this
+            integer(int32), intent(in) :: neuron
+            real(real64), intent(in) :: x
+            class(errors), intent(inout), target, optional :: err
+        end subroutine
+
+        module function lyr_fcn(this, z, err) result(y)
+            class(layer), intent(in) :: this
+            real(real64), intent(in), dimension(:) :: z
+            class(errors), intent(inout), target, optional :: err
+            real(real64), allocatable, dimension(:) :: y
+        end function
+
+        module function lyr_diff(this, z, err) result(y)
+            class(layer), intent(in) :: this
+            real(real64), intent(in), dimension(:) :: z
+            class(errors), intent(inout), target, optional :: err
+            real(real64), allocatable, dimension(:) :: y
+        end function
+
+        module function lyr_eval_arg(this, a, err) result(z)
+            class(layer), intent(in) :: this
+            real(real64), intent(in), dimension(:) :: a
+            class(errors), intent(inout), target, optional :: err
+            real(real64), allocatable, dimension(:) :: z
         end function
     end interface
 
