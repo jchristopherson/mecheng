@@ -21,6 +21,7 @@ module neural_network_core
     public :: sigmoid
     public :: sigmoid_derivative
     public :: layer
+    public :: network
 
 ! ******************************************************************************
 ! ERROR FLAGS
@@ -405,18 +406,60 @@ module neural_network_core
         !> The list of layer objects.
         type(persistent_list) :: m_layers
         !> The number of input neurons.
-        integer(int32) :: m_nInputs
+        integer(int32) :: m_nInputs = 0
     contains
         procedure, public :: initialize => net_init
+        procedure, public :: get => net_get_layer
+        procedure, public :: set => net_set_layer
+        procedure, public :: get_count => net_get_count
+        procedure, public :: get_input_count => net_get_input_count
+        procedure, public :: get_output_count => net_get_output_count
+        procedure, public :: evaluate => net_evaluate
     end type
 
     interface
         module subroutine net_init(this, layers, model, err)
             class(network), intent(inout) :: this
-            integer(int32), intent(in) :: layers
+            integer(int32), intent(in), dimension(:) :: layers
             class(layer), intent(in) :: model
             class(errors), intent(inout), target, optional :: err
         end subroutine
+
+        module function net_get_layer(this, i, err) result(x)
+            class(network), intent(in) :: this
+            integer(int32), intent(in) :: i
+            class(errors), intent(inout), target, optional :: err
+            class(layer), pointer :: x
+        end function
+
+        module subroutine net_set_layer(this, i, lyr, err)
+            class(network), intent(inout) :: this
+            integer(int32), intent(in) :: i
+            class(layer), intent(in) :: lyr
+            class(errors), intent(inout), target, optional :: err
+        end subroutine
+
+        pure module function net_get_count(this) result(x)
+            class(network), intent(in) :: this
+            integer(int32) :: x
+        end function
+
+        pure module function net_get_input_count(this) result(x)
+            class(network), intent(in) :: this
+            integer(int32) :: x
+        end function
+
+        module function net_get_output_count(this) result(x)
+            class(network), intent(in) :: this
+            integer(int32) :: x
+        end function
+
+        module function net_evaluate(this, inputs, err) result(x)
+            class(network), intent(inout) :: this
+            real(real64), intent(in), target, dimension(:) :: inputs
+            class(errors), intent(inout), target, optional :: err
+            real(real64), allocatable, target, dimension(:) :: x
+        end function
     end interface
 
 
