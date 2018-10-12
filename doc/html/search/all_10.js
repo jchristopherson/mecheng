@@ -3,6 +3,7 @@ var searchData=
   ['r',['r',['../structlinalg__immutable_1_1qr__results.html#aeeea31b1fad256f5fcc2462b2990d56b',1,'linalg_immutable::qr_results']]],
   ['radius_5fof_5fgyration',['radius_of_gyration',['../namespacesections.html#ac237e866c90bde605392ec5b998c1662',1,'sections']]],
   ['rainbow_5fcolormap',['rainbow_colormap',['../structfplot__core_1_1rainbow__colormap.html',1,'fplot_core']]],
+  ['randomize',['randomize',['../structneural__network__core_1_1layer.html#a71ec5b0034e9c4c9a40d75787ee0888c',1,'neural_network_core::layer']]],
   ['rank1_5fupdate',['rank1_update',['../interfacelinalg__core_1_1rank1__update.html',1,'linalg_core']]],
   ['raw_5finterp',['raw_interp',['../structcurvefit__interp_1_1interp__manager.html#a336d10183b9128cbf25ce3e1f5a9d092',1,'curvefit_interp::interp_manager::raw_interp()'],['../structcurvefit__interp_1_1linear__interp.html#abb3e4ce276d69bf9b0f49e779af3acd0',1,'curvefit_interp::linear_interp::raw_interp()'],['../structcurvefit__interp_1_1polynomial__interp.html#a9719bb7cc2c66ba8ae3a0e647a6e930f',1,'curvefit_interp::polynomial_interp::raw_interp()'],['../structcurvefit__interp_1_1spline__interp.html#a855b787ccc8515b737a2f17993e971a1',1,'curvefit_interp::spline_interp::raw_interp()']]],
   ['read_5fall',['read_all',['../structfortio__text_1_1text__reader.html#a396f7c0afdfc5d3d933e9410ac6b0d13',1,'fortio_text::text_reader']]],

@@ -1,6 +1,7 @@
 var searchData=
 [
   ['nelder_5fmead',['nelder_mead',['../structnonlin__optimize_1_1nelder__mead.html',1,'nonlin_optimize']]],
+  ['network',['network',['../structneural__network__core_1_1network.html',1,'neural_network_core']]],
   ['newton_5f1var_5fsolver',['newton_1var_solver',['../structnonlin__solve_1_1newton__1var__solver.html',1,'nonlin_solve']]],
   ['newton_5fsolver',['newton_solver',['../structnonlin__solve_1_1newton__solver.html',1,'nonlin_solve']]],
   ['nonadaptive_5fintegrator',['nonadaptive_integrator',['../structintegral__core_1_1nonadaptive__integrator.html',1,'integral_core']]],
