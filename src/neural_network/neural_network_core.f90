@@ -57,7 +57,8 @@ module neural_network_core
         !!  (\f$ a = \sigma \left( z \right) \f$).
         !! @param[in] y The expected training outputs.
         !! @return The output of the cost function.
-        pure function cost_function(n, a, y) real(c)
+        pure function cost_function(n, a, y) result(c)
+            use iso_fortran_env
             integer(int32), intent(in) :: n
             real(real64), intent(in), dimension(:) :: a, y
             real(real64) :: c
@@ -563,7 +564,7 @@ contains
     !!  (\f$ a = \sigma \left( z \right) \f$).
     !! @param[in] y The expected training outputs.
     !! @return The output of the cost function.
-    pure function quadratic_cost_function(n, a, y) real(c)
+    pure function quadratic_cost_function(n, a, y) result(c)
         ! Arguments
         integer(int32), intent(in) :: n
         real(real64), intent(in), dimension(:) :: a, y
@@ -588,7 +589,7 @@ contains
     !!  (\f$ a = \sigma \left( z \right) \f$).
     !! @param[in] y The expected training outputs.
     !! @return The output of the cost function.
-    pure function cross_entropy_cost_function(n, a, y) real(c)
+    pure function cross_entropy_cost_function(n, a, y) result(c)
         ! Arguments
         integer(int32), intent(in) :: n
         real(real64), intent(in), dimension(:) :: a, y
