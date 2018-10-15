@@ -18,8 +18,11 @@ module neural_network_core
     public :: NN_ARRAY_SIZE_ERROR
     public :: NN_UNINITIALIZED_ERROR
     public :: NN_INDEX_OUT_OF_RANGE_ERROR
+    public :: cost_function
     public :: sigmoid
     public :: sigmoid_derivative
+    public :: quadratic_cost_function
+    public :: cross_entropy_cost_function
     public :: layer
     public :: network
 
@@ -42,6 +45,24 @@ module neural_network_core
     integer(int32), parameter :: NN_UNINITIALIZED_ERROR = 1007
     !> An error flag indicating the supplied index was outside the bounds of the collection.
     integer(int32), parameter :: NN_INDEX_OUT_OF_RANGE_ERROR = 1008
+
+! ******************************************************************************
+! INTERFACES
+! ------------------------------------------------------------------------------
+    interface
+        !> @brief Defines a cost function interface.
+        !!
+        !! @param[in] n The total number of training examples.
+        !! @param[in] a The output from the output layer neurons 
+        !!  (\f$ a = \sigma \left( z \right) \f$).
+        !! @param[in] y The expected training outputs.
+        !! @return The output of the cost function.
+        pure function cost_function(n, a, y) real(c)
+            integer(int32), intent(in) :: n
+            real(real64), intent(in), dimension(:) :: a, y
+            real(real64) :: c
+        end function
+    end interface
 
 ! ******************************************************************************
 ! NN_LAYER.F90
@@ -408,12 +429,61 @@ module neural_network_core
         !> The number of input neurons.
         integer(int32) :: m_nInputs = 0
     contains
+        !> @brief
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! @endcode
+        !!
+        !! @param[in,out] this The network object.
         procedure, public :: initialize => net_init
+        !> @brief
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! @endcode
+        !!
+        !! @param[in] this The network object.
         procedure, public :: get => net_get_layer
+        !> @brief
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! @endcode
+        !!
+        !! @param[in,out] this The network object.
         procedure, public :: set => net_set_layer
+        !> @brief
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! @endcode
+        !!
+        !! @param[in] this The network object.
         procedure, public :: get_count => net_get_count
+        !> @brief
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! @endcode
+        !!
+        !! @param[in] this The network object.
         procedure, public :: get_input_count => net_get_input_count
+        !> @brief
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! @endcode
+        !!
+        !! @param[in] this The network object.
         procedure, public :: get_output_count => net_get_output_count
+        !> @brief
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! @endcode
+        !!
+        !! @param[in] this The network object.
         procedure, public :: evaluate => net_evaluate
     end type
 
@@ -484,5 +554,55 @@ contains
         real(real64), intent(in) :: x
         real(real64) :: y
         y = exp(-x) / (1.0d0 + exp(-x))**2
+    end function
+
+    !> @brief Defines a quadratic cost function.
+    !!
+    !! @param[in] n The total number of training examples.
+    !! @param[in] a The output from the output layer neurons 
+    !!  (\f$ a = \sigma \left( z \right) \f$).
+    !! @param[in] y The expected training outputs.
+    !! @return The output of the cost function.
+    pure function quadratic_cost_function(n, a, y) real(c)
+        ! Arguments
+        integer(int32), intent(in) :: n
+        real(real64), intent(in), dimension(:) :: a, y
+        real(real64) :: c
+
+        ! Local Variables
+        integer(int32) :: i, m
+
+        ! Process
+        m = min(size(a), size(y))
+        c = 0.0d0
+        do i = 1, m
+            c = c + (y(i) - a(i))**2
+        end do
+        c = c / (2.0d0 * real(n, real64))
+    end function
+
+    !> @brief Defines a cross-entropy cost function.
+    !!
+    !! @param[in] n The total number of training examples.
+    !! @param[in] a The output from the output layer neurons 
+    !!  (\f$ a = \sigma \left( z \right) \f$).
+    !! @param[in] y The expected training outputs.
+    !! @return The output of the cost function.
+    pure function cross_entropy_cost_function(n, a, y) real(c)
+        ! Arguments
+        integer(int32), intent(in) :: n
+        real(real64), intent(in), dimension(:) :: a, y
+        real(real64) :: c
+
+        ! Local Variables
+        integer(int32) :: i, m
+
+        ! Process
+        m = min(size(a), size(y))
+        c = 0.0d0
+        do i = 1, m
+            c = c + y(i) * log(a(i)) + (1.0d0 - y(i)) * log(1.0d0 - a(i))
+        end do
+        c = -c / real(n, real64)
     end function
 end module
