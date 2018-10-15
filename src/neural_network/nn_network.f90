@@ -234,13 +234,14 @@ contains
 
 
 
-    module function net_backprop(this, cfcn, n, x, y, err)
+    module function net_backprop(this, cfcn, n, x, y, err) result(derivs)
         ! Arguments
         class(network), intent(in) :: this
         procedure(cost_function), intent(in), pointer :: cfcn
         integer(int32), intent(in) :: n
         real(real64), intent(in), dimension(:) :: x, y
         class(errors), intent(inout), target, optional :: err
+        real(real64), allocatable, dimension(:) :: derivs
 
         ! Local Variables
         class(errors), pointer :: errmgr
@@ -248,8 +249,7 @@ contains
         character(len = 256) :: errmsg
         integer(int32) :: i, nLayers, flag
         class(layer), pointer :: lyr
-        type(array_container), allocatable, dimension(:) :: z, sprime, a
-        real(real64), allocatable, dimension(:) :: delta
+        type(array_container), allocatable, dimension(:) :: z, sprime, a, delta
         
         ! Initialization
         nLayers = this%get_count()
@@ -289,7 +289,7 @@ contains
         allocate(z(nLayers - 1), stat = flag)
         if (flag == 0) allocate(sprime(nLayers - 1), stat = flag)
         if (flag == 0) allocate(a(nLayers - 1), stat = flag)
-        if (flag == 0) allocate(delta(size(y)), stat = flag)
+        if (flag == 0) allocate(delta(nLayers), stat = flag)
         if (flag /= 0) then
             call errmgr%report_error("net_backprop", &
                 "Insufficient memory available.", &
@@ -325,14 +325,20 @@ contains
         end do
 
         ! Compute the output error
-        delta = compute_cost_gradient(cfcn, n, a(nLayers - 1)%x, y, errmgr) * &
+        delta(nLayers)%x = &
+            compute_cost_gradient(cfcn, n, a(nLayers - 1)%x, y, errmgr) * &
             sprime(nLayers - 1)%x
 
         ! Backpropagate the error
         do i = nLayers - 1, 1, -1
+            ! Get a pointer to the layer
+            lyr => this%get(i)
+
+            ! Compute the error
+            delta(i)%x = matmul(transpose(lyr%get_weights()), delta(i+1)%x) * sprime(i)%x
         end do
 
-        ! Compute the derivatives
+        ! Assemble the derivative output array
     end function
 
 
