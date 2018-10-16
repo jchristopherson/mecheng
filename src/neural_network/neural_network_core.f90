@@ -430,7 +430,7 @@ module neural_network_core
         !> The number of input neurons.
         integer(int32) :: m_nInputs = 0
     contains
-        !> @brief
+        !> @brief Initializes the network.
         !!
         !! @par Syntax
         !! @code{.f90}
@@ -438,23 +438,34 @@ module neural_network_core
         !!
         !! @param[in,out] this The network object.
         procedure, public :: initialize => net_init
-        !> @brief
+        !> @brief Gets the requested layer.
         !!
         !! @par Syntax
         !! @code{.f90}
         !! @endcode
         !!
         !! @param[in] this The network object.
+        !!
+        !! @par Remarks
+        !! Layer 1 is considered the first hidden layer, and layer N - 1
+        !! is the output layer assuming N is the total number of layers
+        !! including the input layer.
         procedure, public :: get => net_get_layer
-        !> @brief
+        !> @brief Sets the specified layer.
         !!
         !! @par Syntax
         !! @code{.f90}
         !! @endcode
         !!
         !! @param[in,out] this The network object.
+        !!
+        !! @par Remarks
+        !! Layer 1 is considered the first hidden layer, and layer N - 1
+        !! is the output layer assuming N is the total number of layers
+        !! including the input layer.
         procedure, public :: set => net_set_layer
-        !> @brief
+        !> @brief Gets the total number of layers in the network, including
+        !! the input layer.
         !!
         !! @par Syntax
         !! @code{.f90}
@@ -462,7 +473,7 @@ module neural_network_core
         !!
         !! @param[in] this The network object.
         procedure, public :: get_count => net_get_count
-        !> @brief
+        !> @brief Gets the number of inputs accepted by the network.
         !!
         !! @par Syntax
         !! @code{.f90}
@@ -470,7 +481,7 @@ module neural_network_core
         !!
         !! @param[in] this The network object.
         procedure, public :: get_input_count => net_get_input_count
-        !> @brief
+        !> @brief Gets the number of outputs for this network.
         !!
         !! @par Syntax
         !! @code{.f90}
@@ -478,7 +489,7 @@ module neural_network_core
         !!
         !! @param[in] this The network object.
         procedure, public :: get_output_count => net_get_output_count
-        !> @brief
+        !> @brief Evaluates the network given an input.
         !!
         !! @par Syntax
         !! @code{.f90}
@@ -486,6 +497,34 @@ module neural_network_core
         !!
         !! @param[in] this The network object.
         procedure, public :: evaluate => net_evaluate
+        !> @brief Backpropagates the error estimates in the network to arrive
+        !! at a gradient vector for the network describing how the network
+        !! changes with regards to each weighting factor and bias term.
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! @endcode
+        !!
+        !! @param[in] this The network object.
+        procedure, public :: backpropagate => net_backprop
+        !> @brief Gets a count of all of the neurons in the network, including
+        !! the input and output neurons.
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! @endcode
+        !!
+        !! @param[in] this The network object.
+        procedure, public :: get_neuron_count => net_get_neuron_count
+        !> @brief Gets the total number of weighting factors and bias terms in
+        !! the network.
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! @endcode
+        !!
+        !! @param[in] this The network object.
+        procedure, public :: get_weighting_factor_count => net_get_weight_count
     end type
 
     interface
@@ -531,6 +570,26 @@ module neural_network_core
             class(errors), intent(inout), target, optional :: err
             real(real64), allocatable, target, dimension(:) :: x
         end function
+
+        module function net_backprop(this, cfcn, n, x, y, err) result(derivs)
+            class(network), intent(in) :: this
+            procedure(cost_function), intent(in), pointer :: cfcn
+            integer(int32), intent(in) :: n
+            real(real64), intent(in), dimension(:) :: x, y
+            class(errors), intent(inout), target, optional :: err
+            real(real64), allocatable, dimension(:) :: derivs
+        end function
+
+        module function net_get_neuron_count(this) result(x)
+            class(network), intent(in) :: this
+            integer(int32) :: x
+        end function
+
+        module function net_get_weight_count(this) result(x)
+            class(network), intent(in) :: this
+            integer(int32) :: x
+        end function
+
     end interface
 
 

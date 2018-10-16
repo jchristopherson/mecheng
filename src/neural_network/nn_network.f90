@@ -247,7 +247,7 @@ contains
         class(errors), pointer :: errmgr
         type(errors), target :: deferr
         character(len = 256) :: errmsg
-        integer(int32) :: i, nLayers, flag
+        integer(int32) :: i, j, k, nLayers, nVals, npts, flag
         class(layer), pointer :: lyr
         type(array_container), allocatable, dimension(:) :: z, sprime, a, delta
         
@@ -339,10 +339,76 @@ contains
         end do
 
         ! Assemble the derivative output array
+        nVals = this%get_weighting_factor_count()
+        allocate(derivs(nVals), stat = flag)
+        if (flag /= 0) then
+            call errmgr%report_error("net_backprop", &
+                "Insufficient memory available.", &
+                NN_OUT_OF_MEMORY_ERROR)
+            return
+        end if
+
+        k = 1
+        do i = 1, nLayers - 1
+            ! The weighting factors
+            npts = size(a(i)%x)
+            do j = 1, size(delta(i+1)%x)
+                derivs(k:k+npts-1) = a(i)%x * delta(i+1)%x(j)
+                k = k + npts
+            end do
+
+            ! The bias terms
+            npts = size(delta(i+1)%x)
+            derivs(k:k+npts-1) = delta(i+1)%x
+
+            ! Increment the counter
+            k = k + npts
+        end do
     end function
 
 
 
+
+
+    module function net_get_neuron_count(this) result(x)
+        ! Arguments
+        class(network), intent(in) :: this
+        integer(int32) :: x
+
+        ! Local Variables
+        integer(int32) :: i, n
+        class(layer), pointer :: lyr
+
+        ! Process
+        x = 0
+        n = this%get_count()
+        if (n == 0) return
+        do i = 1, n - 1
+            lyr => this%get(i)
+            if (.not.associated(lyr)) cycle
+            n = n + lyr%get_neuron_count()
+        end do
+        n = n + this%get_input_count()
+    end function
+
+
+
+
+    module function net_get_weight_count(this) result(x)
+        ! Arguments
+        class(network), intent(in) :: this
+        integer(int32) :: x
+
+        ! Local Variables
+        integer(int32) :: i, n
+        n = this%get_count()
+        if (n == 0) return
+        do i = 1, n - 1
+            lyr => this%get(i)
+            if (.not.associated(lyr)) cycle
+            n = n + lyr%get_neuron_count() * (lyr%get_input_count() + 1)
+        end do
+    end function
 
 
 
