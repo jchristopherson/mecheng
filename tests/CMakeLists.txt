@@ -46,23 +46,21 @@ add_custom_target(
 )
 
 # ------------------------------------------------------------------------------
-# NEURALNET TESTS
+# NEURAL_NETWORK TESTS
 # ------------------------------------------------------------------------------
-set(test_neuralnet_source
-    neuralnet/test_neuralnet.f90
-    neuralnet/test_layers.f90
-    neuralnet/test_neurons.f90
-    neuralnet/test_ff_network.f90
+set(test_neural_network_source
+    neural_network/test_neural_network.f90
+    neural_network/test_layers.f90
 )
-add_executable(mecheng_test_neuralnet ${test_neuralnet_source})
-target_link_libraries(mecheng_test_neuralnet mecheng)
+add_executable(mecheng_test_neural_network ${test_neural_network_source})
+target_link_libraries(mecheng_test_neural_network mecheng)
 
 # Run the tests
-add_custom_command(OUTPUT mecheng_test_neuralnet_cmd
-    DEPENDS ${test_neuralnet_source}
-    COMMAND mecheng_test_neuralnet
+add_custom_command(OUTPUT mecheng_test_neural_network_cmd
+    DEPENDS ${test_neural_network_source}
+    COMMAND mecheng_test_neural_network
 )
 add_custom_target(
-    run_mecheng_neuralnet_tests ALL
-    DEPENDS mecheng_test_neuralnet_cmd
+    run_mecheng_neural_network_tests ALL
+    DEPENDS mecheng_test_neural_network_cmd
 )

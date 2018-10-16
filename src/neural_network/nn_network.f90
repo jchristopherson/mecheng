@@ -386,9 +386,9 @@ contains
         do i = 1, n - 1
             lyr => this%get(i)
             if (.not.associated(lyr)) cycle
-            n = n + lyr%get_neuron_count()
+            x = x + lyr%get_neuron_count()
         end do
-        n = n + this%get_input_count()
+        x = x + this%get_input_count()
     end function
 
 
@@ -401,12 +401,16 @@ contains
 
         ! Local Variables
         integer(int32) :: i, n
+        class(layer), pointer :: lyr
+
+        ! Process
+        x = 0
         n = this%get_count()
         if (n == 0) return
         do i = 1, n - 1
             lyr => this%get(i)
             if (.not.associated(lyr)) cycle
-            n = n + lyr%get_neuron_count() * (lyr%get_input_count() + 1)
+            x = x + lyr%get_neuron_count() * (lyr%get_input_count() + 1)
         end do
     end function
 
