@@ -288,7 +288,7 @@ contains
         ! Local Memory Allocation
         allocate(z(nLayers - 1), stat = flag)
         if (flag == 0) allocate(sprime(nLayers - 1), stat = flag)
-        if (flag == 0) allocate(a(nLayers - 1), stat = flag)
+        if (flag == 0) allocate(a(nLayers), stat = flag)
         if (flag == 0) allocate(delta(nLayers), stat = flag)
         if (flag /= 0) then
             call errmgr%report_error("net_backprop", &
@@ -298,6 +298,7 @@ contains
         end if
 
         ! Feed-Forward Process
+        a(1)%x = x
         do i = 1, nLayers - 1
             ! Get a pointer to the layer
             lyr => this%get(i)
@@ -309,24 +310,20 @@ contains
             end if
 
             ! Compute z & sigma'(z)
-            if (i == 1) then
-                z(i)%x = lyr%eval_arguments(x, errmgr)
-            else
-                z(i)%x = lyr%eval_arguments(a(i-1)%x, errmgr)
-            end if
+            z(i)%x = lyr%eval_arguments(a(i)%x, errmgr)
             if (errmgr%has_error_occurred()) return
 
             sprime(i)%x = lyr%eval_neural_derivative(z(i)%x, errmgr)
             if (errmgr%has_error_occurred()) return
 
             ! Compute the layer output
-            a(i)%x = lyr%eval_neural_function(z(i)%x, errmgr)
+            a(i + 1)%x = lyr%eval_neural_function(z(i)%x, errmgr)
             if (errmgr%has_error_occurred()) return
         end do
 
         ! Compute the output error
         delta(nLayers)%x = &
-            compute_cost_gradient(cfcn, n, a(nLayers - 1)%x, y, errmgr) * &
+            compute_cost_gradient(cfcn, n, a(nLayers)%x, y, errmgr) * &
             sprime(nLayers - 1)%x
 
         ! Backpropagate the error
@@ -349,19 +346,17 @@ contains
         end if
 
         k = 1
-        do i = 1, nLayers - 1
-            ! The weighting factors
-            npts = size(a(i)%x)
-            do j = 1, size(delta(i+1)%x)
-                derivs(k:k+npts-1) = a(i)%x * delta(i+1)%x(j)
+        do i = 2, nLayers
+            ! Weighting Factors
+            npts = size(a(i - 1)%x)
+            do j = 1, size(delta(i)%x)
+                derivs(k:k+npts-1) = a(i-1)%x * delta(i)%x(j)
                 k = k + npts
             end do
 
-            ! The bias terms
-            npts = size(delta(i+1)%x)
-            derivs(k:k+npts-1) = delta(i+1)%x
-
-            ! Increment the counter
+            ! Bias
+            npts = size(delta(i)%x)
+            derivs(k:k+npts-1) = delta(i)%x
             k = k + npts
         end do
     end function
@@ -415,6 +410,49 @@ contains
     end function
 
 
+
+
+    module subroutine net_randomize(this, err)
+        ! Arguments
+        class(network), intent(inout) :: this
+        class(errors), intent(inout), target, optional :: err
+
+        ! Local Variables
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+        character(len = 256) :: errmsg
+        integer(int32) :: i, n
+        class(layer), pointer :: lyr
+        
+        ! Initialization
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+
+        ! Ensure the network is initialized
+        n = this%get_count()
+        if (n == 0) then
+            call errmgr%report_error("net_randomize", &
+                "The network has not been initialized.", &
+                NN_UNINITIALIZED_ERROR)
+            return
+        end if
+
+        ! Cycle over each layer
+        do i = 1, n - 1
+            lyr => this%get(i)
+            if (.not.associated(lyr)) then
+                write(errmsg, '(AI0A)') "Layer ", i, " is not initialized properly."
+                call errmgr%report_error("net_randomize", trim(errmsg), &
+                    NN_NULL_POINTER_ERROR)
+                return
+            end if
+            call lyr%randomize(errmgr)
+            if (errmgr%has_error_occurred()) return
+        end do
+    end subroutine
 
 
 ! ******************************************************************************

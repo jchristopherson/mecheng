@@ -525,6 +525,8 @@ module neural_network_core
         !!
         !! @param[in] this The network object.
         procedure, public :: get_weighting_factor_count => net_get_weight_count
+
+        procedure, public :: randomize => net_randomize
     end type
 
     interface
@@ -589,6 +591,11 @@ module neural_network_core
             class(network), intent(in) :: this
             integer(int32) :: x
         end function
+
+        module subroutine net_randomize(this, err)
+            class(network), intent(inout) :: this
+            class(errors), intent(inout), target, optional :: err
+        end subroutine
 
     end interface
 
