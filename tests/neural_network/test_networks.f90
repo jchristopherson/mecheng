@@ -14,10 +14,14 @@ contains
         type(layer) :: model
         type(network) :: net
         integer(int32) :: lyrs(nlayers), nneurons
+        real(real64), allocatable, dimension(:) :: xIn, xOut, back
+        procedure(cost_function), pointer :: fcn
 
         ! Initialization
         rst = .true.
         lyrs = [10, 20, 100, 40, 3]
+        allocate(xIn(lyrs(1)))
+        call random_number(xIn)
         call net%initialize(lyrs, model)
 
         ! Ensure the proper number of layers were created
@@ -53,6 +57,30 @@ contains
             return
         end if
 
+        ! Initialize the weighting and bias factors
+        call net%randomize()
+
+        ! Evaluate the network
+        xOut = net%evaluate(xIn)
+
+        if (size(xOut) /= lyrs(nlayers)) then
+            rst = .false.
+            print '(AI0AI0A)', "TEST FAILED (TEST_NETWORK): Expected ", lyrs(nlayers), &
+                " elements in the output array, but found ", size(xOut), "."
+            return
+        end if
+
+        ! Compute the network backpropagation
+        fcn => quadratic_cost_function
+        back = net%backpropagate(fcn, size(xIn), xIn, xOut)
+
+        if (size(back) /= net%get_weighting_factor_count()) then
+            rst = .false.
+            print '(AI0AI0A)', "TEST FAILED (TEST_NETWORK): Expected ", &
+                net%get_weighting_factor_count(), &
+                " elements in the backpropagation array, but found ", size(back), "."
+            return
+        end if
     end function
 
 end module
