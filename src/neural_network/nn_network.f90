@@ -7,6 +7,12 @@ submodule (neural_network_core) nn_network
         real(real64), allocatable, dimension(:) :: x
     end type
 
+    ! A container to allow collections of matrices.
+    type matrix_container
+        ! The matrix
+        real(real64), allocatable, dimension(:,:) :: x
+    end type
+
 contains
     module subroutine net_init(this, layers, model, err)
         ! Arguments
@@ -359,6 +365,145 @@ contains
             derivs(k:k+npts-1) = delta(i)%x
             k = k + npts
         end do
+    end function
+
+
+
+
+
+    module function net_backprop_mtx(this, cfcn, n, x, y, err) result(derivs)
+        ! Arguments
+        class(network), intent(in) :: this
+        procedure(cost_function), intent(in), pointer :: cfcn
+        integer(int32), intent(in) :: n
+        real(real64), intent(in), dimension(:,:) :: x, y
+        class(errors), intent(inout), target, optional :: err
+        real(real64), allocatable, dimension(:,:) :: derivs
+
+        ! Local Variables
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+        character(len = 256) :: errmsg
+        integer(int32) :: i, j, k, nLayers, nVals, npts, flag
+        class(layer), pointer :: lyr
+        type(matrix_container), allocatable, dimension(:) :: z, sprime, a, delta
+        
+        ! Initialization
+        nLayers = this%get_count()
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+
+        ! Ensure the network is initialized
+        if (nLayers < 1) then
+            call errmgr%report_error("net_backprop_mtx", &
+                "The network has not been initialized.", &
+                NN_UNINITIALIZED_ERROR)
+            return
+        end if
+
+        ! Ensure the number of columns in x and y are equal
+        if (size(x, 2) /= size(y, 2)) then
+            call errmgr%report_error("net_backprop_mtx", &
+                "The number of training data set columns must match.", &
+                NN_ARRAY_SIZE_ERROR)
+            return
+        end if
+
+        ! Ensure the number of inputs and outputs jive with the
+        ! input and output array sizes
+        if (size(x, 1) /= this%get_input_count()) then
+            write(errmsg, '(AI0AI0A)') "Expected to find ", this%get_input_count(), &
+                " elements in the input array, but found ", size(x, 1), " instead."
+            call errmgr%report_error("net_backprop_mtx", trim(errmsg), &
+                NN_ARRAY_SIZE_ERROR)
+            return
+        end if
+
+        if (size(y, 1) /= this%get_output_count()) then
+            write(errmsg, '(AI0AI0A)') "Expected to find ", this%get_output_count(), &
+                " elements in the output array, but found ", size(y, 1), " instead."
+            call errmgr%report_error("net_backprop", trim(errmsg), &
+                NN_ARRAY_SIZE_ERROR)
+            return
+        end if
+
+        ! Local Memory Allocation
+        allocate(z(nLayers - 1), stat = flag)
+        if (flag == 0) allocate(sprime(nLayers - 1), stat = flag)
+        if (flag == 0) allocate(a(nLayers), stat = flag)
+        if (flag == 0) allocate(delta(nLayers), stat = flag)
+        if (flag /= 0) then
+            call errmgr%report_error("net_backprop", &
+                "Insufficient memory available.", &
+                NN_OUT_OF_MEMORY_ERROR)
+            return
+        end if
+
+        ! Feed-Forward Process
+        a(1)%x = x
+        do i = 1, nLayers - 1
+            ! Get a pointer to the layer
+            lyr => this%get(i)
+            if (.not.associated(lyr)) then
+                write(errmsg, '(AI0A)') "Layer ", i + 1, " is not initialized properly."
+                call errmgr%report_error("net_backprop_mtx", trim(errmsg), &
+                    NN_NULL_POINTER_ERROR)
+                return
+            end if
+
+            ! Compute z & sigma'(z)
+            z(i)%x = lyr%eval_arguments(a(i)%x, errmgr)
+            if (errmgr%has_error_occurred()) return
+
+            sprime(i)%x = lyr%eval_neural_derivative(z(i)%x, errmgr)
+            if (errmgr%has_error_occurred()) return
+
+            ! Compute the layer output
+            a(i + 1)%x = lyr%eval_neural_function(z(i)%x, errmgr)
+            if (errmgr%has_error_occurred()) return
+        end do
+
+        ! Compute the output error
+        ! delta(nLayers)%x = &
+        !     compute_cost_gradient(cfcn, n, a(nLayers)%x, y, errmgr) * &
+        !     sprime(nLayers - 1)%x
+
+        ! Backpropagate the error
+        do i = nLayers - 1, 1, -1
+            ! Get a pointer to the layer
+            lyr => this%get(i)
+
+            ! Compute the error
+            delta(i)%x = matmul(transpose(lyr%get_weights()), delta(i+1)%x) * sprime(i)%x
+        end do
+
+        ! Assemble the derivative output array
+        ! nVals = this%get_weighting_factor_count()
+        ! allocate(derivs(nVals), stat = flag)
+        ! if (flag /= 0) then
+        !     call errmgr%report_error("net_backprop", &
+        !         "Insufficient memory available.", &
+        !         NN_OUT_OF_MEMORY_ERROR)
+        !     return
+        ! end if
+
+        ! k = 1
+        ! do i = 2, nLayers
+        !     ! Weighting Factors
+        !     npts = size(a(i - 1)%x)
+        !     do j = 1, size(delta(i)%x)
+        !         derivs(k:k+npts-1) = a(i-1)%x * delta(i)%x(j)
+        !         k = k + npts
+        !     end do
+
+        !     ! Bias
+        !     npts = size(delta(i)%x)
+        !     derivs(k:k+npts-1) = delta(i)%x
+        !     k = k + npts
+        ! end do
     end function
 
 
