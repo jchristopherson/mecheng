@@ -414,9 +414,9 @@ contains
                 NN_UNINITIALIZED_ERROR)
             return
         end if
-        if (size(z) /= n) then
+        if (size(a) /= n) then
             write(errmsg, '(AI0AI0A)') "The input array was expected to be of size ", n, &
-                ", but was found to be of size ", size(z), "."
+                ", but was found to be of size ", size(a), "."
             call errmgr%report_error("lyr_eval_arg", trim(errmsg), NN_ARRAY_SIZE_ERROR)
             return
         end if
