@@ -51,6 +51,7 @@ add_custom_target(
 set(test_neural_network_source
     neural_network/test_neural_network.f90
     neural_network/test_layers.f90
+    neural_network/test_networks.f90
 )
 add_executable(mecheng_test_neural_network ${test_neural_network_source})
 target_link_libraries(mecheng_test_neural_network mecheng)

@@ -2,6 +2,8 @@
 
 program main
     use test_layers
+    use test_networks
+    implicit none
 
     ! Local Variables
     logical :: rst, overall
@@ -10,6 +12,9 @@ program main
     overall = .true.
 
     rst = test_layer()
+    if (.not.rst) overall = .false.
+
+    rst = test_network()
     if (.not.rst) overall = .false.
 
     ! End
