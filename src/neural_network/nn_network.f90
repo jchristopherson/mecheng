@@ -455,6 +455,67 @@ contains
     end subroutine
 
 
+
+
+    module subroutine net_fit(this, fcn, xin, xout, err)
+        ! Required Modules
+        use nonlin_core
+        use nonlin_optimize
+
+        ! Arguments
+        class(network), intent(inout) :: this
+        procedure(cost_function), intent(in), pointer :: fcn
+        real(real64), intent(in), dimension(:,:) :: xin, xout
+        class(errors), intent(inout), target, optional :: err
+
+        ! Local Variables
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+        type(bfgs) :: solver
+        type(fcnnvar_helper) :: obj
+        procedure(fcnnvar), pointer :: ofcn
+        procedure(gradientfcn), pointer :: grad
+        integer(int32) :: ncoeff
+        
+        ! Initialization
+        ofcn => optim_fcn
+        grad => gradient_fcn
+        if (present(err))
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+
+        ! Ensure the network is initialized properly
+
+        ! Verify the size of the input and output training data
+
+        ! Set up the solver
+        ncoeff = this%get_weighting_factor_count()  ! # of unknowns
+        call obj%set_fcn(ofcn, ncoeff)
+        call obj%set_gradient_fcn(grad)
+
+
+    contains
+        function optim_fcn(x) result(f)
+            ! Arguments
+            real(real64), intent(in), dimension(:) :: x
+            real(real64) :: f
+
+            ! Local Variables
+        end function
+
+
+        subroutine gradient_fcn(x, g)
+            ! Arguments
+            real(real64), intent(in), dimension(:) :: x
+            real(real64), intent(out), dimension(:) :: g
+
+            ! Local Variables
+        end subroutine
+    end subroutine
+
+
 ! ******************************************************************************
 ! PRIVATE ROUTINES
 ! ------------------------------------------------------------------------------
