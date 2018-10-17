@@ -147,6 +147,8 @@ module neural_network_core
         !! where \f$ \mathbf{w} \f$ is the weighting factors matrix, \f$ b^{l} \f$ is the bias
         !! vector, and \f$ a^{l-1} \f$ is the output vector from the previous layer.
         procedure, public :: evaluate => lyr_evaluate
+        procedure :: lyr_evaluate
+        procedure :: lyr_evaluate_mtx
         !> @brief Gets the weighting factor matrix where there is a row
         !! for each neuron, and a column for each input weighting factor.
         !!
@@ -266,7 +268,9 @@ module neural_network_core
         !!
         !! @return The N-element array containing the results from evaluating each of the
         !!  N neurons in this layer.
-        procedure, public :: eval_neural_function => lyr_fcn
+        generic, public :: eval_neural_function => lyr_fcn, lyr_fcn_mtx
+        procedure :: lyr_fcn
+        procedure :: lyr_fcn_mtx
         !> @brief Evaluates the first derivative of each neuron in the layer.
         !!
         !! @par Syntax
@@ -288,7 +292,9 @@ module neural_network_core
         !!
         !! @return The N-element array containing the results from evaluating the first derivative of
         !!  each of the N neurons in this layer.
-        procedure, public :: eval_neural_derivative => lyr_diff
+        generic, public :: eval_neural_derivative => lyr_diff, lyr_diff_mtx
+        procedure :: lyr_diff
+        procedure :: lyr_diff_mtx
         !> @brief Evaluates the argument to pass to each neuron.
         !!
         !! @par Syntax
@@ -311,8 +317,9 @@ module neural_network_core
         !!  to the neurons \f$ \mathbf{w} a^{l-1} + b^{l} \f$ where \f$ \mathbf{w} \f$ is the 
         !!  weighting factors matrix, \f$ b^{l} \f$ is the bias vector, and \f$ a^{l-1} \f$ is the 
         !!  output vector from the previous layer.
-        procedure, public :: eval_arguments => lyr_eval_arg
-
+        generic, public :: eval_arguments => lyr_eval_arg, lyr_eval_arg_mtx
+        procedure :: lyr_eval_arg
+        procedure :: lyr_eval_arg_mtx
         !> @brief Randomizes the layer weighting and neuron bias factors in the range (0, 1).
         !!
         !! @par Syntax
@@ -352,6 +359,13 @@ module neural_network_core
             real(real64), intent(in), dimension(:) :: a
             class(errors), intent(inout), target, optional :: err
             real(real64), allocatable, dimension(:) :: ap
+        end function
+
+        module function lyr_evaluate_mtx(this, a, err) result(ap)
+            class(layer), intent(in) :: this
+            real(real64), intent(in), dimension(:,:) :: a
+            class(errors), intent(inout), target, optional :: err
+            real(real64), allocatable, dimension(:,:) :: ap
         end function
 
         pure module function lyr_get_weights(this) result(w)
@@ -399,11 +413,25 @@ module neural_network_core
             real(real64), allocatable, dimension(:) :: y
         end function
 
+        module function lyr_fcn_mtx(this, z, err) result(y)
+            class(layer), intent(in) :: this
+            real(real64), intent(in), dimension(:,:) :: z
+            class(errors), intent(inout), target, optional :: err
+            real(real64), allocatable, dimension(:,:) :: y
+        end function
+
         module function lyr_diff(this, z, err) result(y)
             class(layer), intent(in) :: this
             real(real64), intent(in), dimension(:) :: z
             class(errors), intent(inout), target, optional :: err
             real(real64), allocatable, dimension(:) :: y
+        end function
+
+        module function lyr_diff_mtx(this, z, err) result(y)
+            class(layer), intent(in) :: this
+            real(real64), intent(in), dimension(:,:) :: z
+            class(errors), intent(inout), target, optional :: err
+            real(real64), allocatable, dimension(:,:) :: y
         end function
 
         module function lyr_eval_arg(this, a, err) result(z)
@@ -413,10 +441,18 @@ module neural_network_core
             real(real64), allocatable, dimension(:) :: z
         end function
 
+        module function lyr_eval_arg_mtx(this, a, err) result(z)
+            class(layer), intent(in) :: this
+            real(real64), intent(in), dimension(:,:) :: a
+            class(errors), intent(inout), target, optional :: err
+            real(real64), allocatable, dimension(:,:) :: z
+        end function
+
         module subroutine lyr_random(this, err)
             class(layer), intent(inout) :: this
             class(errors), intent(inout), target, optional :: err
         end subroutine
+
     end interface
 
 ! ******************************************************************************

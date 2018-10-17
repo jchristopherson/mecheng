@@ -480,7 +480,7 @@ contains
         ! Initialization
         ofcn => optim_fcn
         grad => gradient_fcn
-        if (present(err))
+        if (present(err)) then
             errmgr => err
         else
             errmgr => deferr

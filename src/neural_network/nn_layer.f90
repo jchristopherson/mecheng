@@ -124,6 +124,49 @@ contains
 
 
 
+
+    module function lyr_evaluate_mtx(this, a, err) result(ap)
+        ! Arguments
+        class(layer), intent(in) :: this
+        real(real64), intent(in), dimension(:,:) :: a
+        class(errors), intent(inout), target, optional :: err
+        real(real64), allocatable, dimension(:,:) :: ap
+
+        ! Local Variables
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+        character(len = 256) :: errmsg
+        integer(int32) :: nIn
+        
+        ! Initialization
+        nIn = this%get_input_count()
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+
+        ! Input Check
+        if (this%get_neuron_count() == 0) then
+            call errmgr%report_error("lyr_evaluate_mtx", &
+                "This layer has not yet been initialized.", &
+                NN_UNINITIALIZED_ERROR)
+            return
+        end if
+        if (nIn /= size(a, 1)) then
+            write(errmsg, '(I0AI0A)') size(a, 1), &
+                " inputs were found, but ", nIn, &
+                " were expected."
+            call errmgr%report_error("lyr_evaluate_mtx", trim(errmsg), NN_ARRAY_SIZE_ERROR)
+            return
+        end if
+
+        ! Evaluate the layer
+        ap = this%eval_neural_function(this%eval_arguments(a, err))
+    end function
+
+
+
     pure module function lyr_get_weights(this) result(w)
         class(layer), intent(in) :: this
         real(real64), allocatable, dimension(:,:) :: w
@@ -345,6 +388,48 @@ contains
 
 
 
+    module function lyr_fcn_mtx(this, z, err) result(y)
+        ! Arguments
+        class(layer), intent(in) :: this
+        real(real64), intent(in), dimension(:,:) :: z
+        class(errors), intent(inout), target, optional :: err
+        real(real64), allocatable, dimension(:,:) :: y
+
+        ! Initialization
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+        character(len = 256) :: errmsg
+        integer(int32) :: n
+        
+        ! Initialization
+        n = this%get_neuron_count()
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+
+        ! Input Check
+        if (n == 0) then
+            call errmgr%report_error("lyr_fcn_mtx", &
+                "This layer has not been initialized.", &
+                NN_UNINITIALIZED_ERROR)
+            return
+        end if
+        if (size(z, 1) /= n) then
+            write(errmsg, '(AI0AI0A)') "The input array was expected to be of size ", n, &
+                ", but was found to be of size ", size(z, 1), "."
+            call errmgr%report_error("lyr_fcn_mtx", trim(errmsg), NN_ARRAY_SIZE_ERROR)
+            return
+        end if
+
+        ! Evaluate the sigmoid function
+        y = sigmoid(z)
+    end function
+
+
+
+
     module function lyr_diff(this, z, err) result(y)
         ! Arguments
         class(layer), intent(in) :: this
@@ -383,6 +468,49 @@ contains
         ! Evaluate the sigmoid derivative function
         y = sigmoid_derivative(z)
     end function
+
+
+
+
+    module function lyr_diff_mtx(this, z, err) result(y)
+        ! Arguments
+        class(layer), intent(in) :: this
+        real(real64), intent(in), dimension(:,:) :: z
+        class(errors), intent(inout), target, optional :: err
+        real(real64), allocatable, dimension(:,:) :: y
+
+        ! Initialization
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+        character(len = 256) :: errmsg
+        integer(int32) :: n
+        
+        ! Initialization
+        n = this%get_neuron_count()
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+
+        ! Input Check
+        if (n == 0) then
+            call errmgr%report_error("lyr_diff_mtx", &
+                "This layer has not been initialized.", &
+                NN_UNINITIALIZED_ERROR)
+            return
+        end if
+        if (size(z, 1) /= n) then
+            write(errmsg, '(AI0AI0A)') "The input array was expected to be of size ", n, &
+                ", but was found to be of size ", size(z, 1), "."
+            call errmgr%report_error("lyr_diff_mtx", trim(errmsg), NN_ARRAY_SIZE_ERROR)
+            return
+        end if
+
+        ! Evaluate the sigmoid derivative function
+        y = sigmoid_derivative(z)
+    end function
+
     
 
 
@@ -423,6 +551,51 @@ contains
 
         ! Process
         z = matmul(this%m_weights, a) + this%m_bias
+    end function
+
+
+
+    module function lyr_eval_arg_mtx(this, a, err) result(z)
+        ! Arguments
+        class(layer), intent(in) :: this
+        real(real64), intent(in), dimension(:,:) :: a
+        class(errors), intent(inout), target, optional :: err
+        real(real64), allocatable, dimension(:,:) :: z
+
+        ! Local Variables
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+        character(len = 256) :: errmsg
+        integer(int32) :: n, ncols
+        
+        ! Initialization
+        n = this%get_input_count()
+        ncols = size(a, 2)
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+
+        ! Input Check
+        if (n == 0) then
+            call errmgr%report_error("lyr_eval_arg_mtx", &
+                "This layer has not been initialized.", &
+                NN_UNINITIALIZED_ERROR)
+            return
+        end if
+        if (size(a, 1) /= n) then
+            write(errmsg, '(AI0AI0A)') "The input array was expected to be of size ", n, &
+                ", but was found to be of size ", size(a, 1), "."
+            call errmgr%report_error("lyr_eval_arg_mtx", trim(errmsg), NN_ARRAY_SIZE_ERROR)
+            return
+        end if
+
+        ! Process
+        z = matmul(this%m_weights, a)
+        do i = 1, ncols
+            z(:,i) = z(:,i) + this%m_bias
+        end do
     end function
 
 
