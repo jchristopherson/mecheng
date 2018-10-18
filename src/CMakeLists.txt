@@ -454,6 +454,7 @@ set(neural_network_sources
     neural_network/neural_network_core.f90
     neural_network/nn_layer.f90
     neural_network/nn_network.f90
+    neural_network//nn_learning_helper.f90
 )
 
 # Define the MECHENG source files
