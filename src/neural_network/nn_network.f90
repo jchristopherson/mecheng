@@ -240,25 +240,33 @@ contains
 
 
 
-    module function net_backprop(this, cfcn, n, x, y, err) result(derivs)
+
+
+
+    module function net_backprop(this, hlpr, work, err) result(derivs)
         ! Arguments
         class(network), intent(in) :: this
-        procedure(cost_function), intent(in), pointer :: cfcn
-        integer(int32), intent(in) :: n
-        real(real64), intent(in), dimension(:) :: x, y
+        class(learning_helper), intent(in) :: hlpr
+        real(real64), intent(out), dimension(:), target, optional :: work
         class(errors), intent(inout), target, optional :: err
-        real(real64), allocatable, dimension(:) :: derivs
+        real(real64), allocatable, dimension(:,:) :: derivs
 
         ! Local Variables
         class(errors), pointer :: errmgr
         type(errors), target :: deferr
         character(len = 256) :: errmsg
-        integer(int32) :: i, j, k, nLayers, nVals, npts, flag
+        integer(int32) :: i, j, k, jj, nlayers, nvals, nin, nout, npts, ndata, flag, lwork
         class(layer), pointer :: lyr
-        type(array_container), allocatable, dimension(:) :: z, sprime, a, delta
+        type(matrix_container), allocatable, dimension(:) :: z, sprime, a, delta
+        real(real64), allocatable, target, dimension(:) :: w
+        real(real64), pointer, dimension(:,:) :: grad
         
         ! Initialization
-        nLayers = this%get_count()
+        nlayers = this%get_count()
+        nvals = this%get_weighting_factor_count()
+        nin = this%get_input_count()
+        nout = this%get_output_count()
+        ndata = hlpr%get_data_set_count()
         if (present(err)) then
             errmgr => err
         else
@@ -266,7 +274,7 @@ contains
         end if
 
         ! Ensure the network is initialized
-        if (nLayers < 1) then
+        if (nlayers < 1) then
             call errmgr%report_error("net_backprop", &
                 "The network has not been initialized.", &
                 NN_UNINITIALIZED_ERROR)
@@ -275,27 +283,29 @@ contains
 
         ! Ensure the number of inputs and outputs jive with the
         ! input and output array sizes
-        if (size(x) /= this%get_input_count()) then
-            write(errmsg, '(AI0AI0A)') "Expected to find ", this%get_input_count(), &
-                " elements in the input array, but found ", size(x), " instead."
+        if (hlpr%get_input_count() /= nin) then
+            write(errmsg, '(AI0AI0A)') "Expected to find ", nin, &
+                " elements in the input array, but found ", hlpr%get_input_count(), &
+                " instead."
             call errmgr%report_error("net_backprop", trim(errmsg), &
                 NN_ARRAY_SIZE_ERROR)
             return
         end if
 
-        if (size(y) /= this%get_output_count()) then
-            write(errmsg, '(AI0AI0A)') "Expected to find ", this%get_output_count(), &
-                " elements in the output array, but found ", size(y), " instead."
+        if (hlpr%get_output_count() /= nout) then
+            write(errmsg, '(AI0AI0A)') "Expected to find ", nout, &
+                " elements in the output array, but found ", hlpr%get_output_count(), &
+                " instead."
             call errmgr%report_error("net_backprop", trim(errmsg), &
                 NN_ARRAY_SIZE_ERROR)
             return
         end if
 
-        ! Local Memory Allocation
-        allocate(z(nLayers - 1), stat = flag)
-        if (flag == 0) allocate(sprime(nLayers - 1), stat = flag)
-        if (flag == 0) allocate(a(nLayers), stat = flag)
-        if (flag == 0) allocate(delta(nLayers), stat = flag)
+        ! Memory Allocation
+        allocate(z(nlayers - 1), stat = flag)
+        if (flag == 0) allocate(sprime(nlayers - 1), stat = flag)
+        if (flag == 0) allocate(a(nlayers), stat = flag)
+        if (flag == 0) allocate(delta(nlayers), stat = flag)
         if (flag /= 0) then
             call errmgr%report_error("net_backprop", &
                 "Insufficient memory available.", &
@@ -303,9 +313,31 @@ contains
             return
         end if
 
+        ! Establish a workspace array
+        lwork = nout * ndata
+        if (present(work)) then
+            if (size(work) < lwork) then
+                write(errmsg, '(AI0AI0A)') "Insufficiently sized workspace.  Expected ", &
+                    lwork, " elements, but found ", size(work), "."
+                call errmgr%report_error("net_backprop", &
+                    trim(errmsg), NN_ARRAY_SIZE_ERROR)
+                return
+            end if
+            grad(1:nout,1:ndata) => work(1:lwork)
+        else
+            allocate(w(lwork), stat = flag)
+            if (flag /= 0) then
+                call errmgr%report_error("net_backprop", &
+                    "Insufficient memory available.", &
+                    NN_OUT_OF_MEMORY_ERROR)
+                return
+            end if
+            grad(1:nout,1:ndata) => w
+        end if
+
         ! Feed-Forward Process
-        a(1)%x = x
-        do i = 1, nLayers - 1
+        a(1)%x = hlpr%get_input_data()
+        do i = 1, nlayers - 1
             ! Get a pointer to the layer
             lyr => this%get(i)
             if (.not.associated(lyr)) then
@@ -328,12 +360,11 @@ contains
         end do
 
         ! Compute the output error
-        delta(nLayers)%x = &
-            compute_cost_gradient(cfcn, n, a(nLayers)%x, y, errmgr) * &
-            sprime(nLayers - 1)%x
+        call hlpr%cost_function_gradient(a(nlayers)%x, grad)
+        delta(nlayers)%x = grad * sprime(nlayers - 1)%x
 
         ! Backpropagate the error
-        do i = nLayers - 1, 1, -1
+        do i = nlayers - 1, 1, -1
             ! Get a pointer to the layer
             lyr => this%get(i)
 
@@ -342,168 +373,29 @@ contains
         end do
 
         ! Assemble the derivative output array
-        nVals = this%get_weighting_factor_count()
-        allocate(derivs(nVals), stat = flag)
+        allocate(derivs(nvals, ndata), stat = flag)
         if (flag /= 0) then
             call errmgr%report_error("net_backprop", &
-                "Insufficient memory available.", &
-                NN_OUT_OF_MEMORY_ERROR)
+                "Insufficient memory available.", NN_OUT_OF_MEMORY_ERROR)
             return
         end if
-
         k = 1
-        do i = 2, nLayers
+        do i = 2, nlayers
             ! Weighting Factors
-            npts = size(a(i - 1)%x)
-            do j = 1, size(delta(i)%x)
-                derivs(k:k+npts-1) = a(i-1)%x * delta(i)%x(j)
+            npts = size(a(i-1)%x)
+            do j = 1, size(delta(i)%x, 1)
+                do jj = 1, ndata
+                    derivs(k:k+npts-1,jj) = a(i-1)%x(:,jj) * delta(i)%x(j,jj)
+                end do
+                ! derivs(k:k+npts-1) = a(i-1)%x * delta(i)%x(j)
                 k = k + npts
             end do
 
             ! Bias
-            npts = size(delta(i)%x)
-            derivs(k:k+npts-1) = delta(i)%x
+            npts = size(delta(i)%x, 1)
+            derivs(k:k+npts-1,:) = delta(i)%x
             k = k + npts
         end do
-    end function
-
-
-
-
-
-    module function net_backprop_mtx(this, cfcn, n, x, y, err) result(derivs)
-        ! Arguments
-        class(network), intent(in) :: this
-        procedure(cost_function), intent(in), pointer :: cfcn
-        integer(int32), intent(in) :: n
-        real(real64), intent(in), dimension(:,:) :: x, y
-        class(errors), intent(inout), target, optional :: err
-        real(real64), allocatable, dimension(:,:) :: derivs
-
-        ! Local Variables
-        class(errors), pointer :: errmgr
-        type(errors), target :: deferr
-        character(len = 256) :: errmsg
-        integer(int32) :: i, j, k, nLayers, nVals, npts, flag
-        class(layer), pointer :: lyr
-        type(matrix_container), allocatable, dimension(:) :: z, sprime, a, delta
-        
-        ! Initialization
-        nLayers = this%get_count()
-        if (present(err)) then
-            errmgr => err
-        else
-            errmgr => deferr
-        end if
-
-        ! Ensure the network is initialized
-        if (nLayers < 1) then
-            call errmgr%report_error("net_backprop_mtx", &
-                "The network has not been initialized.", &
-                NN_UNINITIALIZED_ERROR)
-            return
-        end if
-
-        ! Ensure the number of columns in x and y are equal
-        if (size(x, 2) /= size(y, 2)) then
-            call errmgr%report_error("net_backprop_mtx", &
-                "The number of training data set columns must match.", &
-                NN_ARRAY_SIZE_ERROR)
-            return
-        end if
-
-        ! Ensure the number of inputs and outputs jive with the
-        ! input and output array sizes
-        if (size(x, 1) /= this%get_input_count()) then
-            write(errmsg, '(AI0AI0A)') "Expected to find ", this%get_input_count(), &
-                " elements in the input array, but found ", size(x, 1), " instead."
-            call errmgr%report_error("net_backprop_mtx", trim(errmsg), &
-                NN_ARRAY_SIZE_ERROR)
-            return
-        end if
-
-        if (size(y, 1) /= this%get_output_count()) then
-            write(errmsg, '(AI0AI0A)') "Expected to find ", this%get_output_count(), &
-                " elements in the output array, but found ", size(y, 1), " instead."
-            call errmgr%report_error("net_backprop", trim(errmsg), &
-                NN_ARRAY_SIZE_ERROR)
-            return
-        end if
-
-        ! Local Memory Allocation
-        allocate(z(nLayers - 1), stat = flag)
-        if (flag == 0) allocate(sprime(nLayers - 1), stat = flag)
-        if (flag == 0) allocate(a(nLayers), stat = flag)
-        if (flag == 0) allocate(delta(nLayers), stat = flag)
-        if (flag /= 0) then
-            call errmgr%report_error("net_backprop", &
-                "Insufficient memory available.", &
-                NN_OUT_OF_MEMORY_ERROR)
-            return
-        end if
-
-        ! Feed-Forward Process
-        a(1)%x = x
-        do i = 1, nLayers - 1
-            ! Get a pointer to the layer
-            lyr => this%get(i)
-            if (.not.associated(lyr)) then
-                write(errmsg, '(AI0A)') "Layer ", i + 1, " is not initialized properly."
-                call errmgr%report_error("net_backprop_mtx", trim(errmsg), &
-                    NN_NULL_POINTER_ERROR)
-                return
-            end if
-
-            ! Compute z & sigma'(z)
-            z(i)%x = lyr%eval_arguments(a(i)%x, errmgr)
-            if (errmgr%has_error_occurred()) return
-
-            sprime(i)%x = lyr%eval_neural_derivative(z(i)%x, errmgr)
-            if (errmgr%has_error_occurred()) return
-
-            ! Compute the layer output
-            a(i + 1)%x = lyr%eval_neural_function(z(i)%x, errmgr)
-            if (errmgr%has_error_occurred()) return
-        end do
-
-        ! Compute the output error
-        ! delta(nLayers)%x = &
-        !     compute_cost_gradient(cfcn, n, a(nLayers)%x, y, errmgr) * &
-        !     sprime(nLayers - 1)%x
-
-        ! Backpropagate the error
-        do i = nLayers - 1, 1, -1
-            ! Get a pointer to the layer
-            lyr => this%get(i)
-
-            ! Compute the error
-            delta(i)%x = matmul(transpose(lyr%get_weights()), delta(i+1)%x) * sprime(i)%x
-        end do
-
-        ! Assemble the derivative output array
-        ! nVals = this%get_weighting_factor_count()
-        ! allocate(derivs(nVals), stat = flag)
-        ! if (flag /= 0) then
-        !     call errmgr%report_error("net_backprop", &
-        !         "Insufficient memory available.", &
-        !         NN_OUT_OF_MEMORY_ERROR)
-        !     return
-        ! end if
-
-        ! k = 1
-        ! do i = 2, nLayers
-        !     ! Weighting Factors
-        !     npts = size(a(i - 1)%x)
-        !     do j = 1, size(delta(i)%x)
-        !         derivs(k:k+npts-1) = a(i-1)%x * delta(i)%x(j)
-        !         k = k + npts
-        !     end do
-
-        !     ! Bias
-        !     npts = size(delta(i)%x)
-        !     derivs(k:k+npts-1) = delta(i)%x
-        !     k = k + npts
-        ! end do
     end function
 
 
@@ -598,113 +490,4 @@ contains
             if (errmgr%has_error_occurred()) return
         end do
     end subroutine
-
-
-
-
-    module subroutine net_fit(this, fcn, xin, xout, err)
-        ! Required Modules
-        use nonlin_core
-        use nonlin_optimize
-
-        ! Arguments
-        class(network), intent(inout) :: this
-        procedure(cost_function), intent(in), pointer :: fcn
-        real(real64), intent(in), dimension(:,:) :: xin, xout
-        class(errors), intent(inout), target, optional :: err
-
-        ! Local Variables
-        class(errors), pointer :: errmgr
-        type(errors), target :: deferr
-        type(bfgs) :: solver
-        type(fcnnvar_helper) :: obj
-        procedure(fcnnvar), pointer :: ofcn
-        procedure(gradientfcn), pointer :: grad
-        integer(int32) :: ncoeff
-        
-        ! Initialization
-        ofcn => optim_fcn
-        grad => gradient_fcn
-        if (present(err)) then
-            errmgr => err
-        else
-            errmgr => deferr
-        end if
-
-        ! Ensure the network is initialized properly
-
-        ! Verify the size of the input and output training data
-
-        ! Set up the solver
-        ncoeff = this%get_weighting_factor_count()  ! # of unknowns
-        call obj%set_fcn(ofcn, ncoeff)
-        call obj%set_gradient_fcn(grad)
-
-
-    contains
-        function optim_fcn(x) result(f)
-            ! Arguments
-            real(real64), intent(in), dimension(:) :: x
-            real(real64) :: f
-
-            ! Local Variables
-        end function
-
-
-        subroutine gradient_fcn(x, g)
-            ! Arguments
-            real(real64), intent(in), dimension(:) :: x
-            real(real64), intent(out), dimension(:) :: g
-
-            ! Local Variables
-        end subroutine
-    end subroutine
-
-
-! ******************************************************************************
-! PRIVATE ROUTINES
-! ------------------------------------------------------------------------------
-    ! Private function for computing the gradient of the cost function
-    ! with respect to the output layer results.
-    function compute_cost_gradient(fcn, n, a, y, err) result(dc)
-        ! Arguments
-        procedure(cost_function), intent(in), pointer :: fcn
-        integer(int32), intent(in) :: n
-        real(real64), intent(in), dimension(:) :: a, y
-        real(real64), allocatable, dimension(:) :: dc
-        class(errors), intent(inout) :: err
-
-        ! Local Variables
-        integer(int32) :: i, nPts, flag
-        real(real64) :: eps, epsmch, temp, h, c
-        real(real64), allocatable, dimension(:) :: work
-
-        ! Initialization
-        nPts = size(a)
-        epsmch = epsilon(epsmch)
-        eps = sqrt(epsmch)
-        work = a
-
-        ! Local Memory Allocation
-        allocate(dc(nPts), stat = flag)
-        if (flag /= 0) then
-            call err%report_error("compute_cost_gradient", &
-                "Insufficient memory available.", &
-                NN_OUT_OF_MEMORY_ERROR)
-            return
-        end if
-
-        ! Evaluate the cost function at "A"
-        c = fcn(n, a, y)
-
-        ! Process
-        do i = 1, nPts
-            temp = work(i)
-            h = eps * abs(temp)
-            if (h <= 2.0d0 * epsmch) h = eps
-            work(i) = temp + h
-            dc(i) = (fcn(n, work, y) - c) / h
-            work(i) = temp
-        end do
-    end function
 end submodule

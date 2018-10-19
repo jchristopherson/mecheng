@@ -69,9 +69,20 @@ module neural_network_core
 ! ******************************************************************************
 ! NN_LEARNING_HELPER.F90
 ! ------------------------------------------------------------------------------
-    !> @brief A type used to assist in training a neural network.
+    !> @brief A type used to assist in training a neural network. 
+    !!
+    !! @par Remarks
+    !! This type provides a mechanism for efficient evaluation of the cost
+    !! function and its gradient vector with respect to the network output.
+    !! This particular type utilizes a quadratic cost function defined as
+    !! follows. \f$ C = \frac{1}{2n} \sum\nolimits_{x} 
+    !! \left( y \left(x\right) - a \right)^{2} \f$.  The gradient of
+    !! this function is then as follows.  \f$ \nabla_{a}C = 
+    !! \frac{a - y \left(x\right)}{n} \f$.
     type :: learning_helper
     private
+        !> An M-by-N matrix containing the N training input data sets.
+        real(real64), allocatable, dimension(:,:) :: m_inputs
         !> A P-by-N matrix containing the N training output data sets.
         real(real64), allocatable, dimension(:,:) :: m_outputs
     contains
@@ -82,7 +93,9 @@ module neural_network_core
         !! @endcode
         !! 
         !! @param[in,out] this The learning_helper object.
-        procedure, public :: initialize => lh_init
+        generic, public :: initialize => lh_init_vec, lh_init_mtx
+        procedure :: lh_init_vec
+        procedure :: lh_init_mtx
         !> @brief
         !!
         !! @par Syntax
@@ -90,7 +103,7 @@ module neural_network_core
         !! @endcode
         !! 
         !! @param[in] this The learning_helper object.
-        procedure, public :: get_data => lh_get_data
+        procedure, public :: get_input_data => lh_get_x_data
         !> @brief
         !!
         !! @par Syntax
@@ -98,9 +111,7 @@ module neural_network_core
         !! @endcode
         !! 
         !! @param[in] this The learning_helper object.
-        generic, public :: cost_function => lh_cost_fcn_vec, lh_cost_fcn_mtx
-        procedure :: lh_cost_fcn_vec
-        procedure :: lh_cost_fcn_mtx
+        procedure, public :: get_output_data => lh_get_y_data
         !> @brief
         !!
         !! @par Syntax
@@ -108,19 +119,65 @@ module neural_network_core
         !! @endcode
         !! 
         !! @param[in] this The learning_helper object.
-        generic, public :: cost_function_gradient => lh_cost_fcn_grad_vec, lh_cost_fcn_grad_mtx
-        procedure :: lh_cost_fcn_grad_vec
-        procedure :: lh_cost_fcn_grad_mtx
+        generic, public :: cost_function => cost_function_vec, cost_function_mtx
+        procedure, public :: cost_function_vec => lh_cost_fcn_vec
+        procedure, public :: cost_function_mtx => lh_cost_fcn_mtx
+        !> @brief
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! @endcode
+        !! 
+        !! @param[in] this The learning_helper object.
+        generic, public :: cost_function_gradient => &
+            cost_function_gradient_vec, cost_function_gradient_mtx
+        procedure, public :: cost_function_gradient_vec => lh_cost_fcn_grad_vec
+        procedure, public :: cost_function_gradient_mtx => lh_cost_fcn_grad_mtx
+        !> @brief
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! @endcode
+        !! 
+        !! @param[in] this The learning_helper object.
+        procedure, public :: get_input_count => lh_get_input_count
+        !> @brief
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! @endcode
+        !! 
+        !! @param[in] this The learning_helper object.
+        procedure, public :: get_output_count => lh_get_output_count
+        !> @brief
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! @endcode
+        !! 
+        !! @param[in] this The learning_helper object.
+        procedure, public :: get_data_set_count => lh_get_data_set_count
     end type
 
     interface
-        module subroutine lh_init(this, x, err)
+        module subroutine lh_init_vec(this, x, y, err)
             class(learning_helper), intent(inout) :: this
-            real(real64), intent(in), dimension(:,:) :: x
+            real(real64), intent(in), dimension(:) :: x, y
             class(errors), intent(inout), optional, target :: err
         end subroutine
 
-        pure module function lh_get_data(this) result(x)
+        module subroutine lh_init_mtx(this, x, y, err)
+            class(learning_helper), intent(inout) :: this
+            real(real64), intent(in), dimension(:,:) :: x, y
+            class(errors), intent(inout), optional, target :: err
+        end subroutine
+
+        pure module function lh_get_x_data(this) result(x)
+            class(learning_helper), intent(in) :: this
+            real(real64), allocatable, dimension(:,:) :: x
+        end function
+
+        pure module function lh_get_y_data(this) result(x)
             class(learning_helper), intent(in) :: this
             real(real64), allocatable, dimension(:,:) :: x
         end function
@@ -148,6 +205,80 @@ module neural_network_core
 
         module subroutine lh_cost_fcn_grad_mtx(this, a, g, err)
             class(learning_helper), intent(in) :: this
+            real(real64), intent(in), dimension(:,:) :: a
+            real(real64), intent(out), dimension(:,:) :: g
+            class(errors), intent(inout), target, optional :: err
+        end subroutine
+
+        pure module function lh_get_input_count(this) result(x)
+            class(learning_helper), intent(in) :: this
+            integer(int32) :: x
+        end function
+
+        pure module function lh_get_output_count(this) result(x)
+            class(learning_helper), intent(in) :: this
+            integer(int32) :: x
+        end function
+
+        pure module function lh_get_data_set_count(this) result(x)
+            class(learning_helper), intent(in) :: this
+            integer(int32) :: x
+        end function
+    end interface
+
+! ******************************************************************************
+! NN_CE_HELPER.F90
+! ------------------------------------------------------------------------------
+    !>
+    type, extends(learning_helper) :: cross_entropy_helper
+    private
+    contains
+        !> @brief
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! @endcode
+        !! 
+        !! @param[in] this The learning_helper object.
+        ! generic, public :: cost_function => cst_fcn_vec, cst_fcn_mtx
+        procedure, public :: cost_function_vec => ce_cost_fcn_vec
+        procedure, public :: cost_function_mtx => ce_cost_fcn_mtx
+        !> @brief
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! @endcode
+        !! 
+        !! @param[in] this The learning_helper object.
+        ! generic, public :: cost_function_gradient => cst_grad_vec, cst_grad_mtx
+        ! procedure, private :: cst_grad_vec => ce_cost_fcn_grad_vec
+        ! procedure, private :: cst_grad_mtx => ce_cost_fcn_grad_mtx
+    end type
+
+    interface
+        module function ce_cost_fcn_vec(this, a, err) result(c)
+            class(cross_entropy_helper), intent(in) :: this
+            real(real64), intent(in), dimension(:) :: a
+            class(errors), intent(inout), target, optional :: err
+            real(real64) :: c
+        end function
+
+        module function ce_cost_fcn_mtx(this, a, err) result(c)
+            class(cross_entropy_helper), intent(in) :: this
+            real(real64), intent(in), dimension(:,:) :: a
+            class(errors), intent(inout), target, optional :: err
+            real(real64) :: c
+        end function
+
+        module subroutine ce_cost_fcn_grad_vec(this, a, g, err)
+            class(cross_entropy_helper), intent(in) :: this
+            real(real64), intent(in), dimension(:) :: a
+            real(real64), intent(out), dimension(:) :: g
+            class(errors), intent(inout), target, optional :: err
+        end subroutine
+
+        module subroutine ce_cost_fcn_grad_mtx(this, a, g, err)
+            class(cross_entropy_helper), intent(in) :: this
             real(real64), intent(in), dimension(:,:) :: a
             real(real64), intent(out), dimension(:,:) :: g
             class(errors), intent(inout), target, optional :: err
@@ -698,13 +829,12 @@ module neural_network_core
             real(real64), allocatable, target, dimension(:) :: x
         end function
 
-        module function net_backprop(this, cfcn, n, x, y, err) result(derivs)
+        module function net_backprop(this, hlpr, work, err) result(derivs)
             class(network), intent(in) :: this
-            procedure(cost_function), intent(in), pointer :: cfcn
-            integer(int32), intent(in) :: n
-            real(real64), intent(in), dimension(:) :: x, y
+            class(learning_helper), intent(in) :: hlpr
+            real(real64), intent(out), dimension(:), target, optional :: work
             class(errors), intent(inout), target, optional :: err
-            real(real64), allocatable, dimension(:) :: derivs
+            real(real64), allocatable, dimension(:,:) :: derivs
         end function
 
         module function net_get_neuron_count(this) result(x)

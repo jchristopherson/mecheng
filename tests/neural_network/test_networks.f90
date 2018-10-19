@@ -13,8 +13,10 @@ contains
         logical :: rst
         type(layer) :: model
         type(network) :: net
-        integer(int32) :: lyrs(nlayers), nneurons
-        real(real64), allocatable, dimension(:) :: xIn, xOut, back
+        type(learning_helper) :: hlpr
+        integer(int32) :: lyrs(nlayers), nneurons, i
+        real(real64), allocatable, dimension(:) :: xIn, xOut
+        real(real64), allocatable, dimension(:,:) :: back
         procedure(cost_function), pointer :: fcn
 
         ! Initialization
@@ -71,10 +73,10 @@ contains
         end if
 
         ! Compute the network backpropagation
-        fcn => quadratic_cost_function
-        back = net%backpropagate(fcn, size(xIn), xIn, xOut)
+        call hlpr%initialize(xIn, xOut)
+        back = net%backpropagate(hlpr)
 
-        if (size(back) /= net%get_weighting_factor_count()) then
+        if (size(back, 1) /= net%get_weighting_factor_count()) then
             rst = .false.
             print '(AI0AI0A)', "TEST FAILED (TEST_NETWORK): Expected ", &
                 net%get_weighting_factor_count(), &
