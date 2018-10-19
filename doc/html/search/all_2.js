@@ -63,6 +63,8 @@ var searchData=
   ['converge_5fon_5fzero_5fdiff',['converge_on_zero_diff',['../structnonlin__core_1_1iteration__behavior.html#afd0d9d5f04d17bc9e3be467ebd93a1b1',1,'nonlin_core::iteration_behavior']]],
   ['cool_5fcolormap',['cool_colormap',['../structfplot__core_1_1cool__colormap.html',1,'fplot_core']]],
   ['copy_5ffrom',['copy_from',['../structfplot__core_1_1color.html#a5663a29b930c889d6c6c3c0b4dde3da4',1,'fplot_core::color']]],
+  ['cost_5ffunction',['cost_function',['../interfaceneural__network__core_1_1cost__function.html',1,'neural_network_core::cost_function'],['../structneural__network__core_1_1learning__helper.html#aed9e1cb5c33d6abb68a88ec0800104ec',1,'neural_network_core::learning_helper::cost_function()']]],
+  ['cost_5ffunction_5fgradient',['cost_function_gradient',['../structneural__network__core_1_1learning__helper.html#a26929bd93e649a0620346f272974af15',1,'neural_network_core::learning_helper']]],
   ['covariance',['covariance',['../interfacecurvefit__statistics_1_1covariance.html',1,'curvefit_statistics']]],
   ['covariance_5f2sets',['covariance_2sets',['../interfacecurvefit__statistics_1_1covariance.html#aa24de050980097e394e5724757924ec1',1,'curvefit_statistics::covariance::covariance_2sets()'],['../namespacecurvefit__statistics.html#a52aaf71ba781c4888e177dcfb55506a1',1,'curvefit_statistics::covariance_2sets()']]],
   ['covariance_5fmtx',['covariance_mtx',['../interfacecurvefit__statistics_1_1covariance.html#af7548259a15267667ab060600c675300',1,'curvefit_statistics::covariance::covariance_mtx()'],['../namespacecurvefit__statistics.html#a835786cb3448ddf739cf4de1b3500adf',1,'curvefit_statistics::covariance_mtx()']]],

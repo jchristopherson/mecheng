@@ -1,5 +1,7 @@
 var NAVTREEINDEX2 =
 {
+"interfacestrain_1_1wheatstone__bridge__series.html#a6635d023a6021f3fe36384cb1273dbfa":[1,0,27,2,3],
+"interfacestrain_1_1wheatstone__bridge__series.html#a684f0d3742eb4a67f0272d0fe114ea07":[1,0,27,2,0],
 "interfacestrain_1_1wheatstone__bridge__series.html#a98a317c75c9bfbdbf38715dcaffb2f88":[1,0,27,2,1],
 "interfacestrings_1_1string__to__number.html":[1,0,28,2],
 "interfacestrings_1_1string__to__number.html#a770e7db91aa9899685c507dd21b30a9f":[1,0,28,2,0],
@@ -45,8 +47,8 @@ var NAVTREEINDEX2 =
 "namespacecurvefit__calibration.html":[0,0,6],
 "namespacecurvefit__core.html":[1,0,5],
 "namespacecurvefit__core.html":[0,0,7],
-"namespacecurvefit__interp.html":[0,0,8],
 "namespacecurvefit__interp.html":[1,0,6],
+"namespacecurvefit__interp.html":[0,0,8],
 "namespacecurvefit__regression.html":[1,0,7],
 "namespacecurvefit__regression.html":[0,0,9],
 "namespacecurvefit__statistics.html":[1,0,8],
@@ -133,7 +135,8 @@ var NAVTREEINDEX2 =
 "namespacestrain.html":[1,0,27],
 "neural__network__core_8f90_source.html":[2,0,0,10,0],
 "nn__layer_8f90_source.html":[2,0,0,10,1],
-"nn__network_8f90_source.html":[2,0,0,10,2],
+"nn__learning__helper_8f90_source.html":[2,0,0,10,2],
+"nn__network_8f90_source.html":[2,0,0,10,3],
 "nonlin__constants_8f90_source.html":[2,0,0,11,0],
 "nonlin__core_8f90_source.html":[2,0,0,11,1],
 "nonlin__equation__optimizer_8f90_source.html":[2,0,0,11,2],
@@ -246,8 +249,5 @@ var NAVTREEINDEX2 =
 "structcurvefit__interp_1_1linear__interp.html#abb3e4ce276d69bf9b0f49e779af3acd0":[1,0,6,2,0],
 "structcurvefit__interp_1_1polynomial__interp.html":[1,0,6,3],
 "structcurvefit__interp_1_1polynomial__interp.html#a25ba3cc52749a0f028eafaf7167c5495":[1,0,6,3,4],
-"structcurvefit__interp_1_1polynomial__interp.html#a2a7093f80b86193e5f8ad44be7b39086":[1,0,6,3,3],
-"structcurvefit__interp_1_1polynomial__interp.html#a9719bb7cc2c66ba8ae3a0e647a6e930f":[1,0,6,3,1],
-"structcurvefit__interp_1_1polynomial__interp.html#aa529252ce3c18a6fa7d2ddb9fe182b83":[1,0,6,3,0],
-"structcurvefit__interp_1_1polynomial__interp.html#aad1896817cef3a81306a5c53583b5d95":[1,0,6,3,2]
+"structcurvefit__interp_1_1polynomial__interp.html#a2a7093f80b86193e5f8ad44be7b39086":[1,0,6,3,3]
 };

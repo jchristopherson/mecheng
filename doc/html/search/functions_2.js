@@ -10,6 +10,8 @@ var searchData=
   ['conf_5fint',['conf_int',['../interfacecurvefit__statistics_1_1confidence__interval.html#a4799c46c9c0dcaaaad29d673c39efbae',1,'curvefit_statistics::confidence_interval::conf_int()'],['../namespacecurvefit__statistics.html#a9908eaf95660708a544acb3f4881a5a8',1,'curvefit_statistics::conf_int()']]],
   ['conjugate',['conjugate',['../structkinematics_1_1quaternion.html#a2d5859dc7db2e93b6e7535323abc4d25',1,'kinematics::quaternion']]],
   ['copy_5ffrom',['copy_from',['../structfplot__core_1_1color.html#a5663a29b930c889d6c6c3c0b4dde3da4',1,'fplot_core::color']]],
+  ['cost_5ffunction',['cost_function',['../structneural__network__core_1_1learning__helper.html#aed9e1cb5c33d6abb68a88ec0800104ec',1,'neural_network_core::learning_helper']]],
+  ['cost_5ffunction_5fgradient',['cost_function_gradient',['../structneural__network__core_1_1learning__helper.html#a26929bd93e649a0620346f272974af15',1,'neural_network_core::learning_helper']]],
   ['covariance_5f2sets',['covariance_2sets',['../interfacecurvefit__statistics_1_1covariance.html#aa24de050980097e394e5724757924ec1',1,'curvefit_statistics::covariance::covariance_2sets()'],['../namespacecurvefit__statistics.html#a52aaf71ba781c4888e177dcfb55506a1',1,'curvefit_statistics::covariance_2sets()']]],
   ['covariance_5fmtx',['covariance_mtx',['../interfacecurvefit__statistics_1_1covariance.html#af7548259a15267667ab060600c675300',1,'curvefit_statistics::covariance::covariance_mtx()'],['../namespacecurvefit__statistics.html#a835786cb3448ddf739cf4de1b3500adf',1,'curvefit_statistics::covariance_mtx()']]],
   ['cross',['cross',['../namespacegeometry.html#a200fad9ae1778c2c660eaf5d77ad899d',1,'geometry']]],

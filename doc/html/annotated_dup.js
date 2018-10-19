@@ -35,7 +35,9 @@ var annotated_dup =
     [ "linalg_core", "namespacelinalg__core.html", "namespacelinalg__core" ],
     [ "linalg_immutable", "namespacelinalg__immutable.html", "namespacelinalg__immutable" ],
     [ "neural_network_core", null, [
+      [ "cost_function", "interfaceneural__network__core_1_1cost__function.html", "interfaceneural__network__core_1_1cost__function" ],
       [ "layer", "structneural__network__core_1_1layer.html", "structneural__network__core_1_1layer" ],
+      [ "learning_helper", "structneural__network__core_1_1learning__helper.html", "structneural__network__core_1_1learning__helper" ],
       [ "network", "structneural__network__core_1_1network.html", "structneural__network__core_1_1network" ]
     ] ],
     [ "nonlin_core", "namespacenonlin__core.html", "namespacenonlin__core" ],

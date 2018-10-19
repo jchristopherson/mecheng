@@ -186,6 +186,8 @@ var NAVTREEINDEX1 =
 "interfacelinalg__immutable_1_1mat__solve__upper__tri.html#a8085ffccaa724ae8f60c897fa38691f7":[1,0,18,9,2],
 "interfacelinalg__immutable_1_1mat__solve__upper__tri.html#a93e3f2a1097e88c8da32d6e13eb0472f":[1,0,18,9,3],
 "interfacelinalg__immutable_1_1mat__solve__upper__tri.html#a97f528aee778d8ddfdcb52058d048de7":[1,0,18,9,0],
+"interfaceneural__network__core_1_1cost__function.html":[1,0,19,0],
+"interfaceneural__network__core_1_1cost__function.html#aea99872fb2da6a547de0632fd8652f39":[1,0,19,0,0],
 "interfacenonlin__core_1_1fcn1var.html":[1,0,20,3],
 "interfacenonlin__core_1_1fcn1var.html#aa058523902d94e85867a76f129c27ce0":[1,0,20,3,0],
 "interfacenonlin__core_1_1fcnnvar.html":[1,0,20,5],
@@ -247,7 +249,5 @@ var NAVTREEINDEX1 =
 "interfacestrain_1_1wheatstone__bridge__parallel.html#adef339f4b5b8973962712598abdd74d1":[1,0,27,1,3],
 "interfacestrain_1_1wheatstone__bridge__parallel.html#afdb50f0f038f3c3a4ba10fb2bb9f1fa1":[1,0,27,1,2],
 "interfacestrain_1_1wheatstone__bridge__series.html":[1,0,27,2],
-"interfacestrain_1_1wheatstone__bridge__series.html#a018c34a84c489ee597147c8947bb4b4e":[1,0,27,2,2],
-"interfacestrain_1_1wheatstone__bridge__series.html#a6635d023a6021f3fe36384cb1273dbfa":[1,0,27,2,3],
-"interfacestrain_1_1wheatstone__bridge__series.html#a684f0d3742eb4a67f0272d0fe114ea07":[1,0,27,2,0]
+"interfacestrain_1_1wheatstone__bridge__series.html#a018c34a84c489ee597147c8947bb4b4e":[1,0,27,2,2]
 };

@@ -95,6 +95,7 @@ $(document).ready(function(){initNavTree('structneural__network__core_1_1layer.h
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="structneural__network__core_1_1layer-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -137,18 +138,45 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a5ab40f8bc9374045e31321ae7f249cc8"><td class="memItemLeft" align="right" valign="top">procedure, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structneural__network__core_1_1layer.html#a5ab40f8bc9374045e31321ae7f249cc8">set_bias</a> =&gt; lyr_set_bias</td></tr>
 <tr class="memdesc:a5ab40f8bc9374045e31321ae7f249cc8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the specified neuron bias.  <a href="#a5ab40f8bc9374045e31321ae7f249cc8">More...</a><br /></td></tr>
 <tr class="separator:a5ab40f8bc9374045e31321ae7f249cc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af72026aafba423a52072ff18984657b3"><td class="memItemLeft" align="right" valign="top">procedure, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structneural__network__core_1_1layer.html#af72026aafba423a52072ff18984657b3">eval_neural_function</a> =&gt; lyr_fcn</td></tr>
-<tr class="memdesc:af72026aafba423a52072ff18984657b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluates each neuron in the layer.  <a href="#af72026aafba423a52072ff18984657b3">More...</a><br /></td></tr>
-<tr class="separator:af72026aafba423a52072ff18984657b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adf057791a36c61dae27231027b56357e"><td class="memItemLeft" align="right" valign="top">procedure, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structneural__network__core_1_1layer.html#adf057791a36c61dae27231027b56357e">eval_neural_derivative</a> =&gt; lyr_diff</td></tr>
-<tr class="memdesc:adf057791a36c61dae27231027b56357e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluates the first derivative of each neuron in the layer.  <a href="#adf057791a36c61dae27231027b56357e">More...</a><br /></td></tr>
-<tr class="separator:adf057791a36c61dae27231027b56357e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a738a0f76cc0e0de5293fa656c194bfda"><td class="memItemLeft" align="right" valign="top">procedure, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structneural__network__core_1_1layer.html#a738a0f76cc0e0de5293fa656c194bfda">eval_arguments</a> =&gt; lyr_eval_arg</td></tr>
-<tr class="memdesc:a738a0f76cc0e0de5293fa656c194bfda"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluates the argument to pass to each neuron.  <a href="#a738a0f76cc0e0de5293fa656c194bfda">More...</a><br /></td></tr>
-<tr class="separator:a738a0f76cc0e0de5293fa656c194bfda"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a71f2fd87d2647c9b41d699622d7dc6b6"><td class="memItemLeft" align="right" valign="top">generic, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structneural__network__core_1_1layer.html#a71f2fd87d2647c9b41d699622d7dc6b6">eval_neural_function</a> =&gt; lyr_fcn, lyr_fcn_mtx</td></tr>
+<tr class="memdesc:a71f2fd87d2647c9b41d699622d7dc6b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluates each neuron in the layer.  <a href="#a71f2fd87d2647c9b41d699622d7dc6b6">More...</a><br /></td></tr>
+<tr class="separator:a71f2fd87d2647c9b41d699622d7dc6b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7c92c81d032d3c956e92c29f23fbd22d"><td class="memItemLeft" align="right" valign="top">generic, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structneural__network__core_1_1layer.html#a7c92c81d032d3c956e92c29f23fbd22d">eval_neural_derivative</a> =&gt; lyr_diff, lyr_diff_mtx</td></tr>
+<tr class="memdesc:a7c92c81d032d3c956e92c29f23fbd22d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluates the first derivative of each neuron in the layer.  <a href="#a7c92c81d032d3c956e92c29f23fbd22d">More...</a><br /></td></tr>
+<tr class="separator:a7c92c81d032d3c956e92c29f23fbd22d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a617a3bc9a60e4ffbf100809fb2644d"><td class="memItemLeft" align="right" valign="top">generic, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structneural__network__core_1_1layer.html#a1a617a3bc9a60e4ffbf100809fb2644d">eval_arguments</a> =&gt; lyr_eval_arg, lyr_eval_arg_mtx</td></tr>
+<tr class="memdesc:a1a617a3bc9a60e4ffbf100809fb2644d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluates the argument to pass to each neuron.  <a href="#a1a617a3bc9a60e4ffbf100809fb2644d">More...</a><br /></td></tr>
+<tr class="separator:a1a617a3bc9a60e4ffbf100809fb2644d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a71ec5b0034e9c4c9a40d75787ee0888c"><td class="memItemLeft" align="right" valign="top">procedure, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structneural__network__core_1_1layer.html#a71ec5b0034e9c4c9a40d75787ee0888c">randomize</a> =&gt; lyr_random</td></tr>
 <tr class="memdesc:a71ec5b0034e9c4c9a40d75787ee0888c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Randomizes the layer weighting and neuron bias factors in the range (0, 1).  <a href="#a71ec5b0034e9c4c9a40d75787ee0888c">More...</a><br /></td></tr>
 <tr class="separator:a71ec5b0034e9c4c9a40d75787ee0888c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:a175bb5ec73189ac8c87692a4d9eddfe0"><td class="memItemLeft" align="right" valign="top"><a id="a175bb5ec73189ac8c87692a4d9eddfe0"></a>
+procedure&#160;</td><td class="memItemRight" valign="bottom"><b>lyr_evaluate</b></td></tr>
+<tr class="separator:a175bb5ec73189ac8c87692a4d9eddfe0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a41e4134f7a65440369477f4978970091"><td class="memItemLeft" align="right" valign="top"><a id="a41e4134f7a65440369477f4978970091"></a>
+procedure&#160;</td><td class="memItemRight" valign="bottom"><b>lyr_evaluate_mtx</b></td></tr>
+<tr class="separator:a41e4134f7a65440369477f4978970091"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2a4e50a519e8cdab870719a33ed1000e"><td class="memItemLeft" align="right" valign="top"><a id="a2a4e50a519e8cdab870719a33ed1000e"></a>
+procedure&#160;</td><td class="memItemRight" valign="bottom"><b>lyr_fcn</b></td></tr>
+<tr class="separator:a2a4e50a519e8cdab870719a33ed1000e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ec20e43657a17057e33e8fc360a1a24"><td class="memItemLeft" align="right" valign="top"><a id="a6ec20e43657a17057e33e8fc360a1a24"></a>
+procedure&#160;</td><td class="memItemRight" valign="bottom"><b>lyr_fcn_mtx</b></td></tr>
+<tr class="separator:a6ec20e43657a17057e33e8fc360a1a24"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaf50190a8c3658a92d6335cb18f4a72a"><td class="memItemLeft" align="right" valign="top"><a id="aaf50190a8c3658a92d6335cb18f4a72a"></a>
+procedure&#160;</td><td class="memItemRight" valign="bottom"><b>lyr_diff</b></td></tr>
+<tr class="separator:aaf50190a8c3658a92d6335cb18f4a72a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4560dd1858e348cf4425e1e7b03a2e9a"><td class="memItemLeft" align="right" valign="top"><a id="a4560dd1858e348cf4425e1e7b03a2e9a"></a>
+procedure&#160;</td><td class="memItemRight" valign="bottom"><b>lyr_diff_mtx</b></td></tr>
+<tr class="separator:a4560dd1858e348cf4425e1e7b03a2e9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7eaa923d7bb6dcc03095e2c4ccc3a355"><td class="memItemLeft" align="right" valign="top"><a id="a7eaa923d7bb6dcc03095e2c4ccc3a355"></a>
+procedure&#160;</td><td class="memItemRight" valign="bottom"><b>lyr_eval_arg</b></td></tr>
+<tr class="separator:a7eaa923d7bb6dcc03095e2c4ccc3a355"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a758e0c1220258918a6dea6f151545177"><td class="memItemLeft" align="right" valign="top"><a id="a758e0c1220258918a6dea6f151545177"></a>
+procedure&#160;</td><td class="memItemRight" valign="bottom"><b>lyr_eval_arg_mtx</b></td></tr>
+<tr class="separator:a758e0c1220258918a6dea6f151545177"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
@@ -164,16 +192,16 @@ real(real64), dimension(:), allocatable&#160;</td><td class="memItemRight" valig
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A single layer from a network. The default neural function utilized is a sigmoid function. </p>
 
-<p class="definition">Definition at line <a class="el" href="neural__network__core_8f90_source.html#l00050">50</a> of file <a class="el" href="neural__network__core_8f90_source.html">neural_network_core.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="neural__network__core_8f90_source.html#l00233">233</a> of file <a class="el" href="neural__network__core_8f90_source.html">neural_network_core.f90</a>.</p>
 </div><h2 class="groupheader">Member Function/Subroutine Documentation</h2>
-<a id="a738a0f76cc0e0de5293fa656c194bfda"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a738a0f76cc0e0de5293fa656c194bfda">&#9670;&nbsp;</a></span>eval_arguments()</h2>
+<a id="a1a617a3bc9a60e4ffbf100809fb2644d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1a617a3bc9a60e4ffbf100809fb2644d">&#9670;&nbsp;</a></span>eval_arguments()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">procedure, public neural_network_core::layer::eval_arguments </td>
+          <td class="memname">generic, public neural_network_core::layer::eval_arguments </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -197,18 +225,18 @@ real(real64), dimension(:), allocatable&#160;</td><td class="memItemRight" valig
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>An M-element array containing the results from evaluating the argument passed to the neurons \( \mathbf{w} a^{l-1} + b^{l} \) where \( \mathbf{w} \) is the weighting factors matrix, \( b^{l} \) is the bias vector, and \( a^{l-1} \) is the output vector from the previous layer. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="neural__network__core_8f90_source.html#l00291">291</a> of file <a class="el" href="neural__network__core_8f90_source.html">neural_network_core.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="neural__network__core_8f90_source.html#l00480">480</a> of file <a class="el" href="neural__network__core_8f90_source.html">neural_network_core.f90</a>.</p>
 
 </div>
 </div>
-<a id="adf057791a36c61dae27231027b56357e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adf057791a36c61dae27231027b56357e">&#9670;&nbsp;</a></span>eval_neural_derivative()</h2>
+<a id="a7c92c81d032d3c956e92c29f23fbd22d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7c92c81d032d3c956e92c29f23fbd22d">&#9670;&nbsp;</a></span>eval_neural_derivative()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">procedure, public neural_network_core::layer::eval_neural_derivative </td>
+          <td class="memname">generic, public neural_network_core::layer::eval_neural_derivative </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -232,18 +260,18 @@ real(real64), dimension(:), allocatable&#160;</td><td class="memItemRight" valig
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The N-element array containing the results from evaluating the first derivative of each of the N neurons in this layer. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="neural__network__core_8f90_source.html#l00268">268</a> of file <a class="el" href="neural__network__core_8f90_source.html">neural_network_core.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="neural__network__core_8f90_source.html#l00455">455</a> of file <a class="el" href="neural__network__core_8f90_source.html">neural_network_core.f90</a>.</p>
 
 </div>
 </div>
-<a id="af72026aafba423a52072ff18984657b3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af72026aafba423a52072ff18984657b3">&#9670;&nbsp;</a></span>eval_neural_function()</h2>
+<a id="a71f2fd87d2647c9b41d699622d7dc6b6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a71f2fd87d2647c9b41d699622d7dc6b6">&#9670;&nbsp;</a></span>eval_neural_function()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">procedure, public neural_network_core::layer::eval_neural_function </td>
+          <td class="memname">generic, public neural_network_core::layer::eval_neural_function </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -267,7 +295,7 @@ real(real64), dimension(:), allocatable&#160;</td><td class="memItemRight" valig
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The N-element array containing the results from evaluating each of the N neurons in this layer. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="neural__network__core_8f90_source.html#l00246">246</a> of file <a class="el" href="neural__network__core_8f90_source.html">neural_network_core.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="neural__network__core_8f90_source.html#l00431">431</a> of file <a class="el" href="neural__network__core_8f90_source.html">neural_network_core.f90</a>.</p>
 
 </div>
 </div>
@@ -305,7 +333,7 @@ real(real64), dimension(:), allocatable&#160;</td><td class="memItemRight" valig
 <dl class="section user"><dt></dt><dd>\( a^{l} = \sigma \left( \mathbf{w} a^{l-1} + b^{l} \right) \), </dd></dl>
 <dl class="section user"><dt></dt><dd>where \( \mathbf{w} \) is the weighting factors matrix, \( b^{l} \) is the bias vector, and \( a^{l-1} \) is the output vector from the previous layer. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="neural__network__core_8f90_source.html#l00126">126</a> of file <a class="el" href="neural__network__core_8f90_source.html">neural_network_core.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="neural__network__core_8f90_source.html#l00309">309</a> of file <a class="el" href="neural__network__core_8f90_source.html">neural_network_core.f90</a>.</p>
 
 </div>
 </div>
@@ -340,7 +368,7 @@ real(real64), dimension(:), allocatable&#160;</td><td class="memItemRight" valig
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The requested bias value. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="neural__network__core_8f90_source.html#l00206">206</a> of file <a class="el" href="neural__network__core_8f90_source.html">neural_network_core.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="neural__network__core_8f90_source.html#l00391">391</a> of file <a class="el" href="neural__network__core_8f90_source.html">neural_network_core.f90</a>.</p>
 
 </div>
 </div>
@@ -369,7 +397,7 @@ real(real64), dimension(:), allocatable&#160;</td><td class="memItemRight" valig
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The bias vector. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="neural__network__core_8f90_source.html#l00148">148</a> of file <a class="el" href="neural__network__core_8f90_source.html">neural_network_core.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="neural__network__core_8f90_source.html#l00333">333</a> of file <a class="el" href="neural__network__core_8f90_source.html">neural_network_core.f90</a>.</p>
 
 </div>
 </div>
@@ -398,7 +426,7 @@ real(real64), dimension(:), allocatable&#160;</td><td class="memItemRight" valig
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The number of inputs this layer can accept. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="neural__network__core_8f90_source.html#l00087">87</a> of file <a class="el" href="neural__network__core_8f90_source.html">neural_network_core.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="neural__network__core_8f90_source.html#l00270">270</a> of file <a class="el" href="neural__network__core_8f90_source.html">neural_network_core.f90</a>.</p>
 
 </div>
 </div>
@@ -427,7 +455,7 @@ real(real64), dimension(:), allocatable&#160;</td><td class="memItemRight" valig
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The number of neurons in the layer. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="neural__network__core_8f90_source.html#l00097">97</a> of file <a class="el" href="neural__network__core_8f90_source.html">neural_network_core.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="neural__network__core_8f90_source.html#l00280">280</a> of file <a class="el" href="neural__network__core_8f90_source.html">neural_network_core.f90</a>.</p>
 
 </div>
 </div>
@@ -463,7 +491,7 @@ real(real64), dimension(:), allocatable&#160;</td><td class="memItemRight" valig
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The requested weighting factor. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="neural__network__core_8f90_source.html#l00168">168</a> of file <a class="el" href="neural__network__core_8f90_source.html">neural_network_core.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="neural__network__core_8f90_source.html#l00353">353</a> of file <a class="el" href="neural__network__core_8f90_source.html">neural_network_core.f90</a>.</p>
 
 </div>
 </div>
@@ -492,7 +520,7 @@ real(real64), dimension(:), allocatable&#160;</td><td class="memItemRight" valig
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The matrix of weighting factors. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="neural__network__core_8f90_source.html#l00137">137</a> of file <a class="el" href="neural__network__core_8f90_source.html">neural_network_core.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="neural__network__core_8f90_source.html#l00322">322</a> of file <a class="el" href="neural__network__core_8f90_source.html">neural_network_core.f90</a>.</p>
 
 </div>
 </div>
@@ -527,7 +555,7 @@ real(real64), dimension(:), allocatable&#160;</td><td class="memItemRight" valig
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="neural__network__core_8f90_source.html#l00077">77</a> of file <a class="el" href="neural__network__core_8f90_source.html">neural_network_core.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="neural__network__core_8f90_source.html#l00260">260</a> of file <a class="el" href="neural__network__core_8f90_source.html">neural_network_core.f90</a>.</p>
 
 </div>
 </div>
@@ -559,7 +587,7 @@ real(real64), dimension(:), allocatable&#160;</td><td class="memItemRight" valig
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="neural__network__core_8f90_source.html#l00307">307</a> of file <a class="el" href="neural__network__core_8f90_source.html">neural_network_core.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="neural__network__core_8f90_source.html#l00497">497</a> of file <a class="el" href="neural__network__core_8f90_source.html">neural_network_core.f90</a>.</p>
 
 </div>
 </div>
@@ -594,7 +622,7 @@ real(real64), dimension(:), allocatable&#160;</td><td class="memItemRight" valig
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="neural__network__core_8f90_source.html#l00224">224</a> of file <a class="el" href="neural__network__core_8f90_source.html">neural_network_core.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="neural__network__core_8f90_source.html#l00409">409</a> of file <a class="el" href="neural__network__core_8f90_source.html">neural_network_core.f90</a>.</p>
 
 </div>
 </div>
@@ -630,7 +658,7 @@ real(real64), dimension(:), allocatable&#160;</td><td class="memItemRight" valig
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="neural__network__core_8f90_source.html#l00187">187</a> of file <a class="el" href="neural__network__core_8f90_source.html">neural_network_core.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="neural__network__core_8f90_source.html#l00372">372</a> of file <a class="el" href="neural__network__core_8f90_source.html">neural_network_core.f90</a>.</p>
 
 </div>
 </div>

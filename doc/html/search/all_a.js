@@ -10,6 +10,7 @@ var searchData=
   ['la_5fsingular_5fmatrix_5ferror',['la_singular_matrix_error',['../namespacelinalg__constants.html#a148955f3cedb137453b00f829914e1f7',1,'linalg_constants']]],
   ['latex_5fterminal',['latex_terminal',['../structfplot__core_1_1latex__terminal.html',1,'fplot_core']]],
   ['layer',['layer',['../structneural__network__core_1_1layer.html',1,'neural_network_core']]],
+  ['learning_5fhelper',['learning_helper',['../structneural__network__core_1_1learning__helper.html',1,'neural_network_core']]],
   ['least_5fsquares_5fsolver',['least_squares_solver',['../structnonlin__least__squares_1_1least__squares__solver.html',1,'nonlin_least_squares']]],
   ['legend',['legend',['../structfplot__core_1_1legend.html',1,'fplot_core']]],
   ['legend_5fbottom',['legend_bottom',['../namespacefplot__core.html#afaa74509b5150505854f6f411109dfdb',1,'fplot_core']]],

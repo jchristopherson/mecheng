@@ -52,11 +52,11 @@ var NAVTREEINDEX =
 [
 ".html",
 "interfacegeometry_1_1plane__from__angle__axis.html",
-"interfacestrain_1_1wheatstone__bridge__series.html#a98a317c75c9bfbdbf38715dcaffb2f88",
-"structcurvefit__interp_1_1spline__interp.html",
-"structfplot__core_1_1multiplot.html",
-"structfplot__core_1_1surface__plot.html#a899848b6087f3c257c23d22779ff86b8",
-"structnonlin__core_1_1equation__solver.html#ab1a0a9fe3ee8186dcf71448ee5d85b05"
+"interfacestrain_1_1wheatstone__bridge__series.html#a6635d023a6021f3fe36384cb1273dbfa",
+"structcurvefit__interp_1_1polynomial__interp.html#a9719bb7cc2c66ba8ae3a0e647a6e930f",
+"structfplot__core_1_1legend.html#ade7d848c922f6cbb6dc91085336a0c92",
+"structfplot__core_1_1surface__plot.html#a41a03940c430c3088bb3d3b826e6f9e8",
+"structneural__network__core_1_1learning__helper.html#ac1ca2e69ba0ab09b94c5e38c1e9665d6"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
