@@ -24,6 +24,7 @@ module neural_network_core
     public :: quadratic_cost_function
     public :: cross_entropy_cost_function
     public :: learning_helper
+    public :: cross_entropy_helper
     public :: layer
     public :: network
 
@@ -86,45 +87,89 @@ module neural_network_core
         !> A P-by-N matrix containing the N training output data sets.
         real(real64), allocatable, dimension(:,:) :: m_outputs
     contains
-        !> @brief
+        !> @brief Initializes the learning_helper object.
         !!
         !! @par Syntax
         !! @code{.f90}
+        !! subroutine initialize(class(learning_helper) this, real(real64) x(:), real(real64) y(:), optional class(errors) err)
+        !! @endcode
+        !!
+        !! @par Alternative Syntax
+        !! @code{.f90}
+        !! subroutine initialize(class(learning_helper) this, real(real64) x(:,:), real(real64) y(:,:), optional class(errors) err)
         !! @endcode
         !! 
         !! @param[in,out] this The learning_helper object.
+        !! @param[in] x The input training data set.  If supplied as a matrix, each column is
+        !!  treated as a unique data set.
+        !! @param[in] y The output training data corresponding to the input data provided in 
+        !!  @p x.
+        !! @param[in,out] err An optional errors-based object that if provided can be
+        !!  used to retrieve information relating to any errors encountered during
+        !!  execution.  If not provided, a default implementation of the errors
+        !!  class is used internally to provide error handling.  Possible errors and
+        !!  warning messages that may be encountered are as follows.
+        !!  - NN_OUT_OF_MEMORY_ERROR: Occurs if there is insufficient memory available.
         generic, public :: initialize => lh_init_vec, lh_init_mtx
         procedure :: lh_init_vec
         procedure :: lh_init_mtx
-        !> @brief
+        !> @brief Retrieves the input training data set.
         !!
         !! @par Syntax
         !! @code{.f90}
+        !! pure real(real64)(:,:) function get_input_data(class(learning_helper) this)
         !! @endcode
         !! 
         !! @param[in] this The learning_helper object.
+        !! @return A matrix containing the input data with one data set per column.
         procedure, public :: get_input_data => lh_get_x_data
-        !> @brief
+        !> @brief Retrieves the output training data set.
         !!
         !! @par Syntax
         !! @code{.f90}
+        !! pure real(real64)(:,:) function get_output_data(class(learning_helper) this)
         !! @endcode
         !! 
         !! @param[in] this The learning_helper object.
+        !! @return A matrix containing the output data with one data set per column.
         procedure, public :: get_output_data => lh_get_y_data
-        !> @brief
+        !> @brief Evaluates the cost function.
         !!
         !! @par Syntax
         !! @code{.f90}
+        !! function cost_function(class(learning_helper) this, real(real64) a(:), optional class(errors) err)
+        !! @endcode
+        !!
+        !! @par Alternative Syntax
+        !! function cost_function(class(learning_helper) this, real(real64) a(:,:), optional class(errors) err)
+        !! @code{.f90}
+        !!
         !! @endcode
         !! 
         !! @param[in] this The learning_helper object.
+        !! @param[in] a An array or matrix of outputs from the network.  This array must be the
+        !!  same size as the output training data set (see get_output_data).
+        !! @param[in,out] err An optional errors-based object that if provided can be
+        !!  used to retrieve information relating to any errors encountered during
+        !!  execution.  If not provided, a default implementation of the errors
+        !!  class is used internally to provide error handling.  Possible errors and
+        !!  warning messages that may be encountered are as follows.
+        !!  - NN_UNINITIALIZED_ERROR: Occurs if the learning_helper object has not been initialized.
+        !!  - NN_ARRAY_SIZE_ERROR: Occurs if the size of @p a does not agree with the size
+        !!      of the output training data set.
+        !!
+        !! @return The value of the cost function.
         generic, public :: cost_function => cost_function_vec, cost_function_mtx
         procedure, public :: cost_function_vec => lh_cost_fcn_vec
         procedure, public :: cost_function_mtx => lh_cost_fcn_mtx
-        !> @brief
+        !> @brief Computes the gradient vector of the cost function.
         !!
         !! @par Syntax
+        !! @code{.f90}
+        !! 
+        !! @endcode
+        !!
+        !! @par Alternative Syntax
         !! @code{.f90}
         !! @endcode
         !! 
@@ -196,19 +241,19 @@ module neural_network_core
             real(real64) :: c
         end function
 
-        module subroutine lh_cost_fcn_grad_vec(this, a, g, err)
+        module function lh_cost_fcn_grad_vec(this, a, err) result(g)
             class(learning_helper), intent(in) :: this
             real(real64), intent(in), dimension(:) :: a
-            real(real64), intent(out), dimension(:) :: g
             class(errors), intent(inout), target, optional :: err
-        end subroutine
+            real(real64), allocatable, dimension(:) :: g
+        end function
 
-        module subroutine lh_cost_fcn_grad_mtx(this, a, g, err)
+        module function lh_cost_fcn_grad_mtx(this, a, err) result(g)
             class(learning_helper), intent(in) :: this
             real(real64), intent(in), dimension(:,:) :: a
-            real(real64), intent(out), dimension(:,:) :: g
             class(errors), intent(inout), target, optional :: err
-        end subroutine
+            real(real64), allocatable, dimension(:,:) :: g
+        end function
 
         pure module function lh_get_input_count(this) result(x)
             class(learning_helper), intent(in) :: this
@@ -251,8 +296,8 @@ module neural_network_core
         !! 
         !! @param[in] this The learning_helper object.
         ! generic, public :: cost_function_gradient => cst_grad_vec, cst_grad_mtx
-        ! procedure, private :: cst_grad_vec => ce_cost_fcn_grad_vec
-        ! procedure, private :: cst_grad_mtx => ce_cost_fcn_grad_mtx
+        procedure, public :: cost_function_gradient_vec => ce_cost_fcn_grad_vec
+        procedure, public :: cost_function_gradient_mtx => ce_cost_fcn_grad_mtx
     end type
 
     interface
@@ -270,19 +315,19 @@ module neural_network_core
             real(real64) :: c
         end function
 
-        module subroutine ce_cost_fcn_grad_vec(this, a, g, err)
+        module function ce_cost_fcn_grad_vec(this, a, err) result(g)
             class(cross_entropy_helper), intent(in) :: this
             real(real64), intent(in), dimension(:) :: a
-            real(real64), intent(out), dimension(:) :: g
             class(errors), intent(inout), target, optional :: err
-        end subroutine
+            real(real64), allocatable, dimension(:) :: g
+        end function
 
-        module subroutine ce_cost_fcn_grad_mtx(this, a, g, err)
+        module function ce_cost_fcn_grad_mtx(this, a, err) result(g)
             class(cross_entropy_helper), intent(in) :: this
             real(real64), intent(in), dimension(:,:) :: a
-            real(real64), intent(out), dimension(:,:) :: g
             class(errors), intent(inout), target, optional :: err
-        end subroutine
+            real(real64), allocatable, dimension(:,:) :: g
+        end function
     end interface
 
 ! ******************************************************************************
@@ -829,10 +874,9 @@ module neural_network_core
             real(real64), allocatable, target, dimension(:) :: x
         end function
 
-        module function net_backprop(this, hlpr, work, err) result(derivs)
+        module function net_backprop(this, hlpr, err) result(derivs)
             class(network), intent(in) :: this
             class(learning_helper), intent(in) :: hlpr
-            real(real64), intent(out), dimension(:), target, optional :: work
             class(errors), intent(inout), target, optional :: err
             real(real64), allocatable, dimension(:,:) :: derivs
         end function

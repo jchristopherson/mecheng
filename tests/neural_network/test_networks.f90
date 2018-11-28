@@ -13,7 +13,7 @@ contains
         logical :: rst
         type(layer) :: model
         type(network) :: net
-        type(learning_helper) :: hlpr
+        type(cross_entropy_helper) :: hlpr
         integer(int32) :: lyrs(nlayers), nneurons, i
         real(real64), allocatable, dimension(:) :: xIn, xOut
         real(real64), allocatable, dimension(:,:) :: back

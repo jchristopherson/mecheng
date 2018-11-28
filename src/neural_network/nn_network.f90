@@ -243,11 +243,10 @@ contains
 
 
 
-    module function net_backprop(this, hlpr, work, err) result(derivs)
+    module function net_backprop(this, hlpr, err) result(derivs)
         ! Arguments
         class(network), intent(in) :: this
         class(learning_helper), intent(in) :: hlpr
-        real(real64), intent(out), dimension(:), target, optional :: work
         class(errors), intent(inout), target, optional :: err
         real(real64), allocatable, dimension(:,:) :: derivs
 
@@ -255,11 +254,10 @@ contains
         class(errors), pointer :: errmgr
         type(errors), target :: deferr
         character(len = 256) :: errmsg
-        integer(int32) :: i, j, k, jj, nlayers, nvals, nin, nout, npts, ndata, flag, lwork
+        integer(int32) :: i, j, k, jj, nlayers, nvals, nin, nout, npts, ndata, flag
         class(layer), pointer :: lyr
         type(matrix_container), allocatable, dimension(:) :: z, sprime, a, delta
-        real(real64), allocatable, target, dimension(:) :: w
-        real(real64), pointer, dimension(:,:) :: grad
+        real(real64), allocatable, dimension(:,:) :: grad
         
         ! Initialization
         nlayers = this%get_count()
@@ -313,28 +311,6 @@ contains
             return
         end if
 
-        ! Establish a workspace array
-        lwork = nout * ndata
-        if (present(work)) then
-            if (size(work) < lwork) then
-                write(errmsg, '(AI0AI0A)') "Insufficiently sized workspace.  Expected ", &
-                    lwork, " elements, but found ", size(work), "."
-                call errmgr%report_error("net_backprop", &
-                    trim(errmsg), NN_ARRAY_SIZE_ERROR)
-                return
-            end if
-            grad(1:nout,1:ndata) => work(1:lwork)
-        else
-            allocate(w(lwork), stat = flag)
-            if (flag /= 0) then
-                call errmgr%report_error("net_backprop", &
-                    "Insufficient memory available.", &
-                    NN_OUT_OF_MEMORY_ERROR)
-                return
-            end if
-            grad(1:nout,1:ndata) => w
-        end if
-
         ! Feed-Forward Process
         a(1)%x = hlpr%get_input_data()
         do i = 1, nlayers - 1
@@ -360,7 +336,8 @@ contains
         end do
 
         ! Compute the output error
-        call hlpr%cost_function_gradient(a(nlayers)%x, grad)
+        grad = hlpr%cost_function_gradient(a(nlayers)%x, errmgr)
+        if (errmgr%has_error_occurred()) return
         delta(nlayers)%x = grad * sprime(nlayers - 1)%x
 
         ! Backpropagate the error
@@ -387,7 +364,6 @@ contains
                 do jj = 1, ndata
                     derivs(k:k+npts-1,jj) = a(i-1)%x(:,jj) * delta(i)%x(j,jj)
                 end do
-                ! derivs(k:k+npts-1) = a(i-1)%x * delta(i)%x(j)
                 k = k + npts
             end do
 

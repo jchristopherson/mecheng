@@ -186,12 +186,12 @@ contains
     end function
 
 
-    module subroutine lh_cost_fcn_grad_vec(this, a, g, err)
+    module function lh_cost_fcn_grad_vec(this, a, err) result(g)
         ! Arguments
         class(learning_helper), intent(in) :: this
         real(real64), intent(in), dimension(:) :: a
-        real(real64), intent(out), dimension(:) :: g
         class(errors), intent(inout), target, optional :: err
+        real(real64), allocatable, dimension(:) :: g
 
         ! Local Variables
         class(errors), pointer :: errmgr
@@ -222,25 +222,17 @@ contains
             return
         end if
 
-        if (size(g) /= m) then
-            write(errmsg, '(AI0AI0A)') "The output array size was expected to be ", &
-                m, ", but was found to be ", size(g), "."
-            call errmgr%report_error("lh_cost_fcn_grad_vec", trim(errmsg), &
-                NN_ARRAY_SIZE_ERROR)
-            return
-        end if
-
         ! Process
         n = size(this%m_outputs, 1) * size(this%m_outputs, 2)
         g = (a - this%m_outputs(:,1)) / n
-    end subroutine
+    end function
 
-    module subroutine lh_cost_fcn_grad_mtx(this, a, g, err)
+    module function lh_cost_fcn_grad_mtx(this, a, err) result(g)
         ! Arguments
         class(learning_helper), intent(in) :: this
         real(real64), intent(in), dimension(:,:) :: a
-        real(real64), intent(out), dimension(:,:) :: g
         class(errors), intent(inout), target, optional :: err
+        real(real64), allocatable, dimension(:,:) :: g
 
         ! Local Variables
         class(errors), pointer :: errmgr
@@ -275,18 +267,9 @@ contains
             return
         end if
 
-        if (size(g, 1) /= m .or. size(g, 2) /= n) then
-            write(errmsg, '(AI0AI0AI0AI0A)') "The output matrix was expected to be of size ", &
-                size(this%m_outputs, 1), " x ", size(this%m_outputs, 2), &
-                 ", but was found to be of size ", m, " x ", n, "."
-            call errmgr%report_error("lh_cost_fcn_grad_mtx", trim(errmsg), &
-                NN_ARRAY_SIZE_ERROR)
-            return
-        end if
-
         ! Process
         g = (a - this%m_outputs) / mn
-    end subroutine
+    end function
 
 
 
