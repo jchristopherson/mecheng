@@ -13,7 +13,8 @@ module fplot_simplify
     private
     public :: simplify_polyline
 
-    !> @brief Simplifies a polyline using the Ramer-Doublas-Peucker algorithm.
+    !> @brief Simplifies a 2D or 3D polyline by removing points too close to discern given
+    !! a specified tolerance.
     interface simplify_polyline
         module procedure :: simplify_polyline_2d1
         module procedure :: simplify_polyline_3d1
@@ -21,7 +22,8 @@ module fplot_simplify
     end interface
 
 contains
-    !> @brief Simplifies a 2D polyline using the Ramer-Doublas-Peucker algorithm.
+    !> @brief Simplifies a 2D polyline by removing points too close to discern given
+    !! a specified tolerance.
     !!
     !! @param[in] x An N-element array containing the x-coordinates of the vertices
     !!  making up the polyline.
@@ -84,12 +86,13 @@ contains
         end if
 
         ! Process
-        ln = douglas_peucker_driver_2d(x, y, tol, errmgr)
+        ln = radial_distance_2d(x, y, tol, err)
     end function
 
 
 
-    !> @brief Simplifies a 3D polyline using the Ramer-Doublas-Peucker algorithm.
+    !> @brief Simplifies a 3D polyline by removing points too close to discern given
+    !! a specified tolerance.
     !!
     !! @param[in] x An N-element array containing the x-coordinates of the vertices
     !!  making up the polyline.
@@ -155,11 +158,12 @@ contains
         end if
 
         ! Process
-        ln = douglas_peucker_driver_3d(x, y, z, tol, errmgr)
+        ln = radial_distance_3d(x, y, z, tol, errmgr)
     end function
 
 
-    !> @brief Simplifies a 2D or 3D polyline using the Ramer-Doublas-Peucker algorithm.
+    !> @brief Simplifies a 2D or 3D polyline by removing points too close to discern given
+    !! a specified tolerance.
     !!
     !! @param[in] xy An N-by-2 or N-by-3 matrix containing the polyline vertex data.
     !! @param[in] tol The distance tolerance to use when simplifying the polyline.
@@ -215,8 +219,9 @@ contains
         end if
     end function
 
-    ! Employs the Ramer-Douglas-Peucker algorithm to simplify a 2D data set.
-    recursive function douglas_peucker_driver_2d(x, y, tol, err) result(pts)
+
+
+    function radial_distance_2d(x, y, tol, err) result(pts)
         ! Arguments
         real(real64), intent(in), dimension(:) :: x, y
         real(real64), intent(in) :: tol
@@ -224,63 +229,67 @@ contains
         real(real64), allocatable, dimension(:,:) :: pts
 
         ! Local Variables
-        integer(int32) :: i, n, index, n1, n2, nt, flag
-        real(real64) :: d, dmax, pt(3)
-        type(line) :: ln
-        real(real64), allocatable, dimension(:,:) :: rst1, rst2
+        integer(int32) :: i, j, n, nvalid, flag
+        logical, allocatable, dimension(:) :: valid
+        real(real64) :: r, xref, yref
 
-        ! Find the point with the maximum distance from the line drawn between the first and last points
-        index = 0
-        dmax = 0.0d0
-        pt = 0.0d0
+        ! Initialization
         n = size(x)
-        ln%a = [x(1), y(1), 0.0d0]
-        ln%b = [x(n), y(n), 0.0d0]
-        do i = 2, n - 1
-            ! Locate the point
-            pt(1) = x(i)
-            pt(2) = y(i)
+        if (n == 0) return
+        i = 2
+        xref = x(1)
+        yref = y(1)
+        nvalid = 1
 
-            ! Compute the distance between the line and point
-            d = line_to_point_distance(ln, [x(i), y(i), 0.0d0])
+        ! Local Memory Allocation
+        allocate(valid(n), stat = flag)
+        if (flag /= 0) then
+            call err%report_error("radial_distance_2d", &
+                "Insufficient memory available.", &
+                PLOT_OUT_OF_MEMORY_ERROR)
+            return
+        end if
+        valid(1) = .true.
 
-            ! Only keep the largest distance
-            if (d > dmax) then
-                index = i
-                dmax = d
+        ! Cycle through and determine which points to keep
+        do
+            if (i > n) exit
+            r = pythag2(x(i), y(i), xref, yref)
+            if (r < tol) then
+                ! The point is too close, reject it
+                valid(i) = .false.
+            else
+                ! The point is outside the tolerance, and is OK
+                valid(i) = .true.
+                nvalid = nvalid + 1
+
+                ! Move the reference point
+                xref = x(i)
+                yref = y(i)
             end if
+            i = i + 1
         end do
 
-        ! If the max distance is greater than the tolerance, recursively simplify
-        if (dmax > tol) then
-            ! Recursive calls to perform further simplification
-            rst1 = douglas_peucker_driver_2d(x(1:index), y(1:index), tol, err)
-            if (err%has_error_occurred()) return
-
-            rst2 = douglas_peucker_driver_2d(x(index:n), y(index:n), tol, err)
-            if (err%has_error_occurred()) return
-
-            ! Build the results list
-            n1 = size(rst1, 1)
-            n2 = size(rst2, 1)
-            nt = (n1 - 1) + n2
-            allocate(pts(nt, 2), stat = flag)
-            if (flag /= 0) then
-                call err%report_error("douglas_peucker_driver_2d", &
-                    "Insufficient memory available.", PLOT_OUT_OF_MEMORY_ERROR)
-                return
-            end if
-            pts(1:n1-1,:) = rst1(1:n1-1,:)
-            pts(n1:nt,:) = rst2
-        else
-            ! Keep only the first and last points
-            pts = reshape([x(1), x(n), y(1), y(n)], [2, 2])
+        ! Allocate space, and collect all valid points
+        allocate(pts(nvalid, 2), stat = flag)
+        if (flag /= 0) then
+            call err%report_error("radial_distance_2d", &
+                "Insufficient memory available.", &
+                PLOT_OUT_OF_MEMORY_ERROR)
+            return
         end if
+        j = 1
+        do i = 1, n
+            if (valid(i)) then
+                pts(j,1) = x(i)
+                pts(j,2) = y(i)
+                j = j + 1
+            end if
+        end do
     end function
 
 
-    ! Employs the Ramer-Douglas-Peucker algorithm to simplify a 3D data set.
-    recursive function douglas_peucker_driver_3d(x, y, z, tol, err) result(pts)
+    function radial_distance_3d(x, y, z, tol, err) result(pts)
         ! Arguments
         real(real64), intent(in), dimension(:) :: x, y, z
         real(real64), intent(in) :: tol
@@ -288,57 +297,104 @@ contains
         real(real64), allocatable, dimension(:,:) :: pts
 
         ! Local Variables
-        integer(int32) :: i, n, index, n1, n2, nt, flag
-        real(real64) :: d, dmax, pt(3)
-        type(line) :: ln
-        real(real64), allocatable, dimension(:,:) :: rst1, rst2
+        integer(int32) :: i, j, n, nvalid, flag
+        logical, allocatable, dimension(:) :: valid
+        real(real64) :: r, xref, yref, zref
 
-        ! Find the point with the maximum distance from the line drawn between the first and last points
-        index = 0
-        dmax = 0.0d0
+        ! Initialization
         n = size(x)
-        ln%a = [x(1), y(1), z(1)]
-        ln%b = [x(n), y(n), z(n)]
-        do i = 2, n - 1
-            ! Locate the point
-            pt(1) = x(i)
-            pt(2) = y(i)
-            pt(3) = z(i)
+        if (n == 0) return
+        i = 2
+        xref = x(1)
+        yref = y(1)
+        zref = z(1)
+        nvalid = 1
 
-            ! Compute the distance between the line and point
-            d = line_to_point_distance(ln, [x(i), y(i), z(i)])
+        ! Local Memory Allocation
+        allocate(valid(n), stat = flag)
+        if (flag /= 0) then
+            call err%report_error("radial_distance_3d", &
+                "Insufficient memory available.", &
+                PLOT_OUT_OF_MEMORY_ERROR)
+            return
+        end if
+        valid(1) = .true.
 
-            ! Only keep the largest distance
-            if (d > dmax) then
-                index = i
-                dmax = d
+        ! Cycle through and determine which points to keep
+        do
+            if (i > n) exit
+            r = pythag3(x(i), y(i), z(i), xref, yref, zref)
+            if (r < tol) then
+                ! The point is too close, reject it
+                valid(i) = .false.
+            else
+                ! The point is outside the tolerance, and is OK
+                valid(i) = .true.
+                nvalid = nvalid + 1
+
+                ! Move the reference point
+                xref = x(i)
+                yref = y(i)
+                zref = z(i)
             end if
+            i = i + 1
         end do
 
-        ! If the max distance is greater than the tolerance, recursively simplify
-        if (dmax > tol) then
-            ! Recursive calls to perform further simplification
-            rst1 = douglas_peucker_driver_3d(x(1:index), y(1:index), z(1:index), tol, err)
-            if (err%has_error_occurred()) return
-
-            rst2 = douglas_peucker_driver_3d(x(index:n), y(index:n), z(index:n), tol, err)
-            if (err%has_error_occurred()) return
-
-            ! Build the results list
-            n1 = size(rst1, 1)
-            n2 = size(rst2, 1)
-            nt = (n1 - 1) + n2
-            allocate(pts(nt, 2), stat = flag)
-            if (flag /= 0) then
-                call err%report_error("douglas_peucker_driver_3d", &
-                    "Insufficient memory available.", PLOT_OUT_OF_MEMORY_ERROR)
-                return
+        ! Allocate space, and collect all valid points
+        allocate(pts(nvalid, 3), stat = flag)
+        if (flag /= 0) then
+            call err%report_error("radial_distance_3d", &
+                "Insufficient memory available.", &
+                PLOT_OUT_OF_MEMORY_ERROR)
+            return
+        end if
+        j = 1
+        do i = 1, n
+            if (valid(i)) then
+                pts(j,1) = x(i)
+                pts(j,2) = y(i)
+                pts(j,3) = z(i)
+                j = j + 1
             end if
-            pts(1:n1-1,:) = rst1(1:n1-1,:)
-            pts(n1:nt,:) = rst2
+        end do
+    end function
+
+    pure function pythag2(x, y, xo, yo) result(r)
+        ! Arguments
+        real(real64), intent(in) :: x, y, xo, yo
+        real(real64) :: r
+
+        ! Local Variables
+        real(real64) :: w, xabs, yabs
+
+        ! Process
+        xabs = abs(x - xo)
+        yabs = abs(y - yo)
+        w = max(xabs, yabs)
+        if (w < epsilon(w)) then
+            r = xabs + yabs
         else
-            ! Keep only the first and last points
-            pts = reshape([x(1), x(n), y(1), y(n), z(1), z(n)], [2, 3])
+            r = w * sqrt((xabs / w)**2 + (yabs / w)**2)
+        end if
+    end function
+
+    pure function pythag3(x, y, z, xo, yo, zo) result(r)
+        ! Arguments
+        real(real64), intent(in) :: x, y, z, xo, yo, zo
+        real(real64) :: r
+
+        ! Local Variables
+        real(real64) :: w, xabs, yabs, zabs
+
+        ! Process
+        xabs = abs(x - xo)
+        yabs = abs(y - yo)
+        zabs = abs(z - zo)
+        w = max(xabs, yabs, zabs)
+        if (w < epsilon(w)) then
+            r = xabs + yabs + zabs
+        else
+            r = w * sqrt((xabs / w)**2 + (yabs / w)**2 + (zabs / w)**2)
         end if
     end function
 
