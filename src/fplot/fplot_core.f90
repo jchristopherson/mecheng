@@ -3738,6 +3738,13 @@ module fplot_core
         integer(int32) :: m_markerType = MARKER_X
         !> Marker size multiplier.
         real(real32) :: m_markerSize = 1.0
+        !> True if large data sets should be simplified before sending to
+        !! GNUPLOT.
+        logical :: m_simplifyData = .true.
+        !> A scaling factor used to establish the simplification tolerance.
+        !! The simplification tolerance is established by multiplying this
+        !! factor by the range in the dependent variable data.
+        real(real64) :: m_simplifyFactor = 1.0d-3
     contains
         !> @brief Gets the GNUPLOT command string to represent this
         !! scatter_plot_data object.
@@ -4176,6 +4183,115 @@ module fplot_core
         !> @brief Gets the GNUPLOT command string defining which axes the data
         !! is to be plotted against.
         procedure(spd_get_string_result), deferred, public :: get_axes_string
+        !> @brief Gets a value determining if the stored data should be
+        !! simplified (reduced) before passing to GNUPLOT.
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! pure logical function get_simplify_data(class(scatter_plot_data) this)
+        !! @endcode
+        !!
+        !! @param[in] this The scatter_plot_data object.
+        !! @return Returns true if the data should be simplified prior to sending
+        !!  to GNUPLOT; else, false to leave the data alone.
+        !!
+        !! @par Example
+        !! This example makes use of the plot_data_2d type; however, this
+        !! example is valid for any type that derives from scatter_plot_data.
+        !! @code{.f90}
+        !! program example
+        !!     use fplot_core
+        !!     use iso_fortran_env
+        !!     implicit none
+        !!
+        !!     type(plot_data_2d) :: pd
+        !!     logical :: x
+        !!
+        !!     x = this%get_simplify_data()
+        !! end program
+        !! @endcode
+        procedure, public :: get_simplify_data => spd_get_simplify_data
+        !> @brief Sets a value determining if the stored data should be
+        !! simplified (reduced) before passing to GNUPLOT.
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! subroutine set_simplify_data(class(scatter_plot_data) this, logical x)
+        !! @endcode
+        !!
+        !! @param[in,out] this The scatter_plot_data object.
+        !! @param[in] x True if the data should be simplified prior to sending
+        !!  to GNUPLOT; else, false to leave the data alone.
+        !!
+        !! @par Example
+        !! This example makes use of the plot_data_2d type; however, this
+        !! example is valid for any type that derives from scatter_plot_data.
+        !! @code{.f90}
+        !! program example
+        !!     use fplot_core
+        !!     use iso_fortran_env
+        !!     implicit none
+        !!
+        !!     type(plot_data_2d) :: pd
+        !!
+        !!     call this%get_simplify_data(.false.)
+        !! end program
+        !! @endcode
+        procedure, public :: set_simplify_data => spd_set_simplify_data
+        !> @brief Gets a factor used to establish the simplification tolerance.
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! pure real(real64) function get_simplification_factor(class(scatter_plot_data) this)
+        !! @endcode
+        !!
+        !! @param[in] this The scatter_plot_data object.
+        !! @return Returns the scaling factor.
+        !!
+        !! @par Example
+        !! This example makes use of the plot_data_2d type; however, this
+        !! example is valid for any type that derives from scatter_plot_data.
+        !! @code{.f90}
+        !! program example
+        !!     use fplot_core
+        !!     use iso_fortran_env
+        !!     implicit none
+        !!
+        !!     type(plot_data_2d) :: pd
+        !!     real(real64) :: x
+        !!
+        !!     x = this%get_simplification_factor()
+        !! end program
+        !! @endcode
+        procedure, public :: get_simplification_factor => spd_get_simplify_factor
+        !> @brief Sets a factor used to establish the simplification tolerance.  The
+        !! tolerance is established by multplying this factor by the range of the
+        !! dependent variable data.
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! subroutine set_simplification_factor(class(scatter_plot_data) this, real(real64) x)
+        !! @endcode
+        !!
+        !! @param[in,out] this The scatter_plot_data object.
+        !! @param[in] x The scaling factor.
+        !!
+        !! @par Example
+        !! This example makes use of the plot_data_2d type; however, this
+        !! example is valid for any type that derives from scatter_plot_data.
+        !! @code{.f90}
+        !! program example
+        !!     use fplot_core
+        !!     use iso_fortran_env
+        !!     implicit none
+        !!
+        !!     type(plot_data_2d) :: pd
+        !!     real(real64) :: x
+        !!
+        !!     call this%set_simplification_factor(1.0d-3)
+        !! end program
+        !! @endcode
+        procedure, public :: set_simplification_factor => spd_set_simplify_factor
     end type
 
 ! ------------------------------------------------------------------------------
@@ -4253,6 +4369,26 @@ module fplot_core
         module subroutine spd_set_marker_frequency(this, x)
             class(scatter_plot_data), intent(inout) :: this
             integer(int32), intent(in) :: x
+        end subroutine
+
+        pure module function spd_get_simplify_data(this) result(x)
+            class(scatter_plot_data), intent(in) :: this
+            logical :: x
+        end function
+        
+        module subroutine spd_set_simplify_data(this, x)
+            class(scatter_plot_data), intent(inout) :: this
+            logical, intent(in) :: x
+        end subroutine
+
+        pure module function spd_get_simplify_factor(this) result(x)
+            class(scatter_plot_data), intent(in) :: this
+            real(real64) :: x
+        end function
+        
+        module subroutine spd_set_simplify_factor(this, x)
+            class(scatter_plot_data), intent(inout) :: this
+            real(real64), intent(in) :: x
         end subroutine
     end interface
 
@@ -4649,6 +4785,57 @@ module fplot_core
         generic, public :: define_data => pd2d_set_data_1, pd2d_set_data_2
         procedure :: pd2d_set_data_1
         procedure :: pd2d_set_data_2
+
+        !> @brief Gets the stored X data array.
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! real(real64)(:) function get_x_data(class(plot_data_2d) this)
+        !! @endcode
+        !!
+        !! @param[in] this The plot_data_2d object.
+        !! @return A copy of the stored data array.
+        !!
+        !! @par Example
+        !! @code{.f90}
+        !! program example
+        !!     use fplot_core
+        !!     use iso_fortran_env
+        !!     implicit none
+        !!
+        !!     type(plot_data_2d) :: pd
+        !!     real(real64), allocatable, dimension(:) :: x
+        !!
+        !!     ! Get the data array
+        !!     x = pd%get_x_data()
+        !! end program
+        !! @endcode
+        procedure, public :: get_x_data => pd2d_get_x_array
+        !> @brief Gets the stored Y data array.
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! real(real64)(:) function get_y_data(class(plot_data_2d) this)
+        !! @endcode
+        !!
+        !! @param[in] this The plot_data_2d object.
+        !! @return A copy of the stored data array.
+        !!
+        !! @par Example
+        !! @code{.f90}
+        !! program example
+        !!     use fplot_core
+        !!     use iso_fortran_env
+        !!     implicit none
+        !!
+        !!     type(plot_data_2d) :: pd
+        !!     real(real64), allocatable, dimension(:) :: y
+        !!
+        !!     ! Get the data array
+        !!     y = pd%get_y_data()
+        !! end program
+        !! @endcode
+        procedure, public :: get_y_data => pd2d_get_y_array
     end type
 
 ! ------------------------------------------------------------------------------
@@ -4713,6 +4900,16 @@ module fplot_core
             real(real64), intent(in), dimension(:) :: y
             class(errors), intent(inout), optional, target :: err
         end subroutine
+
+        module function pd2d_get_x_array(this) result(x)
+            class(plot_data_2d), intent(in) :: this
+            real(real64), allocatable, dimension(:) :: x
+        end function
+
+        module function pd2d_get_y_array(this) result(x)
+            class(plot_data_2d), intent(in) :: this
+            real(real64), allocatable, dimension(:) :: x
+        end function
     end interface
 
 ! ******************************************************************************
@@ -5000,6 +5197,81 @@ module fplot_core
         !! @endcode
         !! @image html example_plot_3d_1.png
         procedure, public :: define_data => pd3d_set_data_1
+        !> @brief Gets the stored X data array.
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! real(real64)(:) function get_x_data(class(plot_data_3d) this)
+        !! @endcode
+        !!
+        !! @param[in] this The plot_data_3d object.
+        !! @return A copy of the stored data array.
+        !!
+        !! @par Example
+        !! @code{.f90}
+        !! program example
+        !!     use fplot_core
+        !!     use iso_fortran_env
+        !!     implicit none
+        !!
+        !!     type(plot_data_2d) :: pd
+        !!     real(real64), allocatable, dimension(:) :: x
+        !!
+        !!     ! Get the data array
+        !!     x = pd%get_x_data()
+        !! end program
+        !! @endcode
+        procedure, public :: get_x_data => pd3d_get_x_array
+        !> @brief Gets the stored Y data array.
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! real(real64)(:) function get_y_data(class(plot_data_3d) this)
+        !! @endcode
+        !!
+        !! @param[in] this The plot_data_3d object.
+        !! @return A copy of the stored data array.
+        !!
+        !! @par Example
+        !! @code{.f90}
+        !! program example
+        !!     use fplot_core
+        !!     use iso_fortran_env
+        !!     implicit none
+        !!
+        !!     type(plot_data_2d) :: pd
+        !!     real(real64), allocatable, dimension(:) :: y
+        !!
+        !!     ! Get the data array
+        !!     y = pd%get_y_data()
+        !! end program
+        !! @endcode
+        procedure, public :: get_y_data => pd3d_get_y_array
+        !> @brief Gets the stored Z data array.
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! real(real64)(:) function get_z_data(class(plot_data_3d) this)
+        !! @endcode
+        !!
+        !! @param[in] this The plot_data_3d object.
+        !! @return A copy of the stored data array.
+        !!
+        !! @par Example
+        !! @code{.f90}
+        !! program example
+        !!     use fplot_core
+        !!     use iso_fortran_env
+        !!     implicit none
+        !!
+        !!     type(plot_data_2d) :: pd
+        !!     real(real64), allocatable, dimension(:) :: z
+        !!
+        !!     ! Get the data array
+        !!     z = pd%get_z_data()
+        !! end program
+        !! @endcode
+        procedure, public :: get_z_data => pd3d_get_z_array
     end type
 
 ! ------------------------------------------------------------------------------
@@ -5060,6 +5332,21 @@ module fplot_core
             real(real64), intent(in), dimension(:) :: x, y, z
             class(errors), intent(inout), optional, target :: err
         end subroutine
+
+        module function pd3d_get_x_array(this) result(x)
+            class(plot_data_3d), intent(in) :: this
+            real(real64), allocatable, dimension(:) :: x
+        end function
+
+        module function pd3d_get_y_array(this) result(x)
+            class(plot_data_3d), intent(in) :: this
+            real(real64), allocatable, dimension(:) :: x
+        end function
+
+        module function pd3d_get_z_array(this) result(x)
+            class(plot_data_3d), intent(in) :: this
+            real(real64), allocatable, dimension(:) :: x
+        end function
     end interface
 
 ! ******************************************************************************

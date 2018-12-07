@@ -32,6 +32,7 @@ program test_fplot
     ! Plot the data
     call d1%set_name("Original")
     call d1%define_data(x, y)
+    call d1%set_simplify_data(.false.)
 
     call d2%set_name("Simplified")
     call d2%define_data(xy1(:,1), xy1(:,2))
