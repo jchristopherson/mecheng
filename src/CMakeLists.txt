@@ -405,6 +405,7 @@ set(mechanics_sources
     mechanics/columns.f90
     mechanics/sections.f90
     mechanics/strain.f90
+    mechanics/vibrations.f90
 )
 
 set(nonlin_sources
