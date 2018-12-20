@@ -44,3 +44,22 @@ add_custom_target(
     run_mecheng_integration_tests ALL
     DEPENDS mecheng_test_integration_cmd
 )
+
+
+
+# ------------------------------------------------------------------------------
+# VIBRATIONS TESTS
+# ------------------------------------------------------------------------------
+set(test_vibrations_source test_vibrations.f90)
+add_executable(mecheng_test_vibrations ${test_vibrations_source})
+target_link_libraries(mecheng_test_vibrations mecheng)
+
+# Run the tests
+add_custom_command(OUTPUT mecheng_test_vibrations_cmd
+    DEPENDS ${test_vibrations_source}
+    COMMAND mecheng_test_vibrations
+)
+add_custom_target(
+    run_mecheng_vibrations_tests ALL
+    DEPENDS mecheng_test_vibrations_cmd
+)
