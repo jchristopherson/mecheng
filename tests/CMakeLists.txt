@@ -63,3 +63,21 @@ add_custom_target(
     run_mecheng_vibrations_tests ALL
     DEPENDS mecheng_test_vibrations_cmd
 )
+
+
+# ------------------------------------------------------------------------------
+# NEURAL_NETWORK TESTS
+# ------------------------------------------------------------------------------
+set(test_neural_network_source test_neural_network.f90)
+add_executable(mecheng_test_neural_network ${test_neural_network_source})
+target_link_libraries(mecheng_test_neural_network mecheng)
+
+# Run the tests
+add_custom_command(OUTPUT mecheng_test_neural_network_cmd
+    DEPENDS ${test_neural_network_source}
+    COMMAND mecheng_test_neural_network
+)
+add_custom_target(
+    run_mecheng_neural_network_tests ALL
+    DEPENDS mecheng_test_neural_network_cmd
+)
