@@ -452,6 +452,18 @@ set(geometry_sources
     geometry/geometry.f90
 )
 
+# GENANN Support
+include_directories(external/genann)
+set(genann_sources
+    external/genann/genann.h
+    external/genann/genann.c
+)
+
+# Define the NEURAL_NETWORK source files
+set(neural_network_sources
+    neural_network/neural_networks.f90
+)
+
 # Define the MECHENG source files
 set(mecheng_sources
     constants.f90
@@ -474,6 +486,8 @@ set(mecheng_sources
     ${signals_sources}
     ${strings_sources}
     ${geometry_sources}
+    ${genann_sources}
+    ${neural_network_sources}
 )
 
 # Build the library
