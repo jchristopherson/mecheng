@@ -53,6 +53,17 @@ module neural_networks
     end type
 
 contains
+    !> @brief Initializes a new neural_network object.
+    !!
+    !! @param[in,out] this The neural_network object.
+    !! @param[in] inputs The desired number of input nodes.
+    !! @param[in] hidden_layers The desired number of hidden layers.
+    !! @param[in] hidden The desired number of nodes per hidden layer.
+    !! @param[in] outputs The desired number of output nodes.
+    !!
+    !! @par Remarks
+    !! Notice, upon successful initialization, the network is assigned a
+    !! series of random values for each node.
     subroutine nn_init(this, inputs, hidden_layers, hidden, outputs)
         ! Arguments
         class(neural_network), intent(inout) :: this
@@ -70,12 +81,19 @@ contains
         call c_f_pointer(ptr, this%m_network)
     end subroutine
 
+    !> @brief Cleans up resources held by the neural_network object.
+    !!
+    !! @param[in,out] this The neural_network object.
     impure elemental subroutine nn_clean(this)
         type(neural_network), intent(inout) :: this
         if (associated(this%m_network)) call c_genann_free(this%m_network)
         nullify(this%m_network)
     end subroutine
 
+    !> @brief Gets the number of input nodes.
+    !!
+    !! @param[in] this The neural_network object.
+    !! @retrun The number of input nodes.
     pure function nn_get_input_count(this) result(n)
         class(neural_network), intent(in) :: this
         integer(int32) :: n
@@ -86,6 +104,10 @@ contains
         end if
     end function
 
+    !> @brief Gets the number of hidden layers.
+    !!
+    !! @param[in] this The neural_network object.
+    !! @retrun The number of hidden layers.
     pure function nn_get_hidden_layer_count(this) result(n)
         class(neural_network), intent(in) :: this
         integer(int32) :: n
@@ -96,6 +118,10 @@ contains
         end if
     end function
 
+    !> @brief Gets the number of nodes per hidden layer.
+    !!
+    !! @param[in] this The neural_network object.
+    !! @retrun The number of nodes per hidden layer.
     pure function nn_get_hidden_node_count(this) result(n)
         class(neural_network), intent(in) :: this
         integer(int32) :: n
@@ -106,6 +132,10 @@ contains
         end if
     end function
 
+    !> @brief Gets the number of output nodes.
+    !!
+    !! @param[in] this The neural_network object.
+    !! @retrun The number of output nodes.
     pure function nn_get_output_count(this) result(n)
         class(neural_network), intent(in) :: this
         integer(int32) :: n
