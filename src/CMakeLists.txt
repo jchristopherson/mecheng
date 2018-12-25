@@ -463,6 +463,8 @@ set(genann_sources
 # Define the NEURAL_NETWORK source files
 set(neural_network_sources
     neural_network/neural_networks.f90
+    neural_network/genann_wrapper.h
+    neural_network/genann_wrapper.c
 )
 
 # Define the MECHENG source files

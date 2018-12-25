@@ -3,6 +3,7 @@
 module neural_networks
     use iso_c_binding
     use iso_fortran_env
+    use ferror
     implicit none
     private
     public :: neural_network
@@ -49,19 +50,19 @@ module neural_networks
             type(c_ptr) :: rst
         end function
 
-        function c_genann_run(ann, inputs) result(rst) bind(C, name = "genann_run")
+        subroutine c_genann_run(ann, inputs, outputs) bind(C, name = "run_network")
             use iso_c_binding
             import genann
             type(genann), intent(in) :: ann
-            type(c_ptr), intent(in), value :: inputs
-            type(c_ptr) :: rst
-        end function
+            real(c_double), intent(in) :: inputs(*)
+            real(c_double), intent(out) :: outputs(*)
+        end subroutine
 
         subroutine c_genann_train(ann, inputs, outputs, rate) bind(C, name = "genann_train")
             use iso_c_binding
             import genann
             type(genann), intent(inout) :: ann
-            type(c_ptr), intent(in), value :: inputs, outputs
+            real(c_double), intent(in) :: inputs(*), outputs(*)
             real(c_double), intent(in), value :: rate
         end subroutine
 
@@ -172,6 +173,45 @@ contains
         else
             n = 0
         end if
+    end function
+
+
+    function nn_run(this, inputs, err) result(rst)
+        ! Arguments
+        class(neural_network), intent(in) :: this
+        real(real64), intent(in), dimension(:) :: inputs
+        class(errors), intent(inout), optional, target :: err
+        real(real64), allocatable, dimension(:) :: rst
+
+        ! Local Variables
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+        integer(int32) :: nin, nout, flag
+
+        ! Initialization
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+        
+        ! Determine array sizes
+        nin = this%get_input_count()
+        nout = this%get_output_count()
+
+        ! Input Check
+        if (size(inputs) /= nin) then
+            ! TO DO: Array size error
+        end if
+
+        ! Local Memory Allocation
+        allocate(rst(nout), stat = flag)
+        if (flag /= 0) then
+            ! TO DO: Out of memory error
+        end if
+
+        ! Process
+        call c_genann_run(this%m_network, inputs, rst)
     end function
 
 end module
