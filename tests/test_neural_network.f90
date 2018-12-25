@@ -12,15 +12,41 @@ program test
     integer(int32), parameter :: outputs = 1
 
     ! Local Variables
-    type(neural_network) :: network
+    logical :: check, overall
 
-    ! Initialize
-    call network%initialize(inputs, hidden_layers, hidden, outputs)
+    ! Initialization
+    overall = .true.
 
-    ! Ensure the proper network size parameters
-    if (network%get_input_count() /= inputs) then
-        print '(AI0AI0A)', "ERROR: Expected ", inputs, &
-            " inputs, but found ", network%get_input_count(), "."
-        return
+    ! Tests
+    check = test_neural_net_basics()
+    if (.not.check) overall = .false.
+
+
+    ! Check
+    if (overall) then
+        print '(A)', "NEURAL_NETWORK TESTS PASSED."
+    else
+        print '(A)', "NEURAL_NETWORK TESTS FAILED."
     end if
+
+contains
+    function test_neural_net_basics() result(rst)
+        ! Arguments
+        logical :: rst
+
+        ! Local Variables
+        type(neural_network) :: network
+
+        ! Initialize
+        rst = .true.
+        call network%initialize(inputs, hidden_layers, hidden, outputs)
+
+        ! Ensure the proper network size parameters
+        if (network%get_input_count() /= inputs) then
+            rst = .false.
+            print '(AI0AI0A)', "ERROR: Expected ", inputs, &
+                " inputs, but found ", network%get_input_count(), "."
+            return
+        end if
+    end function
 end program
