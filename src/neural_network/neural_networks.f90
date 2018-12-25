@@ -37,6 +37,34 @@ module neural_networks
             type(genann), intent(inout) :: ann
         end subroutine
 
+        subroutine c_genann_randomize(ann) bind(C, name = "genann_randomize")
+            import genann
+            type(genann), intent(in) :: ann
+        end subroutine
+
+        function c_genann_copy(ann) result(rst) bind(C, name = "genann_copy")
+            use iso_c_binding
+            import genann
+            type(genann), intent(in) :: ann
+            type(c_ptr) :: rst
+        end function
+
+        function c_genann_run(ann, inputs) result(rst) bind(C, name = "genann_run")
+            use iso_c_binding
+            import genann
+            type(genann), intent(in) :: ann
+            type(c_ptr), intent(in), value :: inputs
+            type(c_ptr) :: rst
+        end function
+
+        subroutine c_genann_train(ann, inputs, outputs, rate) bind(C, name = "genann_train")
+            use iso_c_binding
+            import genann
+            type(genann), intent(inout) :: ann
+            type(c_ptr), intent(in), value :: inputs, outputs
+            real(c_double), intent(in), value :: rate
+        end subroutine
+
     end interface
 
 
