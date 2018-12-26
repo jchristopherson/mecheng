@@ -79,6 +79,8 @@ module neural_networks
         procedure, public :: get_hidden_layer_count => nn_get_hidden_layer_count
         procedure, public :: get_node_count_per_hidden_layer => nn_get_hidden_node_count
         procedure, public :: get_output_count => nn_get_output_count
+        procedure, public :: run => nn_run
+        procedure, public :: training_step => nn_training_step
     end type
 
 contains
@@ -175,7 +177,14 @@ contains
         end if
     end function
 
-
+    !> @brief Runs the feedforward algorithm to calculate the network's output.
+    !!
+    !! @param[in] this The neural_network object.
+    !! @param[in] inputs An array of inputs.  There must be one input for each
+    !!  input node.
+    !! @param[in,out] err
+    !!
+    !! @return An array containing the outputs of the network.
     function nn_run(this, inputs, err) result(rst)
         ! Arguments
         class(neural_network), intent(in) :: this
@@ -213,5 +222,59 @@ contains
         ! Process
         call c_genann_run(this%m_network, inputs, rst)
     end function
+
+    !> @brief Performs a single backpropagation training step.
+    !!
+    !! @param[in] this The neural_network object.
+    !! @param[in] inputs An array of inputs.  There must be one input for each
+    !!  input node.
+    !! @param[in] desired An array containing the desired outputs for the given
+    !!  inputs.
+    !! @param[in] rate The learning rate.
+    !! @param[out] delta An optional output array that, if supplied, is used to
+    !!  return the difference between the actual network output, and the desired
+    !!  network output.
+    !! @param[in,out] err
+    !!
+    subroutine nn_training_step(this, inputs, desired, rate, delta, err)
+        ! Arguments
+        class(neural_network), intent(in) :: this
+        real(real64), intent(in), dimension(:) :: inputs, desired
+        real(real64), intent(in) :: rate
+        real(real64), intent(out), dimension(:), optional :: delta
+        class(errors), intent(inout), optional, target :: err
+
+        ! Local Variables
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+        integer(int32) :: nin, nout
+
+        ! Initialization
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+        
+        ! Determine array sizes
+        nin = this%get_input_count()
+        nout = this%get_output_count()
+
+        ! Input Check
+        if (size(inputs) /= nin) then
+            ! TO DO: Array size error
+        end if
+
+        ! Compute the training step
+        call c_genann_train(this%m_network, inputs, desired, rate)
+
+        ! Compute the error estimate, if necessary
+        if (present(delta)) then
+            if (size(delta) /= nout) then
+                ! TO DO: Array size error
+            end if
+            delta = this%run(inputs, errmgr) - desired
+        end if
+    end subroutine
 
 end module
