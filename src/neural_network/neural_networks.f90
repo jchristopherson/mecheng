@@ -7,8 +7,16 @@ module neural_networks
     implicit none
     private
     public :: neural_network
+    public :: shuffle
 
 ! REF: https://software.intel.com/en-us/forums/intel-visual-fortran-compiler-for-windows/topic/505505
+
+    !> @brief Randomly shuffles a set of data.
+    interface shuffle
+        module procedure :: shuffle_array_dbl
+        module procedure :: shuffle_mtx_dbl
+        module procedure :: shuffle_array_int32
+    end interface
 
     ! Wrapper type for the C GENANN structure (see genann.h)
     type, bind(C) :: genann
@@ -277,4 +285,110 @@ contains
         end if
     end subroutine
 
+
+! ------------------------------------------------------------------------------
+    subroutine shuffle_array_dbl(x)
+        ! Arguments
+        real(real64), intent(inout), dimension(:) :: x
+
+        ! Local Variables
+        integer(int32) :: i, k, n
+        real(real64) :: rv, temp
+
+        ! Process
+        n = size(x)
+        do i = 1, n
+            call random_number(rv)
+            k = int(rv * n, int32) + 1
+            temp = x(i)
+            x(i) = x(k)
+            x(k) = temp
+        end do
+    end subroutine
+
+! --------------------
+    subroutine  shuffle_mtx_dbl_rowwise(x)
+        ! Arguments
+        real(real64), intent(inout), dimension(:,:) :: x
+
+        ! Local Variables
+        integer(int32) :: i, k, n
+        real(real64) :: rv, temp(size(x, 2))
+
+        ! Process
+        n = size(x, 1)
+        do i = 1, n
+            call random_number(rv)
+            k = int(rv * n, int32) + 1
+            temp = x(i,:)
+            x(i,:) = x(k,:)
+            x(k,:) = temp
+        end do
+    end subroutine
+
+! --------------------
+    subroutine shuffle_mtx_dbl_columnwise(x)
+        ! Arguments
+        real(real64), intent(inout), dimension(:,:) :: x
+
+        ! Local Variables
+        integer(int32) :: i, k, n
+        real(real64) :: rv, temp(size(x, 1))
+
+        ! Process
+        n = size(x, 2)
+        do i = 1, n
+            call random_number(rv)
+            k = int(rv * n, int32) + 1
+            temp = x(:,i)
+            x(:,i) = x(:,k)
+            x(:,k) = temp
+        end do
+    end subroutine
+
+! --------------------
+    subroutine shuffle_mtx_dbl(x, rowwise)
+        ! Arguments
+        real(real64), intent(inout), dimension(:,:) :: x
+        logical, intent(in), optional :: rowwise
+
+        ! Local Variables
+        logical :: check
+        
+        ! Initialization
+        if (present(rowwise)) then
+            check = rowwise
+        else
+            check = .true.
+        end if
+
+        ! Process
+        if (check) then
+            call shuffle_mtx_dbl_rowwise(x)
+        else
+            call shuffle_mtx_dbl_columnwise(x)
+        end if
+    end subroutine
+
+! --------------------
+    subroutine shuffle_array_int32(x)
+        ! Arguments
+        integer(int32), intent(inout), dimension(:) :: x
+
+        ! Local Variables
+        integer(int32) :: i, k, n, temp
+        real(real64) :: rv
+
+        ! Process
+        n = size(x)
+        do i = 1, n
+            call random_number(rv)
+            k = int(rv * n, int32) + 1
+            temp = x(i)
+            x(i) = x(k)
+            x(k) = temp
+        end do
+    end subroutine
+
+! --------------------
 end module
