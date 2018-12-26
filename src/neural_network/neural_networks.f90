@@ -74,6 +74,19 @@ module neural_networks
             real(c_double), intent(in), value :: rate
         end subroutine
 
+        subroutine c_get_weights(ann, weights) bind(C, name = "get_weights")
+            use iso_c_binding
+            import genann
+            type(genann), intent(in) :: ann
+            real(c_double) :: weights(*)
+        end subroutine
+
+        subroutine c_set_weights(ann, weights) bind(C, name = "set_weights")
+            use iso_c_binding
+            import genann
+            type(genann), intent(inout) :: ann
+            real(c_double) :: weights(*)
+        end subroutine
     end interface
 
 
@@ -87,8 +100,13 @@ module neural_networks
         procedure, public :: get_hidden_layer_count => nn_get_hidden_layer_count
         procedure, public :: get_node_count_per_hidden_layer => nn_get_hidden_node_count
         procedure, public :: get_output_count => nn_get_output_count
+        procedure, public :: get_weight_count => nn_get_weight_count
+        procedure, public :: get_neuron_count => nn_get_neuron_count
         procedure, public :: run => nn_run
         procedure, public :: training_step => nn_training_step
+        procedure, public :: get_weights => nn_get_weights
+        procedure, public :: set_weights => nn_set_weights
+        procedure, public :: randomize_weights => nn_randomize_weights
     end type
 
 contains
@@ -107,6 +125,7 @@ contains
         ! Arguments
         class(neural_network), intent(inout) :: this
         integer(int32), intent(in) :: inputs, hidden_layers, hidden, outputs
+        real(real64), allocatable, dimension(:) :: weights
 
         ! Local Variables
         type(c_ptr) :: ptr
@@ -118,6 +137,9 @@ contains
         ! memory address returned by GENANN_INIT
         ptr = c_genann_init(inputs, hidden_layers, hidden, outputs)
         call c_f_pointer(ptr, this%m_network)
+
+        ! Randomize the weighting factors
+        call this%randomize_weights()
     end subroutine
 
     !> @brief Cleans up resources held by the neural_network object.
@@ -132,7 +154,7 @@ contains
     !> @brief Gets the number of input nodes.
     !!
     !! @param[in] this The neural_network object.
-    !! @retrun The number of input nodes.
+    !! @return The number of input nodes.
     pure function nn_get_input_count(this) result(n)
         class(neural_network), intent(in) :: this
         integer(int32) :: n
@@ -146,7 +168,7 @@ contains
     !> @brief Gets the number of hidden layers.
     !!
     !! @param[in] this The neural_network object.
-    !! @retrun The number of hidden layers.
+    !! @return The number of hidden layers.
     pure function nn_get_hidden_layer_count(this) result(n)
         class(neural_network), intent(in) :: this
         integer(int32) :: n
@@ -160,7 +182,7 @@ contains
     !> @brief Gets the number of nodes per hidden layer.
     !!
     !! @param[in] this The neural_network object.
-    !! @retrun The number of nodes per hidden layer.
+    !! @return The number of nodes per hidden layer.
     pure function nn_get_hidden_node_count(this) result(n)
         class(neural_network), intent(in) :: this
         integer(int32) :: n
@@ -174,12 +196,41 @@ contains
     !> @brief Gets the number of output nodes.
     !!
     !! @param[in] this The neural_network object.
-    !! @retrun The number of output nodes.
+    !! @return The number of output nodes.
     pure function nn_get_output_count(this) result(n)
         class(neural_network), intent(in) :: this
         integer(int32) :: n
         if (associated(this%m_network)) then
             n = this%m_network%outputs
+        else
+            n = 0
+        end if
+    end function
+
+    !> @brief Gets the number of weighting factors.
+    !!
+    !! @param[in] this The neural_network object.
+    !! @return The number of weighting factors.
+    pure function nn_get_weight_count(this) result(n)
+        class(neural_network), intent(in) :: this
+        integer(int32) :: n
+        if (associated(this%m_network)) then
+            n = this%m_network%total_weights
+        else
+            n = 0
+        end if
+    end function
+
+    !> @brief Gets the total number of neurons in the network.
+    !!
+    !! @param[in] this The neural_network object.
+    !! @return The number of neurons including the input, hidden, and output
+    !!  neurons.
+    pure function nn_get_neuron_count(this) result(n)
+        class(neural_network), intent(in) :: this
+        integer(int32) :: n
+        if (associated(this%m_network)) then
+            n = this%m_network%total_neurons
         else
             n = 0
         end if
@@ -285,6 +336,119 @@ contains
         end if
     end subroutine
 
+    !> @brief Gets a vector containing each weighting factor.
+    !!
+    !! @param[in] this The neural_network object.
+    !! @param[in,out] err
+    !!
+    !! @return An array containing the weighting factors.
+    function nn_get_weights(this, err) result(x)
+        ! Arguments
+        class(neural_network), intent(in) :: this
+        class(errors), intent(inout), optional, target :: err
+        real(real64), allocatable, target, dimension(:) :: x
+
+        ! Local Variables
+        integer(int32) :: n, flag
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+
+        ! Initialization
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+
+        ! Local Memory Allocation
+        n = this%get_weight_count()
+        allocate(x(n), stat = flag)
+        if (flag /= 0) then
+            ! TO DO: Out of memory error
+        end if
+
+        ! Retrieve the data
+        call c_get_weights(this%m_network, x)
+    end function
+
+    !> @brief Sets the weighting factors for the network.
+    !!
+    !! @param[in,out] this The neural_network object.
+    !! @param[in] x The array of weighting factors.
+    !! @param[in,out] err
+    !!
+    subroutine nn_set_weights(this, x, err)
+        ! Arguments
+        class(neural_network), intent(inout) :: this
+        real(real64), intent(in), dimension(:) :: x
+        class(errors), intent(inout), optional, target :: err
+
+        ! Local Variables
+        integer(int32) :: n
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+
+        ! Initialization
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+
+        ! Ensure the network is initialized
+        n = this%get_weight_count()
+        if (n == 0) then
+            ! TO DO: Uninitialized network error
+        end if
+
+        ! Input Check
+        if (size(x) /= n) then
+            ! TO DO: Array size error
+        end if
+
+        ! Process
+        call c_set_weights(this%m_network, x)
+    end subroutine
+
+    !> @brief Randomizes the value of each weighting factor over the set [0, 1].
+    !!
+    !! @param[in,out] this The neural_network object.
+    !! @param[in,out] err
+    !!
+    subroutine nn_randomize_weights(this, err)
+        ! Arguments
+        class(neural_network), intent(inout) :: this
+        class(errors), intent(inout), optional, target :: err
+
+        ! Local Variables
+        integer(int32) :: n, flag
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+        real(real64), allocatable, dimension(:) :: xrand
+
+        ! Initialization
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+
+        ! Ensure the network is initialized
+        n = this%get_weight_count()
+        if (n == 0) then
+            ! TO DO: Uninitialized network error
+        end if
+
+        ! Allocate an array and populate with random numbers
+        allocate(xrand(n), stat = flag)
+        if (flag /= 0) then
+            ! TO DO: Out of memory error
+        end if
+        call random_number(xrand)
+
+        ! Establish the array
+        call c_set_weights(this%m_network, xrand)
+    end subroutine
 
 ! ------------------------------------------------------------------------------
     subroutine shuffle_array_dbl(x)

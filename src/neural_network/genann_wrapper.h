@@ -8,6 +8,8 @@ extern "C" {
 #endif
 
 void run_network(const genann *ann, const double *inputs, double *outputs);
+void get_weights(const genann *ann, double *weights);
+void set_weights(genann *ann, const double *weights);
 
 #ifdef __cplusplus
 }
