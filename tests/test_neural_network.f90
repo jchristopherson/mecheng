@@ -32,8 +32,8 @@ contains
 
         ! Parameters
         integer(int32), parameter :: inputs = 10
-        integer(int32), parameter :: hidden_layers = 8
-        integer(int32), parameter :: hidden = 10
+        integer(int32), parameter :: hidden_layers = 4
+        integer(int32), parameter :: hidden = 8
         integer(int32), parameter :: outputs = 4
 
         ! Local Variables
@@ -73,7 +73,7 @@ contains
         ! Local Variables
         integer(int32), parameter :: npts = 34
         integer(int32), parameter :: nchan = 2
-        integer(int32), parameter :: niter = 500
+        integer(int32), parameter :: niter = 5000
         real(real64), parameter :: learning_rate = 1.0d-1
         type(neural_network) :: network
         real(real64) :: loads(npts, nchan), bridge(npts, nchan), &
@@ -87,6 +87,8 @@ contains
         type(plot_data_2d) :: d1nn, d2nn, derr, d1lls, d2lls
         class(plot_axis), pointer :: xAxis1, yAxis1, xAxis2, yAxis2
         class(legend), pointer :: lgnd
+
+        real(real64), allocatable, dimension(:) :: weights
 
         ! Populate the applied loads matrix
         loads = reshape([0.0d0, 3000.0d0, 6000.0d0, 7500.0d0, 9000.0d0, 12000.0d0, &
@@ -139,7 +141,14 @@ contains
         end do
 
         ! Set up and train the network
-        call network%initialize(2, 1, 4, 2)
+        call network%initialize(2, 2, 8, 2)
+
+        weights = network%get_weights()
+        weights = weights * llsmtx(1,1)
+        call network%set_weights(weights)
+        print '(A)', "Initial Weight Values:"
+        print *, weights
+
         do i = 1, niter
             ev = 0.0d0
             do j = 1, npts
@@ -149,6 +158,10 @@ contains
             end do
             residuals(i) = ev
         end do
+
+        weights = network%get_weights()
+        print '(A)', "Trained Weight Values:"
+        print *, weights
 
         ! Apply the trained network to the data set
         do i = 1, npts
