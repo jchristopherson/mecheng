@@ -5,12 +5,6 @@ program test
     use neural_networks
     implicit none
 
-    ! Parameters
-    integer(int32), parameter :: inputs = 10
-    integer(int32), parameter :: hidden_layers = 2
-    integer(int32), parameter :: hidden = 10
-    integer(int32), parameter :: outputs = 1
-
     ! Local Variables
     logical :: check, overall
 
@@ -34,8 +28,16 @@ contains
         ! Arguments
         logical :: rst
 
+        ! Parameters
+        integer(int32), parameter :: inputs = 10
+        integer(int32), parameter :: hidden_layers = 8
+        integer(int32), parameter :: hidden = 10
+        integer(int32), parameter :: outputs = 4
+
         ! Local Variables
         type(neural_network) :: network
+        real(real64) :: invals(inputs)
+        real(real64), allocatable, dimension(:) :: outvals
 
         ! Initialize
         rst = .true.
@@ -46,6 +48,16 @@ contains
             rst = .false.
             print '(AI0AI0A)', "ERROR: Expected ", inputs, &
                 " inputs, but found ", network%get_input_count(), "."
+            return
+        end if
+
+        ! Run the network
+        call random_number(invals)
+        outvals = network%run(invals)
+        if (size(outvals) /= outputs) then
+            rst = .false.
+            print '(AI0AI0A)', "ERROR: Expected ", outputs, &
+                " outputs, but found ", size(outvals), "."
             return
         end if
     end function
