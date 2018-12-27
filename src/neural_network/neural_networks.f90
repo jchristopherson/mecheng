@@ -18,87 +18,76 @@ module neural_networks
         module procedure :: shuffle_array_int32
     end interface
 
-    ! Wrapper type for the C GENANN structure (see genann.h)
-    type, bind(C) :: genann
-        integer(c_int) :: inputs
-        integer(c_int) :: hidden_layers
-        integer(c_int) :: hidden
-        integer(c_int) :: outputs
-        type(c_funptr) :: activation_hidden
-        type(c_funptr) :: activation_output
-        integer(c_int) :: total_weights
-        integer(c_int) :: total_neurons
+    ! Wrapper type for the C NETWORK structure (see snn.h)
+    type, bind(C) :: snn_network
+        integer(c_short) :: version
+        integer(c_int) :: input_count
+        integer(c_int) :: output_count
+        integer(c_int) :: hidden_layer_count
+        type(c_ptr) :: neuron_per_layer_count
+        integer(c_int) :: total_layer_count
+        integer(c_int) :: total_weight_count
+        integer(c_int) :: total_neuron_count
+        integer(c_int) :: total_bias_count
         type(c_ptr) :: weights
+        type(c_ptr) :: bias
         type(c_ptr) :: output
-        type(c_ptr) :: delta
+        type(c_ptr) :: weight_pointers
+        type(c_ptr) :: bias_pointers
     end type
 
     interface
-        function c_genann_init(inputs, hidden_layers, hidden, outputs) result(rst) bind(C, name = "genann_init")
+        function c_snn_init_network(nlayers, node_counts, err) result(obj) bind(C, name = "snn_init_network")
             use iso_c_binding
-            import genann
-            integer(c_int), intent(in), value :: inputs, hidden_layers, hidden, outputs
-            type(c_ptr) :: rst
+            import snn_network
+            integer(c_int), intent(in), value :: nlayers
+            integer(c_int), intent(in) :: node_counts(nlayers)
+            integer(c_int), intent(out) :: err
+            type(c_ptr) :: obj
         end function
 
-        subroutine c_genann_free(ann) bind(C, name = "genann_free")
-            import genann
-            type(genann), intent(inout) :: ann
+        subroutine c_snn_free_network(obj) bind(C, name = "snn_free_network")
+            import snn_network
+            type(snn_network), intent(inout) :: obj
         end subroutine
 
-        subroutine c_genann_randomize(ann) bind(C, name = "genann_randomize")
-            import genann
-            type(genann), intent(in) :: ann
+        subroutine c_snn_randomize_weights_and_biases(obj) bind(C, name = "snn_randomize_weights_and_biases")
+            import snn_network
+            type(snn_network), intent(inout) :: obj
         end subroutine
 
-        function c_genann_copy(ann) result(rst) bind(C, name = "genann_copy")
+        subroutine c_snn_run_network(obj, inputs, outputs) bind(C, name = "snn_run_network")
             use iso_c_binding
-            import genann
-            type(genann), intent(in) :: ann
-            type(c_ptr) :: rst
-        end function
-
-        subroutine c_genann_run(ann, inputs, outputs) bind(C, name = "run_network")
-            use iso_c_binding
-            import genann
-            type(genann), intent(in) :: ann
+            import snn_network
+            type(snn_network), intent(in) :: obj
             real(c_double), intent(in) :: inputs(*)
             real(c_double), intent(out) :: outputs(*)
         end subroutine
 
-        subroutine c_genann_train(ann, inputs, outputs, rate) bind(C, name = "genann_train")
+        subroutine c_snn_get_weights(obj, x) bind(C, name = "snn_get_weights")
             use iso_c_binding
-            import genann
-            type(genann), intent(inout) :: ann
-            real(c_double), intent(in) :: inputs(*), outputs(*)
-            real(c_double), intent(in), value :: rate
+            import snn_network
+            type(snn_network), intent(in) :: obj
+            real(c_double), intent(out) :: x(*)
         end subroutine
 
-        subroutine c_get_weights(ann, weights) bind(C, name = "get_weights")
+        subroutine c_snn_set_weights(obj, x) bind(C, name = "snn_set_weights")
             use iso_c_binding
-            import genann
-            type(genann), intent(in) :: ann
-            real(c_double) :: weights(*)
-        end subroutine
-
-        subroutine c_set_weights(ann, weights) bind(C, name = "set_weights")
-            use iso_c_binding
-            import genann
-            type(genann), intent(inout) :: ann
-            real(c_double) :: weights(*)
+            import snn_network
+            type(snn_network), intent(inout) :: obj
+            real(c_double), intent(in) :: x(*)
         end subroutine
     end interface
 
 
     type neural_network
     private
-        type(genann), pointer :: m_network => null()
+        type(snn_network), pointer :: m_network => null()
     contains
         final :: nn_clean
-        procedure, public :: initialize => nn_init
+        procedure, public :: initialize => nn_init_1
         procedure, public :: get_input_count => nn_get_input_count
         procedure, public :: get_hidden_layer_count => nn_get_hidden_layer_count
-        procedure, public :: get_node_count_per_hidden_layer => nn_get_hidden_node_count
         procedure, public :: get_output_count => nn_get_output_count
         procedure, public :: get_weight_count => nn_get_weight_count
         procedure, public :: get_neuron_count => nn_get_neuron_count
@@ -121,7 +110,7 @@ contains
     !! @par Remarks
     !! Notice, upon successful initialization, the network is assigned a
     !! series of random values for each node.
-    subroutine nn_init(this, inputs, hidden_layers, hidden, outputs)
+    subroutine nn_init_1(this, inputs, hidden_layers, hidden, outputs)
         ! Arguments
         class(neural_network), intent(inout) :: this
         integer(int32), intent(in) :: inputs, hidden_layers, hidden, outputs
@@ -129,17 +118,22 @@ contains
 
         ! Local Variables
         type(c_ptr) :: ptr
+        integer(int32) :: layers(hidden_layers + 2), i, flag
 
         ! Ensure the network isn't already initialized
-        if (associated(this%m_network)) call c_genann_free(this%m_network)
+        if (associated(this%m_network)) call c_snn_free_network(this%m_network)
 
-        ! Initialize the network, and obtain the GENANN object at the
-        ! memory address returned by GENANN_INIT
-        ptr = c_genann_init(inputs, hidden_layers, hidden, outputs)
+        ! Initialize the network
+        layers(1) = inputs
+        layers(hidden_layers + 2) = outputs
+        do i = 1, hidden_layers
+            layers(i+1) = hidden
+        end do
+        ptr = c_snn_init_network(hidden_layers + 2, layers, flag)
+        if (flag /= 0) then
+            ! TO DO: Deal with the error conditions
+        end if
         call c_f_pointer(ptr, this%m_network)
-
-        ! Randomize the weighting factors
-        call this%randomize_weights()
     end subroutine
 
     !> @brief Cleans up resources held by the neural_network object.
@@ -147,7 +141,7 @@ contains
     !! @param[in,out] this The neural_network object.
     impure elemental subroutine nn_clean(this)
         type(neural_network), intent(inout) :: this
-        if (associated(this%m_network)) call c_genann_free(this%m_network)
+        if (associated(this%m_network)) call c_snn_free_network(this%m_network)
         nullify(this%m_network)
     end subroutine
 
@@ -159,7 +153,7 @@ contains
         class(neural_network), intent(in) :: this
         integer(int32) :: n
         if (associated(this%m_network)) then
-            n = this%m_network%inputs
+            n = this%m_network%input_count
         else
             n = 0
         end if
@@ -173,21 +167,7 @@ contains
         class(neural_network), intent(in) :: this
         integer(int32) :: n
         if (associated(this%m_network)) then
-            n = this%m_network%hidden_layers
-        else
-            n = 0
-        end if
-    end function
-
-    !> @brief Gets the number of nodes per hidden layer.
-    !!
-    !! @param[in] this The neural_network object.
-    !! @return The number of nodes per hidden layer.
-    pure function nn_get_hidden_node_count(this) result(n)
-        class(neural_network), intent(in) :: this
-        integer(int32) :: n
-        if (associated(this%m_network)) then
-            n = this%m_network%hidden
+            n = this%m_network%hidden_layer_count
         else
             n = 0
         end if
@@ -201,7 +181,7 @@ contains
         class(neural_network), intent(in) :: this
         integer(int32) :: n
         if (associated(this%m_network)) then
-            n = this%m_network%outputs
+            n = this%m_network%output_count
         else
             n = 0
         end if
@@ -215,7 +195,7 @@ contains
         class(neural_network), intent(in) :: this
         integer(int32) :: n
         if (associated(this%m_network)) then
-            n = this%m_network%total_weights
+            n = this%m_network%total_weight_count
         else
             n = 0
         end if
@@ -230,7 +210,7 @@ contains
         class(neural_network), intent(in) :: this
         integer(int32) :: n
         if (associated(this%m_network)) then
-            n = this%m_network%total_neurons
+            n = this%m_network%total_neuron_count
         else
             n = 0
         end if
@@ -279,7 +259,7 @@ contains
         end if
 
         ! Process
-        call c_genann_run(this%m_network, inputs, rst)
+        call c_snn_run_network(this%m_network, inputs, rst)
     end function
 
     !> @brief Performs a single backpropagation training step.
@@ -304,36 +284,36 @@ contains
         class(errors), intent(inout), optional, target :: err
 
         ! Local Variables
-        class(errors), pointer :: errmgr
-        type(errors), target :: deferr
-        integer(int32) :: nin, nout
+        ! class(errors), pointer :: errmgr
+        ! type(errors), target :: deferr
+        ! integer(int32) :: nin, nout
 
-        ! Initialization
-        if (present(err)) then
-            errmgr => err
-        else
-            errmgr => deferr
-        end if
+        ! ! Initialization
+        ! if (present(err)) then
+        !     errmgr => err
+        ! else
+        !     errmgr => deferr
+        ! end if
         
-        ! Determine array sizes
-        nin = this%get_input_count()
-        nout = this%get_output_count()
+        ! ! Determine array sizes
+        ! nin = this%get_input_count()
+        ! nout = this%get_output_count()
 
-        ! Input Check
-        if (size(inputs) /= nin) then
-            ! TO DO: Array size error
-        end if
+        ! ! Input Check
+        ! if (size(inputs) /= nin) then
+        !     ! TO DO: Array size error
+        ! end if
 
-        ! Compute the training step
-        call c_genann_train(this%m_network, inputs, desired, rate)
+        ! ! Compute the training step
+        ! call c_genann_train(this%m_network, inputs, desired, rate)
 
-        ! Compute the error estimate, if necessary
-        if (present(delta)) then
-            if (size(delta) /= nout) then
-                ! TO DO: Array size error
-            end if
-            delta = this%run(inputs, errmgr) - desired
-        end if
+        ! ! Compute the error estimate, if necessary
+        ! if (present(delta)) then
+        !     if (size(delta) /= nout) then
+        !         ! TO DO: Array size error
+        !     end if
+        !     delta = this%run(inputs, errmgr) - desired
+        ! end if
     end subroutine
 
     !> @brief Gets a vector containing each weighting factor.
@@ -368,7 +348,7 @@ contains
         end if
 
         ! Retrieve the data
-        call c_get_weights(this%m_network, x)
+        call c_snn_get_weights(this%m_network, x)
     end function
 
     !> @brief Sets the weighting factors for the network.
@@ -407,7 +387,7 @@ contains
         end if
 
         ! Process
-        call c_set_weights(this%m_network, x)
+        call c_snn_set_weights(this%m_network, x)
     end subroutine
 
     !> @brief Randomizes the value of each weighting factor over the set [0, 1].
@@ -421,10 +401,9 @@ contains
         class(errors), intent(inout), optional, target :: err
 
         ! Local Variables
-        integer(int32) :: n, flag
+        integer(int32) :: n
         class(errors), pointer :: errmgr
         type(errors), target :: deferr
-        real(real64), allocatable, dimension(:) :: xrand
 
         ! Initialization
         if (present(err)) then
@@ -439,15 +418,8 @@ contains
             ! TO DO: Uninitialized network error
         end if
 
-        ! Allocate an array and populate with random numbers
-        allocate(xrand(n), stat = flag)
-        if (flag /= 0) then
-            ! TO DO: Out of memory error
-        end if
-        call random_number(xrand)
-
-        ! Establish the array
-        call c_set_weights(this%m_network, xrand)
+        ! Randomize the weights and biases
+        call c_snn_randomize_weights_and_biases(this%m_network)
     end subroutine
 
 ! ------------------------------------------------------------------------------
