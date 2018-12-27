@@ -29,11 +29,19 @@ module neural_networks
         integer(c_int) :: total_weight_count
         integer(c_int) :: total_neuron_count
         integer(c_int) :: total_bias_count
+        integer(c_int) :: total_coefficient_count
         type(c_ptr) :: weights
         type(c_ptr) :: bias
         type(c_ptr) :: output
+        type(c_ptr) :: delta
+        type(c_ptr) :: gradient
         type(c_ptr) :: weight_pointers
         type(c_ptr) :: bias_pointers
+        type(c_ptr) :: delta_pointers
+        type(c_ptr) :: gradient_weight_pointers
+        type(c_ptr) :: gradient_bias_pointers
+        type(c_ptr) :: workspace
+        integer(c_int) :: workspace_size
     end type
 
     interface

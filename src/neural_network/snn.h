@@ -21,6 +21,24 @@ extern "C" {
 /* Error Flag: Insufficient memory available. */
 #define SNN_OUT_OF_MEMORY_ERROR     5001
 
+/* Computes the cost function of the network.
+ *
+ * - n: The number of elements in each array.
+ * - y: An N-element array containing the desired outputs of the network.
+ * - a: An N-element array containing the actual network outputs.
+ * Returns: The value of the cost function.
+ */
+typedef double (*snn_cost_fcn)(int n, const double *y, const double *a);
+
+/* Computes the derivative of the network cost function with respect to the
+ * actual outputs (a).
+ *
+ * - y: The desired output of the network at the j-th neuron.
+ * - a: The actual network output at the j-th neuron.
+ * Returns: The value of the cost function derivative at the j-th neuron.
+ */
+typedef double (*snn_cost_fcn_diff)(double y, double a);
+
 typedef struct network_ {
     /* The version number of this structure. */
     short version;
@@ -42,12 +60,18 @@ typedef struct network_ {
     int total_neuron_count;
     /* The total number of bias terms. */
     int total_bias_count;
+    /* The total number of weighting factors and bias terms. */
+    int total_coefficient_count;
     /* An array containing all weighting factors (length = total_weight_count). */
     double *weights;
     /* An array containing all the bias factors (length = total_bias_count). */
     double *bias;
     /* An array containing the outputs for each neuron (length = total_neuron_count). */
     double *output;
+    /* An array containing the error for each layer (length = total_bias_count). */
+    double *delta;
+    /* An array containing the gradient vector (length = total_coefficient_count). */
+    double *gradient;
     /* An array containing pointers to the start of each layer's weighting factors
      * in the weights array (length = total_layer_count - 1). 
      * (-1 as there are no output layer weighting factors).
@@ -61,6 +85,24 @@ typedef struct network_ {
      * (length = total_layer_count - 1). (-1 as there are no input biases).
      */
     double **bias_pointers;
+    /* An array containing pointers to the start of each layer's error array
+     * (length = total_layer_count - 1).
+     */
+    double **delta_pointers;
+    /* An array containing pointers to the start of each layer's weighting 
+     * factor portion of the gradient array (length = total_layer_count - 1).
+     */
+    double **gradient_weight_pointers;
+    /* An array containing pointers to the start of each layer's bias 
+     * factor portion of the gradient array (length = total_layer_count - 1).
+     */
+    double **gradient_bias_pointers;
+    /* A scratch workspace array equal in length to the largest neuron count
+     * in a single layer.
+     */
+    double *workspace;
+    /* The workspace array size. */
+    int workspace_size;
 } network;
 
 /* Initializes a new network object.
@@ -101,6 +143,25 @@ void snn_randomize_weights_and_biases(network *obj);
  */
 double* snn_eval_network(const network *obj, const double *x);
 
+/* Computes the gradient vector of the network for a given cost function.
+ * 
+ * - obj: The network.
+ * - cf: The cost function to apply.
+ * - dcf: The derivative of the cost function with respect to the network
+ *      outputs.
+ * - x: A poitner to an array containing the input values to the network.  There
+ *      is expected to be one value for every input neuron.
+ * - y: A pointer to an array containing the expected output from the network.
+ *      There is expected to be one value for every output neuron.
+ * Returns: A pointer to an array containing the gradient vector of the network
+ *      with respect to each weight and bias term.  Notice, the memory 
+ *      referenced by this pointer is internally controlled.  Do not attempt
+ *      to free or release this array.
+ */
+double* snn_eval_gradient(const network *obj, const snn_cost_fcn cf, 
+                          const snn_cost_fcn_diff dcf, const double *x,
+                          const double *y);
+
 
 /* Evaluates a single layer of the network.
  *
@@ -111,8 +172,26 @@ double* snn_eval_network(const network *obj, const double *x);
  * - offsets: A pointer to the NOUTS bias vector.
  * - z: [output] A pointer to the NOUTS element output vector.
  */
-static void evaluate_layer(int ninputs, int nouts, const double *x, const double *weights, 
+static void evaluate_layer(int ncurrent, int nnext, const double *x, const double *weights, 
                            const double *offsets, double *z);
+
+
+/* Evaluates the error for the current layer based upon the error in the next
+ * layer.
+ * 
+ * - ncurrent: The number of neurons in this layer.
+ * - nnext: The number of neurons in the next layer.
+ * - x: An NCURRENT length array containing the neuron outputs from this layer.
+ * - del: An NNEXT length array containing the error estimate from the next
+ *      layer up.
+ * - weights: An NNEXT-by-NCURRENT matrix containing the weighting factors
+ *      matrix applied to the output of this layer.
+ * - err: [output] An NCURRENT element array where the error estimate for this
+ *      layer will be written.
+ */
+static void evaluate_layer_error(int ninputs, int nouts, const double *x, const double *del,
+                                 const double *weights, double *err);
+
 
 /* Multiplies two matrices such that: z = x * y + beta * z.
  * 
@@ -160,6 +239,16 @@ inline static double diff_sigmoid(double x);
  */
 inline static double quadratic_cost_fcn(int n, const double *y, const double *a);
 
+/* Computes the derivative of the quadratic cost function
+ * C = sum(y(j) - a(j))**2 / 2 with respect to the actual network outputs (a).
+ * The derivative is expressed as dC/da(j) = a(j) - y(j)
+ *
+ * - y: The desired output of the network at the j-th neuron.
+ * - a: The actual network output at the j-th neuron.
+ * Returns: The value of the cost function derivative at the j-th neuron.
+ */
+inline static double diff_quadratic_cost_fcn(double y, double a);
+
 /* Copies the contents of one array to another.
  *
  * - n: The number of elements in the array.
@@ -167,6 +256,15 @@ inline static double quadratic_cost_fcn(int n, const double *y, const double *a)
  * - dst: The destination array.
  */
 inline static void copy(int n, const double *src, double *dst);
+
+/* Computes the dot product of two vectors.
+ *
+ * - n: The number of elements in either vector.
+ * - x: The left-hand-side vector.
+ * - y: The right-hand-side vector.
+ * Returns: The dot product of x and y.
+ */
+static double dot_product(int n, const double *x, const double *y);
 
 #ifdef __cplusplus
 }
