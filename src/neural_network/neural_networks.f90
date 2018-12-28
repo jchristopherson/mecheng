@@ -117,6 +117,20 @@ module neural_networks
             real(c_double), intent(in) :: x(*)
         end subroutine
 
+        subroutine c_snn_get_bias(obj, x) bind(C, name = "snn_get_bias")
+            use iso_c_binding
+            import snn_network
+            type(snn_network), intent(in) :: obj
+            real(c_double), intent(out) :: x(*)
+        end subroutine
+
+        subroutine c_snn_set_bias(obj, x) bind(C, name = "snn_set_bias")
+            use iso_c_binding
+            import snn_network
+            type(snn_network), intent(inout) :: obj
+            real(c_double), intent(in) :: x(*)
+        end subroutine
+
         function c_cost_fcn_diff(y, a) result(z)
             use iso_c_binding
             real(c_double), intent(in), value :: y, a
@@ -166,6 +180,9 @@ module neural_networks
         procedure, public :: training_step => nn_training_step
         procedure, public :: get_weights => nn_get_weights
         procedure, public :: set_weights => nn_set_weights
+        procedure, public :: get_bias_count => nn_get_bias_count
+        procedure, public :: get_bias => nn_get_bias
+        procedure, public :: set_bias => nn_set_bias
         procedure, public :: randomize_weights => nn_randomize_weights
     end type
 
@@ -422,7 +439,7 @@ contains
         ! Arguments
         class(neural_network), intent(in) :: this
         class(errors), intent(inout), optional, target :: err
-        real(real64), allocatable, target, dimension(:) :: x
+        real(real64), allocatable, dimension(:) :: x
 
         ! Local Variables
         integer(int32) :: n, flag
@@ -484,6 +501,97 @@ contains
 
         ! Process
         call c_snn_set_weights(this%m_network, x)
+    end subroutine
+
+    !> @brief Returns a count of all bias terms in the network.
+    !!
+    !! @param[in] this The neural_network object.
+    !! @return The number of bias terms in the network.
+    pure function nn_get_bias_count(this) result(x)
+        ! Arguments
+        class(neural_network), intent(in) :: this
+        integer(int32) :: x
+
+        ! Process
+        if (associated(this%m_network)) then
+            x = this%m_network%total_bias_count
+        else
+            x = 0
+        end if
+    end function
+
+    !> @brief Gets a vector containing each bias term.
+    !!
+    !! @param[in] this The neural_network object.
+    !! @param[in,out] err
+    !!
+    !! @return An array containing the bias terms.
+    function nn_get_bias(this, err) result(x)
+        ! Arguments
+        class(neural_network), intent(in) :: this
+        class(errors), intent(inout), optional, target :: err
+        real(real64), allocatable, dimension(:) :: x
+
+        ! Local Variables
+        integer(int32) :: n, flag
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+
+        ! Initialization
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+
+        ! Local Memory Allocation
+        n = this%get_bias_count()
+        allocate(x(n), stat = flag)
+        if (flag /= 0) then
+            ! TO DO: Out of memory error
+        end if
+
+        ! Retrieve the data
+        call c_snn_get_bias(this%m_network, x)
+    end function
+
+    !> @brief Sets the bias terms for the network.
+    !!
+    !! @param[in,out] this The neural_network object.
+    !! @param[in] x The array of bias terms.
+    !! @param[in,out] err
+    !!
+    subroutine nn_set_bias(this, x, err)
+        ! Arguments
+        class(neural_network), intent(inout) :: this
+        real(real64), intent(in), dimension(:) :: x
+        class(errors), intent(inout), optional, target :: err
+
+        ! Local Variables
+        integer(int32) :: n
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+
+        ! Initialization
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+
+        ! Ensure the network is initialized
+        n = this%get_bias_count()
+        if (n == 0) then
+            ! TO DO: Uninitialized network error
+        end if
+
+        ! Input Check
+        if (size(x) /= n) then
+            ! TO DO: Array size error
+        end if
+
+        ! Process
+        call c_snn_set_bias(this%m_network, x)
     end subroutine
 
     !> @brief Randomizes the value of each weighting factor over the set [0, 1].

@@ -31,6 +31,22 @@ void snn_set_weights(network *obj, const double *x) {
     for (i = 0; i < obj->total_weight_count; ++i) obj->weights[i] = x[i];
 }
 
+void snn_get_bias(const network *obj, double *x) {
+    /* Local Variables */
+    int i;
+
+    /* Process */
+    for (i = 0; i < obj->total_bias_count; ++i) x[i] = obj->bias[i];
+}
+
+void snn_set_bias(network *obj, double *x) {
+    /* Local Variables */
+    int i;
+
+    /* Process */
+    for (i = 0; i < obj->total_bias_count; ++i) obj->bias[i] = x[i];
+}
+
 void snn_gradient(const network *obj, const snn_cost_fcn_diff dcf, 
                   const double *x, const double *y, bool eval, double *g)
 {

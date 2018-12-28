@@ -12,6 +12,8 @@ extern "C" {
 void snn_run_network(const network *obj, const double *inputs, double *outputs);
 void snn_get_weights(const network *obj, double *x);
 void snn_set_weights(network *obj, const double *x);
+void snn_get_bias(const network *obj, double *x);
+void snn_set_bias(network *obj, double *x);
 void snn_gradient(const network *obj, const snn_cost_fcn_diff dcf, 
                   const double *x, const double *y, bool eval, double *g);
 void snn_get_network_output_error(const network *obj, double *x);
