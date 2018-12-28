@@ -238,26 +238,33 @@ double* snn_eval_network(const network *obj, const double *x) {
     return outputs;
 }
 
-double* snn_eval_gradient(const network *obj, const snn_cost_fcn cf, 
-                          const snn_cost_fcn_diff dcf, const double *x,
-                          const double *y)
+
+
+
+
+
+double* snn_eval_gradient(const network *obj, const snn_cost_fcn_diff dcf, 
+                          const double *x, const double *y, bool eval)
 {
     /* Local Variables */
-    int i, nlayer, nnext;
-    double *del, *z, *a, *weights, *delnext, *bias, *aprev, dsig, val;
+    int i, j, k, l, nin, nlayer, nnext;
+    double *del, *z, *a, *weights, *delnext, *bias, *aprev, *g, dsig, val;
+
+    /* Evaluate the network at X */
+    if (eval) snn_eval_network(obj, x);
 
     /* Let Z use the workspace array */
     z = obj->workspace;
 
     /* Compute the error in the output layer of the network. */
     nnext = obj->output_count;
-    nlayer = obj->neuron_per_layer_count[obj->total_layer_count - 2]; /* # of neurons in the last hidden layer */
-    del = obj->delta_pointers[obj->total_layer_count - 2];  /* Pointer to overall output error vector */
-    a = obj->output_pointers[obj->total_layer_count - 1];   /* a = sigma(z) - NNEXT elements long */
-    aprev = obj->output_pointers[obj->total_layer_count - 2]; /* aprev = sigma(z(l-1)) - NLAYER elements long */
-    bias = obj->bias_pointers[obj->total_bias_count - 1]; /* NNEXT elements */
-    weights = obj->weight_pointers[obj->total_layer_count - 2]; /* NNEXT-by-NLAYER */
-    copy(nnext, bias, z); /* Store bias in Z */
+    nlayer = obj->neuron_per_layer_count[obj->total_layer_count - 2];   /* # of neurons in the last hidden layer */
+    del = obj->delta_pointers[obj->total_layer_count - 2];              /* Pointer to overall output error vector */
+    a = obj->output_pointers[obj->total_layer_count - 1];               /* a = sigma(z) - network output - NNEXT elements long */
+    aprev = obj->output_pointers[obj->total_layer_count - 2];           /* aprev = sigma(z(l-1)) - last hidden layer output - NLAYER elements long */
+    bias = obj->bias_pointers[obj->total_bias_count - 1];               /* NNEXT elements - bias terms from output layer */
+    weights = obj->weight_pointers[obj->total_layer_count - 2];         /* NNEXT-by-NLAYER */
+    copy(nnext, bias, z);                                               /* Store bias in Z */
     for (i = 0; i < obj->output_count; ++i) {
         /* Compute z = w * a + bias NOTE: bias is stored in Z*/
         mult_mtx(nnext, 1, nlayer, weights, aprev, 1.0, z);
@@ -271,41 +278,54 @@ double* snn_eval_gradient(const network *obj, const snn_cost_fcn cf,
     /* Compute the error in each previous layer */
     for (i = obj->total_layer_count - 2; i > 0; --i) {
         /* Define the size info */
-        nlayer = obj->neuron_per_layer_count[i];
-        nnext = obj->neuron_per_layer_count[i+1];
+        nnext = obj->neuron_per_layer_count[i+1];   /* # of neurons in the next higher layer */
+        nlayer = obj->neuron_per_layer_count[i];    /* # of neurons in the current layer */
+        nin = obj->neuron_per_layer_count[i-1];     /* # of neurons in the previous layer */
 
         /* Get the appropriate pointers */
-        delnext = obj->delta_pointers[i];       /* NNEXT elements */
-        del = obj->delta_pointers[i - 1];       /* NLAYER elements */
-        a = obj->output_pointers[i];            /* NNEXT elements */
-        aprev = obj->output_pointers[i-1];      /* NLAYER elements */
-        weights = obj->weight_pointers[i - 1];  /* NNEXT-by-NLAYER */
-        bias = obj->bias_pointers[i - 1];       /* NLAYER elements */
+        delnext = del;                              /* NNEXT elements - Pointer to the next higher layer's error results */
+        del = obj->delta_pointers[i-1];             /* NLAYER elements - Pointer to where this layer's error values will be written */
+        bias = obj->bias_pointers[i-1];             /* NLAYER elements - Pointer to this layer's bias terms */
+        a = obj->output_pointers[i];                /* NLAYER elements - Pointer to this layer's output */
+        aprev = obj->output_pointers[i-1];          /* NIN elements - Pointer to the previous layer's output */
+        weights = obj->weight_pointers[i-1];        /* NLAYER-by-NIN - Pointer to the weighting matrix */
 
-        /* TO DO:
-         * - Verify indices and size parameters
-         * - Verify Equations
-         */
+        /* Copy this layer's bias terms into the buffer Z */
+        copy(nlayer, bias, z);
 
+        /* Compute Z = WEIGHTS * APREV + Z */
+        mult_mtx(nlayer, 1, nin, weights, aprev, 1.0, z);
 
-        /* Compute z = w * aprev + bias */
+        /* Compute the layer error by first computing WEIGHTS**T * DELNEXT */
+        weights = obj->weight_pointers[i];  /* NNEXT-by-NLAYER - Pointer to the weighting matrix between this layer and the next higher layer */
+        mult_trans_mtx(nlayer, 1, nnext, weights, delnext, 0.0, del);
 
-        /* Compute the error for the layer */
-        evaluate_layer_error(nlayer, nnext, z, delnext, weights, del);
+        /* Now compute the Hadamard product with the derivative of the sigmoid function */
+        hadamard_product(nlayer, z, del);
     }
 
     /* Construct the bias terms of the gradient using the error estimates */
-    copy(obj->total_bias_count, obj->delta, obj->gradient_bias_pointers);
+    copy(obj->total_bias_count, obj->delta, obj->gradient_bias_pointers[0]);
 
     /* Construct the weighting factor terms of the gradient */
+    nlayer = obj->input_count;
     for (i = 1; i < obj->total_layer_count; ++i) {
-        /* Get the appropriate pointers */
-        del = obj->delta_pointers[i - 1];
+        /* Determine the array size information */
+        nin = nlayer;
+        nlayer = obj->neuron_per_layer_count[i];
 
-        /* TO DO:
-         * - Get the appropriate pointer to a(l)
-         * - Compute the gradient term
-         */
+        /* Get the appropriate pointers */
+        aprev = obj->output_pointers[i-1];      /* NIN elements */
+        del = obj->delta_pointers[i-1];         /* NLAYER elements */
+        g = obj->gradient_weight_pointers[i-1]; /* NIN * NLAYER elements */
+
+        /* Compute  aprev(k) * delta(j) */
+        l = 0;
+        for (k = 0; k < nin; ++k) {
+            for (j = 0; j < nlayer; ++j) {
+                g[l++] = aprev[k] * del[j];
+            }
+        }
     }
 
     /* Output */
@@ -388,10 +408,48 @@ static void mult_mtx(int m, int n, int k, const double *x, const double *y, doub
 
 
 
+static void mult_trans_mtx(int m, int n, int k, const double *x, const double *y, 
+                           double beta, double *z)
+{
+    /* Local Variables */
+    int i, j, ij;
+    double val;
 
-static void hadamard_product(int n, const double *x, const double *y, double *z) {
+    /* 
+     * X is input as K-by-M
+     * Y is input as K-by-N
+     * Z is M-by-N
+     */
+
+    /* Process */
+    if (beta == 0.0) {
+        for (j = 0; j < n; ++j) {
+            for (i = 0; i < m; ++i) {
+                val = 0.0;
+                for (ij = 0; ij < k; ++ij) val += x[INDEX(ij, i, k)] * y[INDEX(ij, j, k)];
+                z[INDEX(i, j, m)] = val;
+            }
+        }
+    }
+    else {
+        for (j = 0; j < n; ++j) {
+            for (i = 0; i < m; ++i) {
+                val = beta * z[INDEX(i, j, m)];
+                for (ij = 0; ij < k; ++ij) val += x[INDEX(ij, i, k)] * y[INDEX(ij, j, k)];
+                z[INDEX(i, j, m)] = val;
+            }
+        }
+    }
+}
+
+
+
+
+
+
+static void hadamard_product(int n, const double *x, double *y) {
     int i;
-    for (i = 0; i < n; ++i) z[i] = x[i] * y[i];
+    for (i = 0; i < n; ++i) y[i] = diff_sigmoid(x[i]) * y[i];
 }
 
 

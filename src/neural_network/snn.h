@@ -10,6 +10,8 @@
  * as including snn.h and snn.c in your project.
  */
 
+#include <stdbool.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -146,21 +148,25 @@ double* snn_eval_network(const network *obj, const double *x);
 /* Computes the gradient vector of the network for a given cost function.
  * 
  * - obj: The network.
- * - cf: The cost function to apply.
  * - dcf: The derivative of the cost function with respect to the network
  *      outputs.
  * - x: A poitner to an array containing the input values to the network.  There
  *      is expected to be one value for every input neuron.
  * - y: A pointer to an array containing the expected output from the network.
  *      There is expected to be one value for every output neuron.
+ * - eval: Set to true if a network evaluation is necessary; else, false.  For
+ *      the gradient calculations to be correct, the state of the network must
+ *      be current such that it has been evaluated at X.  If the network
+ *      has not been evaluated at X with snn_eval_network, set this parameter
+ *      to true.  Only set this parameter to false if snn_eval_network has
+ *      been called for X.
  * Returns: A pointer to an array containing the gradient vector of the network
  *      with respect to each weight and bias term.  Notice, the memory 
  *      referenced by this pointer is internally controlled.  Do not attempt
  *      to free or release this array.
  */
-double* snn_eval_gradient(const network *obj, const snn_cost_fcn cf, 
-                          const snn_cost_fcn_diff dcf, const double *x,
-                          const double *y);
+double* snn_eval_gradient(const network *obj, const snn_cost_fcn_diff dcf, 
+                          const double *x, const double *y, bool eval);
 
 
 /* Evaluates a single layer of the network.
@@ -195,26 +201,39 @@ static void evaluate_layer_error(int ninputs, int nouts, const double *x, const 
 
 /* Multiplies two matrices such that: z = x * y + beta * z.
  * 
- * m: The number of rows in the output matrix.
- * n: The number of columns in the output matrix.
- * k: The number of columns in the left-hand matrix, and the number of rows
+ * - m: The number of rows in the output matrix.
+ * - n: The number of columns in the output matrix.
+ * - k: The number of columns in the left-hand matrix, and the number of rows
  *      in the right-hand matrix.
- * x: A pointer to the M-by-K left-hand matrix.
- * y: A pointer to the K-by-N right-hand matrix.
- * beta: A scaling factor.
- * z: [input, output] A pointer to the M-by-N output matrix.
+ * - x: A pointer to the M-by-K left-hand matrix.
+ * - y: A pointer to the K-by-N right-hand matrix.
+ * - beta: A scaling factor.
+ * - z: [input, output] A pointer to the M-by-N output matrix.
  */
 static void mult_mtx(int m, int n, int k, const double *x, const double *y, double beta,
                      double *z);
 
-/* Computes the Hadamard product of two arrays.
+/* Multiplies two matrices such that: z = x**T * y + beta * z.
+ * - m: The number of rows in the output matrix.
+ * - n: The number of columns in the output matrix.
+ * - k: The number of rows in the left-hand-side matrix, and the number of rows
+ *      in the right-hand-matrix.
+ * - x: A pointer to the K-by-M left-hand matrix.
+ * - y: A pointer to the K-by-N right-hand-matrix.
+ * - beta: A scaling factor.
+ * - z: [input, output] A pointer to the M-by-N output matrix.
+ */
+static void mult_trans_mtx(int m, int n, int k, const double *x, const double *y, 
+                           double beta, double *z);
+
+/* Computes the Hadamard product of two arrays while applying the derivative
+ * of the sigmoid function on X such that: Y = D(x) * Y.
  *
  * - n: The number of elements in either array.
  * - x: A pointer to the first array.
- * - y: A pointer to the second array.
- * - z: [output] A pointer to the output array.
+ * - y: [input, output] A pointer to the second array.
  */
-static void hadamard_product(int n, const double *x, const double *y, double *z);
+static void hadamard_product(int n, const double *x, double *y);
 
 /* Computes the sigmoid function.
  *
