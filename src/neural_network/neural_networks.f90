@@ -85,6 +85,23 @@ module neural_networks
             type(snn_network), intent(inout) :: obj
             real(c_double), intent(in) :: x(*)
         end subroutine
+
+        function c_cost_fcn_diff(y, a) result(z)
+            use iso_c_binding
+            real(c_double), intent(in), value :: y, a
+            real(c_double) :: z
+        end function
+
+        subroutine c_snn_gradient(obj, dcf, x, y, eval, g) bind(C, name = "snn_gradient")
+            use iso_c_binding
+            import snn_network
+            ! import c_cost_fcn_diff
+            type(snn_network), intent(in) :: obj
+            type(c_funptr), intent(in), value :: dcf ! c_cost_fcn_diff
+            real(c_double), intent(in) :: x(*), y(*)
+            logical(c_bool), intent(in), value :: eval
+            real(c_double), intent(out) :: g(*)
+        end subroutine
     end interface
 
 

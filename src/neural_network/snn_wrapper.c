@@ -30,3 +30,17 @@ void snn_set_weights(network *obj, const double *x) {
     /* Process */
     for (i = 0; i < obj->total_weight_count; ++i) obj->weights[i] = x[i];
 }
+
+void snn_gradient(const network *obj, const snn_cost_fcn_diff dcf, 
+                  const double *x, const double *y, bool eval, double *g)
+{
+    /* Local Variables */
+    int i;
+    double *ptr;
+
+    /* Process */
+    ptr = snn_eval_gradient(obj, dcf, x, y, eval);
+
+    /* Copy the contents at ptr to g */
+    for (i = 0; i < obj->total_coefficient_count; ++i) g[i] = ptr[i];
+}
