@@ -18,6 +18,9 @@ program test
     check = test_network_output()
     if (.not.check) overall = .false.
 
+    check = test_network_output_2()
+    if (.not.check) overall = .false.
+
     ! call train_network_test()
 
 
@@ -90,7 +93,7 @@ contains
         ! Initialization
         rst = .true.
         weights = [0.5d0, 2.0d0]
-        bias = [-1.0d0, 5.0d0]
+        bias = [-1.0d0, -5.0d0]
         call random_number(inputs)
 
         ! Construct a network of 1 hidden layer with one neuron, and a single
@@ -100,14 +103,14 @@ contains
         ! Ensure the correct number of bias and weighting terms
         if (network%get_weight_count() /= size(weights)) then
             rst = .false.
-            print '(AI0AI0A)', "TEST FAILED (TEST_NETWORK_BASICS): Expected ", &
+            print '(AI0AI0A)', "TEST FAILED (TEST_NETWORK_OUTPUT): Expected ", &
                 size(weights), " weighting factors, but found ", &
                 network%get_weight_count(), "."
             return
         end if
         if (network%get_bias_count() /= size(bias)) then
             rst = .false.
-            print '(AI0AI0A)', "TEST FAILED (TEST_NETWORK_BASICS): Expected ", &
+            print '(AI0AI0A)', "TEST FAILED (TEST_NETWORK_OUTPUT): Expected ", &
                 size(bias), " bias terms, but found ", &
                 network%get_bias_count(), "."
             return
@@ -129,7 +132,7 @@ contains
         ! Now, use the neural_network object to perform the evaluation
         ins(:,1) = inputs
         do i = 1, ntests
-            output(i,:) = network%run(ins(1,:))
+            output(i,:) = network%run(ins(i,:))
         end do
 
         ! Compare results
@@ -137,8 +140,92 @@ contains
             if (abs(output(i,1) - answers(i)) > tol) then
                 rst = .false.
                 print '(AF9.7AF9.7A)', &
-                    "TEST FAILED (TEST_NETWORK_BASICS): Expected ", &
+                    "TEST FAILED (TEST_NETWORK_OUTPUT): Expected ", &
                     answers(i), ", but found ", output(i,1), "."
+            end if
+        end do
+    end function
+
+    function test_network_output_2() result(rst)
+        ! Arguments
+        logical :: rst
+
+        ! Parameters
+        integer(int32), parameter :: ntests = 5
+        real(real64), parameter :: tol = 1.0d-6
+
+        ! Local Variables
+        type(neural_network) :: network
+        integer(int32) :: i
+        real(real64) :: in1, in2, temp1, temp2, weights(6), bias(3), &
+            inputs(ntests, 2), outputs(ntests, 1), answers(ntests)
+
+        ! Initialization
+        rst = .true.
+        call random_number(weights)
+        call random_number(bias)
+        call random_number(inputs)
+
+        ! Construct a network of 2 inputs, 1 hidden layer with 2 neurons, and
+        ! a single output.
+        call network%initialize(2, 1, 2, 1)
+
+        ! Ensure the correct number of bias and weighting terms
+        if (network%get_weight_count() /= size(weights)) then
+            rst = .false.
+            print '(AI0AI0A)', &
+                "TEST FAILED (TEST_NETWORK_OUTPUT_2): Expected ", &
+                size(weights), " weighting factors, but found ", &
+                network%get_weight_count(), "."
+            return
+        end if
+        if (network%get_bias_count() /= size(bias)) then
+            rst = .false.
+            print '(AI0AI0A)', &
+                "TEST FAILED (TEST_NETWORK_OUTPUT_2): Expected ", &
+                size(bias), " bias terms, but found ", &
+                network%get_bias_count(), "."
+            return
+        end if
+
+        ! Construct the weighting and bias vectors
+        call network%set_weights(weights)
+        call network%set_bias(bias)
+
+        ! Define the solution
+        do i = 1, ntests
+            ! Define the inputs to the two hidden neurons
+            in1 = weights(1) * inputs(i,1) + weights(3) * inputs(i,2) + bias(1)
+            in2 = weights(2) * inputs(i,1) + weights(4) * inputs(i,2) + bias(2)
+
+            ! Evaluate the hidden neurons
+            temp1 = 1.0d0 / (1.0d0 + exp(-in1))
+            temp2 = 1.0d0 / (1.0d0 + exp(-in2))
+
+            ! Compute the results of the output layer
+            in1 = weights(5) * temp1 + weights(6) * temp2 + bias(3)
+            answers(i) = 1.0d0 / (1.0d0 + exp(-in1))
+
+            ! Print the output
+            print '(AI0)', "TEST ", i
+            print '(AF9.7)', achar(9) // "HIDDEN NEURON 1: ", temp1
+            print '(AF9.7)', achar(9) // "HIDDEN NEURON 2: ", temp2
+            print '(AF9.7)', achar(9) // "NETWORK OUTPUT: ", answers(i)
+            print *, ""
+        end do
+
+        ! Evaluate the network
+        do i = 1, ntests
+            outputs(i,:) = network%run(inputs(i,:))
+        end do
+
+        ! Compare the results
+        do i = 1, ntests
+            if (abs(outputs(i,1) - answers(i)) > tol) then
+                rst = .false.
+                print '(AF9.7AF9.7A)', &
+                    "TEST FAILED (TEST_NETWORK_OUTPUT_2): Expected ", &
+                    answers(i), ", but found ", outputs(i,1), "."
             end if
         end do
     end function
