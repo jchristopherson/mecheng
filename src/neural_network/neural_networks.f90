@@ -162,6 +162,13 @@ module neural_networks
             type(snn_network), intent(in) :: obj
             real(c_double), intent(out) :: x(*)
         end subroutine
+
+        subroutine c_snn_get_neuron_errors(obj, x) bind(C, name = "snn_get_neuron_errors")
+            use iso_c_binding
+            import snn_network
+            type(snn_network), intent(in) :: obj
+            real(c_double), intent(out) :: x(*)
+        end subroutine
     end interface
 
 
@@ -184,6 +191,7 @@ module neural_networks
         procedure, public :: get_bias => nn_get_bias
         procedure, public :: set_bias => nn_set_bias
         procedure, public :: randomize_weights => nn_randomize_weights
+        procedure, public :: get_neuron_errors => nn_get_neuron_errors
     end type
 
 contains
@@ -625,6 +633,42 @@ contains
         ! Randomize the weights and biases
         call c_snn_randomize_weights_and_biases(this%m_network)
     end subroutine
+
+    function nn_get_neuron_errors(this, err) result(rst)
+        ! Arguments
+        class(neural_network), intent(in) :: this
+        class(errors), intent(inout), optional, target :: err
+        real(real64), allocatable, dimension(:) :: rst
+
+        ! Local Variables
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+        integer(int32) :: n, flag
+
+        ! Initialization
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+
+        ! Get the length of the array
+        n = this%get_bias_count()
+
+        ! Ensure the network has been initialized
+        if (n == 0) then
+            ! TO DO: Uninitialized network error
+        end if
+
+        ! Allocate memory
+        allocate(rst(n), stat = flag)
+        if (flag /= 0) then
+            ! TO DO: Out of memory error
+        end if
+
+        ! Retrieve the array
+        call c_snn_get_neuron_errors(this%m_network, rst)
+    end function
 
 ! ------------------------------------------------------------------------------
     subroutine shuffle_array_dbl(x)

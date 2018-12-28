@@ -17,6 +17,7 @@ void snn_set_bias(network *obj, double *x);
 void snn_gradient(const network *obj, const snn_cost_fcn_diff dcf, 
                   const double *x, const double *y, bool eval, double *g);
 void snn_get_network_output_error(const network *obj, double *x);
+void snn_get_neuron_errors(const network *obj, double *x);
 
 #ifdef __cplusplus
 }

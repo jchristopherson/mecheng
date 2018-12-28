@@ -70,3 +70,13 @@ void snn_get_network_output_error(const network *obj, double *x) {
     ptr = obj->delta_pointers[obj->total_layer_count - 2];
     for (i = 0; i < obj->output_count; ++i) x[i] = ptr[i];
 }
+
+void snn_get_neuron_errors(const network *obj, double *x) {
+    /* Local Variables */
+    int i;
+    double *ptr;
+
+    /* Obtain a pointer to the error array */
+    ptr = obj->delta;
+    for (i = 0; i < obj->total_bias_count; ++i) x[i] = ptr[i];
+}

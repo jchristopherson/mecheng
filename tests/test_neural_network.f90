@@ -21,7 +21,7 @@ program test
     check = test_network_output_2()
     if (.not.check) overall = .false.
 
-    ! call train_network_test()
+    call train_network_test()
 
 
     ! Check
@@ -214,13 +214,6 @@ contains
             print *, ""
         end do
 
-        ! Print out the weights and biases
-        print '(A)', "WEIGHTS: "
-        print *, weights
-
-        print '(A)', "BIAS: "
-        print *, bias
-
         ! Evaluate the network
         do i = 1, ntests
             outputs(i,:) = network%run(inputs(i,:))
@@ -261,7 +254,7 @@ contains
         class(plot_axis), pointer :: xAxis1, yAxis1, xAxis2, yAxis2
         class(legend), pointer :: lgnd
 
-        real(real64), allocatable, dimension(:) :: weights
+        real(real64), allocatable, dimension(:) :: errs, tempOut
 
         ! Populate the applied loads matrix
         loads = reshape([0.0d0, 3000.0d0, 6000.0d0, 7500.0d0, 9000.0d0, 12000.0d0, &
@@ -316,23 +309,24 @@ contains
         ! Set up and train the network
         call network%initialize(2, 2, 2, 2)
 
-        weights = network%get_weights()
-        print '(A)', "Initial Weight Values:"
-        print *, weights
-
         do i = 1, niter
             ev = 0.0d0
             do j = 1, npts
                 call network%training_step(sbridge(j,:), sloads(j,:), &
                     learning_rate, delta = delta)
                 ev = max(ev, norm2(delta))
+                errs = network%get_neuron_errors()
+                temp = network%run(sbridge(j,:))
+
+                print '(AI0AI0)', "Iteration: ", i, ", Data Set: ", j
+                print '(A)', "Desired Outputs:"
+                print *, sloads(j,:)
+                print '(A)', "Actual Outputs:"
+                print *, temp
+                print *, ""
             end do
             residuals(i) = ev
         end do
-
-        weights = network%get_weights()
-        print '(A)', "Trained Weight Values:"
-        print *, weights
 
         ! Apply the trained network to the data set
         do i = 1, npts
