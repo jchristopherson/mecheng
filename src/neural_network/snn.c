@@ -5,6 +5,8 @@
 #include <time.h>
 #include "snn.h"
 
+#include <stdio.h>
+
 #define SQR(x) ((x) * (x))
 #define MAX(x, y) ((x) > (y) ? (x) : (y))
 #define INDEX(i, j, m) ((j) * (m) + (i))
@@ -75,11 +77,12 @@ network* snn_init_network(int nlayers, const int *node_counts, int *err) {
     if (!obj->weights) goto CLEAN_UP_ON_ERROR;
     obj->weight_pointers = (double**)malloc((size_t)((nlayers - 1) * sizeof(double*)));
     if (!obj->weight_pointers) goto CLEAN_UP_ON_ERROR;
-
+    noffset = 0;
     for (i = 1; i < nlayers; ++i) {
         nin = node_counts[i-1];
         nout = node_counts[i];
-        obj->weight_pointers[i-1] = obj->weights + (i - 1) * (nin * nout);
+        obj->weight_pointers[i-1] = obj->weights + noffset;
+        noffset += nin * nout;
     }
 
     /* Store the neuron-per-layer information */
@@ -233,7 +236,7 @@ void snn_randomize_weights_and_biases(network *obj) {
 
 double* snn_eval_network(const network *obj, const double *x) {
     /* Local Variables */
-    int i, nin, nout;
+    int i, nin, nout, ii, jj;
     double *weights, *inputs, *outputs, *bias;
 
     /* Copy the inputs into the appropriate storage array */
