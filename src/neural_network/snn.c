@@ -253,9 +253,9 @@ double* snn_eval_gradient(const network *obj, const snn_cost_fcn cf,
     nnext = obj->output_count;
     nlayer = obj->neuron_per_layer_count[obj->total_layer_count - 2]; /* # of neurons in the last hidden layer */
     del = obj->delta_pointers[obj->total_layer_count - 2];  /* Pointer to overall output error vector */
-    a = obj->output_pointers[obj->total_layer_count - 1];   /* a = sigma(z) */
-    aprev = obj->output_pointers[obj->total_layer_count - 2]; /* aprev = sigma(z(l-1)) */
-    bias = obj->bias_pointers[obj->total_bias_count - 1]; /* NNEXT Elements */
+    a = obj->output_pointers[obj->total_layer_count - 1];   /* a = sigma(z) - NNEXT elements long */
+    aprev = obj->output_pointers[obj->total_layer_count - 2]; /* aprev = sigma(z(l-1)) - NLAYER elements long */
+    bias = obj->bias_pointers[obj->total_bias_count - 1]; /* NNEXT elements */
     weights = obj->weight_pointers[obj->total_layer_count - 2]; /* NNEXT-by-NLAYER */
     copy(nnext, bias, z); /* Store bias in Z */
     for (i = 0; i < obj->output_count; ++i) {
@@ -270,23 +270,25 @@ double* snn_eval_gradient(const network *obj, const snn_cost_fcn cf,
 
     /* Compute the error in each previous layer */
     for (i = obj->total_layer_count - 2; i > 0; --i) {
-        /* Get the appropriate pointers */
-        delnext = obj->delta_pointers[i];
-        del = obj->delta_pointers[i - 1];
-        a = obj->output_pointers[i];
-        weights = obj->weight_pointers[i];
-
-        /* TO DO:
-         * - Get a pointer to the bias term
-         * - Ensure we've got a(l-1) referenced by aprev
-         * - Verify Equations
-         */
-
         /* Define the size info */
         nlayer = obj->neuron_per_layer_count[i];
         nnext = obj->neuron_per_layer_count[i+1];
 
-        /* Compute z = w * a + bias */
+        /* Get the appropriate pointers */
+        delnext = obj->delta_pointers[i];       /* NNEXT elements */
+        del = obj->delta_pointers[i - 1];       /* NLAYER elements */
+        a = obj->output_pointers[i];            /* NNEXT elements */
+        aprev = obj->output_pointers[i-1];      /* NLAYER elements */
+        weights = obj->weight_pointers[i - 1];  /* NNEXT-by-NLAYER */
+        bias = obj->bias_pointers[i - 1];       /* NLAYER elements */
+
+        /* TO DO:
+         * - Verify indices and size parameters
+         * - Verify Equations
+         */
+
+
+        /* Compute z = w * aprev + bias */
 
         /* Compute the error for the layer */
         evaluate_layer_error(nlayer, nnext, z, delnext, weights, del);
