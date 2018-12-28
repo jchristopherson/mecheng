@@ -322,8 +322,9 @@ double* snn_eval_gradient(const network *obj, const snn_cost_fcn_diff dcf,
         /* Compute  aprev(k) * delta(j) */
         l = 0;
         for (k = 0; k < nin; ++k) {
+            val = aprev[k];
             for (j = 0; j < nlayer; ++j) {
-                g[l++] = aprev[k] * del[j];
+                g[l++] = val * del[j];
             }
         }
     }
