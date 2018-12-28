@@ -284,7 +284,7 @@ double* snn_eval_gradient(const network *obj, const snn_cost_fcn_diff dcf,
     del = obj->delta_pointers[obj->total_layer_count - 2];              /* Pointer to overall output error vector */
     a = obj->output_pointers[obj->total_layer_count - 1];               /* a = sigma(z) - network output - NNEXT elements long */
     aprev = obj->output_pointers[obj->total_layer_count - 2];           /* aprev = sigma(z(l-1)) - last hidden layer output - NLAYER elements long */
-    bias = obj->bias_pointers[obj->total_bias_count - 1];               /* NNEXT elements - bias terms from output layer */
+    bias = obj->bias_pointers[obj->total_layer_count - 2];              /* NNEXT elements - bias terms from output layer */
     weights = obj->weight_pointers[obj->total_layer_count - 2];         /* NNEXT-by-NLAYER */
     copy(nnext, bias, z);                                               /* Store bias in Z */
     for (i = 0; i < obj->output_count; ++i) {
@@ -293,7 +293,8 @@ double* snn_eval_gradient(const network *obj, const snn_cost_fcn_diff dcf,
 
         /* Compute the error of the output layer */
         dsig = diff_sigmoid(z[i]);
-        val = dcf(y[i], a[i]);
+        // val = dcf(y[i], a[i]);
+        val = snn_diff_quadratic_cost_fcn(y[i], a[i]);
         del[i] = val * dsig;
     }
 
