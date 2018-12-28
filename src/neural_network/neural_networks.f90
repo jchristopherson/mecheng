@@ -6,6 +6,7 @@ module neural_networks
     use ferror
     implicit none
     private
+    public :: cost_function_derivative
     public :: neural_network
     public :: shuffle
 
@@ -16,6 +17,23 @@ module neural_networks
         module procedure :: shuffle_array_dbl
         module procedure :: shuffle_mtx_dbl
         module procedure :: shuffle_array_int32
+    end interface
+
+    interface
+        !> @brief Computes the derivative of the network cost function with
+        !!  respect to the network outputs (a).
+        !!
+        !! @param[in] y The desired output of the network at the j-th output
+        !!      neuron.
+        !! @param[in] a The actual output of the network at the j-th output 
+        !!      neuron.
+        !! @return The value of the cost function derivative at the j-th
+        !!      output neuron.
+        function cost_function_derivative(y, a) result(rst)
+            use iso_fortran_env
+            real(real64), intent(in), value :: y, a
+            real(real64) :: rst
+        end function
     end interface
 
     ! Wrapper type for the C NETWORK structure (see snn.h)
@@ -45,6 +63,19 @@ module neural_networks
     end type
 
     interface
+        function c_snn_quadratic_cost_fcn(n, y, a) result(rst) bind(C, name = "snn_quadratic_cost_fcn")
+            use iso_c_binding
+            integer(c_int), intent(in), value :: n
+            real(c_double), intent(in) :: y(n), a(n)
+            real(c_double) :: rst
+        end function
+
+        function c_snn_diff_quadratic_cost_fcn(y, a) result(rst) bind(C, name = "snn_diff_quadratic_cost_fcn")
+            use iso_c_binding
+            real(c_double), intent(in), value :: y, a
+            real(c_double) :: rst
+        end function
+
         function c_snn_init_network(nlayers, node_counts, err) result(obj) bind(C, name = "snn_init_network")
             use iso_c_binding
             import snn_network
@@ -95,12 +126,27 @@ module neural_networks
         subroutine c_snn_gradient(obj, dcf, x, y, eval, g) bind(C, name = "snn_gradient")
             use iso_c_binding
             import snn_network
-            ! import c_cost_fcn_diff
             type(snn_network), intent(in) :: obj
             type(c_funptr), intent(in), value :: dcf ! c_cost_fcn_diff
             real(c_double), intent(in) :: x(*), y(*)
             logical(c_bool), intent(in), value :: eval
             real(c_double), intent(out) :: g(*)
+        end subroutine
+
+        subroutine c_snn_traning_step(obj, dcf, x, y, rate) bind(C, name = "snn_training_step")
+            use iso_c_binding
+            import snn_network
+            type(snn_network), intent(in) :: obj
+            type(c_funptr), intent(in), value :: dcf ! c_cost_fcn_diff
+            real(c_double), intent(in) :: x(*), y(*)
+            real(c_double), intent(in), value :: rate
+        end subroutine
+
+        subroutine c_snn_get_network_output_error(obj, x) bind(C, name = "snn_get_network_output_error")
+            use iso_c_binding
+            import snn_network
+            type(snn_network), intent(in) :: obj
+            real(c_double), intent(out) :: x(*)
         end subroutine
     end interface
 
@@ -295,50 +341,75 @@ contains
     !! @param[in] desired An array containing the desired outputs for the given
     !!  inputs.
     !! @param[in] rate The learning rate.
+    !! @param[in] dcf An optional cost function derivative routine, that if
+    !!  supplied, controls how the backpropagation algorithm computes the
+    !!  network error and gradient terms.  The default is a quadratic error
+    !!  function.
     !! @param[out] delta An optional output array that, if supplied, is used to
     !!  return the difference between the actual network output, and the desired
     !!  network output.
     !! @param[in,out] err
     !!
-    subroutine nn_training_step(this, inputs, desired, rate, delta, err)
+    subroutine nn_training_step(this, inputs, desired, rate, dcf, delta, err)
         ! Arguments
         class(neural_network), intent(in) :: this
         real(real64), intent(in), dimension(:) :: inputs, desired
         real(real64), intent(in) :: rate
+        procedure(cost_function_derivative), intent(in), pointer, optional :: dcf
         real(real64), intent(out), dimension(:), optional :: delta
         class(errors), intent(inout), optional, target :: err
 
         ! Local Variables
-        ! class(errors), pointer :: errmgr
-        ! type(errors), target :: deferr
-        ! integer(int32) :: nin, nout
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+        integer(int32) :: nin, nout
+        type(c_funptr) :: cfcnptr
+        procedure(c_cost_fcn_diff), pointer :: fcnptr
 
-        ! ! Initialization
-        ! if (present(err)) then
-        !     errmgr => err
-        ! else
-        !     errmgr => deferr
-        ! end if
-        
-        ! ! Determine array sizes
-        ! nin = this%get_input_count()
-        ! nout = this%get_output_count()
+        ! Initialization
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
 
-        ! ! Input Check
-        ! if (size(inputs) /= nin) then
-        !     ! TO DO: Array size error
-        ! end if
+        ! Determine array sizes
+        nin = this%get_input_count()
+        nout = this%get_output_count()
 
-        ! ! Compute the training step
-        ! call c_genann_train(this%m_network, inputs, desired, rate)
+        ! Input Check
+        if (size(inputs) /= nin) then
+            ! TO DO: Array size error
+        end if
+        if (size(desired) /= nout) then
+            ! TO DO: Array size error
+        end if
 
-        ! ! Compute the error estimate, if necessary
-        ! if (present(delta)) then
-        !     if (size(delta) /= nout) then
-        !         ! TO DO: Array size error
-        !     end if
-        !     delta = this%run(inputs, errmgr) - desired
-        ! end if
+        ! Get a pointer to the cost function routine
+        if (present(dcf)) then
+            fcnptr => dcf
+        else
+            fcnptr => c_cost_diff
+        end if
+        cfcnptr = c_funloc(fcnptr)
+
+        ! Compute the traning step
+        call c_snn_traning_step(this%m_network, cfcnptr, inputs, desired, rate)
+
+        ! Compute the error estimate, if necessary
+        if (present(delta)) then
+            if (size(delta) /= nout) then
+                ! TO DO: Array size error
+            end if
+            call c_snn_get_network_output_error(this%m_network, delta)
+        end if
+
+    contains
+        function c_cost_diff(yj, aj) result(cj)
+            real(c_double), intent(in), value :: yj, aj
+            real(c_double) :: cj
+            cj = dcf(yj, aj)
+        end function
     end subroutine
 
     !> @brief Gets a vector containing each weighting factor.

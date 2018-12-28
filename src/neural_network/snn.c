@@ -10,6 +10,28 @@
 #define INDEX(i, j, m) ((j) * (m) + (i))
 
 
+double snn_quadratic_cost_fcn(int n, const double *y, const double *a) {
+    int i;
+    double val, rst = 0.0;
+    for (i = 0; i < n; ++i) {
+        val = y[i] - a[i];
+        rst += SQR(val);
+    }
+    return rst / 2.0;
+}
+
+
+
+
+
+double snn_diff_quadratic_cost_fcn(double y, double a) {
+    return a - y;
+}
+
+
+
+
+
 network* snn_init_network(int nlayers, const int *node_counts, int *err) {
     /* Local Variables */
     int i, nin, nout, noffset;
@@ -336,6 +358,36 @@ double* snn_eval_gradient(const network *obj, const snn_cost_fcn_diff dcf,
 
 
 
+
+void snn_training_step(const network *obj, const snn_cost_fcn_diff dcf,
+                       const double *x, const double *y, double rate)
+{
+    /* Local Variables */
+    int i;
+    double scale, *gw, *gb;
+
+    /* Define the scaling factor */
+    scale = rate / ((double)obj->output_count);
+
+    /* Compute the gradient */
+    snn_eval_gradient(obj, dcf, x, y, true);
+
+    /* Handle the weighting factor update */
+    gw = obj->gradient_weight_pointers[0];
+    for (i = 0; i < obj->total_weight_count; ++i) {
+        obj->weights[i] -= scale * gw[i];
+    }
+
+    /* Handle the bias term update */
+    gb = obj->gradient_bias_pointers[0];
+    for (i = 0; i < obj->total_bias_count; ++i) {
+        obj->bias[i] -= scale * gb[i];
+    }
+}
+
+
+
+
 static void evaluate_layer(int ninputs, int nouts, const double *x, const double *weights, 
                            const double *offsets, double *z)
 {
@@ -469,28 +521,6 @@ inline static double diff_sigmoid(double x) {
     double ex = exp(-x);
     double denom = ex + 1.0;
     return ex / SQR(denom);
-}
-
-
-
-
-
-inline static double quadratic_cost_fcn(int n, const double *y, const double *a) {
-    int i;
-    double val, rst = 0.0;
-    for (i = 0; i < n; ++i) {
-        val = y[i] - a[i];
-        rst += SQR(val);
-    }
-    return rst / 2.0;
-}
-
-
-
-
-
-inline static double diff_quadratic_cost_fcn(double y, double a) {
-    return a - y;
 }
 
 

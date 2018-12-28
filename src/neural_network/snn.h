@@ -107,6 +107,25 @@ typedef struct network_ {
     int workspace_size;
 } network;
 
+/* Computes the quadratic cost function: C = sum(y(j) - a(j))**2 / 2.
+ *
+ * - n: The number of elements in each array.
+ * - y: An N-element array containing the desired outputs of the network.
+ * - a: An N-element array containing the actual network outputs.
+ * Returns: The value of the cost function.
+ */
+double snn_quadratic_cost_fcn(int n, const double *y, const double *a);
+
+/* Computes the derivative of the quadratic cost function
+ * C = sum(y(j) - a(j))**2 / 2 with respect to the actual network outputs (a).
+ * The derivative is expressed as dC/da(j) = a(j) - y(j)
+ *
+ * - y: The desired output of the network at the j-th neuron.
+ * - a: The actual network output at the j-th neuron.
+ * Returns: The value of the cost function derivative at the j-th neuron.
+ */
+double snn_diff_quadratic_cost_fcn(double y, double a);
+
 /* Initializes a new network object.
  *
  * - nlayers: The total number of layers, including the input and output layers.
@@ -168,6 +187,18 @@ double* snn_eval_network(const network *obj, const double *x);
 double* snn_eval_gradient(const network *obj, const snn_cost_fcn_diff dcf, 
                           const double *x, const double *y, bool eval);
 
+/* Takes a single training step.
+ * 
+ * - dcf: The derivative of the cost function with respect to the network
+ *      outputs.
+ * - x: A poitner to an array containing the input values to the network.  There
+ *      is expected to be one value for every input neuron.
+ * - y: A pointer to an array containing the expected output from the network.
+ *      There is expected to be one value for every output neuron.
+ * - rate: The desired learning rate.
+ */
+void snn_training_step(const network *obj, const snn_cost_fcn_diff dcf,
+                       const double *x, const double *y, double rate);
 
 /* Evaluates a single layer of the network.
  *
@@ -248,25 +279,6 @@ inline static double sigmoid(double x);
  * Returns: The result of the function evaluation.
  */
 inline static double diff_sigmoid(double x);
-
-/* Computes the quadratic cost function: C = sum(y(j) - a(j))**2 / 2.
- *
- * - n: The number of elements in each array.
- * - y: An N-element array containing the desired outputs of the network.
- * - a: An N-element array containing the actual network outputs.
- * Returns: The value of the cost function.
- */
-inline static double quadratic_cost_fcn(int n, const double *y, const double *a);
-
-/* Computes the derivative of the quadratic cost function
- * C = sum(y(j) - a(j))**2 / 2 with respect to the actual network outputs (a).
- * The derivative is expressed as dC/da(j) = a(j) - y(j)
- *
- * - y: The desired output of the network at the j-th neuron.
- * - a: The actual network output at the j-th neuron.
- * Returns: The value of the cost function derivative at the j-th neuron.
- */
-inline static double diff_quadratic_cost_fcn(double y, double a);
 
 /* Copies the contents of one array to another.
  *

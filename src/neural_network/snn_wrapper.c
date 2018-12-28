@@ -44,3 +44,13 @@ void snn_gradient(const network *obj, const snn_cost_fcn_diff dcf,
     /* Copy the contents at ptr to g */
     for (i = 0; i < obj->total_coefficient_count; ++i) g[i] = ptr[i];
 }
+
+void snn_get_network_output_error(const network *obj, double *x) {
+    /* Local Variables */
+    int i;
+    double *ptr;
+
+    /* Obtain a pointer to the last layer error array */
+    ptr = obj->delta_pointers[obj->total_layer_count - 2];
+    for (i = 0; i < obj->output_count; ++i) x[i] = ptr[i];
+}
