@@ -214,6 +214,13 @@ contains
             print *, ""
         end do
 
+        ! Print out the weights and biases
+        print '(A)', "WEIGHTS: "
+        print *, weights
+
+        print '(A)', "BIAS: "
+        print *, bias
+
         ! Evaluate the network
         do i = 1, ntests
             outputs(i,:) = network%run(inputs(i,:))
