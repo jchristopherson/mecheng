@@ -35,11 +35,12 @@ typedef double (*snn_cost_fcn)(int n, const double *y, const double *a);
 /* Computes the derivative of the network cost function with respect to the
  * actual outputs (a).
  *
+ * - n: The number of elements in the network output array.
  * - y: The desired output of the network at the j-th neuron.
  * - a: The actual network output at the j-th neuron.
  * Returns: The value of the cost function derivative at the j-th neuron.
  */
-typedef double (*snn_cost_fcn_diff)(double y, double a);
+typedef double (*snn_cost_fcn_diff)(int n, double y, double a);
 
 typedef struct network_ {
     /* The version number of this structure. */
@@ -120,11 +121,31 @@ double snn_quadratic_cost_fcn(int n, const double *y, const double *a);
  * C = sum(y(j) - a(j))**2 / 2 with respect to the actual network outputs (a).
  * The derivative is expressed as dC/da(j) = a(j) - y(j)
  *
+ * - n: The number of elements in the network output array.
  * - y: The desired output of the network at the j-th neuron.
  * - a: The actual network output at the j-th neuron.
  * Returns: The value of the cost function derivative at the j-th neuron.
  */
-double snn_diff_quadratic_cost_fcn(double y, double a);
+double snn_diff_quadratic_cost_fcn(int n, double y, double a);
+
+/* Computes the cross-entropy cost function.
+ * 
+ * - n: The number of elements in each array.
+ * - y: An N-element array containing the desired outputs of the network.
+ * - a: An N-element array containing the actual network outputs.
+ * Returns: The value of the cost function.
+ */
+double snn_entropy_cost_fcn(int n, const double *y, const double *a);
+
+/* Computes the derivative of the cross-entropy cost function with
+ * respect to the actual network outputs (a).
+ * 
+ * - n: The number of elements in the network output array.
+ * - y: The desired output of the network at the j-th neuron.
+ * - a: The actual network output at the j-th neuron.
+ * Returns: The value of the cost function derivative at the j-th neuron.
+ */
+double snn_diff_entropy_cost_fcn(int n, double y, double a);
 
 /* Initializes a new network object.
  *

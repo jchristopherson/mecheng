@@ -9,8 +9,10 @@ module neural_networks
     public :: cost_function_derivative
     public :: neural_network
     public :: shuffle
-
-! REF: https://software.intel.com/en-us/forums/intel-visual-fortran-compiler-for-windows/topic/505505
+    public :: quadratic_cost_function
+    public :: diff_quadratic_cost_function
+    public :: cross_entropy_cost_function
+    public :: diff_cross_entropy_cost_function
 
     !> @brief Randomly shuffles a set of data.
     interface shuffle
@@ -23,14 +25,16 @@ module neural_networks
         !> @brief Computes the derivative of the network cost function with
         !!  respect to the network outputs (a).
         !!
+        !! @param[in] n The number of network outputs.
         !! @param[in] y The desired output of the network at the j-th output
         !!      neuron.
         !! @param[in] a The actual output of the network at the j-th output 
         !!      neuron.
         !! @return The value of the cost function derivative at the j-th
         !!      output neuron.
-        function cost_function_derivative(y, a) result(rst)
+        function cost_function_derivative(n, y, a) result(rst)
             use iso_fortran_env
+            integer(int32), intent(in), value :: n
             real(real64), intent(in), value :: y, a
             real(real64) :: rst
         end function
@@ -70,8 +74,23 @@ module neural_networks
             real(c_double) :: rst
         end function
 
-        function c_snn_diff_quadratic_cost_fcn(y, a) result(rst) bind(C, name = "snn_diff_quadratic_cost_fcn")
+        function c_snn_diff_quadratic_cost_fcn(n, y, a) result(rst) bind(C, name = "snn_diff_quadratic_cost_fcn")
             use iso_c_binding
+            integer(c_int), intent(in), value :: n
+            real(c_double), intent(in), value :: y, a
+            real(c_double) :: rst
+        end function
+
+        function c_snn_entropy_cost_fcn(n, y, a) result(rst) bind(C, name = "snn_entropy_cost_fcn")
+            use iso_c_binding
+            integer(c_int), intent(in), value :: n
+            real(c_double), intent(in) :: y(n), a(n)
+            real(c_double) :: rst
+        end function
+
+        function c_snn_diff_entropy_cost_fcn(n, y, a) result(rst) bind(C, name = "snn_diff_entropy_cost_fcn")
+            use iso_c_binding
+            integer(c_int), intent(in), value :: n
             real(c_double), intent(in), value :: y, a
             real(c_double) :: rst
         end function
@@ -131,8 +150,9 @@ module neural_networks
             real(c_double), intent(in) :: x(*)
         end subroutine
 
-        function c_cost_fcn_diff(y, a) result(z)
+        function c_cost_fcn_diff(n, y, a) result(z)
             use iso_c_binding
+            integer(c_int), intent(in), value :: n
             real(c_double), intent(in), value :: y, a
             real(c_double) :: z
         end function
@@ -171,7 +191,6 @@ module neural_networks
         end subroutine
     end interface
 
-
     type neural_network
     private
         type(snn_network), pointer :: m_network => null()
@@ -192,6 +211,7 @@ module neural_networks
         procedure, public :: set_bias => nn_set_bias
         procedure, public :: randomize_weights => nn_randomize_weights
         procedure, public :: get_neuron_errors => nn_get_neuron_errors
+        procedure, public :: compute_gradient => nn_compute_gradient
     end type
 
 contains
@@ -210,7 +230,6 @@ contains
         ! Arguments
         class(neural_network), intent(inout) :: this
         integer(int32), intent(in) :: inputs, hidden_layers, hidden, outputs
-        real(real64), allocatable, dimension(:) :: weights
 
         ! Local Variables
         type(c_ptr) :: ptr
@@ -368,7 +387,7 @@ contains
     !! @param[in] rate The learning rate.
     !! @param[in] dcf An optional cost function derivative routine, that if
     !!  supplied, controls how the backpropagation algorithm computes the
-    !!  network error and gradient terms.  The default is a quadratic error
+    !!  network error and gradient terms.  The default is a cross-entropy error
     !!  function.
     !! @param[out] delta An optional output array that, if supplied, is used to
     !!  return the difference between the actual network output, and the desired
@@ -430,10 +449,11 @@ contains
         end if
 
     contains
-        function c_cost_diff(yj, aj) result(cj)
+        function c_cost_diff(nj, yj, aj) result(cj)
+            integer(c_int), intent(in), value :: nj
             real(c_double), intent(in), value :: yj, aj
             real(c_double) :: cj
-            cj = dcf(yj, aj)
+            cj = diff_cross_entropy_cost_function(nj, yj, aj)
         end function
     end subroutine
 
@@ -634,6 +654,13 @@ contains
         call c_snn_randomize_weights_and_biases(this%m_network)
     end subroutine
 
+    !> @brief Returns the current error estimates for each neuron.  Notice, the
+    !! network must be trained for this function to give meaningful output.
+    !!
+    !! @param[in] this The neural_network object.
+    !! @param[in,out] err
+    !!
+    !! @return The resulting error vector with one entry for every neuron.
     function nn_get_neuron_errors(this, err) result(rst)
         ! Arguments
         class(neural_network), intent(in) :: this
@@ -668,6 +695,101 @@ contains
 
         ! Retrieve the array
         call c_snn_get_neuron_errors(this%m_network, rst)
+    end function
+
+    !> @brief Computes the gradient vector of the network considering the bias
+    !! and weighting terms.
+    !!
+    !! @param[in] this The neural_network object.
+    !! @param[in] x An array of inputs.  There must be one input for each
+    !!  input node.
+    !! @param[in] y An array containing the desired outputs for the given
+    !!  inputs.
+    !! @param[in] dcf An optional cost function derivative routine, that if
+    !!  supplied, controls how the backpropagation algorithm computes the
+    !!  network error and gradient terms.  The default is a cross-entropy error
+    !!  function.
+    !! @param[in] eval An optional input that controls whether the network
+    !!  should be evaluated prior to calculation of the gradient vector.  The
+    !!  default is true, such that the network will be evaluated.  Notice, the
+    !!  state of the network must be current for @p x for the gradient 
+    !!  computation to be correct.  Only set this parameter to false if a call 
+    !!  to this%run has been made with the same @p x, and no other changes
+    !!  have been made to the network prior to calling this function.
+    !! @param[in,out] err
+    !!
+    !! @return The gradient vector.
+    function nn_compute_gradient(this, x, y, dcf, eval, err) result(g)
+        ! Arguments
+        class(neural_network), intent(in) :: this
+        real(real64), intent(in), dimension(:) :: x, y
+        procedure(cost_function_derivative), intent(in), pointer, optional :: dcf
+        logical, intent(in), optional :: eval
+        class(errors), intent(inout), optional, target :: err
+        real(real64), allocatable, dimension(:) :: g
+
+        ! Local Variables
+        integer(int32) :: nweights, nbias, ntotal, flag
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+        logical(c_bool) :: evalnetwork
+        type(c_funptr) :: cfcnptr
+        procedure(c_cost_fcn_diff), pointer :: fcnptr
+        
+        ! Initialization
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+
+        if (present(eval)) then
+            evalnetwork = logical(eval, c_bool)
+        else
+            evalnetwork = .true.
+        end if
+
+        nweights = this%get_weight_count()
+        nbias = this%get_bias_count()
+        ntotal = nweights + nbias
+
+        ! Ensure the network is initialization
+        if (ntotal == 0) then
+            ! TO DO: Uninitialized network error
+        end if
+
+        ! Check the array sizes
+        if (size(x) /= this%get_input_count()) then
+            ! TO DO: Array size error
+        end if
+        if (size(y) /= this%get_output_count()) then
+            ! TO DO: Array size error
+        end if
+
+        ! Get a pointer to the cost function routine
+        if (present(dcf)) then
+            fcnptr => dcf
+        else
+            fcnptr => c_cost_diff
+        end if
+        cfcnptr = c_funloc(fcnptr)
+
+        ! Allocate memory
+        allocate(g(ntotal), stat = flag)
+        if (flag /= 0) then
+            ! TO DO: Out of memory error
+        end if
+
+        ! Evaluate the gradient
+        call c_snn_gradient(this%m_network, cfcnptr, x, y, evalnetwork, g)
+        
+    contains
+        function c_cost_diff(nj, yj, aj) result(cj)
+            integer(c_int), intent(in), value :: nj
+            real(c_double), intent(in), value :: yj, aj
+            real(c_double) :: cj
+            cj = diff_cross_entropy_cost_function(nj, yj, aj)
+        end function
     end function
 
 ! ------------------------------------------------------------------------------
@@ -774,5 +896,75 @@ contains
         end do
     end subroutine
 
-! --------------------
+! ------------------------------------------------------------------------------
+    !> @brief Computes the quadratic cost function C = sum(y(j) - a(j))**2 / 2.
+    !!
+    !! @param[in] y An N-element array containing the desired network outputs.
+    !! @param[in] a An N-element array containing the actual network outputs.
+    !! @return The value of the cost function.
+    function quadratic_cost_function(y, a) result(c)
+        ! Arguments
+        real(real64), intent(in), dimension(:) :: y, a
+        real(real64) :: c
+
+        ! Local Variables
+        integer(int32) :: n
+
+        ! Process
+        n = min(size(y), size(a))
+        c = c_snn_quadratic_cost_fcn(n, y(1:n), a(1:n))
+    end function
+
+    !> @brief Computes the derivative of the quadratic cost function with
+    !! respect to the network outputs.
+    !!
+    !! @param[in] n The number of network outputs.
+    !! @param[in] y The desired output of the network at the j-th neuron.
+    !! @param[in] a The actual network output at the j-th neuron.
+    !! @return The value of the cost function derivative at the j-th neuron.
+    function diff_quadratic_cost_function(n, y, a) result(x)
+        ! Arguments
+        integer(int32), intent(in), value :: n
+        real(real64), intent(in), value :: y, a
+        real(real64) :: x
+
+        ! Process
+        x = c_snn_diff_quadratic_cost_fcn(n, y, a)
+    end function
+
+    !> @brief Computes the cross-entropy cost function.
+    !!
+    !! @param[in] y An N-element array containing the desired network outputs.
+    !! @param[in] a An N-element array containing the actual network outputs.
+    !! @return The value of the cost function.
+    function cross_entropy_cost_function(y, a) result(c)
+        ! Arguments
+        real(real64), intent(in), dimension(:) :: y, a
+        real(real64) :: c
+
+        ! Local Variables
+        integer(int32) :: n
+
+        ! Process
+        n = min(size(y), size(a))
+        c = c_snn_entropy_cost_fcn(n, y(1:n), a(1:n))
+    end function
+
+    !> @brief Computes the derivative of the cross-entropy cost function with
+    !! respect to the network outputs.
+    !!
+    !! @param[in] n The number of network outputs.
+    !! @param[in] y The desired output of the network at the j-th neuron.
+    !! @param[in] a The actual network output at the j-th neuron.
+    !! @return The value of the cost function derivative at the j-th neuron.
+    function diff_cross_entropy_cost_function(n, y, a) result(x)
+        ! Arguments
+        integer(int32), intent(in), value :: n
+        real(real64), intent(in), value :: y, a
+        real(real64) :: x
+
+        ! Process
+        x = c_snn_diff_entropy_cost_fcn(n, y, a)
+    end function
+
 end module

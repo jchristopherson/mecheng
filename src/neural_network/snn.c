@@ -26,10 +26,28 @@ double snn_quadratic_cost_fcn(int n, const double *y, const double *a) {
 
 
 
-double snn_diff_quadratic_cost_fcn(double y, double a) {
+double snn_diff_quadratic_cost_fcn(int n, double y, double a) {
     return a - y;
 }
 
+
+
+
+double snn_entropy_cost_fcn(int n, const double *y, const double *a) {
+    int i;
+    double rst = 0.0;
+    for (i = 0; i < n; ++i) {
+        rst += y[i] * log(a[i]) + (1.0 - y[i]) * log(1.0 - a[i]);
+    }
+    return -rst / ((double)n);
+}
+
+
+
+
+double snn_diff_entropy_cost_fcn(int n, double y, double a) {
+    return (y - a) / (a * (a - 1.0) * n);
+}
 
 
 
@@ -296,8 +314,7 @@ double* snn_eval_gradient(const network *obj, const snn_cost_fcn_diff dcf,
 
         /* Compute the error of the output layer */
         dsig = diff_sigmoid(z[i]);
-        // val = dcf(y[i], a[i]);
-        val = snn_diff_quadratic_cost_fcn(y[i], a[i]);
+        val = dcf(obj->output_count, y[i], a[i]);
         del[i] = val * dsig;
     }
 
