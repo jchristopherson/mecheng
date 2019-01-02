@@ -68,7 +68,10 @@ add_custom_target(
 # ------------------------------------------------------------------------------
 # NEURAL_NETWORK TESTS
 # ------------------------------------------------------------------------------
-set(test_neural_network_source test_neural_network.f90)
+set(test_neural_network_source 
+    test_neural_network.f90
+    test_nn_gradient.f90
+)
 add_executable(mecheng_test_neural_network ${test_neural_network_source})
 target_link_libraries(mecheng_test_neural_network mecheng)
 
@@ -90,11 +93,11 @@ add_executable(mecheng_test_fplot ${test_fplot_source})
 target_link_libraries(mecheng_test_fplot mecheng)
 
 # Run the tests
-add_custom_command(OUTPUT mecheng_test_fplot_cmd
-    DEPENDS ${test_fplot_source}
-    COMMAND mecheng_test_fplot
-)
-add_custom_target(
-    run_mecheng_fplot_tests ALL
-    DEPENDS mecheng_test_fplot_cmd
-)
+# add_custom_command(OUTPUT mecheng_test_fplot_cmd
+#     DEPENDS ${test_fplot_source}
+#     COMMAND mecheng_test_fplot
+# )
+# add_custom_target(
+#     run_mecheng_fplot_tests ALL
+#     DEPENDS mecheng_test_fplot_cmd
+# )

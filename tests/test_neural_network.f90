@@ -3,6 +3,7 @@
 program test
     use iso_fortran_env
     use neural_networks
+    use test_nn_gradient
     implicit none
 
     ! Local Variables
@@ -21,7 +22,10 @@ program test
     check = test_network_output_2()
     if (.not.check) overall = .false.
 
-    call train_network_test()
+    check = test_gradient_vector()
+    if (.not.check) overall = .false.
+
+    ! call train_network_test()
 
 
     ! Check
@@ -70,11 +74,17 @@ contains
         end if
     end function
 
+
+
+
     function sigmoid(w, x, b) result(z)
         real(real64), intent(in) :: w, x, b
         real(real64) :: z
         z = 1.0d0 / (1.0d0 + exp(-w * x - b))
     end function
+
+
+
 
     function test_network_output() result(rst)
         ! Arguments
@@ -145,6 +155,9 @@ contains
             end if
         end do
     end function
+
+
+
 
     function test_network_output_2() result(rst)
         ! Arguments
@@ -229,6 +242,9 @@ contains
             end if
         end do
     end function
+
+
+
 
     ! Train a network to fit a data set
     subroutine train_network_test()
@@ -380,4 +396,7 @@ contains
         call plt%set(2, 1, plt2)
         call plt%draw()
     end subroutine
+
+
+
 end program
