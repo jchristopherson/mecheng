@@ -25,7 +25,7 @@ program test
     check = test_gradient_vector()
     if (.not.check) overall = .false.
 
-    ! call train_network_test()
+    call train_network_test()
 
 
     ! Check
@@ -262,7 +262,7 @@ contains
             delta(nchan), residuals(niter), ev, axialFS, torqueFS, &
             nnOutput(npts, nchan), llsmtx(nchan, nchan), &
             llsOutput(npts, nchan), sloads(npts, nchan), sbridge(npts, nchan), &
-            temp(nchan)
+            temp(nchan), fullscales(nchan)
         integer(int32) :: i, j, k, indices(npts)
         type(multiplot) :: plt
         type(plot_2d) :: plt1, plt2
@@ -301,6 +301,7 @@ contains
         ! Determine the full scale values
         axialFS = maxval(loads(:,1))
         torqueFS = maxval(loads(:,2))
+        fullscales = [axialFS, torqueFS]
 
         ! For a comparison, compute a linear least-squares model
         llsmtx = linear_least_squares(transpose(bridge), transpose(loads))
@@ -308,7 +309,7 @@ contains
         llsOutput(:,1) = 1.0d2 * llsOutput(:,1) / axialFS
         llsOutput(:,2) = 1.0d2 * llsOutput(:,2) / torqueFS
 
-        ! Shuffle the training data set
+        ! Shuffle the training data set, and scale to percent of full scale
         do i = 1, npts
             indices(i) = i
         end do
@@ -318,12 +319,12 @@ contains
             sbridge(k,:) = bridge(i,:)
             sbridge(i,:) = bridge(k,:)
 
-            sloads(k,:) = loads(i,:)
-            sloads(i,:) = loads(k,:)
+            sloads(k,:) = loads(i,:) / fullscales
+            sloads(i,:) = loads(k,:) / fullscales
         end do
 
         ! Set up and train the network
-        call network%initialize(2, 2, 2, 2)
+        call network%initialize(2, 1, 6, 2)
 
         do i = 1, niter
             ev = 0.0d0
@@ -346,7 +347,7 @@ contains
 
         ! Apply the trained network to the data set
         do i = 1, npts
-            nnOutput(i,:) = network%run(bridge(i,:)) - loads(i,:)
+            nnOutput(i,:) = network%run(bridge(i,:)) * fullscales - loads(i,:)
 
             ! Convert to a percentage of full scale value
             nnOutput(i,1) = 1.0d2 * nnOutput(i,1) / axialFS
