@@ -251,26 +251,23 @@ contains
         ! Required Modules
         use fplot_core
         use curvefit_regression
+        use nonlin_least_squares
 
         ! Local Variables
         integer(int32), parameter :: npts = 34
         integer(int32), parameter :: nchan = 2
-        integer(int32), parameter :: niter = 50
-        real(real64), parameter :: learning_rate = 1.0d-1
         type(neural_network) :: network
         real(real64) :: loads(npts, nchan), bridge(npts, nchan), &
-            delta(nchan), residuals(niter), ev, axialFS, torqueFS, &
-            nnOutput(npts, nchan), llsmtx(nchan, nchan), &
-            llsOutput(npts, nchan), sloads(npts, nchan), sbridge(npts, nchan), &
-            temp(nchan), fullscales(nchan)
-        integer(int32) :: i, j, k, indices(npts)
-        type(multiplot) :: plt
-        type(plot_2d) :: plt1, plt2
-        type(plot_data_2d) :: d1nn, d2nn, derr, d1lls, d2lls
-        class(plot_axis), pointer :: xAxis1, yAxis1, xAxis2, yAxis2
+            axialFS, torqueFS, nnOutput(npts, nchan), llsmtx(nchan, nchan), &
+            llsOutput(npts, nchan), sloads(npts, nchan), sbridge(npts, nchan)
+        integer(int32) :: i
+        type(plot_2d) :: plt
+        type(plot_data_2d) :: d1nn, d2nn, d1lls, d2lls
+        class(plot_axis), pointer :: xAxis, yAxis
         class(legend), pointer :: lgnd
-
-        real(real64), allocatable, dimension(:) :: errs, tempOut
+        type(least_squares_solver) :: solver
+        procedure(cost_function), pointer :: cf
+        procedure(cost_function_derivative), pointer :: df
 
         ! Populate the applied loads matrix
         loads = reshape([0.0d0, 3000.0d0, 6000.0d0, 7500.0d0, 9000.0d0, 12000.0d0, &
@@ -301,7 +298,6 @@ contains
         ! Determine the full scale values
         axialFS = maxval(loads(:,1))
         torqueFS = maxval(loads(:,2))
-        fullscales = [axialFS, torqueFS]
 
         ! For a comparison, compute a linear least-squares model
         llsmtx = linear_least_squares(transpose(bridge), transpose(loads))
@@ -309,66 +305,40 @@ contains
         llsOutput(:,1) = 1.0d2 * llsOutput(:,1) / axialFS
         llsOutput(:,2) = 1.0d2 * llsOutput(:,2) / torqueFS
 
-        ! Shuffle the training data set, and scale to percent of full scale
-        do i = 1, npts
-            indices(i) = i
-        end do
-        call shuffle(indices)
-        do i = 1, npts
-            k = indices(i)
-            sbridge(k,:) = bridge(i,:)
-            sbridge(i,:) = bridge(k,:)
-
-            sloads(k,:) = loads(i,:) / fullscales
-            sloads(i,:) = loads(k,:) / fullscales
-        end do
+        ! Scale the training data by full scale values such that no value is
+        ! in excess of one.  Also shift the data such that all target values
+        ! are positive.
+        sbridge = bridge
+        sloads(:,1) = loads(:,1) / (2 * axialFS)
+        sloads(:,2) = loads(:,2) / (2 * torqueFS)
+        sloads = sloads + 0.5d0
 
         ! Set up and train the network
-        call network%initialize(2, 1, 6, 2)
-
-        do i = 1, niter
-            ev = 0.0d0
-            do j = 1, npts
-                call network%training_step(sbridge(j,:), sloads(j,:), &
-                    learning_rate, delta = delta)
-                ev = max(ev, norm2(delta))
-                errs = network%get_neuron_errors()
-                temp = network%run(sbridge(j,:))
-
-                print '(AI0AI0)', "Iteration: ", i, ", Data Set: ", j
-                print '(A)', "Desired Outputs:"
-                print *, sloads(j,:)
-                print '(A)', "Actual Outputs:"
-                print *, temp
-                print *, ""
-            end do
-            residuals(i) = ev
-        end do
+        call network%initialize(2, 2, 2, 2)
+        cf => quadratic_cost_function
+        df => diff_quadratic_cost_function
+        call solver%set_print_status(.true.)
+        call network%train(solver, cf, df, sbridge, sloads)
 
         ! Apply the trained network to the data set
         do i = 1, npts
-            nnOutput(i,:) = network%run(bridge(i,:)) * fullscales - loads(i,:)
+            ! Evaluate the network
+            nnOutput(i,:) = network%run(bridge(i,:))
 
             ! Convert to a percentage of full scale value
-            nnOutput(i,1) = 1.0d2 * nnOutput(i,1) / axialFS
-            nnOutput(i,2) = 1.0d2 * nnOutput(i,2) / torqueFS
+            nnOutput(i,1) = 1.0d2 * (2.0d0 * nnOutput(i,1) - loads(i,1) / axialFS)
+            nnOutput(i,2) = 1.0d2 * (2.0d0 * nnOutput(i,2) - loads(i,2) / torqueFS)
         end do
 
         ! Plot the results
-        call plt%initialize(2, 1)
-        call plt1%initialize()
-        call plt2%initialize()
+        call plt%initialize()
         call plt%set_font_size(14)
-        xAxis1 => plt1%get_x_axis()
-        yAxis1 => plt1%get_y_axis()
-        xAxis2 => plt2%get_x_axis()
-        yAxis2 => plt2%get_y_axis()
-        lgnd => plt1%get_legend()
+        xAxis => plt%get_x_axis()
+        yAxis => plt%get_y_axis()
+        lgnd => plt%get_legend()
 
-        call xAxis1%set_title("Index")
-        call yAxis1%set_title("Measured Load [% FS]")
-        call xAxis2%set_title("Iteration")
-        call yAxis2%set_title("Residual")
+        call xAxis%set_title("Index")
+        call yAxis%set_title("Measured Load [% FS]")
         call lgnd%set_is_visible(.true.)
         call lgnd%set_horizontal_position(LEGEND_RIGHT)
         call lgnd%set_vertical_position(LEGEND_CENTER)
@@ -386,15 +356,10 @@ contains
         call d2lls%set_name("Torsional - LLS")
         call d2lls%define_data(llsOutput(:,2))
 
-        call derr%define_data(residuals)
-
-        call plt1%push(d1nn)
-        call plt1%push(d2nn)
-        call plt1%push(d1lls)
-        call plt1%push(d2lls)
-        call plt2%push(derr)
-        call plt%set(1, 1, plt1)
-        call plt%set(2, 1, plt2)
+        call plt%push(d1nn)
+        call plt%push(d2nn)
+        call plt%push(d1lls)
+        call plt%push(d2lls)
         call plt%draw()
     end subroutine
 
