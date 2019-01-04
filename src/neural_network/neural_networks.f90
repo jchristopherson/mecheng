@@ -4,8 +4,10 @@ module neural_networks
     use iso_c_binding
     use iso_fortran_env
     use ferror
+    use nonlin_core
     implicit none
     private
+    public :: cost_function
     public :: cost_function_derivative
     public :: neural_network
     public :: shuffle
@@ -22,6 +24,19 @@ module neural_networks
     end interface
 
     interface
+        !> @brief Computes the cost function of the network.
+        !!
+        !! @param[in] y An N-element array containing the desired network 
+        !!  outputs.
+        !! @param[in] a An N-element array containing the actual network
+        !!  outputs.
+        !! @return The value of the cost function.
+        function cost_function(y, a) result(rst)
+            use iso_fortran_env
+            real(real64), intent(in), dimension(:) :: y, a
+            real(real64) :: rst
+        end function
+
         !> @brief Computes the derivative of the network cost function with
         !!  respect to the network outputs (a).
         !!
@@ -212,6 +227,7 @@ module neural_networks
         procedure, public :: randomize_weights => nn_randomize_weights
         procedure, public :: get_neuron_errors => nn_get_neuron_errors
         procedure, public :: compute_gradient => nn_compute_gradient
+        procedure, public :: train => nn_train_network
     end type
 
 contains
@@ -791,6 +807,145 @@ contains
             cj = diff_cross_entropy_cost_function(nj, yj, aj)
         end function
     end function
+
+
+    !> @brief Trains the neural network by utilizing the supplied solver.
+    !!
+    !! @param[in,out] this The neural_network object.
+    !! @param[in] solver The solver.
+    !! @param[in] cf The cost function to apply to the network.
+    !! @param[in] df The derivative of the cost function given in @p cf.
+    !! @param[in] xin An NPTS-by-NIN matrix containing the NPTS input training
+    !!  values for each of the NIN inputs.
+    !! @param[in] xout An NPTS-by-NOUT matrix containing the NPTS output 
+    !!  values for each of the NOUT outputs of the network.  These values
+    !!  correspond to the inputs given in @p xin.
+    !! @param[out] f An optional output array, that if given, returns the value
+    !!  of the cost function at each of the NPTS input points for the trained
+    !!  network.
+    !! @param[out] ib An optional output that can be used to report on iteration
+    !!  behavior of the solver.
+    !! @param[in,out] err
+    !!
+    subroutine nn_train_network(this, solver, cf, df, xin, xout, f, ib, err)
+        ! Arguments
+        class(neural_network), intent(inout) :: this
+        class(equation_solver), intent(inout) :: solver
+        procedure(cost_function), intent(in), pointer :: cf
+        procedure(cost_function_derivative), intent(in), pointer :: df
+        real(real64), intent(in), dimension(:,:) :: xin, xout
+        real(real64), intent(out), dimension(:), optional, target :: f
+        type(iteration_behavior), intent(out), optional :: ib
+        class(errors), intent(inout), optional, target :: err
+
+        ! Local Variables
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+        integer(int32) :: npts, nin, nout, nweights, nbias, ntotal, flag
+        type(vecfcn_helper) :: helper
+        procedure(vecfcn), pointer :: fcn
+        procedure(jacobianfcn), pointer :: jac
+        real(real64), allocatable, dimension(:) :: xguess
+        real(real64), allocatable, dimension(:), target :: fout
+        real(real64), pointer, dimension(:) :: fptr
+
+        ! Initialization
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+        npts = size(xin, 1)
+        nin = this%get_input_count()
+        nout = this%get_output_count()
+        nweights = this%get_weight_count()
+        nbias = this%get_bias_count()
+        ntotal = nweights + nbias
+
+        ! Input Check
+        if (size(xin, 2) /= nin) then
+            ! TO DO: Array size error
+        end if
+
+        if (size(xout, 1) /= npts .or. size(xout, 2) /= nout) then
+            ! TO DO: Array size error
+        end if
+
+        ! Local Memory Allocation
+        allocate(xguess(ntotal), stat = flag)
+        if (present(f)) then
+            if (size(f) /= npts) then
+                ! TO DO: Array size error
+            end if
+            fptr => f
+        else
+            if (flag == 0) allocate(fout(npts), stat = flag)
+            if (flag == 0) fptr => fout
+        end if
+        if (flag /= 0) then
+            ! TO DO: Out of memory error
+        end if
+
+        ! Establish the initual guess
+        xguess(1:nweights) = this%get_weights()
+        xguess(nweights+1:ntotal) = this%get_bias()
+
+        ! Set up the solver
+        fcn => training_fcn
+        jac => training_jacobian
+        call helper%set_fcn(fcn, npts, ntotal)
+        call helper%set_jacobian(jac)
+
+        ! Solve the system of equations
+        call solver%solve(helper, xguess, fptr, ib, errmgr)
+
+        ! Establish the weights
+        call this%set_weights(xguess(1:nweights))
+        call this%set_bias(xguess(nweights+1:ntotal))
+    contains
+        ! Applies the cost function to each data set.  This is the set of 
+        ! equations being solved.
+        subroutine training_fcn(xf, ff)
+            ! Arguments
+            real(real64), intent(in), dimension(:) :: xf
+            real(real64), intent(out), dimension(:) :: ff
+
+            ! Local Variables
+            integer(int32) :: i
+
+            ! Establish the weighting factors and bias terms for the network
+            call this%set_weights(xf(1:nweights))
+            call this%set_bias(xf(nweights+1:ntotal))
+
+            ! Evaluate the network and compute the cost function for each
+            ! data point.
+            do i = 1, npts
+                ff(i) = cf(xout(i,:), this%run(xin(i,:)))
+            end do
+        end subroutine
+
+        ! Evaluates the Jacobian matrix for the network
+        subroutine training_jacobian(xf, jf)
+            ! Arguments
+            real(real64), intent(in), dimension(:) :: xf
+            real(real64), intent(out), dimension(:,:) :: jf
+
+            ! Local Variables
+            integer(int32) :: i
+
+            ! Establish the weighting factors and bias terms for the network
+            call this%set_weights(xf(1:nweights))
+            call this%set_bias(xf(nweights+1:ntotal))
+
+            ! Construct the Jacobian matrix for each data set by computing
+            ! the gradient vector for each data set.  Notice, the gradient
+            ! will make up a single row of the Jacobian matrix.
+            do i = 1, npts
+                ! Compute the gradient
+                jf(i,:) = this%compute_gradient(xin(i,:), xout(i,:), df, .true.)
+            end do
+        end subroutine
+    end subroutine
 
 ! ------------------------------------------------------------------------------
     subroutine shuffle_array_dbl(x)
