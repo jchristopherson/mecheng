@@ -268,6 +268,7 @@ contains
         type(least_squares_solver) :: solver
         procedure(cost_function), pointer :: cf
         procedure(cost_function_derivative), pointer :: df
+        type(iteration_behavior) :: ib
 
         ! Populate the applied loads matrix
         loads = reshape([0.0d0, 3000.0d0, 6000.0d0, 7500.0d0, 9000.0d0, 12000.0d0, &
@@ -309,16 +310,27 @@ contains
         ! in excess of one.  Also shift the data such that all target values
         ! are positive.
         sbridge = bridge
-        sloads(:,1) = loads(:,1) / (2 * axialFS)
-        sloads(:,2) = loads(:,2) / (2 * torqueFS)
+        sloads(:,1) = loads(:,1) / (2.0d0 * axialFS)
+        sloads(:,2) = loads(:,2) / (2.0d0 * torqueFS)
         sloads = sloads + 0.5d0
 
         ! Set up and train the network
-        call network%initialize(2, 2, 2, 2)
+        call network%initialize(2, 2, 3, 2)
         cf => quadratic_cost_function
         df => diff_quadratic_cost_function
         call solver%set_print_status(.true.)
-        call network%train(solver, cf, df, sbridge, sloads)
+        call solver%set_var_tolerance(1.0d-20)
+        call solver%set_max_fcn_evals(10000)
+        call network%train(solver, cf, df, sbridge, sloads, ib = ib)
+
+        ! Display the reason for convergence
+        if (ib%converge_on_chng) then
+            print '(A)', "Iterations converged due to small change in variable."
+        else if (ib%converge_on_fcn) then
+            print '(A)', "Iterations converged to function value falling within tolerance."
+        else if (ib%converge_on_zero_diff) then
+            print '(A)', "Iterations converged due to zero-valued gradient."
+        end if
 
         ! Apply the trained network to the data set
         do i = 1, npts
@@ -326,8 +338,8 @@ contains
             nnOutput(i,:) = network%run(bridge(i,:))
 
             ! Convert to a percentage of full scale value
-            nnOutput(i,1) = 1.0d2 * (2.0d0 * nnOutput(i,1) - loads(i,1) / axialFS)
-            nnOutput(i,2) = 1.0d2 * (2.0d0 * nnOutput(i,2) - loads(i,2) / torqueFS)
+            nnOutput(i,1) = 1.0d2 * (2.0d0 * (nnOutput(i,1) - 0.5d0) - loads(i,1) / axialFS)
+            nnOutput(i,2) = 1.0d2 * (2.0d0 * (nnOutput(i,2) - 0.5d0) - loads(i,2) / torqueFS)
         end do
 
         ! Plot the results

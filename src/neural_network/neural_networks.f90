@@ -227,7 +227,9 @@ module neural_networks
         procedure, public :: randomize_weights => nn_randomize_weights
         procedure, public :: get_neuron_errors => nn_get_neuron_errors
         procedure, public :: compute_gradient => nn_compute_gradient
-        procedure, public :: train => nn_train_network
+        generic, public :: train => nn_train_network_1, nn_train_network_2
+        procedure :: nn_train_network_1
+        procedure :: nn_train_network_2
     end type
 
 contains
@@ -827,7 +829,7 @@ contains
     !!  behavior of the solver.
     !! @param[in,out] err
     !!
-    subroutine nn_train_network(this, solver, cf, df, xin, xout, f, ib, err)
+    subroutine nn_train_network_1(this, solver, cf, df, xin, xout, f, ib, err)
         ! Arguments
         class(neural_network), intent(inout) :: this
         class(equation_solver), intent(inout) :: solver
@@ -943,6 +945,121 @@ contains
             do i = 1, npts
                 ! Compute the gradient
                 jf(i,:) = this%compute_gradient(xin(i,:), xout(i,:), df, .true.)
+            end do
+        end subroutine
+    end subroutine
+
+    !> @brief Trains the neural network by utilizing the supplied solver.
+    !!
+    !! @param[in,out] this The neural_network object.
+    !! @param[in] solver The solver.
+    !! @param[in] xin An NPTS-by-NIN matrix containing the NPTS input training
+    !!  values for each of the NIN inputs.
+    !! @param[in] xout An NPTS-by-NOUT matrix containing the NPTS output 
+    !!  values for each of the NOUT outputs of the network.  These values
+    !!  correspond to the inputs given in @p xin.
+    !! @param[out] f An optional output array, that if given, returns the value
+    !!  of the cost function at each of the NPTS input points for the trained
+    !!  network.
+    !! @param[out] ib An optional output that can be used to report on iteration
+    !!  behavior of the solver.
+    !! @param[in,out] err
+    !!
+    subroutine nn_train_network_2(this, solver, xin, xout, f, ib, err)
+        ! Arguments
+        class(neural_network), intent(inout) :: this
+        class(equation_solver), intent(inout) :: solver
+        real(real64), intent(in), dimension(:,:) :: xin, xout
+        real(real64), intent(out), dimension(:), optional, target :: f
+        type(iteration_behavior), intent(out), optional :: ib
+        class(errors), intent(inout), optional, target :: err
+
+        ! Local Variables
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+        integer(int32) :: npts, nin, nout, nweights, nbias, ntotal, neqn, flag
+        type(vecfcn_helper) :: helper
+        procedure(vecfcn), pointer :: fcn
+        procedure(jacobianfcn), pointer :: jac
+        real(real64), allocatable, dimension(:) :: xguess
+        real(real64), allocatable, dimension(:), target :: fout
+        real(real64), pointer, dimension(:) :: fptr
+        
+        ! Initialization
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+        npts = size(xin, 1)
+        nin = this%get_input_count()
+        nout = this%get_output_count()
+        nweights = this%get_weight_count()
+        nbias = this%get_bias_count()
+        ntotal = nweights + nbias
+        neqn = npts * nout
+
+        ! Input Check
+        if (size(xin, 2) /= nin) then
+            ! TO DO: Array size error
+        end if
+
+        if (size(xout, 1) /= npts .or. size(xout, 2) /= nout) then
+            ! TO DO: Array size error
+        end if
+
+        ! Local Memory Allocation
+        allocate(xguess(ntotal), stat = flag)
+        if (present(f)) then
+            if (size(f) /= neqn) then
+                ! TO DO: Array size error
+            end if
+            fptr => f
+        else
+            if (flag == 0) allocate(fout(neqn), stat = flag)
+            if (flag == 0) fptr => fout
+        end if
+        if (flag /= 0) then
+            ! TO DO: Out of memory error
+        end if
+
+        ! Establish the initual guess
+        xguess(1:nweights) = this%get_weights()
+        xguess(nweights+1:ntotal) = this%get_bias()
+
+        ! Set up the solver
+        fcn => training_fcn
+        call helper%set_fcn(fcn, neqn, ntotal)
+
+        ! Solve the system of equations
+        call solver%solve(helper, xguess, fptr, ib, errmgr)
+
+        ! Establish the weights
+        call this%set_weights(xguess(1:nweights))
+        call this%set_bias(xguess(nweights+1:ntotal))
+
+    contains
+        subroutine training_fcn(xf, ff)
+            ! Arguments
+            real(real64), intent(in), dimension(:) :: xf
+            real(real64), intent(out), dimension(:) :: ff
+
+            ! Local Variables
+            integer(int32) :: i, j, n
+
+            ! Establish the weights and biases
+            call this%set_weights(xf(1:nweights))
+            call this%set_bias(xf(nweights+1:ntotal))
+
+            ! Compute the output for every data point, and store the results in ff
+            j = 1
+            n = nout - 1
+            do i = 1, npts
+                ! Evaluate the network, and compare against the desired output
+                ff(j:j+n) = this%run(xin(i,:)) - xout(i,:)
+
+                ! Index the counter
+                j = j + nout
             end do
         end subroutine
     end subroutine
