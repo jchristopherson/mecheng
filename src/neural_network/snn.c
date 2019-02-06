@@ -171,6 +171,18 @@ network* snn_init_network(int nlayers, const int *node_counts, int *err) {
     /* Randomize the weights and biases */
     snn_randomize_weights_and_biases(obj);
 
+    /* Allocate space for the activation function arrays */
+    obj->activation_functions = (snn_neural_function*)malloc((size_t)((obj->total_layer_count - 1) * sizeof(snn_neural_function)));
+    if (!obj->activation_functions) goto CLEAN_UP_ON_ERROR;
+
+    obj->activation_derivatives = (snn_nerual_function_derivative*)malloc((size_t)((obj->total_layer_count - 1) * sizeof(snn_nerual_function_derivative)));
+    if (!obj->activation_derivatives) goto CLEAN_UP_ON_ERROR;
+
+    for (i = 0; i < obj->total_layer_count - 1; ++i) {
+        obj->activation_functions[i] = &sigmoid;
+        obj->activation_derivatives[i] = &diff_sigmoid;
+    }
+
     /* Output */
     return obj;
 
@@ -256,6 +268,7 @@ double* snn_eval_network(const network *obj, const double *x) {
     /* Local Variables */
     int i, nin, nout, ii, jj;
     double *weights, *inputs, *outputs, *bias;
+    snn_neural_function fcn;
 
     /* Copy the inputs into the appropriate storage array */
     copy(obj->input_count, x, obj->output_pointers[0]);
@@ -274,7 +287,8 @@ double* snn_eval_network(const network *obj, const double *x) {
         nout = obj->neuron_per_layer_count[i];
 
         /* Evaluate the layer */
-        evaluate_layer(nin, nout, inputs, weights, bias, outputs);
+        fcn = obj->activation_functions[i-1];
+        evaluate_layer(fcn, nin, nout, inputs, weights, bias, outputs);
     }
 
     /* Output */
@@ -292,6 +306,7 @@ double* snn_eval_gradient(const network *obj, const snn_cost_fcn_diff dcf,
     /* Local Variables */
     int i, j, k, l, nin, nlayer, nnext;
     double *del, *z, *a, *weights, *delnext, *bias, *aprev, *g, dsig, val;
+    snn_nerual_function_derivative diff;
 
     /* Evaluate the network at X */
     if (eval) snn_eval_network(obj, x);
@@ -308,12 +323,14 @@ double* snn_eval_gradient(const network *obj, const snn_cost_fcn_diff dcf,
     bias = obj->bias_pointers[obj->total_layer_count - 2];              /* NNEXT elements - bias terms from output layer */
     weights = obj->weight_pointers[obj->total_layer_count - 2];         /* NNEXT-by-NLAYER */
     copy(nnext, bias, z);                                               /* Store bias in Z */
+    diff = obj->activation_derivatives[obj->total_layer_count - 2];
     for (i = 0; i < obj->output_count; ++i) {
         /* Compute z = w * a + bias NOTE: bias is stored in Z*/
         mult_mtx(nnext, 1, nlayer, weights, aprev, 1.0, z);
 
         /* Compute the error of the output layer */
-        dsig = diff_sigmoid(z[i]);
+        // dsig = diff_sigmoid(z[i]);
+        dsig = diff(z[i]);
         val = dcf(obj->output_count, y[i], a[i]);
         del[i] = val * dsig;
     }
@@ -324,6 +341,7 @@ double* snn_eval_gradient(const network *obj, const snn_cost_fcn_diff dcf,
         nnext = obj->neuron_per_layer_count[i+1];   /* # of neurons in the next higher layer */
         nlayer = obj->neuron_per_layer_count[i];    /* # of neurons in the current layer */
         nin = obj->neuron_per_layer_count[i-1];     /* # of neurons in the previous layer */
+        diff = obj->activation_derivatives[i-1];    /* Derivative of the activation function for the layer */
 
         /* Get the appropriate pointers */
         delnext = del;                              /* NNEXT elements - Pointer to the next higher layer's error results */
@@ -344,7 +362,7 @@ double* snn_eval_gradient(const network *obj, const snn_cost_fcn_diff dcf,
         mult_trans_mtx(nlayer, 1, nnext, weights, delnext, 0.0, del);
 
         /* Now compute the Hadamard product with the derivative of the sigmoid function */
-        hadamard_product(nlayer, z, del);
+        hadamard_product(diff, nlayer, z, del);
     }
 
     /* Construct the bias terms of the gradient using the error estimates */
@@ -409,8 +427,8 @@ void snn_training_step(const network *obj, const snn_cost_fcn_diff dcf,
 
 
 
-static void evaluate_layer(int ninputs, int nouts, const double *x, const double *weights, 
-                           const double *offsets, double *z)
+static void evaluate_layer(snn_neural_function fcn, int ninputs, int nouts, const double *x, 
+                           const double *weights, const double *offsets, double *z)
 {
     /* Local Variables */
     int i;
@@ -421,31 +439,31 @@ static void evaluate_layer(int ninputs, int nouts, const double *x, const double
     /* Compute: Z = WEIGHTS * X + Z */
     mult_mtx(nouts, 1, ninputs, weights, x, 1.0, z);
 
-    /* Evaluate the sigmoid function to determine the node output */
-    for (i = 0; i < nouts; ++i) z[i] = sigmoid(z[i]);
+    /* Evaluate the activation function to determine the node output */
+    for (i = 0; i < nouts; ++i) z[i] = fcn(z[i]);
 }
 
 
 
 
 
-static void evaluate_layer_error(int ncurrent, int nnext, const double *x, const double *del,
-                                 const double *weights, double *err)
-{
-    /* Local Variables */
-    int i;
-    double val, dsig;
+// static void evaluate_layer_error(int ncurrent, int nnext, const double *x, const double *del,
+//                                  const double *weights, double *err)
+// {
+//     /* Local Variables */
+//     int i;
+//     double val, dsig;
 
-    /* Compute the matrix multiplication W**T * DEL, and then include the
-     * Hadamard multiplication operation with the derivative of the sigmoid
-     * function.
-     */
-    for (i = 0; i < ncurrent; ++i) {
-        dsig = diff_sigmoid(x[i]);
-        val = dot_product(nnext, &x[INDEX(i, 0, nnext)], del);
-        err[i] = val * dsig;
-    }
-}
+//     /* Compute the matrix multiplication W**T * DEL, and then include the
+//      * Hadamard multiplication operation with the derivative of the sigmoid
+//      * function.
+//      */
+//     for (i = 0; i < ncurrent; ++i) {
+//         dsig = diff_sigmoid(x[i]);
+//         val = dot_product(nnext, &x[INDEX(i, 0, nnext)], del);
+//         err[i] = val * dsig;
+//     }
+// }
 
 
 
@@ -521,9 +539,9 @@ static void mult_trans_mtx(int m, int n, int k, const double *x, const double *y
 
 
 
-static void hadamard_product(int n, const double *x, double *y) {
+static void hadamard_product(snn_nerual_function_derivative diff, int n, const double *x, double *y) {
     int i;
-    for (i = 0; i < n; ++i) y[i] = diff_sigmoid(x[i]) * y[i];
+    for (i = 0; i < n; ++i) y[i] = diff(x[i]) * y[i];
 }
 
 

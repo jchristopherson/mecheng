@@ -42,6 +42,20 @@ typedef double (*snn_cost_fcn)(int n, const double *y, const double *a);
  */
 typedef double (*snn_cost_fcn_diff)(int n, double y, double a);
 
+/* Computes the neural activation function.
+ *
+ * - z: The input to the function.  It is expected to be z = w * x + b.
+ * Returns: The value of the function.
+ */
+typedef double (*snn_neural_function)(double z);
+
+/* Computes the derivative of the neural activation function.
+ *
+ * - z: The input to the function.  It is expected to be z = w * x + b.
+ * Returns: The value of the function.
+ */
+typedef double (*snn_nerual_function_derivative)(double z);
+
 typedef struct network_ {
     /* The version number of this structure. */
     short version;
@@ -106,6 +120,14 @@ typedef struct network_ {
     double *workspace;
     /* The workspace array size. */
     int workspace_size;
+    /* A list of activation functions.  One for each layer with the exception
+     * of the input layer (length = total_layer_count - 1).
+     */
+    snn_neural_function *activation_functions;
+    /* A list of activation function derivatives.  On for each layer with the
+     * exception of the input layer (length = total_layer_count - 1).
+     */
+    snn_nerual_function_derivative *activation_derivatives;
 } network;
 
 /* Computes the quadratic cost function: C = sum(y(j) - a(j))**2 / 2.
@@ -223,6 +245,7 @@ void snn_training_step(const network *obj, const snn_cost_fcn_diff dcf,
 
 /* Evaluates a single layer of the network.
  *
+ * - fcn: The activation function for each neuron in the layer.
  * - ninputs: The number of input neurons providing input to this layer.
  * - nouts: The number of neurons in this layer.
  * - x: A pointer to the NINPUTS element input vector (outputs from the previous layer).
@@ -230,25 +253,25 @@ void snn_training_step(const network *obj, const snn_cost_fcn_diff dcf,
  * - offsets: A pointer to the NOUTS bias vector.
  * - z: [output] A pointer to the NOUTS element output vector.
  */
-static void evaluate_layer(int ncurrent, int nnext, const double *x, const double *weights, 
-                           const double *offsets, double *z);
+static void evaluate_layer(snn_neural_function fcn, int ncurrent, int nnext, const double *x, 
+                           const double *weights, const double *offsets, double *z);
 
 
-/* Evaluates the error for the current layer based upon the error in the next
- * layer.
- * 
- * - ncurrent: The number of neurons in this layer.
- * - nnext: The number of neurons in the next layer.
- * - x: An NCURRENT length array containing the neuron outputs from this layer.
- * - del: An NNEXT length array containing the error estimate from the next
- *      layer up.
- * - weights: An NNEXT-by-NCURRENT matrix containing the weighting factors
- *      matrix applied to the output of this layer.
- * - err: [output] An NCURRENT element array where the error estimate for this
- *      layer will be written.
- */
-static void evaluate_layer_error(int ninputs, int nouts, const double *x, const double *del,
-                                 const double *weights, double *err);
+// /* Evaluates the error for the current layer based upon the error in the next
+//  * layer.
+//  * 
+//  * - ncurrent: The number of neurons in this layer.
+//  * - nnext: The number of neurons in the next layer.
+//  * - x: An NCURRENT length array containing the neuron outputs from this layer.
+//  * - del: An NNEXT length array containing the error estimate from the next
+//  *      layer up.
+//  * - weights: An NNEXT-by-NCURRENT matrix containing the weighting factors
+//  *      matrix applied to the output of this layer.
+//  * - err: [output] An NCURRENT element array where the error estimate for this
+//  *      layer will be written.
+//  */
+// static void evaluate_layer_error(int ninputs, int nouts, const double *x, const double *del,
+//                                  const double *weights, double *err);
 
 
 /* Multiplies two matrices such that: z = x * y + beta * z.
@@ -281,11 +304,12 @@ static void mult_trans_mtx(int m, int n, int k, const double *x, const double *y
 /* Computes the Hadamard product of two arrays while applying the derivative
  * of the sigmoid function on X such that: Y = D(x) * Y.
  *
+ * - diff: The routine to use when computing the derivative of the activation function.
  * - n: The number of elements in either array.
  * - x: A pointer to the first array.
  * - y: [input, output] A pointer to the second array.
  */
-static void hadamard_product(int n, const double *x, double *y);
+static void hadamard_product(snn_nerual_function_derivative diff, int n, const double *x, double *y);
 
 /* Computes the sigmoid function.
  *
