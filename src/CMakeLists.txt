@@ -453,6 +453,10 @@ set(geometry_sources
     geometry/geometry.f90
 )
 
+set(controls_sources
+    controls/controls.f90
+)
+
 # Define the NEURAL_NETWORK source files
 set(neural_network_sources
     neural_network/neural_networks.f90
@@ -484,6 +488,7 @@ set(mecheng_sources
     ${signals_sources}
     ${strings_sources}
     ${geometry_sources}
+    ${controls_sources}
     ${neural_network_sources}
 )
 
