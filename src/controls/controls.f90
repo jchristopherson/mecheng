@@ -181,21 +181,22 @@ contains
                 this%proportional_gain * vk - &
                 this%derivative_gain * ak) * dt
             co = this%m_previousOutput + du
+
+            ! Check the output against the limit values
+            if (co > this%get_upper_limit()) co = this%get_upper_limit()
+            if (co < this%get_lower_limit()) co = this%get_lower_limit()
+
+            ! Update parameters
+            this%m_previousDerivative = vk
+            this%m_previousOutput = co
+            this%m_previousSignal = yk
+            this%m_previousTime = t
         else
             ! No controller output update is necessary, just return
             ! the previous value
             co = this%m_previousOutput
         end if
-
-        ! Check the output against the limit values
-        if (co > this%get_upper_limit()) co = this%get_upper_limit()
-        if (co < this%get_lower_limit()) co = this%get_lower_limit()
-
-        ! Update parameters
-        this%m_previousDerivative = vk
-        this%m_previousOutput = co
-        this%m_previousSignal = yk
-        this%m_previousTime = t
+        
     end function
 
 end module
