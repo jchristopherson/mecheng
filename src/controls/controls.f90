@@ -29,6 +29,7 @@ module controls
         real(real64), private :: m_previousSignal = 0.0d0
         real(real64), private :: m_previousDerivative = 0.0d0
         real(real64), private :: m_previousOutput = 0.0d0
+        real(real64), private :: m_filterTimeConstant = 1.0d-3
 
     contains
         procedure, public :: get_use_filter => pid_get_use_filter
@@ -39,6 +40,8 @@ module controls
         procedure, public :: set_upper_limit => pid_set_upper_limit
         procedure, public :: get_update_time => pid_get_update_time
         procedure, public :: set_update_time => pid_set_update_time
+        procedure, public :: get_filter_time_constant => pid_get_filter_time_constant
+        procedure, public :: set_filter_time_constant => pid_set_filter_time_constant
         procedure, public :: filter => pid_filter
         procedure, public :: evaluate => pid_eval_1
     end type
@@ -123,6 +126,20 @@ contains
     end subroutine
 
 ! ------------------------------------------------------------------------------
+    !
+    pure function pid_get_filter_time_constant(this) result(x)
+        class(pid), intent(in) :: this
+        real(real64) :: x
+        x = this%m_filterTimeConstant
+    end function
+
+    subroutine pid_set_filter_time_constant(this, x)
+        class(pid), intent(inout) :: this
+        real(real64), intent(in) :: x
+        this%m_filterTimeConstant = x
+    end subroutine
+
+! ------------------------------------------------------------------------------
     !> @brief Applies a digital filter to the supplied signal.
     !!
     !! @param[in] this The pid object.
@@ -135,7 +152,15 @@ contains
         real(real64), intent(in) :: t, y
         real(real64) :: yfilt
 
-        ! Process - TO DO!!!
+        ! Local Variables
+        real(real64) :: Tf, T0
+
+        ! Initialization
+        Tf = this%get_filter_time_constant()
+        T0 = t - this%m_previousTime
+
+        ! Process
+        yfilt = this%m_previousSignal * Tf / (Tf * T0) + y * T0 / (Tf + T0)
     end function
 
 ! ------------------------------------------------------------------------------
