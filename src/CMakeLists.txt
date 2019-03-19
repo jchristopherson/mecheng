@@ -443,6 +443,7 @@ set(signals_sources
     signals/signals_spectral_analysis.f90
     signals/signals_diff.f90
     signals/signals_integrate.f90
+    signals/signals_realtime.f90
 )
 
 set(strings_sources

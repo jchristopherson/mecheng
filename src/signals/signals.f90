@@ -1448,4 +1448,22 @@ interface
 
 end interface
 
+! ******************************************************************************
+! SIGNALS_REALTIME SUBMODULE
+! ------------------------------------------------------------------------------
+    !> @brief Defines an IIR digital filter.
+    type iir_filter
+        !> A buffer used to store previous signal values.
+        real(real64), allocatable, dimension(:) :: m_buffer
+        !> A buffer used to store previous filtered values.
+        real(real64), allocatable, dimension(:) :: m_filtBuffer
+        !> The numerator coefficients.
+        real(real64), allocatable, dimension(:) :: m_numerator
+        !> The denominator coefficients.
+        real(real64), allocatable, dimension(:) :: m_denominator
+    contains
+    end type
+
+    interface
+    end interface
 end module
