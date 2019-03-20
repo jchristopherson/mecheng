@@ -38,7 +38,6 @@ program main
         y(i) = filter%apply(x(i))
     end do
     
-
     ! Plot the signal
     call d1%set_name("Original")
     call d1%define_data(t, x)
