@@ -188,6 +188,8 @@ module signals
     public :: apply_filter
     public :: SIG_INVALID_INPUT_ERROR
     public :: SIG_OUT_OF_MEMORY_ERROR
+    public :: SIG_INDEX_OUT_OF_RANGE_ERROR
+    public :: SIG_UNITIALIZED_ERROR
 
 ! ******************************************************************************
 ! CONSTANTS
@@ -196,6 +198,10 @@ module signals
     integer(int32), parameter :: SIG_INVALID_INPUT_ERROR = 5001
     !> Defines an out-of-memory error.
     integer(int32), parameter :: SIG_OUT_OF_MEMORY_ERROR = 5002
+    !> Defines an index-out-of-range error.
+    integer(int32), parameter :: SIG_INDEX_OUT_OF_RANGE_ERROR = 5003
+    !> Defines an uninitialized object error.
+    integer(int32), parameter :: SIG_UNITIALIZED_ERROR = 5004
 
 ! ******************************************************************************
 ! GENERAL INTERFACES
@@ -1501,6 +1507,8 @@ end interface
         procedure :: fir_init_2
         generic, public :: initialize => fir_init_1, fir_init_2
         procedure, public :: get_tap_count => fir_get_tap_count
+        procedure, public :: get_coefficient => fir_get_coeff
+        procedure, public :: set_coefficient => fir_set_coeff
         procedure, public :: apply => fir_apply_filter
     end type
 
@@ -1550,6 +1558,39 @@ end interface
             class(fir_filter), intent(in) :: this
             integer(int32) :: x
         end function
+
+        !> @brief Gets the requested filter coefficient.
+        !!
+        !! @param[in] this The fir_filter object.
+        !! @param[in] i The index of the filter coefficient to retrieve.
+        !! @return The filter coefficient.
+        pure module function fir_get_coeff(this, i) result(x)
+            class(fir_filter), intent(in) :: this
+            integer(int32), intent(in) :: i
+            real(real64) :: x
+        end function
+
+        !> @brief Sets the requested filter coefficient.
+        !!
+        !! @param[in,out] this The fir_filter object.
+        !! @param[in] i The index of the filter coefficient to retrieve.
+        !! @param[in] x The filter coefficient.
+        !! @param[in,out] err An optional errors-based object that if provided 
+        !!  can be used to retrieve information relating to any errors 
+        !!  encountered during execution.  If not provided, a default 
+        !!  implementation of the errors class is used internally to provide 
+        !!  error handling.  Possible errors and warning messages that may be 
+        !!  encountered are as follows.
+        !!  - SIG_UNITIALIZED_ERROR: Occurs if the filter hasn't been
+        !!      initialized.
+        !!  - SIG_INDEX_OUT_OF_RANGE_ERROR: Occurs if @p i is outside
+        !!      the bounds of the coefficient array.
+        module subroutine fir_set_coeff(this, i, x, err)
+            class(fir_filter), intent(inout) :: this
+            integer(int32), intent(in) :: i
+            real(real64), intent(in) :: x
+            class(errors), intent(inout), optional, target :: err
+        end subroutine
 
         !> @brief Applies an FIR filter.
         !!

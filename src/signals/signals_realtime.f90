@@ -63,6 +63,7 @@ contains
         ! Process
         taps = size(coeffs)
         call fir_init_1(this, taps, err)
+        this%m_coefficients = coeffs
     end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -75,6 +76,61 @@ contains
             x = 0
         end if
     end function
+
+! ------------------------------------------------------------------------------
+    pure module function fir_get_coeff(this, i) result(x)
+        ! Arguments
+        class(fir_filter), intent(in) :: this
+        integer(int32), intent(in) :: i
+        real(real64) :: x
+        
+        ! Local Variables
+        integer(int32) :: n
+
+        ! Process
+        n = this%get_tap_count()
+        x = 0.0d0
+        if (n == 0 .or. i < 1 .or. i > n) return
+        x = this%m_coefficients(i)
+    end function
+
+    module subroutine fir_set_coeff(this, i, x, err)
+        ! Arguments
+        class(fir_filter), intent(inout) :: this
+        integer(int32), intent(in) :: i
+        real(real64), intent(in) :: x
+        class(errors), intent(inout), optional, target :: err
+
+        ! Local Variables
+        integer(int32) :: n
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+        
+        ! Initialization
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+
+        ! Input Checking
+        n = this%get_tap_count()
+        if (n == 0) then
+            call errmgr%report_error("fir_set_coeff", &
+                "The filter object has not been initialized.", &
+                SIG_UNITIALIZED_ERROR)
+            return
+        end if
+        if (i < n .or. i > n) then
+            call errmgr%report_error("fir_set_coeff", &
+                "The supplied index is out of range.", &
+                SIG_INDEX_OUT_OF_RANGE_ERROR)
+            return
+        end if
+
+        ! Process
+        this%m_coefficients(i) = x
+    end subroutine
 
 ! ------------------------------------------------------------------------------
     module function fir_apply_filter(this, x) result(y)
