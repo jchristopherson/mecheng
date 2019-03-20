@@ -121,3 +121,20 @@ target_link_libraries(mecheng_test_fplot mecheng)
 #     run_mecheng_fplot_tests ALL
 #     DEPENDS mecheng_test_fplot_cmd
 # )
+
+# ------------------------------------------------------------------------------
+# SIGNALS TESTS
+# ------------------------------------------------------------------------------
+set(test_signals_source test_signals.f90)
+add_executable(mecheng_test_signals ${test_signals_source})
+target_link_libraries(mecheng_test_signals mecheng)
+
+# Run the tests
+add_custom_command(OUTPUT mecheng_test_signals_cmd
+    DEPENDS ${test_signals_source}
+    COMMAND mecheng_test_signals
+)
+add_custom_target(
+    run_mecheng_signals_tests ALL
+    DEPENDS mecheng_test_signals_cmd
+)
