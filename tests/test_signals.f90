@@ -29,7 +29,7 @@ program main
         x(i) = sin(2.0d0 * pi * 50.0d0 * t(i)) + 0.5d0 * sin(2.0d0 * pi * 20.0d0 * t(i))
         t(i) = t(i-1) + dt
     end do
-    x = x + (xrand - 0.5d0) / 2.0d0
+    x = x + (xrand - 0.5d0) / 4.0d0
 
     ! Filter the signal - create a basic averaging filter
     coeffs = 1.0d0 / (ntaps + 1.0d0)
