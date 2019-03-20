@@ -151,6 +151,7 @@ module signals
     use, intrinsic :: iso_fortran_env, only : int32, real64
     use real_transform_routines, only : rfft1i, rfft1b, rfft1f
     use complex_transform_routines, only : cfft1i, cfft1b, cfft1f
+    use ferror
     implicit none
     private
     public :: low_pass_filter
@@ -182,6 +183,19 @@ module signals
     public :: finite_diff
     public :: integrate
     public :: trapz_integrate
+    public :: realtime_filter
+    public :: fir_filter
+    public :: apply_filter
+    public :: SIG_INVALID_INPUT_ERROR
+    public :: SIG_OUT_OF_MEMORY_ERROR
+
+! ******************************************************************************
+! CONSTANTS
+! ------------------------------------------------------------------------------
+    !> Defines an invalid input error.
+    integer(int32), parameter :: SIG_INVALID_INPUT_ERROR = 5001
+    !> Defines an out-of-memory error.
+    integer(int32), parameter :: SIG_OUT_OF_MEMORY_ERROR = 5002
 
 ! ******************************************************************************
 ! GENERAL INTERFACES
@@ -1451,19 +1465,101 @@ end interface
 ! ******************************************************************************
 ! SIGNALS_REALTIME SUBMODULE
 ! ------------------------------------------------------------------------------
-    !> @brief Defines an IIR digital filter.
-    type iir_filter
-        !> A buffer used to store previous signal values.
-        real(real64), allocatable, dimension(:) :: m_buffer
-        !> A buffer used to store previous filtered values.
-        real(real64), allocatable, dimension(:) :: m_filtBuffer
-        !> The numerator coefficients.
-        real(real64), allocatable, dimension(:) :: m_numerator
-        !> The denominator coefficients.
-        real(real64), allocatable, dimension(:) :: m_denominator
+    !> @brief Defines a real-time digital filter.
+    type, abstract :: realtime_filter
     contains
+        !> @brief Applies a real-time digital filter.
+        procedure(apply_filter), deferred, public :: apply
     end type
 
     interface
+        !> @brief Applies a real-time digital filter.
+        !!
+        !! @param[in,out] this The realtime_filter object.
+        !! @param[in] x The value to filter.
+        !! @return y The filtered value.
+        function apply_filter(this, x) result(y)
+            use iso_fortran_env
+            import realtime_filter
+            class(realtime_filter), intent(inout) :: this
+            real(real64), intent(in) :: x
+            real(real64) :: y
+        end function
+    end interface
+
+    !> @brief Defines an FIR digital filter.
+    type, extends(realtime_filter) :: fir_filter
+    private
+        !> A buffer used to store previous signal values.
+        real(real64), allocatable, dimension(:) :: m_buffer
+        !> The filter coefficients.
+        real(real64), allocatable, dimension(:) :: m_coefficients
+        !> An iterator to keep track of location within the buffer
+        integer(int32) :: m_iter
+    contains
+        procedure :: fir_init_1
+        procedure :: fir_init_2
+        generic, public :: initialize => fir_init_1, fir_init_2
+        procedure, public :: get_tap_count => fir_get_tap_count
+        procedure, public :: apply => fir_apply_filter
+    end type
+
+    interface
+        !> @brief Initializes a new FIR object.
+        !!
+        !! @param[in,out] this The fir_filter object.
+        !! @param[in] taps The number of taps.
+        !! @param[in,out] err An optional errors-based object that if provided 
+        !!  can be used to retrieve information relating to any errors 
+        !!  encountered during execution.  If not provided, a default 
+        !!  implementation of the errors class is used internally to provide 
+        !!  error handling.  Possible errors and warning messages that may be 
+        !!  encountered are as follows.
+        !!  - SIG_INVALID_INPUT_ERROR: Occurs if taps is less than 1.
+        !!  - SIG_OUT_OF_MEMORY_ERROR: Occurs if there is insufficient memory
+        !!      available.
+        module subroutine fir_init_1(this, taps, err)
+            class(fir_filter), intent(inout) :: this
+            integer(int32), intent(in) :: taps
+            class(errors), intent(inout), optional, target :: err
+        end subroutine
+
+        !> @brief Initializes a new FIR object.
+        !!
+        !! @param[in,out] this The fir_filter object.
+        !! @param[in] coeffs An array containing the filter coefficients.
+        !! @param[in,out] err An optional errors-based object that if provided 
+        !!  can be used to retrieve information relating to any errors 
+        !!  encountered during execution.  If not provided, a default 
+        !!  implementation of the errors class is used internally to provide 
+        !!  error handling.  Possible errors and warning messages that may be 
+        !!  encountered are as follows.
+        !!  - SIG_OUT_OF_MEMORY_ERROR: Occurs if there is insufficient memory
+        !!      available.
+        module subroutine fir_init_2(this, coeffs, err)
+            class(fir_filter), intent(inout) :: this
+            real(real64), intent(in), dimension(:) :: coeffs
+            class(errors), intent(inout), optional, target :: err
+        end subroutine
+
+        !> @brief Gets the number of taps.
+        !!
+        !! @param[in] this The fir_filter object.
+        !! @return The number of taps.
+        pure module function fir_get_tap_count(this) result(x)
+            class(fir_filter), intent(in) :: this
+            integer(int32) :: x
+        end function
+
+        !> @brief Applies an FIR filter.
+        !!
+        !! @param[in,out] this The fir_filter object.
+        !! @param[in] x The value to filter.
+        !! @return y The filtered value.
+        module function fir_apply_filter(this, x) result(y)
+            class(fir_filter), intent(inout) :: this
+            real(real64), intent(in) :: x
+            real(real64) :: y
+        end function
     end interface
 end module
