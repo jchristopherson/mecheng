@@ -185,6 +185,7 @@ module signals
     public :: trapz_integrate
     public :: realtime_filter
     public :: fir_filter
+    public :: iir_filter
     public :: apply_filter
     public :: SIG_INVALID_INPUT_ERROR
     public :: SIG_OUT_OF_MEMORY_ERROR
@@ -202,6 +203,8 @@ module signals
     integer(int32), parameter :: SIG_INDEX_OUT_OF_RANGE_ERROR = 5003
     !> Defines an uninitialized object error.
     integer(int32), parameter :: SIG_UNITIALIZED_ERROR = 5004
+    !> Defines an array size mismatch error.
+    integer(int32), parameter :: SIG_ARRAY_SIZE_ERROR = 5005
 
 ! ******************************************************************************
 ! GENERAL INTERFACES
@@ -1512,6 +1515,27 @@ end interface
         procedure, public :: apply => fir_apply_filter
     end type
 
+    !> @brief Defines an IIR digital filter.
+    type, extends(realtime_filter) :: iir_filter
+    private
+        !> The filter numerator coefficients (N + 1 element).
+        real(real64), allocatable, dimension(:) :: m_numer
+        !> The filter denominator coefficients (N element).
+        real(real64), allocatable, dimension(:) :: m_denom
+        !> The filter state vector (N element).
+        real(real64), allocatable, dimension(:) :: m_z
+    contains
+        procedure :: iir_init_1
+        procedure :: iir_init_2
+        generic, public :: initialize => iir_init_1, iir_init_2
+        procedure, public :: get_tap_count => iir_get_tap_count
+        procedure, public :: get_numerator => iir_get_numerator_coeff
+        procedure, public :: set_numerator => iir_set_numerator_coeff
+        procedure, public :: get_denominator => iir_get_denominator_coeff
+        procedure, public :: set_denominator => iir_set_denominator_coeff
+        procedure, public :: apply => iir_apply_filter
+    end type
+
     interface
         !> @brief Initializes a new FIR object.
         !!
@@ -1602,5 +1626,94 @@ end interface
             real(real64), intent(in) :: x
             real(real64) :: y
         end function
+
+! --------------------
+        !> @brief Initializes a new IIR object.
+        !!
+        !! @param[in,out] this The iir_filter object.
+        !! @param[in] taps The number of taps.
+        !! @param[in,out] err An optional errors-based object that if provided 
+        !!  can be used to retrieve information relating to any errors 
+        !!  encountered during execution.  If not provided, a default 
+        !!  implementation of the errors class is used internally to provide 
+        !!  error handling.  Possible errors and warning messages that may be 
+        !!  encountered are as follows.
+        !!  - SIG_INVALID_INPUT_ERROR: Occurs if taps is less than 1.
+        !!  - SIG_OUT_OF_MEMORY_ERROR: Occurs if there is insufficient memory
+        !!      available.
+        module subroutine iir_init_1(this, ntaps, err)
+            class(iir_filter), intent(inout) :: this
+            integer(int32), intent(in) :: ntaps
+            class(errors), intent(inout), optional, target :: err
+        end subroutine
+
+        !> @brief Initializes a new IIR object.
+        !!
+        !! @param[in,out] this The iir_filter object.
+        !! @param[in] a An N element array containing the denominator coefficeints
+        !!  (a0 is taken as 1).
+        !! @param[in] b An N+1 element array containing the numerator coefficients.
+        !! @param[in,out] err An optional errors-based object that if provided 
+        !!  can be used to retrieve information relating to any errors 
+        !!  encountered during execution.  If not provided, a default 
+        !!  implementation of the errors class is used internally to provide 
+        !!  error handling.  Possible errors and warning messages that may be 
+        !!  encountered are as follows.
+        !!  - SIG_OUT_OF_MEMORY_ERROR: Occurs if there is insufficient memory
+        !!      available.
+        !!  - SIG_ARRAY_SIZE_ERROR: Occurs if the coefficient array sizes are
+        !!      not correct.
+        module subroutine iir_init_2(this, a, b, err)
+            class(iir_filter), intent(inout) :: this
+            real(real64), intent(in), dimension(:) :: a, b
+            class(errors), intent(inout), optional, target :: err
+        end subroutine
+
+        !> @brief Gets the number of taps.
+        !!
+        !! @param[in] this The iir_filter object.
+        !! @return The number of taps.
+        pure module function iir_get_tap_count(this) result(x)
+            class(iir_filter), intent(in) :: this
+            integer(int32) :: x
+        end function
+
+
+        pure module function iir_get_numerator_coeff(this, i) result(x)
+            class(iir_filter), intent(in) :: this
+            integer(int32), intent(in) :: i
+            real(real64) :: x
+        end function
+
+        module subroutine iir_set_numerator_coeff(this, i, x, err)
+            class(iir_filter), intent(inout) :: this
+            integer(int32), intent(in) :: i
+            real(real64), intent(in) :: x
+        end subroutine
+
+        pure module function iir_get_denominator_coeff(this, x) result(x)
+            class(iir_filter), intent(in) :: this
+            integer(int32), intent(in) :: i
+            real(real64) :: x
+        end function
+
+        module subroutine iir_set_denominator_coeff(this, i, x, err)
+            class(iir_filter), intent(inout) :: this
+            integer(int32), intent(in) :: i
+            real(real64), intent(in) :: x
+        end subroutine
+
+
+        !> @brief Applies an IIR filter.
+        !!
+        !! @param[in,out] this The iir_filter object.
+        !! @param[in] x The value to filter.
+        !! @return y The filtered value.
+        module function iir_apply_filter(this, x) result(y)
+            class(iir_filter), intent(inout) :: this
+            real(real64), intent(in) :: x
+            real(real64) :: y
+        end function
+
     end interface
 end module

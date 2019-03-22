@@ -3,6 +3,7 @@
 ! http://www.eas.uccs.edu/~mwickert/ece5655/lecture_notes/ece5655_chap7.pdf
 ! https://github.com/MattPennock/Biquad
 ! https://github.com/jhgorse/C-filters/blob/master/fir_filter.c
+! https://en.wikipedia.org/wiki/Infinite_impulse_response
 
 
 submodule (signals) signals_realtime
@@ -40,7 +41,7 @@ contains
         allocate(this%m_buffer(taps), stat = flag)
         if (flag == 0) allocate(this%m_coefficients(taps), stat = flag)
         if (flag /= 0) then
-            call errmgr%report_error("fir_init_2", &
+            call errmgr%report_error("fir_init_1", &
                 "Insufficient memory available.", &
                 SIG_OUT_OF_MEMORY_ERROR)
             return
@@ -159,19 +160,130 @@ contains
     end function
     
 ! ------------------------------------------------------------------------------
+! ------------------------------------------------------------------------------
+    module subroutine iir_init_1(this, ntaps, err)
+        ! Arguments
+        class(iir_filter), intent(inout) :: this
+        integer(int32), intent(in) :: ntaps
+        class(errors), intent(inout), optional, target :: err
+
+        ! Local Variables
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+        integer(int32) :: flag
+        
+        ! Initialization
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+
+        ! Error Checking
+        if (taps < 1) then
+            call errmgr%report_error("iir_init_1", &
+                "Invalid number of filter taps.", &
+                SIG_INVALID_INPUT_ERROR)
+            return
+        end if
+
+        ! Memory Allocation
+        if (allocated(this%m_numer)) deallocate(this%m_numer)
+        if (allocated(this%m_denom)) deallocate(this%m_denom)
+        if (allocated(this%m_z)) deallocate(this%m_z)
+        allocate(this%m_numer(ntaps + 1), stat = flag)
+        if (flag == 0) allocate(this%m_denom(ntaps), stat = flag)
+        if (flag == 0) allocate(this%m_z(ntaps), stat = flag)
+        if (flag /= 0) then
+            call errmgr%report_error("iir_init_1", &
+                "Insufficient memory available.", &
+                SIG_OUT_OF_MEMORY_ERROR)
+            return
+        end if
+        this%m_numer = 0.0d0
+        this%m_denom = 0.0d0
+        this%m_z = 0.0d0
+    end subroutine
+
+! ------------------------------------------------------------------------------
+    module subroutine iir_init_2(this, a, b, err)
+        ! Arguments
+        class(iir_filter), intent(inout) :: this
+        real(real64), intent(in), dimension(:) :: a, b
+        class(errors), intent(inout), optional, target :: err
+
+        ! Local Variables
+        integer(int32) :: ntaps, na, nb
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+        character(len = 256) :: errmsg
+        
+        ! Initialization
+        na = size(a)
+        nb = size(b)
+        ntaps = na
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+
+        ! Input Checking
+        if (nb /= ntaps + 1) then
+            write(errmsg, '(AI0AI0A)') &
+                "The numerator coefficient array was of length ", &
+                nb, ", but was expected to be of length ", ntaps + 1. "."
+            call errmgr%report_error("iir_init_2", trim(errmsg), &
+                SIG_ARRAY_SIZE_ERROR)
+            return
+        end if
+
+        ! Process
+        call iir_init_1(this, ntaps, errmgr)
+        if (errmgr%has_error_occurred()) return
+        this%m_numer = b
+        this%m_denom = a
+    end subroutine
+
+! ------------------------------------------------------------------------------
+    pure module function iir_get_tap_count(this) result(x)
+        class(iir_filter), intent(in) :: this
+        integer(int32) :: x
+        x = 0
+        if (.not.allocated(this%m_z)) return
+        x = size(this%m_z)
+    end function
 
 ! ------------------------------------------------------------------------------
 
 ! ------------------------------------------------------------------------------
 
 ! ------------------------------------------------------------------------------
+    module function iir_apply_filter(this, x) result(y)
+        ! Arguments
+        class(iir_filter), intent(inout) :: this
+        real(real64), intent(in) :: x
+        real(real64) :: y
 
-! ------------------------------------------------------------------------------
+        ! Local Variables
+        integer(int32) :: i, ntaps
 
-! ------------------------------------------------------------------------------
+        ! Initialization
+        ntaps = this%get_tap_count()
+        y = 0.0d0
 
-! ------------------------------------------------------------------------------
+        ! Quick Return
+        if (ntaps == 0) return
 
+        ! Process
+        y = x * this%m_numer(1) + this%m_z(1)
+
+        ! Update the filter state
+        do i = 2, ntaps
+            this%m_z(i-1) = this%m_z(i) + x * this%m_numer(i) - y * this%m_denom(i-1)
+            this%m_z(ntaps) = x * this%m_numer(ntaps + 1) - y * this%m_denom(ntaps)
+        end do
+    end function
 ! ------------------------------------------------------------------------------
 
 ! ------------------------------------------------------------------------------
