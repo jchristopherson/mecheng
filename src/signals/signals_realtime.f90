@@ -232,7 +232,7 @@ contains
         if (nb /= ntaps + 1) then
             write(errmsg, '(AI0AI0A)') &
                 "The numerator coefficient array was of length ", &
-                nb, ", but was expected to be of length ", ntaps + 1. "."
+                nb, ", but was expected to be of length ", ntaps + 1, "."
             call errmgr%report_error("iir_init_2", trim(errmsg), &
                 SIG_ARRAY_SIZE_ERROR)
             return
