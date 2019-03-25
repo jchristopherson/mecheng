@@ -1678,31 +1678,77 @@ end interface
             integer(int32) :: x
         end function
 
-
+        !> @brief Gets the requested coefficient from the numerator of the
+        !! transfer function.
+        !!
+        !! @param[in] this The iir_filter object.
+        !! @param[in] i The index of the coefficient to retrieve.
+        !! @return The coefficient.
         pure module function iir_get_numerator_coeff(this, i) result(x)
             class(iir_filter), intent(in) :: this
             integer(int32), intent(in) :: i
             real(real64) :: x
         end function
 
+        !> @brief Sets the requested coefficient into the numerator of the
+        !! transfer function.
+        !!
+        !! @param[in,out] this The iir_filter object.
+        !! @param[in] i The index of the coefficient to retrieve.
+        !! @param[in] x The coefficient.
+        !! @param[in,out] err An optional errors-based object that if provided 
+        !!  can be used to retrieve information relating to any errors 
+        !!  encountered during execution.  If not provided, a default 
+        !!  implementation of the errors class is used internally to provide 
+        !!  error handling.  Possible errors and warning messages that may be 
+        !!  encountered are as follows.
+        !!  - SIG_UNITIALIZED_ERROR: Occurs if the filter hasn't been
+        !!      initialized.
+        !!  - SIG_INDEX_OUT_OF_RANGE_ERROR: Occurs if @p i is outside
+        !!      the bounds of the coefficient array.
         module subroutine iir_set_numerator_coeff(this, i, x, err)
             class(iir_filter), intent(inout) :: this
             integer(int32), intent(in) :: i
             real(real64), intent(in) :: x
+            class(errors), intent(inout), optional, target :: err
         end subroutine
 
-        pure module function iir_get_denominator_coeff(this, x) result(x)
+        !> @brief Gets the requested coefficient from the denominator of the
+        !! transfer function.  Notice, this implementation considers a0 = 1
+        !! such that a1 is the first coefficient.
+        !!
+        !! @param[in] this The iir_filter object.
+        !! @param[in] i The index of the coefficient to retrieve.
+        !! @return The coefficient.
+        pure module function iir_get_denominator_coeff(this, i) result(x)
             class(iir_filter), intent(in) :: this
             integer(int32), intent(in) :: i
             real(real64) :: x
         end function
 
+        !> @brief Sets the requested coefficient into the denominator of the
+        !! transfer function.  Notice, this implementation considers a0 = 1
+        !! such that a1 is the first coefficient.
+        !!
+        !! @param[in,out] this The iir_filter object.
+        !! @param[in] i The index of the coefficient to retrieve.
+        !! @param[in] x The coefficient.
+        !! @param[in,out] err An optional errors-based object that if provided 
+        !!  can be used to retrieve information relating to any errors 
+        !!  encountered during execution.  If not provided, a default 
+        !!  implementation of the errors class is used internally to provide 
+        !!  error handling.  Possible errors and warning messages that may be 
+        !!  encountered are as follows.
+        !!  - SIG_UNITIALIZED_ERROR: Occurs if the filter hasn't been
+        !!      initialized.
+        !!  - SIG_INDEX_OUT_OF_RANGE_ERROR: Occurs if @p i is outside
+        !!      the bounds of the coefficient array.
         module subroutine iir_set_denominator_coeff(this, i, x, err)
             class(iir_filter), intent(inout) :: this
             integer(int32), intent(in) :: i
             real(real64), intent(in) :: x
+            class(errors), intent(inout), optional, target :: err
         end subroutine
-
 
         !> @brief Applies an IIR filter.
         !!
