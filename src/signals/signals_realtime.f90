@@ -180,7 +180,7 @@ contains
         end if
 
         ! Error Checking
-        if (taps < 1) then
+        if (ntaps < 1) then
             call errmgr%report_error("iir_init_1", &
                 "Invalid number of filter taps.", &
                 SIG_INVALID_INPUT_ERROR)
