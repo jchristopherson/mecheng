@@ -1659,4 +1659,27 @@ module integral_core
             logical, allocatable, dimension(:) :: x
         end function
     end interface
+
+! ******************************************************************************
+! INTEGRAL_FIXED_STEP_ODE_INTEGRATOR.F90
+! ------------------------------------------------------------------------------
+    !> @brief Defines a fixed-step Euler's method type integrator.
+    type, extends(ode_integrator) :: ode_fixed_euler
+    contains
+        procedure, public :: step => ofe_step
+    end type
+
+    interface
+        module function ofe_step(this, fcn, x, y, xout, rtol, atol, err) result(brk)
+            class(ode_fixed_euler), intent(inout) :: this
+            class(ode_helper), intent(inout) :: fcn
+            real(real64), intent(inout) :: x
+            real(real64), intent(inout), dimension(:) :: y
+            real(real64), intent(in) :: xout
+            real(real64), intent(in), dimension(:) :: rtol, atol
+            class(errors), intent(inout), optional, target :: err
+            logical :: brk
+        end function
+    end interface
+
 end module
