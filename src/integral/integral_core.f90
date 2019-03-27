@@ -1663,15 +1663,17 @@ module integral_core
 ! ******************************************************************************
 ! INTEGRAL_FIXED_STEP_ODE_INTEGRATOR.F90
 ! ------------------------------------------------------------------------------
-    !> @brief Defines a fixed-step Euler's method type integrator.
-    type, extends(ode_integrator) :: ode_fixed_euler
+    !> @brief Defines an Euler's method type integrator.
+    type, extends(ode_integrator) :: ode_euler
+        real(real64), allocatable, dimension(:) :: m_dydx
     contains
-        procedure, public :: step => ofe_step
+        procedure, public :: step => oe_step
+        procedure, public :: reset => oe_reset_integrator
     end type
 
     interface
-        module function ofe_step(this, fcn, x, y, xout, rtol, atol, err) result(brk)
-            class(ode_fixed_euler), intent(inout) :: this
+        module function oe_step(this, fcn, x, y, xout, rtol, atol, err) result(brk)
+            class(ode_euler), intent(inout) :: this
             class(ode_helper), intent(inout) :: fcn
             real(real64), intent(inout) :: x
             real(real64), intent(inout), dimension(:) :: y
@@ -1680,6 +1682,10 @@ module integral_core
             class(errors), intent(inout), optional, target :: err
             logical :: brk
         end function
+
+        module subroutine oe_reset_integrator(this)
+            class(ode_euler), intent(inout) :: this
+        end subroutine
     end interface
 
 end module
