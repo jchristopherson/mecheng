@@ -30,6 +30,7 @@ module controls
         real(real64), private :: m_previousDerivative = 0.0d0
         real(real64), private :: m_previousOutput = 0.0d0
         real(real64), private :: m_filterTimeConstant = 1.0d-3
+        logical :: m_reset = .true.
 
     contains
         procedure, public :: get_use_filter => pid_get_use_filter
@@ -40,6 +41,7 @@ module controls
         procedure, public :: set_upper_limit => pid_set_upper_limit
         procedure, public :: get_update_time => pid_get_update_time
         procedure, public :: set_update_time => pid_set_update_time
+        procedure, public :: reset => pid_reset
         procedure, public :: get_filter_time_constant => pid_get_filter_time_constant
         procedure, public :: set_filter_time_constant => pid_set_filter_time_constant
         procedure, public :: filter => pid_filter
@@ -140,6 +142,19 @@ contains
     end subroutine
 
 ! ------------------------------------------------------------------------------
+    !> @brief Resets the controller.
+    !!
+    !! @param[in,out] this The pid object.
+    subroutine pid_reset(this)
+        class(pid), intent(inout) :: this
+        this%m_reset = .true.
+        this%m_previousDerivative = 0.0d0
+        this%m_previousOutput = 0.0d0
+        this%m_previousSignal = 0.0d0
+        this%m_previousTime = 0.0d0
+    end subroutine
+
+! ------------------------------------------------------------------------------
     !> @brief Applies a digital filter to the supplied signal.
     !!
     !! @param[in] this The pid object.
@@ -193,7 +208,7 @@ contains
         ! Compute the controller output - if sufficient time has passed or the 
         ! the setpoint has been modified
         if ((t - this%m_previousTime >= this%get_update_time()) .or. &
-                (setpoint /= this%m_setpoint)) then
+                (setpoint /= this%m_setpoint) .or. this%m_reset) then
             ! Update the setpoint
             this%m_setpoint = setpoint
 
@@ -216,6 +231,7 @@ contains
             this%m_previousOutput = co
             this%m_previousSignal = yk
             this%m_previousTime = t
+            this%m_reset = .false.
         else
             ! No controller output update is necessary, just return
             ! the previous value
