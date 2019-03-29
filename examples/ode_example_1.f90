@@ -41,10 +41,6 @@ program example
         te(i) = te(i-1) + dt
     end do
 
-    ! Inform the integrator that we're seeking output at every point, not
-    ! intermediate points as well
-    call inteuler%set_provide_all_output(.false.)
-
     ! Compute the solution using the Euler integrator
     xeuler = inteuler%integrate(obj, te, ic)
 
