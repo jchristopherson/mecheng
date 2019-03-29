@@ -20,30 +20,73 @@ contains
         ! Initialization
         brk = .false.
         h = xout - x
-
-        ! Ensure the direction of step is correct
+        call this%initialize(fcn%get_equation_count(), err)
         
         ! Check to see if root finding is requested
 
         ! Process
         if (this%m_first) call fcn%evaluate_ode(x, y, this%m_dydx)
-        y = y + h * this%m_dydx
+        this%m_dydx = h * this%m_dydx + this%m_summationError
+        this%m_y1 = y + this%m_dydx
+
+        ! Update the summation error tracking
+        this%m_summationError = this%m_dydx - (this%m_y1 - y)
 
         ! Compute the function value at x + h
-        call fcn%evaluate_ode(xout, y, this%m_work)
+        call fcn%evaluate_ode(xout, y, this%m_dydx1)
 
         ! Estimate the solution error
-        xerr = 0.5d0 * norm2(this%m_dydx - this%m_work)
+        this%m_error = 0.5d0 * h * (this%m_dydx - this%m_dydx1)
 
         ! Update the end time and store the most recent function evaluation
         x = xout
-        this%m_dydx = this%m_work
+        y = this%m_y1
+        this%m_dydx = this%m_dydx1
         this%m_first = .false.
     end function
 
 ! ------------------------------------------------------------------------------
     module subroutine oe_reset_integrator(this)
         class(ode_euler), intent(inout) :: this
+        this%m_first = .true.
+        this%m_summationError = 0.0d0
+    end subroutine
+
+! ------------------------------------------------------------------------------
+    module subroutine oe_init_workspace(this, neqn, err)
+        ! Arguments
+        class(ode_euler), intent(inout) :: this
+        integer(int32), intent(in) :: neqn
+        class(errors), intent(inout), optional, target :: err
+
+        ! Local Variables
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+        integer(int32) :: flag
+        
+        ! Quick Return
+        if (allocated(this%m_dydx)) then
+            if (size(this%m_dydx) == n) return
+        end if
+
+        ! Initialization
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+
+        ! Process
+        allocate(this%m_dydx(neqn), stat = flag)
+        if (flag == 0) allocate(this%m_dydx1(neqn), stat = flag)
+        if (flag == 0) allocate(this%m_error(neqn), stat = flag)
+        if (flag == 0) allocate(this%m_summationError(neqn), stat = flag)
+        if (flag == 0) allocate(this%m_y1(neqn), stat = flag)
+        if (flag /= 0) then
+        end if
+
+        ! Initialize appropriate values
+        this%m_summationError = 0.0d0
         this%m_first = .true.
     end subroutine
 

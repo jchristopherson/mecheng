@@ -47,6 +47,7 @@ module integral_core
     public :: ode_integrator_interface
     public :: ode_integrator_reset
     public :: ode_auto
+    public :: ode_euler
 
 ! ------------------------------------------------------------------------------
     !> @brief An error flag indicating insufficient memory.
@@ -1666,11 +1667,15 @@ module integral_core
     !> @brief Defines an Euler's method type integrator.
     type, extends(ode_integrator) :: ode_euler
         real(real64), allocatable, dimension(:) :: m_dydx
-        real(real64), allocatable, dimension(:) :: m_work
+        real(real64), allocatable, dimension(:) :: m_dydx1
+        real(real64), allocatable, dimension(:) :: m_error
+        real(real64), allocatable, dimension(:) :: m_summationError
+        real(real64), allocatable, dimension(:) :: m_y1
         logical :: m_first = .true.
     contains
         procedure, public :: step => oe_step
         procedure, public :: reset => oe_reset_integrator
+        procedure, private :: initialize => oe_init_workspace
     end type
 
     interface
@@ -1687,6 +1692,12 @@ module integral_core
 
         module subroutine oe_reset_integrator(this)
             class(ode_euler), intent(inout) :: this
+        end subroutine
+
+        module subroutine oe_init_workspace(this, neqn, err)
+            class(ode_euler), intent(inout) :: this
+            integer(int32), intent(in) :: neqn
+            class(errors), intent(inout), optional, target :: err
         end subroutine
     end interface
 
