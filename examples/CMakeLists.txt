@@ -45,3 +45,7 @@ target_link_libraries(plane_line_example_1 mecheng)
 # LINE EXAMPLE 2
 add_executable(line_example_2 line_example_2.f90)
 target_link_libraries(line_example_2 mecheng)
+
+# ODE EXAMPLE 1
+add_executable(ode_example_1 ode_example_1.f90)
+target_link_libraries(ode_example_1 mecheng)
