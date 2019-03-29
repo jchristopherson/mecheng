@@ -91,4 +91,20 @@ contains
     end subroutine
 
 ! ------------------------------------------------------------------------------
+    module function oe_integrate(this, fcnobj, x, y, err) result(rst)
+        ! Arguments
+        class(ode_euler), intent(inout) :: this
+        class(ode_helper), intent(inout) :: fcnobj
+        real(real64), intent(in), dimension(:) :: x, y
+        class(errors), intent(inout), optional, target :: err
+        real(real64), allocatable, dimension(:,:) :: rst
+
+        ! Ensure the integrator understands this is a fixed-step method
+        call this%set_provide_all_output(.false.)
+
+        ! Integrate
+        rst = oi_integrate(this, fcnobj, x, y, err)
+    end function
+
+! ------------------------------------------------------------------------------
 end submodule
