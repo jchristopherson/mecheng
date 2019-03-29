@@ -15,7 +15,7 @@ contains
         logical :: brk
 
         ! Local Variables
-        real(real64) :: h
+        real(real64) :: h, xerr
 
         ! Initialization
         brk = .false.
@@ -26,18 +26,25 @@ contains
         ! Check to see if root finding is requested
 
         ! Process
-        call fcn%evaluate_ode(x, y, this%m_dydx)
+        if (this%m_first) call fcn%evaluate_ode(x, y, this%m_dydx)
         y = y + h * this%m_dydx
 
-        ! Update the end time
+        ! Compute the function value at x + h
+        call fcn%evaluate_ode(xout, y, this%m_work)
+
+        ! Estimate the solution error
+        xerr = 0.5d0 * norm2(this%m_dydx - this%m_work)
+
+        ! Update the end time and store the most recent function evaluation
         x = xout
+        this%m_dydx = this%m_work
+        this%m_first = .false.
     end function
 
 ! ------------------------------------------------------------------------------
     module subroutine oe_reset_integrator(this)
         class(ode_euler), intent(inout) :: this
-        ! Do nothing.  This subroutine satisfies the requirements for the
-        ! abstract interface of the parent class.
+        this%m_first = .true.
     end subroutine
 
 ! ------------------------------------------------------------------------------

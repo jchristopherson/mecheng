@@ -1666,6 +1666,8 @@ module integral_core
     !> @brief Defines an Euler's method type integrator.
     type, extends(ode_integrator) :: ode_euler
         real(real64), allocatable, dimension(:) :: m_dydx
+        real(real64), allocatable, dimension(:) :: m_work
+        logical :: m_first = .true.
     contains
         procedure, public :: step => oe_step
         procedure, public :: reset => oe_reset_integrator
