@@ -1,0 +1,28 @@
+var structnetwork__ =
+[
+    [ "activation_derivatives", "structnetwork__.html#a39c447571dc4687d6be4fd100814ff38", null ],
+    [ "activation_functions", "structnetwork__.html#a004ceebe7c412d9e8deb7b41855de9f9", null ],
+    [ "bias", "structnetwork__.html#a7d42baa29e4a9c0d4215b23ec5a6e5ad", null ],
+    [ "bias_pointers", "structnetwork__.html#a589cb7ab30a299eb09b69c937601024b", null ],
+    [ "delta", "structnetwork__.html#aa2c39e344541945803b5fda0a392867e", null ],
+    [ "delta_pointers", "structnetwork__.html#a8385f2ce98c19c264f51e61f78d01ebd", null ],
+    [ "gradient", "structnetwork__.html#a485829b4d4e0348ef06f938237153158", null ],
+    [ "gradient_bias_pointers", "structnetwork__.html#af5d7b9e37b4590e17356928f61e45b5a", null ],
+    [ "gradient_weight_pointers", "structnetwork__.html#a9e201c3091673f337987ca01ec326498", null ],
+    [ "hidden_layer_count", "structnetwork__.html#a13fe1638496b9d70d80cb6bcc37a6c7f", null ],
+    [ "input_count", "structnetwork__.html#a3c962b41ea2ab389b5d9a08a614b1971", null ],
+    [ "neuron_per_layer_count", "structnetwork__.html#a1c82614eba09a9d9e5c655298e735555", null ],
+    [ "output", "structnetwork__.html#ab66e629dea16b23ca0c90f574a9eaa0e", null ],
+    [ "output_count", "structnetwork__.html#a5ffd72e4eb293705ef35c7a6d040cacb", null ],
+    [ "output_pointers", "structnetwork__.html#ab5deaed467421a6b6aef1e40aa95c845", null ],
+    [ "total_bias_count", "structnetwork__.html#a02796966e186118858161af787bc01fa", null ],
+    [ "total_coefficient_count", "structnetwork__.html#a91f29efdfc73b0a3dbd4526ce7cbb474", null ],
+    [ "total_layer_count", "structnetwork__.html#a16ce6c811255351e2eec998fcaa9d5e9", null ],
+    [ "total_neuron_count", "structnetwork__.html#a98b0561a950c0b06a6834bbb63f6023f", null ],
+    [ "total_weight_count", "structnetwork__.html#a072a09e9d823ea7c2932c14e34da26c2", null ],
+    [ "version", "structnetwork__.html#a6221c8257c658f77549de61da6cb41ca", null ],
+    [ "weight_pointers", "structnetwork__.html#a9d8a7d9306d84ad44055802ede2eaea1", null ],
+    [ "weights", "structnetwork__.html#a5bedf5311125f1a3884853dbcc553269", null ],
+    [ "workspace", "structnetwork__.html#a65544348652ec4bbf9e09ec9d5dc346a", null ],
+    [ "workspace_size", "structnetwork__.html#a641edd7a2004de237eb41244eaf80062", null ]
+];

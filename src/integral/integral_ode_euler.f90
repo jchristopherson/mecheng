@@ -107,4 +107,11 @@ contains
     end function
 
 ! ------------------------------------------------------------------------------
+    pure module function oe_get_error_est(this) result(x)
+        class(ode_euler), intent(in) :: this
+        real(real64), allocatable, dimension(:) :: x
+        x = this%m_error
+    end function
+
+! ------------------------------------------------------------------------------
 end submodule

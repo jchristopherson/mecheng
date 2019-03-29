@@ -7,6 +7,7 @@ var searchData=
   ['finite_5fdiff',['finite_diff',['../interfacesignals_1_1finite__diff.html',1,'signals']]],
   ['finite_5finterval_5ffcn',['finite_interval_fcn',['../interfaceintegral__core_1_1finite__interval__fcn.html',1,'integral_core']]],
   ['finite_5finterval_5fintegrator',['finite_interval_integrator',['../structintegral__core_1_1finite__interval__integrator.html',1,'integral_core']]],
+  ['fir_5ffilter',['fir_filter',['../structsignals_1_1fir__filter.html',1,'signals']]],
   ['form_5flu',['form_lu',['../interfacelinalg__core_1_1form__lu.html',1,'linalg_core']]],
   ['form_5fqr',['form_qr',['../interfacelinalg__core_1_1form__qr.html',1,'linalg_core']]],
   ['fourier_5fdiff',['fourier_diff',['../interfacesignals_1_1fourier__diff.html',1,'signals']]],

@@ -9,6 +9,7 @@ var namespaceintegral__core =
     [ "nonadaptive_integrator", "structintegral__core_1_1nonadaptive__integrator.html", "structintegral__core_1_1nonadaptive__integrator" ],
     [ "ode_auto", "structintegral__core_1_1ode__auto.html", "structintegral__core_1_1ode__auto" ],
     [ "ode_constraint", "interfaceintegral__core_1_1ode__constraint.html", "interfaceintegral__core_1_1ode__constraint" ],
+    [ "ode_euler", "structintegral__core_1_1ode__euler.html", "structintegral__core_1_1ode__euler" ],
     [ "ode_fcn", "interfaceintegral__core_1_1ode__fcn.html", "interfaceintegral__core_1_1ode__fcn" ],
     [ "ode_helper", "structintegral__core_1_1ode__helper.html", "structintegral__core_1_1ode__helper" ],
     [ "ode_integrator", "structintegral__core_1_1ode__integrator.html", "structintegral__core_1_1ode__integrator" ],

@@ -1,7 +1,6 @@
 var searchData=
 [
   ['radius_5fof_5fgyration',['radius_of_gyration',['../namespacesections.html#ac237e866c90bde605392ec5b998c1662',1,'sections']]],
-  ['randomize',['randomize',['../structneural__network__core_1_1layer.html#a71ec5b0034e9c4c9a40d75787ee0888c',1,'neural_network_core::layer']]],
   ['raw_5finterp',['raw_interp',['../structcurvefit__interp_1_1interp__manager.html#a336d10183b9128cbf25ce3e1f5a9d092',1,'curvefit_interp::interp_manager::raw_interp()'],['../structcurvefit__interp_1_1linear__interp.html#abb3e4ce276d69bf9b0f49e779af3acd0',1,'curvefit_interp::linear_interp::raw_interp()'],['../structcurvefit__interp_1_1polynomial__interp.html#a9719bb7cc2c66ba8ae3a0e647a6e930f',1,'curvefit_interp::polynomial_interp::raw_interp()'],['../structcurvefit__interp_1_1spline__interp.html#a855b787ccc8515b737a2f17993e971a1',1,'curvefit_interp::spline_interp::raw_interp()']]],
   ['read_5fall',['read_all',['../structfortio__text_1_1text__reader.html#a396f7c0afdfc5d3d933e9410ac6b0d13',1,'fortio_text::text_reader']]],
   ['read_5fcatman_5ffile',['read_catman_file',['../namespacefortio__hbm.html#a2ed0871f8f811016de66e844491d7062',1,'fortio_hbm']]],
@@ -27,7 +26,7 @@ var searchData=
   ['repeat_5f1',['repeat_1',['../interfacecurvefit__calibration_1_1repeatability.html#a1fd8e0063e588262262301a354d45d23',1,'curvefit_calibration::repeatability::repeat_1()'],['../namespacecurvefit__calibration.html#a7fe392e91d3d65dc130bf216f6aa4965',1,'curvefit_calibration::repeat_1()']]],
   ['report_5ferror',['report_error',['../structferror_1_1errors.html#a16967ced63ebe7899fa3b3427f98e553',1,'ferror::errors']]],
   ['report_5fwarning',['report_warning',['../structferror_1_1errors.html#a1d2ba3d2a17aaf2fea4d0899185e4656',1,'ferror::errors']]],
-  ['reset',['reset',['../structintegral__core_1_1ode__integrator.html#a0d54424dbe1176b8811e7ec66ac597ce',1,'integral_core::ode_integrator::reset()'],['../structintegral__core_1_1ode__auto.html#ac36e4a651771f34246340c806504434b',1,'integral_core::ode_auto::reset()']]],
+  ['reset',['reset',['../structintegral__core_1_1ode__integrator.html#a0d54424dbe1176b8811e7ec66ac597ce',1,'integral_core::ode_integrator::reset()'],['../structintegral__core_1_1ode__auto.html#ac36e4a651771f34246340c806504434b',1,'integral_core::ode_auto::reset()'],['../structintegral__core_1_1ode__euler.html#aa0166382f7659c2075e4cf9ae53d8e1d',1,'integral_core::ode_euler::reset()']]],
   ['reset_5ferror_5fstatus',['reset_error_status',['../structferror_1_1errors.html#a8ee64e42feb5449917383b19aa82f344',1,'ferror::errors']]],
   ['reset_5fwarning_5fstatus',['reset_warning_status',['../structferror_1_1errors.html#a94744a9b38703be4a84ce427dc749b00',1,'ferror::errors']]],
   ['roots',['roots',['../structnonlin__polynomials_1_1polynomial.html#aabefa8eebaed14d790c39cd45c8b7b26',1,'nonlin_polynomials::polynomial']]],

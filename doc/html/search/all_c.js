@@ -2,7 +2,8 @@ var searchData=
 [
   ['name',['name',['../structfortio__hbm_1_1hbm__data__channel.html#a2c13fc3e6dd6f49314981892227d1d34',1,'fortio_hbm::hbm_data_channel']]],
   ['nelder_5fmead',['nelder_mead',['../structnonlin__optimize_1_1nelder__mead.html',1,'nonlin_optimize']]],
-  ['network',['network',['../structneural__network__core_1_1network.html',1,'neural_network_core']]],
+  ['network_5f',['network_',['../structnetwork__.html',1,'']]],
+  ['neural_5fnetwork',['neural_network',['../structneural__networks_1_1neural__network.html',1,'neural_networks']]],
   ['newton_5f1var_5fsolver',['newton_1var_solver',['../structnonlin__solve_1_1newton__1var__solver.html',1,'nonlin_solve']]],
   ['newton_5fsolver',['newton_solver',['../structnonlin__solve_1_1newton__solver.html',1,'nonlin_solve']]],
   ['next',['next',['../structcollection__containers_1_1dll__node.html#acb76f788f1c91eb1a0aea070b0389953',1,'collection_containers::dll_node::next()'],['../structcollection__linked__list_1_1linked__list.html#ac5bd49baca2a07f6d952ef2b61ef141e',1,'collection_linked_list::linked_list::next()']]],

@@ -1,8 +1,6 @@
 var searchData=
 [
   ['latex_5fterminal',['latex_terminal',['../structfplot__core_1_1latex__terminal.html',1,'fplot_core']]],
-  ['layer',['layer',['../structneural__network__core_1_1layer.html',1,'neural_network_core']]],
-  ['learning_5fhelper',['learning_helper',['../structneural__network__core_1_1learning__helper.html',1,'neural_network_core']]],
   ['least_5fsquares_5fsolver',['least_squares_solver',['../structnonlin__least__squares_1_1least__squares__solver.html',1,'nonlin_least_squares']]],
   ['legend',['legend',['../structfplot__core_1_1legend.html',1,'fplot_core']]],
   ['line',['line',['../structgeometry_1_1line.html',1,'geometry']]],

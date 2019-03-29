@@ -51,12 +51,13 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"interfacegeometry_1_1plane__from__angle__axis.html",
-"interfacestrain_1_1wheatstone__bridge__series.html#a6635d023a6021f3fe36384cb1273dbfa",
-"structcurvefit__interp_1_1polynomial__interp.html#a9719bb7cc2c66ba8ae3a0e647a6e930f",
-"structfplot__core_1_1legend.html#ade7d848c922f6cbb6dc91085336a0c92",
-"structfplot__core_1_1surface__plot.html#a41a03940c430c3088bb3d3b826e6f9e8",
-"structneural__network__core_1_1learning__helper.html#ac1ca2e69ba0ab09b94c5e38c1e9665d6"
+"interfacefplot__core_1_1spd__get__value.html",
+"interfacenonlin__core_1_1nonlin__solver__1var.html",
+"structcollection__linked__list_1_1linked__list.html#ae3b8d8f25246cd7c971251ac1622e616",
+"structfortio__hbm_1_1hbm__data__file.html#a4bcae3cf768aa512a526e01562fb8348",
+"structfplot__core_1_1plot__label.html#a468e4487a8dc9645e105f93f95035f75",
+"structintegral__core_1_1ode__integrator.html#ab1109d16e479ff4efcc5e49428edd5aa",
+"structnonlin__polynomials_1_1polynomial.html#a80a74956544433b7a45babcfb4443980"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

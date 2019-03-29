@@ -9,6 +9,7 @@ var searchData=
   ['mat_5fsolve_5fupper_5ftri',['mat_solve_upper_tri',['../interfacelinalg__immutable_1_1mat__solve__upper__tri.html',1,'linalg_immutable']]],
   ['mean',['mean',['../interfacecurvefit__statistics_1_1mean.html',1,'curvefit_statistics']]],
   ['median',['median',['../interfacecurvefit__statistics_1_1median.html',1,'curvefit_statistics']]],
+  ['modal_5finformation',['modal_information',['../structvibrations_1_1modal__information.html',1,'vibrations']]],
   ['moving_5faverage',['moving_average',['../interfacecurvefit__regression_1_1moving__average.html',1,'curvefit_regression']]],
   ['mtx_5finverse',['mtx_inverse',['../interfacelinalg__core_1_1mtx__inverse.html',1,'linalg_core']]],
   ['mtx_5fmult',['mtx_mult',['../interfacelinalg__core_1_1mtx__mult.html',1,'linalg_core']]],

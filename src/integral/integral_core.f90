@@ -1058,7 +1058,7 @@ module integral_core
         !!
         !! @par Syntax
         !! @code{.f90}
-        !! logical function integrate(class(ode_integrator) this, class(ode_helper) fcnobj, real(real64) x(:), real(real64) y(:), optional class(errors) err)
+        !! real(real64)(:,:) function integrate(class(ode_integrator) this, class(ode_helper) fcnobj, real(real64) x(:), real(real64) y(:), optional class(errors) err)
         !! @endcode
         !!
         !! @param[in,out] this The ode_integrator object.
@@ -1666,6 +1666,15 @@ module integral_core
 ! ------------------------------------------------------------------------------
     !> @brief Defines an Euler's method type integrator.
     !!
+    !! @par Remarks
+    !! The Euler integrator is a fixed-step-size integrator.  It utilizes
+    !! the traditional Euler algorithm:
+    !! \f$ x_{k+1} = x_{k} + h f(t_{k}, x_{k}) \f$.
+    !! @par
+    !! The integrator is capable of estimating the error in each step.  Error
+    !! is estimated as follows: \f$ e = \frac{h}{2} \left(f(t_{k}, x_{k}) - 
+    !! f(t_{k+1}, x_{k+1}) \right) \f$.
+    !!
     !! @par Example
     !! The following example illustrates how to utilize the Euler integrator.
     !! It also compares output to using a more advanced, automatic-time-stepping
@@ -1788,9 +1797,96 @@ module integral_core
         real(real64), allocatable, dimension(:) :: m_y1
         logical :: m_first = .true.
     contains
+        !> @brief Takes a single integration step towards the desired point.
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! logical function step(class(ode_euler) this, class(ode_helper) fcn, real(real64) x, real(real64) y(:), real(real64) xout, real(real64) rtol(:), real(real64) atol(:), optional class(errors) err)
+        !! @endcode
+        !!
+        !! @param[in,out] this The ode_euler object.
+        !! @param[in,out] fcn An ode_helper object containing the ODEs to
+        !!  integrate.
+        !! @param[in,out] x On input, the value of the independent variable at
+        !!  which to start.  On output, the value of the independent variable at
+        !!  which integration terminated.
+        !! @param[in,out] y On input, the value(s) of the dependent variable(s)
+        !!  at the initial value given in @p x.  On output, the value(s) of the
+        !!  dependent variable(s) as evaluated at the output given in @p x.
+        !! @param[in] xout The value of the independent variable at which the
+        !!  solution is desired.
+        !! @param[in] rtol An array containing relative tolerance information
+        !!  for each ODE.
+        !! @param[in] atol An array containing absolute tolerance information
+        !!  for each ODE.
+        !! @param[in,out] err An optional output that can be used to provide
+        !!  an error handling mechanism.  If not provided, a default error
+        !!  handling mechanism will be utilized.  Possible errors that may
+        !!  be encountered are as follows.
+        !!  - INT_OUT_OF_MEMORY_ERROR: Occurs if insufficient memory is 
+        !!      available.
+        !!  - INT_INVALID_INPUT_ERROR: Occurs if an invalid input was supplied.
+        !!
+        !! @return Returns true if the integrator requests a stop; else, false,
+        !!  to continue as normal.  A possible sitaution resulting in a true
+        !!  value is in the event a constraint has been satisfied.
         procedure, public :: step => oe_step
+        !> @brief Resets the state of the integrator.
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! subroutine reset(class(ode_euler) this)
+        !! @endcode
+        !!
+        !! @param[in,out] this The ode_euler object.
         procedure, public :: reset => oe_reset_integrator
+        !> @brief Performs the integration.
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! real(real64)(:,:) function integrate(class(ode_euler) this, class(ode_helper) fcnobj, real(real64) x(:), real(real64) y(:), optional class(errors) err)
+        !! @endcode
+        !!
+        !! @param[in,out] this The ode_euler object.
+        !! @param[in,out] fcnobj The ode_helper object containing the equations
+        !!  to integrate.
+        !! @param[in] x An array containing the values of the independent
+        !!  variable at which the solution is desired.  There must be at least
+        !!  two values in this array.
+        !! @param[in] y An N-element array containing the initial conditions for
+        !!  each of the N ODEs.
+        !! @param[in,out] err An optional output that can be used to provide
+        !!  an error handling mechanism.  If not provided, a default error
+        !!  handling mechanism will be utilized.  Possible errors that may
+        !!  be encountered are as follows.
+        !!  - INT_INVALID_INPUT_ERROR: An invalid input was supplied.
+        !!  - INT_OUT_OF_MEMORY_ERROR: There is insufficient memory available.
+        !!  - INT_LACK_OF_DEFINITION_ERROR: Occurs if no equations have been
+        !!      defined.
+        !!  - INT_ARRAY_SIZE_MISMATCH_ERROR: Occurs if @p y is not sized to
+        !!      match the problem as defined in @p fcnobj, or if the tolerance
+        !!      arrays are not sized to match the problem as defined in
+        !!      @p fcnobj.
+        !!  Notice, specific integrators may have additional errors.  See the
+        !!  @p step routine of the appropriate integrator for more information.
+        !!
+        !! @return Returns the solution in a matrix of N+1 columns.  The
+        !!  first column contains the values of the independent variable at
+        !!  which the solution was computed.  The remaining columns contain the
+        !!  solution points for each ODE.
         procedure, public :: integrate => oe_integrate
+        !> @brief Retrieves the error estimate from the last integration step.
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! real(real64)(:) function get_last_error_estimate(class(ode_euler) this)
+        !! @endcode
+        !!
+        !! @param[in] this The ode_euler object.
+        !! @return An array containing the most recent error estimate for each
+        !!  equation.
+        procedure, public :: get_last_error_estimate => oe_get_error_est
+
         procedure, private :: initialize => oe_init_workspace
     end type
 
@@ -1822,6 +1918,11 @@ module integral_core
             real(real64), intent(in), dimension(:) :: x, y
             class(errors), intent(inout), optional, target :: err
             real(real64), allocatable, dimension(:,:) :: rst
+        end function
+
+        pure module function oe_get_error_est(this) result(x)
+            class(ode_euler), intent(in) :: this
+            real(real64), allocatable, dimension(:) :: x
         end function
     end interface
 
