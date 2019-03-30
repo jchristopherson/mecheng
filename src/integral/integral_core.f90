@@ -1790,6 +1790,7 @@ module integral_core
     !! The above program produces the following output.
     !! @image html euler_ode_comparison_1.png
     type, extends(ode_integrator) :: ode_euler
+    private
         real(real64), allocatable, dimension(:) :: m_dydx
         real(real64), allocatable, dimension(:) :: m_dydx1
         real(real64), allocatable, dimension(:) :: m_error
@@ -1924,6 +1925,34 @@ module integral_core
             class(ode_euler), intent(in) :: this
             real(real64), allocatable, dimension(:) :: x
         end function
+    end interface
+
+! ******************************************************************************
+! INTEGRAL_FIXED_STEP_ODE_INTEGRATOR.F90
+! ------------------------------------------------------------------------------
+    !
+    type, extends(ode_integrator) :: ode_rk4
+    private
+    contains
+        procedure, public :: step => ork4_step
+        procedure, public :: reset => ork4_step
+    end type
+
+    interface
+        module function ork4_step(this, fcn, x, y, xout, rtol, atol, err) result(brk)
+            class(ode_rk4), intent(inout) :: this
+            class(ode_helper), intent(inout) :: fcn
+            real(real64), intent(inout) :: x
+            real(real64), intent(inout), dimension(:) :: y
+            real(real64), intent(in) :: xout
+            real(real64), intent(in), dimension(:) :: rtol, atol
+            class(errors), intent(inout), optional, target :: err
+            logical :: brk
+        end function
+
+        module subroutine ork4_reset_integrator(this)
+            class(ode_rk4), intent(inout) :: this
+        end subroutine
     end interface
 
 end module

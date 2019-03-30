@@ -99,6 +99,7 @@ set(integral_sources
     integral/integral_ode_integrator.f90
     integral/integral_ode_auto.f90
     integral/integral_ode_euler.f90
+    integral/integral_ode_rk4.f90
 )
 
 # Define the QUADPACK source files
