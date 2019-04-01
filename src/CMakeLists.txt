@@ -458,6 +458,8 @@ set(geometry_sources
 
 set(controls_sources
     controls/controls.f90
+    controls/controls_realtime.f90
+    controls/controls_pid.f90
 )
 
 # Define the NEURAL_NETWORK source files
