@@ -66,7 +66,7 @@ contains
         
         ! Quick Return
         if (allocated(this%m_dydx)) then
-            if (size(this%m_dydx) == n) return
+            if (size(this%m_dydx) == neqn) return
         end if
 
         ! Initialization
@@ -76,6 +76,13 @@ contains
             errmgr => deferr
         end if
 
+        ! Deallocate as necessary
+        if (allocated(this%m_dydx)) deallocate(this%m_dydx)
+        if (allocated(this%m_dydx1)) deallocate(this%m_dydx1)
+        if (allocated(this%m_error)) deallocate(this%m_error)
+        if (allocated(this%m_summationError)) deallocate(this%m_summationError)
+        if (allocated(this%m_y1)) deallocate(this%m_y1)
+
         ! Process
         allocate(this%m_dydx(neqn), stat = flag)
         if (flag == 0) allocate(this%m_dydx1(neqn), stat = flag)
@@ -83,6 +90,10 @@ contains
         if (flag == 0) allocate(this%m_summationError(neqn), stat = flag)
         if (flag == 0) allocate(this%m_y1(neqn), stat = flag)
         if (flag /= 0) then
+            call errmgr%report_error("oe_init_workspace", &
+                "Insufficient memory available.", &
+                INT_OUT_OF_MEMORY_ERROR)
+            return
         end if
 
         ! Initialize appropriate values
