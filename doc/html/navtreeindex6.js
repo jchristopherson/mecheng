@@ -1,5 +1,15 @@
 var NAVTREEINDEX6 =
 {
+"structintegral__core_1_1ode__euler.html#a0e07128ab58004733383f47d8a4cbbb6":[1,0,17,9,9],
+"structintegral__core_1_1ode__euler.html#a2c51df406ab49d586183a4aba2486ac0":[1,0,17,9,6],
+"structintegral__core_1_1ode__euler.html#a3ea4d466e4c4ca598049f0dd7b6378ae":[1,0,17,9,5],
+"structintegral__core_1_1ode__euler.html#a6dd9fd51cfec7e8660f12041ce940adf":[1,0,17,9,7],
+"structintegral__core_1_1ode__euler.html#a81e8cc51f408ab8d612b8a703102a88e":[1,0,17,9,2],
+"structintegral__core_1_1ode__euler.html#aa0166382f7659c2075e4cf9ae53d8e1d":[1,0,17,9,3],
+"structintegral__core_1_1ode__euler.html#ab53abfae8d8d4cdaff93f2d8a7726231":[1,0,17,9,4],
+"structintegral__core_1_1ode__euler.html#ab7e1b72bb51ffa0b34814fc0119a26d8":[1,0,17,9,1],
+"structintegral__core_1_1ode__euler.html#ad35cc4297a132ff7d8dda200e59f9231":[1,0,17,9,8],
+"structintegral__core_1_1ode__euler.html#afead47e6b41c5fa13aa7014b7733428b":[1,0,17,9,0],
 "structintegral__core_1_1ode__helper.html":[1,0,17,11],
 "structintegral__core_1_1ode__helper.html#a1bc7e457b2f7694e53954e82880986f5":[1,0,17,11,1],
 "structintegral__core_1_1ode__helper.html#a1c37d793d4a3f7cd69bb893a2b4db281":[1,0,17,11,7],
@@ -239,15 +249,5 @@ var NAVTREEINDEX6 =
 "structnonlin__core_1_1iteration__behavior.html#af90b6cb7ec48985314430c5a12c15dc2":[1,0,22,8,6],
 "structnonlin__core_1_1iteration__behavior.html#afd0d9d5f04d17bc9e3be467ebd93a1b1":[1,0,22,8,2],
 "structnonlin__core_1_1value__pair.html":[1,0,22,13],
-"structnonlin__core_1_1value__pair.html#a18a904854840a01001ceafaf8b438c73":[1,0,22,13,1],
-"structnonlin__core_1_1value__pair.html#a6b406e6ee33f4237122141224f1d3c87":[1,0,22,13,0],
-"structnonlin__core_1_1vecfcn__helper.html":[1,0,22,15],
-"structnonlin__core_1_1vecfcn__helper.html#a1ad69c2d6a5b32c041c93eb9cc542109":[1,0,22,15,8],
-"structnonlin__core_1_1vecfcn__helper.html#a28ad419ee7fd8d7f0529587d4a1bfc78":[1,0,22,15,7],
-"structnonlin__core_1_1vecfcn__helper.html#a41b867ae18398e8c7de44c6dc5b32aed":[1,0,22,15,6],
-"structnonlin__core_1_1vecfcn__helper.html#a44c03a753473e7cc38776bf2005e1eb8":[1,0,22,15,0],
-"structnonlin__core_1_1vecfcn__helper.html#a47cdc8d1382ba9ca635e94ae8758115d":[1,0,22,15,9],
-"structnonlin__core_1_1vecfcn__helper.html#a806818129d5723b7ff880af149e32a8c":[1,0,22,15,10],
-"structnonlin__core_1_1vecfcn__helper.html#a95d28720ced834b78276792bc388ae3b":[1,0,22,15,4],
-"structnonlin__core_1_1vecfcn__helper.html#ab7d7b04b2705a59abf9f3533f65b9982":[1,0,22,15,1]
+"structnonlin__core_1_1value__pair.html#a18a904854840a01001ceafaf8b438c73":[1,0,22,13,1]
 };

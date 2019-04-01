@@ -1,5 +1,7 @@
 var NAVTREEINDEX2 =
 {
+"interfacenonlin__core_1_1fcnnvar.html":[1,0,22,5],
+"interfacenonlin__core_1_1fcnnvar.html#a6b4c08adbe44af2c3d5ae606610881f0":[1,0,22,5,0],
 "interfacenonlin__core_1_1gradientfcn.html":[1,0,22,7],
 "interfacenonlin__core_1_1gradientfcn.html#a14926c33ea60538cfaeb7a7dd3b7c507":[1,0,22,7,0],
 "interfacenonlin__core_1_1jacobianfcn.html":[1,0,22,9],
@@ -114,8 +116,8 @@ var NAVTREEINDEX2 =
 "namespacecurvefit__core.html":[1,0,6],
 "namespacecurvefit__interp.html":[0,0,8],
 "namespacecurvefit__interp.html":[1,0,7],
-"namespacecurvefit__regression.html":[0,0,9],
 "namespacecurvefit__regression.html":[1,0,8],
+"namespacecurvefit__regression.html":[0,0,9],
 "namespacecurvefit__statistics.html":[1,0,9],
 "namespacecurvefit__statistics.html":[0,0,10],
 "namespaceferror.html":[1,0,10],
@@ -146,8 +148,8 @@ var NAVTREEINDEX2 =
 "namespacemembers_d.html":[0,1,0,2],
 "namespacemembers_e.html":[0,1,0,3],
 "namespacemembers_f.html":[0,1,0,4],
-"namespacemembers_func.html":[0,1,1,0],
 "namespacemembers_func.html":[0,1,1],
+"namespacemembers_func.html":[0,1,1,0],
 "namespacemembers_func_c.html":[0,1,1,1],
 "namespacemembers_func_d.html":[0,1,1,2],
 "namespacemembers_func_e.html":[0,1,1,3],
@@ -197,8 +199,8 @@ var NAVTREEINDEX2 =
 "namespacesections.html":[0,0,31],
 "namespacesignals.html":[0,0,32],
 "namespacesignals.html":[1,0,28],
-"namespacestrain.html":[1,0,29],
 "namespacestrain.html":[0,0,33],
+"namespacestrain.html":[1,0,29],
 "neural__networks_8f90_source.html":[2,0,0,11,2],
 "nonlin__constants_8f90_source.html":[2,0,0,12,0],
 "nonlin__core_8f90_source.html":[2,0,0,12,1],
@@ -247,7 +249,5 @@ var NAVTREEINDEX2 =
 "structcollection__linked__list_1_1linked__list.html":[1,0,1,0],
 "structcollection__linked__list_1_1linked__list.html#a205d00fea81fa18e7c2a3f18cfbf3555":[1,0,1,0,7],
 "structcollection__linked__list_1_1linked__list.html#a28758e7d3df72bf48e5506f9c7117f83":[1,0,1,0,17],
-"structcollection__linked__list_1_1linked__list.html#a315f3da31d5aaa579e3a6dcf74e69bbb":[1,0,1,0,12],
-"structcollection__linked__list_1_1linked__list.html#a39f70a7959d8e31a862fc7c2a85194f0":[1,0,1,0,13],
-"structcollection__linked__list_1_1linked__list.html#a3c8f4fd6dbd3a63716491922f135c498":[1,0,1,0,5]
+"structcollection__linked__list_1_1linked__list.html#a315f3da31d5aaa579e3a6dcf74e69bbb":[1,0,1,0,12]
 };

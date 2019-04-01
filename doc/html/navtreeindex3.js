@@ -1,5 +1,7 @@
 var NAVTREEINDEX3 =
 {
+"structcollection__linked__list_1_1linked__list.html#a39f70a7959d8e31a862fc7c2a85194f0":[1,0,1,0,13],
+"structcollection__linked__list_1_1linked__list.html#a3c8f4fd6dbd3a63716491922f135c498":[1,0,1,0,5],
 "structcollection__linked__list_1_1linked__list.html#a51fec081ab6d9e83ba41c3c70a849acd":[1,0,1,0,11],
 "structcollection__linked__list_1_1linked__list.html#a5db724b2fd2bc31ae50761ac6d9e31ed":[1,0,1,0,1],
 "structcollection__linked__list_1_1linked__list.html#a7623e725de7d925809ecbfbb48518995":[1,0,1,0,16],
@@ -71,6 +73,14 @@ var NAVTREEINDEX3 =
 "structcontrols_1_1realtime__object.html#a092c4dd49ff5279621082811bb4f8ccd":[1,0,4,2,2],
 "structcontrols_1_1realtime__object.html#a1aee89e4c60ff44b8c6a7f0b46b70f72":[1,0,4,2,1],
 "structcontrols_1_1realtime__object.html#af45407eb3c4b59126dd11f262eae56a4":[1,0,4,2,0],
+"structcontrols_1_1realtime__signal.html":[1,0,4,4],
+"structcontrols_1_1realtime__signal.html#a2d6947abd0557db0d7d9e490ca9998f6":[1,0,4,4,0],
+"structcontrols_1_1realtime__signal.html#a32553f3d76e63d0de93d960bd94daa6f":[1,0,4,4,4],
+"structcontrols_1_1realtime__signal.html#a72b7bf5a4c8e327b74d29eb0ec1ea3aa":[1,0,4,4,1],
+"structcontrols_1_1realtime__signal.html#a72b7bf5a4c8e327b74d29eb0ec1ea3aa":[1,0,4,4,2],
+"structcontrols_1_1realtime__signal.html#ab8c4dd0a506336a55fcb1c5efba47a91":[1,0,4,4,3],
+"structcontrols_1_1realtime__signal.html#ae066d9cf1e55f567db56823d5ff0e8a0":[1,0,4,4,5],
+"structcontrols_1_1realtime__signal.html#af13163c21a1614a9b56e5f09e6a0413e":[1,0,4,4,6],
 "structcurvefit__calibration_1_1seb__results.html":[1,0,5,7],
 "structcurvefit__calibration_1_1seb__results.html#a2074e6458f1f9ffcaf4ab6a6cd2104a8":[1,0,5,7,1],
 "structcurvefit__calibration_1_1seb__results.html#a5dd4d2964727ca3902e6c33d76cc58f3":[1,0,5,7,0],
@@ -239,15 +249,5 @@ var NAVTREEINDEX3 =
 "structfortio__binary_1_1binary__reader.html#af8aaed7ce6de3a58fb0ac397efddd324":[1,0,11,1,29],
 "structfortio__binary_1_1binary__reader.html#afb33a22632f80873d5cc2ee26d0d8776":[1,0,11,1,21],
 "structfortio__binary_1_1binary__writer.html":[1,0,11,2],
-"structfortio__binary_1_1binary__writer.html#a0601cd8b2e2cc49bd3b91a882ec9ab48":[1,0,11,2,16],
-"structfortio__binary_1_1binary__writer.html#a08e4977c3ba2a33a17ec1f9cbcdf29fa":[1,0,11,2,22],
-"structfortio__binary_1_1binary__writer.html#a112b0b7e204593897bf09b2be35fa529":[1,0,11,2,12],
-"structfortio__binary_1_1binary__writer.html#a2100dd1e40f82ff6546c13af2e9769c9":[1,0,11,2,19],
-"structfortio__binary_1_1binary__writer.html#a23338112975fb972bf452f1fd79bc7ec":[1,0,11,2,21],
-"structfortio__binary_1_1binary__writer.html#a3f3e7b319ba7db066e2e4515b8a0b815":[1,0,11,2,14],
-"structfortio__binary_1_1binary__writer.html#a41125f713e530df60773795916a31d16":[1,0,11,2,5],
-"structfortio__binary_1_1binary__writer.html#a43351dfe1c39139a36f25a9d8b0ffd19":[1,0,11,2,7],
-"structfortio__binary_1_1binary__writer.html#a44ee039383f481f304db894204e0120d":[1,0,11,2,25],
-"structfortio__binary_1_1binary__writer.html#a7a2456625f96606b094b83306466653d":[1,0,11,2,24],
-"structfortio__binary_1_1binary__writer.html#a80376792019ccdc35b46186fbed7d01e":[1,0,11,2,1]
+"structfortio__binary_1_1binary__writer.html#a0601cd8b2e2cc49bd3b91a882ec9ab48":[1,0,11,2,16]
 };

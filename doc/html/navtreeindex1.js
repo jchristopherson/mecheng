@@ -1,5 +1,7 @@
 var NAVTREEINDEX1 =
 {
+"interfacefplot__core_1_1get__string__result.html":[1,0,14,4],
+"interfacefplot__core_1_1get__string__result.html#ae68c4fd3d533550c638487d6e1f833e7":[1,0,14,4,0],
 "interfacefplot__core_1_1pa__get__string__result.html":[1,0,14,9],
 "interfacefplot__core_1_1pa__get__string__result.html#a6bcc35653a25ae0a0a64feec691b9e5f":[1,0,14,9,0],
 "interfacefplot__core_1_1pd__get__string__result.html":[1,0,14,10],
@@ -247,7 +249,5 @@ var NAVTREEINDEX1 =
 "interfaceneural__networks_1_1shuffle.html#ac801c10e4fe6b67a69e16d403c67aca7":[1,0,21,20,2],
 "interfaceneural__networks_1_1shuffle.html#ae195a2613e959c9813936aebce129ee7":[1,0,21,20,1],
 "interfacenonlin__core_1_1fcn1var.html":[1,0,22,3],
-"interfacenonlin__core_1_1fcn1var.html#aa058523902d94e85867a76f129c27ce0":[1,0,22,3,0],
-"interfacenonlin__core_1_1fcnnvar.html":[1,0,22,5],
-"interfacenonlin__core_1_1fcnnvar.html#a6b4c08adbe44af2c3d5ae606610881f0":[1,0,22,5,0]
+"interfacenonlin__core_1_1fcn1var.html#aa058523902d94e85867a76f129c27ce0":[1,0,22,3,0]
 };

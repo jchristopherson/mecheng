@@ -181,6 +181,8 @@ var NAVTREEINDEX0 =
 "interfacecolumns_1_1slenderness__ratio.html#a965ec8e87d426e01ae879a6df9127660":[1,0,3,3,1],
 "interfacecontrols_1_1realtime__reset.html":[1,0,4,3],
 "interfacecontrols_1_1realtime__reset.html#a2dc49e9b3d7c19058dcc04a02528abc3":[1,0,4,3,0],
+"interfacecontrols_1_1signal__fcn.html":[1,0,4,5],
+"interfacecontrols_1_1signal__fcn.html#a1bdd55858380fddf6a26d7b9d478a49f":[1,0,4,5,0],
 "interfacecurvefit__calibration_1_1_i_d_a_m_a_x.html":[1,0,5,2],
 "interfacecurvefit__calibration_1_1_i_d_a_m_a_x.html#a63ee461cbbaecb497d29c955b1a03e23":[1,0,5,2,0],
 "interfacecurvefit__calibration_1_1crosstalk.html":[1,0,5,0],
@@ -247,7 +249,5 @@ var NAVTREEINDEX0 =
 "interfacefortio__binary_1_1swap__bytes.html#ae18f9bfe5db93a985e27f98b3cbdb14b":[1,0,11,3,3],
 "interfacefortio__binary_1_1swap__bytes.html#af174430874d6ec5f3733acca04660a20":[1,0,11,3,4],
 "interfacefplot__core_1_1cm__get__string__result.html":[1,0,14,0],
-"interfacefplot__core_1_1cm__get__string__result.html#ae613c1290455b36ebdb49422b2af612c":[1,0,14,0,0],
-"interfacefplot__core_1_1get__string__result.html":[1,0,14,4],
-"interfacefplot__core_1_1get__string__result.html#ae68c4fd3d533550c638487d6e1f833e7":[1,0,14,4,0]
+"interfacefplot__core_1_1cm__get__string__result.html#ae613c1290455b36ebdb49422b2af612c":[1,0,14,0,0]
 };

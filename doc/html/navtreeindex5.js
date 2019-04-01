@@ -1,5 +1,15 @@
 var NAVTREEINDEX5 =
 {
+"structfplot__core_1_1plot__data__2d.html#aad88feb206974ae9571c6e07324008a4":[1,0,14,16,8],
+"structfplot__core_1_1plot__data__2d.html#abb62e47e7d470c8b202ff6d1313d527f":[1,0,14,16,3],
+"structfplot__core_1_1plot__data__2d.html#adebedbb7d18e11535995c4280e5a59ac":[1,0,14,16,7],
+"structfplot__core_1_1plot__data__2d.html#aff57fa2b2c46830fffdd2a038544ca60":[1,0,14,16,0],
+"structfplot__core_1_1plot__data__3d.html":[1,0,14,17],
+"structfplot__core_1_1plot__data__3d.html#a05d33e3351193d2e471083589d3ccb60":[1,0,14,17,13],
+"structfplot__core_1_1plot__data__3d.html#a16c7d75f7bdd23f5e056a694f88088ed":[1,0,14,17,2],
+"structfplot__core_1_1plot__data__3d.html#a1864fb292620d810250d70f5aa4520bf":[1,0,14,17,9],
+"structfplot__core_1_1plot__data__3d.html#a18fd1f18c913adcaef987cdb299f1a74":[1,0,14,17,7],
+"structfplot__core_1_1plot__data__3d.html#a1da0fc15c57415ca0a4d85392ef3a1de":[1,0,14,17,0],
 "structfplot__core_1_1plot__data__3d.html#a2140cabe1773dd7edfa36438d6be17c0":[1,0,14,17,3],
 "structfplot__core_1_1plot__data__3d.html#a396a0cbc0f4e3947b0d2d5259369993c":[1,0,14,17,4],
 "structfplot__core_1_1plot__data__3d.html#a4a80ed5e794077300b0ea40027dc4bf5":[1,0,14,17,6],
@@ -239,15 +249,5 @@ var NAVTREEINDEX5 =
 "structintegral__core_1_1ode__auto.html#acf053c0ab90c954fbea452537ede1933":[1,0,17,7,7],
 "structintegral__core_1_1ode__auto.html#af672d690a71a7658f25d7bf066fcea98":[1,0,17,7,5],
 "structintegral__core_1_1ode__euler.html":[1,0,17,9],
-"structintegral__core_1_1ode__euler.html#a08a06e7673957be9e4c6db512830c128":[1,0,17,9,10],
-"structintegral__core_1_1ode__euler.html#a0e07128ab58004733383f47d8a4cbbb6":[1,0,17,9,9],
-"structintegral__core_1_1ode__euler.html#a2c51df406ab49d586183a4aba2486ac0":[1,0,17,9,6],
-"structintegral__core_1_1ode__euler.html#a3ea4d466e4c4ca598049f0dd7b6378ae":[1,0,17,9,5],
-"structintegral__core_1_1ode__euler.html#a6dd9fd51cfec7e8660f12041ce940adf":[1,0,17,9,7],
-"structintegral__core_1_1ode__euler.html#a81e8cc51f408ab8d612b8a703102a88e":[1,0,17,9,2],
-"structintegral__core_1_1ode__euler.html#aa0166382f7659c2075e4cf9ae53d8e1d":[1,0,17,9,3],
-"structintegral__core_1_1ode__euler.html#ab53abfae8d8d4cdaff93f2d8a7726231":[1,0,17,9,4],
-"structintegral__core_1_1ode__euler.html#ab7e1b72bb51ffa0b34814fc0119a26d8":[1,0,17,9,1],
-"structintegral__core_1_1ode__euler.html#ad35cc4297a132ff7d8dda200e59f9231":[1,0,17,9,8],
-"structintegral__core_1_1ode__euler.html#afead47e6b41c5fa13aa7014b7733428b":[1,0,17,9,0]
+"structintegral__core_1_1ode__euler.html#a08a06e7673957be9e4c6db512830c128":[1,0,17,9,10]
 };

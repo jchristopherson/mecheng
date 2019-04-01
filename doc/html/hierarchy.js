@@ -152,8 +152,8 @@ var hierarchy =
     [ "kinematics::operator(*)", "interfacekinematics_1_1operator_07_5_08.html", null ],
     [ "nonlin_polynomials::operator(+)", "interfacenonlin__polynomials_1_1operator_07_09_08.html", null ],
     [ "kinematics::operator(+)", "interfacekinematics_1_1operator_07_09_08.html", null ],
-    [ "kinematics::operator(-)", "interfacekinematics_1_1operator_07-_08.html", null ],
     [ "nonlin_polynomials::operator(-)", "interfacenonlin__polynomials_1_1operator_07-_08.html", null ],
+    [ "kinematics::operator(-)", "interfacekinematics_1_1operator_07-_08.html", null ],
     [ "kinematics::operator(/)", "interfacekinematics_1_1operator_07_2_08.html", null ],
     [ "fplot_core::pa_get_string_result", "interfacefplot__core_1_1pa__get__string__result.html", null ],
     [ "fplot_core::pd_get_string_result", "interfacefplot__core_1_1pd__get__string__result.html", null ],
@@ -210,7 +210,8 @@ var hierarchy =
     ] ],
     [ "controls::realtime_object", "structcontrols_1_1realtime__object.html", [
       [ "controls::pid", "structcontrols_1_1pid.html", null ],
-      [ "controls::realtime_derivative", "structcontrols_1_1realtime__derivative.html", null ]
+      [ "controls::realtime_derivative", "structcontrols_1_1realtime__derivative.html", null ],
+      [ "controls::realtime_signal", "structcontrols_1_1realtime__signal.html", null ]
     ] ],
     [ "controls::realtime_reset", "interfacecontrols_1_1realtime__reset.html", null ],
     [ "linalg_core::recip_mult_array", "interfacelinalg__core_1_1recip__mult__array.html", null ],
@@ -225,6 +226,7 @@ var hierarchy =
     [ "curvefit_calibration::seb", "interfacecurvefit__calibration_1_1seb.html", null ],
     [ "curvefit_calibration::seb_results", "structcurvefit__calibration_1_1seb__results.html", null ],
     [ "neural_networks::shuffle", "interfaceneural__networks_1_1shuffle.html", null ],
+    [ "controls::signal_fcn", "interfacecontrols_1_1signal__fcn.html", null ],
     [ "signals::signal_magnitude", "interfacesignals_1_1signal__magnitude.html", null ],
     [ "fplot_simplify::simplify_polyline", "interfacefplot__simplify_1_1simplify__polyline.html", null ],
     [ "columns::slenderness_ratio", "interfacecolumns_1_1slenderness__ratio.html", null ],

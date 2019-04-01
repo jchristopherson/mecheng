@@ -8,7 +8,9 @@ var annotated_dup =
       [ "pid", "structcontrols_1_1pid.html", "structcontrols_1_1pid" ],
       [ "realtime_derivative", "structcontrols_1_1realtime__derivative.html", "structcontrols_1_1realtime__derivative" ],
       [ "realtime_object", "structcontrols_1_1realtime__object.html", "structcontrols_1_1realtime__object" ],
-      [ "realtime_reset", "interfacecontrols_1_1realtime__reset.html", "interfacecontrols_1_1realtime__reset" ]
+      [ "realtime_reset", "interfacecontrols_1_1realtime__reset.html", "interfacecontrols_1_1realtime__reset" ],
+      [ "realtime_signal", "structcontrols_1_1realtime__signal.html", "structcontrols_1_1realtime__signal" ],
+      [ "signal_fcn", "interfacecontrols_1_1signal__fcn.html", "interfacecontrols_1_1signal__fcn" ]
     ] ],
     [ "curvefit_calibration", "namespacecurvefit__calibration.html", "namespacecurvefit__calibration" ],
     [ "curvefit_core", "namespacecurvefit__core.html", "namespacecurvefit__core" ],

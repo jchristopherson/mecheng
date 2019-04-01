@@ -4,6 +4,7 @@ var searchData=
   ['seb',['seb',['../interfacecurvefit__calibration_1_1seb.html',1,'curvefit_calibration']]],
   ['seb_5fresults',['seb_results',['../structcurvefit__calibration_1_1seb__results.html',1,'curvefit_calibration']]],
   ['shuffle',['shuffle',['../interfaceneural__networks_1_1shuffle.html',1,'neural_networks']]],
+  ['signal_5ffcn',['signal_fcn',['../interfacecontrols_1_1signal__fcn.html',1,'controls']]],
   ['signal_5fmagnitude',['signal_magnitude',['../interfacesignals_1_1signal__magnitude.html',1,'signals']]],
   ['simplify_5fpolyline',['simplify_polyline',['../interfacefplot__simplify_1_1simplify__polyline.html',1,'fplot_simplify']]],
   ['slenderness_5fratio',['slenderness_ratio',['../interfacecolumns_1_1slenderness__ratio.html',1,'columns']]],
