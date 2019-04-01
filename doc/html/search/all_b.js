@@ -201,6 +201,7 @@ var searchData=
   ['mat_5fsolve_5fupper_5ftri_5f2_5fcmplx',['mat_solve_upper_tri_2_cmplx',['../interfacelinalg__immutable_1_1mat__solve__upper__tri.html#a93e3f2a1097e88c8da32d6e13eb0472f',1,'linalg_immutable::mat_solve_upper_tri::mat_solve_upper_tri_2_cmplx()'],['../namespacelinalg__immutable.html#ad1fa7c5e331bf2f2f73b6dbf9ccf77c2',1,'linalg_immutable::mat_solve_upper_tri_2_cmplx()']]],
   ['mat_5fsvd',['mat_svd',['../namespacelinalg__immutable.html#a6236acadb527f7762e3e1c0ee3d9ca82',1,'linalg_immutable']]],
   ['max_5fchannel_5flength',['max_channel_length',['../structfortio__hbm_1_1hbm__data__file.html#a476588050ac5d61ab9c07a367454e39d',1,'fortio_hbm::hbm_data_file']]],
+  ['max_5fdifference',['max_difference',['../namespacecurvefit__calibration.html#ab316adfda589232134c293a06367ba05',1,'curvefit_calibration']]],
   ['mean',['mean',['../interfacecurvefit__statistics_1_1mean.html',1,'curvefit_statistics']]],
   ['mean_5fdbl',['mean_dbl',['../interfacecurvefit__statistics_1_1mean.html#a2c62bdcec244e69d8a4e2161653bd3c2',1,'curvefit_statistics::mean::mean_dbl()'],['../namespacecurvefit__statistics.html#a4af97cf5ab297246c54a85151f652064',1,'curvefit_statistics::mean_dbl()']]],
   ['mech_5farray_5fsize_5ferror',['mech_array_size_error',['../namespacemechanics__constants.html#aa9f76d489963893c3cb2bb64487454b9',1,'mechanics_constants']]],

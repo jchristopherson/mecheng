@@ -45,30 +45,6 @@ var annotated_dup =
     ] ],
     [ "linalg_core", "namespacelinalg__core.html", "namespacelinalg__core" ],
     [ "linalg_immutable", "namespacelinalg__immutable.html", "namespacelinalg__immutable" ],
-    [ "neural_networks", null, [
-      [ "c_cost_fcn_diff", "interfaceneural__networks_1_1c__cost__fcn__diff.html", "interfaceneural__networks_1_1c__cost__fcn__diff" ],
-      [ "c_snn_diff_entropy_cost_fcn", "interfaceneural__networks_1_1c__snn__diff__entropy__cost__fcn.html", "interfaceneural__networks_1_1c__snn__diff__entropy__cost__fcn" ],
-      [ "c_snn_diff_quadratic_cost_fcn", "interfaceneural__networks_1_1c__snn__diff__quadratic__cost__fcn.html", "interfaceneural__networks_1_1c__snn__diff__quadratic__cost__fcn" ],
-      [ "c_snn_entropy_cost_fcn", "interfaceneural__networks_1_1c__snn__entropy__cost__fcn.html", "interfaceneural__networks_1_1c__snn__entropy__cost__fcn" ],
-      [ "c_snn_free_network", "interfaceneural__networks_1_1c__snn__free__network.html", "interfaceneural__networks_1_1c__snn__free__network" ],
-      [ "c_snn_get_bias", "interfaceneural__networks_1_1c__snn__get__bias.html", "interfaceneural__networks_1_1c__snn__get__bias" ],
-      [ "c_snn_get_network_output_error", "interfaceneural__networks_1_1c__snn__get__network__output__error.html", "interfaceneural__networks_1_1c__snn__get__network__output__error" ],
-      [ "c_snn_get_neuron_errors", "interfaceneural__networks_1_1c__snn__get__neuron__errors.html", "interfaceneural__networks_1_1c__snn__get__neuron__errors" ],
-      [ "c_snn_get_weights", "interfaceneural__networks_1_1c__snn__get__weights.html", "interfaceneural__networks_1_1c__snn__get__weights" ],
-      [ "c_snn_gradient", "interfaceneural__networks_1_1c__snn__gradient.html", "interfaceneural__networks_1_1c__snn__gradient" ],
-      [ "c_snn_init_network", "interfaceneural__networks_1_1c__snn__init__network.html", "interfaceneural__networks_1_1c__snn__init__network" ],
-      [ "c_snn_quadratic_cost_fcn", "interfaceneural__networks_1_1c__snn__quadratic__cost__fcn.html", "interfaceneural__networks_1_1c__snn__quadratic__cost__fcn" ],
-      [ "c_snn_randomize_weights_and_biases", "interfaceneural__networks_1_1c__snn__randomize__weights__and__biases.html", "interfaceneural__networks_1_1c__snn__randomize__weights__and__biases" ],
-      [ "c_snn_run_network", "interfaceneural__networks_1_1c__snn__run__network.html", "interfaceneural__networks_1_1c__snn__run__network" ],
-      [ "c_snn_set_bias", "interfaceneural__networks_1_1c__snn__set__bias.html", "interfaceneural__networks_1_1c__snn__set__bias" ],
-      [ "c_snn_set_weights", "interfaceneural__networks_1_1c__snn__set__weights.html", "interfaceneural__networks_1_1c__snn__set__weights" ],
-      [ "c_snn_traning_step", "interfaceneural__networks_1_1c__snn__traning__step.html", "interfaceneural__networks_1_1c__snn__traning__step" ],
-      [ "cost_function", "interfaceneural__networks_1_1cost__function.html", "interfaceneural__networks_1_1cost__function" ],
-      [ "cost_function_derivative", "interfaceneural__networks_1_1cost__function__derivative.html", "interfaceneural__networks_1_1cost__function__derivative" ],
-      [ "neural_network", "structneural__networks_1_1neural__network.html", "structneural__networks_1_1neural__network" ],
-      [ "shuffle", "interfaceneural__networks_1_1shuffle.html", "interfaceneural__networks_1_1shuffle" ],
-      [ "snn_network", "structneural__networks_1_1snn__network.html", "structneural__networks_1_1snn__network" ]
-    ] ],
     [ "nonlin_core", "namespacenonlin__core.html", "namespacenonlin__core" ],
     [ "nonlin_least_squares", "namespacenonlin__least__squares.html", "namespacenonlin__least__squares" ],
     [ "nonlin_linesearch", "namespacenonlin__linesearch.html", "namespacenonlin__linesearch" ],
@@ -86,6 +62,5 @@ var annotated_dup =
     [ "vibrations", null, [
       [ "compute_frequency_response", "interfacevibrations_1_1compute__frequency__response.html", "interfacevibrations_1_1compute__frequency__response" ],
       [ "modal_information", "structvibrations_1_1modal__information.html", "structvibrations_1_1modal__information" ]
-    ] ],
-    [ "network_", "structnetwork__.html", "structnetwork__" ]
+    ] ]
 ];

@@ -165,6 +165,9 @@ Functions/Subroutines</h2></td></tr>
 <tr class="memitem:a96d9ae5bec2e448c515a54dae6766c20"><td class="memItemLeft" align="right" valign="top">subroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecurvefit__calibration.html#a96d9ae5bec2e448c515a54dae6766c20">split_ascend_descend_1</a> (x, ascend, descend, nascend, ndescend, err)</td></tr>
 <tr class="memdesc:a96d9ae5bec2e448c515a54dae6766c20"><td class="mdescLeft">&#160;</td><td class="mdescRight">Splits a data set into ascending and descending components.  <a href="#a96d9ae5bec2e448c515a54dae6766c20">More...</a><br /></td></tr>
 <tr class="separator:a96d9ae5bec2e448c515a54dae6766c20"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab316adfda589232134c293a06367ba05"><td class="memItemLeft" align="right" valign="top">real(real64) function, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacecurvefit__calibration.html#ab316adfda589232134c293a06367ba05">max_difference</a> (applied, measured, err)</td></tr>
+<tr class="memdesc:ab316adfda589232134c293a06367ba05"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the largest magnitude difference between measured and applied values.  <a href="#ab316adfda589232134c293a06367ba05">More...</a><br /></td></tr>
+<tr class="separator:ab316adfda589232134c293a06367ba05"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><b><a class="el" href="namespacecurvefit__calibration.html" title="curvefit_calibration ">curvefit_calibration</a></b> </p>
@@ -230,7 +233,7 @@ Functions/Subroutines</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The nonlinearity error. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="curvefit__calibration_8f90_source.html#l00268">268</a> of file <a class="el" href="curvefit__calibration_8f90_source.html">curvefit_calibration.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="curvefit__calibration_8f90_source.html#l00269">269</a> of file <a class="el" href="curvefit__calibration_8f90_source.html">curvefit_calibration.f90</a>.</p>
 
 </div>
 </div>
@@ -304,7 +307,7 @@ Functions/Subroutines</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>The hysteresis error.</dd></dl>
 <dl class="section user"><dt>Remarks</dt><dd>In order to account for slight variations between similar ascending and descending points, the algorithm used performs a linear interpolation between data points. The resulting interpolated value is then used to compute the reported hysteresis error. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="curvefit__calibration_8f90_source.html#l00410">410</a> of file <a class="el" href="curvefit__calibration_8f90_source.html">curvefit_calibration.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="curvefit__calibration_8f90_source.html#l00418">418</a> of file <a class="el" href="curvefit__calibration_8f90_source.html">curvefit_calibration.f90</a>.</p>
 
 </div>
 </div>
@@ -364,7 +367,57 @@ Functions/Subroutines</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>The hysteresis error.</dd></dl>
 <dl class="section user"><dt>Remarks</dt><dd>In order to account for slight variations between similar ascending and descending points, the algorithm used performs a linear interpolation between data points. The resulting interpolated value is then used to compute the reported hysteresis error. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="curvefit__calibration_8f90_source.html#l00501">501</a> of file <a class="el" href="curvefit__calibration_8f90_source.html">curvefit_calibration.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="curvefit__calibration_8f90_source.html#l00509">509</a> of file <a class="el" href="curvefit__calibration_8f90_source.html">curvefit_calibration.f90</a>.</p>
+
+</div>
+</div>
+<a id="ab316adfda589232134c293a06367ba05"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab316adfda589232134c293a06367ba05">&#9670;&nbsp;</a></span>max_difference()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">real(real64) function, public curvefit_calibration::max_difference </td>
+          <td>(</td>
+          <td class="paramtype">real(real64), dimension(:), intent(in)&#160;</td>
+          <td class="paramname"><em>applied</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">real(real64), dimension(:), intent(in)&#160;</td>
+          <td class="paramname"><em>measured</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">class(<a class="el" href="structferror_1_1errors.html">errors</a>), intent(inout), optional, target&#160;</td>
+          <td class="paramname"><em>err</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Computes the largest magnitude difference between measured and applied values. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">applied</td><td>An N-element array containing the values applied to the measurement instrument. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">measured</td><td>An N-element array containing the calibrated output of the instrument as a result of the values given in <code>applied</code>. </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">err</td><td>An optional errors-based object that if provided can be used to retrieve information relating to any errors encountered during execution. If not provided, a default implementation of the errors class is used internally to provide error handling. Possible errors and warning messages that may be encountered are as follows.<ul>
+<li>CF_ARRAY_SIZE_ERROR: Occurs if <code>applied</code> and <code>measured</code> are not the same size.</li>
+</ul>
+</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The largest magnitude difference. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="curvefit__calibration_8f90_source.html#l01199">1199</a> of file <a class="el" href="curvefit__calibration_8f90_source.html">curvefit_calibration.f90</a>.</p>
 
 </div>
 </div>
@@ -423,7 +476,7 @@ Functions/Subroutines</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>The largest magnitude deviation from the initial test.</dd></dl>
 <dl class="section user"><dt>Remarks</dt><dd>Repeatability is considered as the largest magnitude deviation of subsequent tests from the initial test. Noting that it is very likely that consecutive test points will vary slightly, test 2 through test N are linearly interpolated such that their test points line up with those from test 1. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="curvefit__calibration_8f90_source.html#l00665">665</a> of file <a class="el" href="curvefit__calibration_8f90_source.html">curvefit_calibration.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="curvefit__calibration_8f90_source.html#l00673">673</a> of file <a class="el" href="curvefit__calibration_8f90_source.html">curvefit_calibration.f90</a>.</p>
 
 </div>
 </div>
@@ -488,7 +541,7 @@ Functions/Subroutines</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The return to zero error. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="curvefit__calibration_8f90_source.html#l00579">579</a> of file <a class="el" href="curvefit__calibration_8f90_source.html">curvefit_calibration.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="curvefit__calibration_8f90_source.html#l00587">587</a> of file <a class="el" href="curvefit__calibration_8f90_source.html">curvefit_calibration.f90</a>.</p>
 
 </div>
 </div>
@@ -554,7 +607,7 @@ Functions/Subroutines</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The static error band information. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="curvefit__calibration_8f90_source.html#l00183">183</a> of file <a class="el" href="curvefit__calibration_8f90_source.html">curvefit_calibration.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="curvefit__calibration_8f90_source.html#l00184">184</a> of file <a class="el" href="curvefit__calibration_8f90_source.html">curvefit_calibration.f90</a>.</p>
 
 </div>
 </div>
@@ -661,7 +714,7 @@ Functions/Subroutines</h2></td></tr>
    0.97259998321533203
    -9.9999997473787516E-006</pre> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="curvefit__calibration_8f90_source.html#l01068">1068</a> of file <a class="el" href="curvefit__calibration_8f90_source.html">curvefit_calibration.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="curvefit__calibration_8f90_source.html#l01076">1076</a> of file <a class="el" href="curvefit__calibration_8f90_source.html">curvefit_calibration.f90</a>.</p>
 
 </div>
 </div>
@@ -670,9 +723,6 @@ Functions/Subroutines</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">real(real64) function curvefit_calibration::term_nonlin </td>
@@ -698,11 +748,6 @@ Functions/Subroutines</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Computes the terminal nonlinearity of a data set. </p>
@@ -719,7 +764,7 @@ Functions/Subroutines</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The terminal nonlinearity error. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="curvefit__calibration_8f90_source.html#l00324">324</a> of file <a class="el" href="curvefit__calibration_8f90_source.html">curvefit_calibration.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="curvefit__calibration_8f90_source.html#l00332">332</a> of file <a class="el" href="curvefit__calibration_8f90_source.html">curvefit_calibration.f90</a>.</p>
 
 </div>
 </div>
@@ -883,7 +928,7 @@ Functions/Subroutines</h2></td></tr>
  -0.154274205       4.29E-06</pre> The crosstalk error matrix is then as follows. <pre class="fragment"> 0                  0.981144827
  8.808803389        0</pre> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="curvefit__calibration_8f90_source.html#l00942">942</a> of file <a class="el" href="curvefit__calibration_8f90_source.html">curvefit_calibration.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="curvefit__calibration_8f90_source.html#l00950">950</a> of file <a class="el" href="curvefit__calibration_8f90_source.html">curvefit_calibration.f90</a>.</p>
 
 </div>
 </div>
