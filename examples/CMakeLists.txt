@@ -49,3 +49,7 @@ target_link_libraries(line_example_2 mecheng)
 # ODE EXAMPLE 1
 add_executable(ode_example_1 ode_example_1.f90)
 target_link_libraries(ode_example_1 mecheng)
+
+# ODE EXAMPLE 2
+add_executable(ode_example_2 ode_example_2.f90)
+target_link_libraries(ode_example_2 mecheng)
