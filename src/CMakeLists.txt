@@ -462,14 +462,6 @@ set(controls_sources
     controls/controls_pid.f90
 )
 
-# Define the NEURAL_NETWORK source files
-set(neural_network_sources
-    neural_network/neural_networks.f90
-    neural_network/snn.h
-    neural_network/snn.c
-    neural_network/snn_wrapper.h
-    neural_network/snn_wrapper.c
-)
 
 # Define the MECHENG source files
 set(mecheng_sources
@@ -494,7 +486,6 @@ set(mecheng_sources
     ${strings_sources}
     ${geometry_sources}
     ${controls_sources}
-    ${neural_network_sources}
 )
 
 # Build the library
