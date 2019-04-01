@@ -57,3 +57,7 @@ target_link_libraries(ode_example_2 mecheng)
 # REALTIME EXAMPLE 1
 add_executable(realtime_example_1 realtime_example_1.f90)
 target_link_libraries(realtime_example_1 mecheng)
+
+# REALTIME EXAMPLE 2
+add_executable(realtime_example_2 realtime_example_2.f90)
+target_link_libraries(realtime_example_2 mecheng)
