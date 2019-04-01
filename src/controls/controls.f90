@@ -363,15 +363,6 @@ module controls
         !! @param[in,out] this The realtime_signal object.
         !! @param[in] fcn The function defining the signal.
         procedure, public :: set_function => rs_set_fcn
-        !> @brief Resets the realtime_signal.
-        !!
-        !! @par Syntax
-        !! @code{.f90}
-        !! subroutine reset(class(realtime_signal) this)
-        !! @endcode
-        !!
-        !! @param[in,out] this The realtime_signal object.
-        procedure, public :: reset => rs_reset
         !> @brief Evaluates the signal at the requested time.
         !!
         !! @par Syntax
