@@ -48,6 +48,7 @@ module integral_core
     public :: ode_integrator_reset
     public :: ode_auto
     public :: ode_euler
+    public :: ode_rk4
 
 ! ------------------------------------------------------------------------------
     !> @brief An error flag indicating insufficient memory.
@@ -1933,9 +1934,18 @@ module integral_core
     !
     type, extends(ode_integrator) :: ode_rk4
     private
+        real(real64), allocatable, dimension(:) :: m_k1
+        real(real64), allocatable, dimension(:) :: m_k2
+        real(real64), allocatable, dimension(:) :: m_k3
+        real(real64), allocatable, dimension(:) :: m_k4
+        real(real64), allocatable, dimension(:) :: m_work
+        real(real64), allocatable, dimension(:) :: m_summationError
+        real(real64), allocatable, dimension(:) :: m_y1
     contains
         procedure, public :: step => ork4_step
-        procedure, public :: reset => ork4_step
+        procedure, public :: reset => ork4_reset_integrator
+        procedure, public :: integrate => ork4_integrate
+        procedure, private :: initialize => ork4_init_workspace
     end type
 
     interface
@@ -1953,6 +1963,20 @@ module integral_core
         module subroutine ork4_reset_integrator(this)
             class(ode_rk4), intent(inout) :: this
         end subroutine
+
+        module subroutine ork4_init_workspace(this, neqn, err)
+            class(ode_rk4), intent(inout) :: this
+            integer(int32), intent(in) :: neqn
+            class(errors), intent(inout), optional, target :: err
+        end subroutine
+
+        module function ork4_integrate(this, fcnobj, x, y, err) result(rst)
+            class(ode_rk4), intent(inout) :: this
+            class(ode_helper), intent(inout) :: fcnobj
+            real(real64), intent(in), dimension(:) :: x, y
+            class(errors), intent(inout), optional, target :: err
+            real(real64), allocatable, dimension(:,:) :: rst
+        end function
     end interface
 
 end module
