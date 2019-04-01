@@ -61,10 +61,15 @@ contains
             this%m_setpoint = setpoint
 
             ! Compute the controller output
-            dt = t - this%m_previousTime ! TO DO: Ensure dt /= 0
+            dt = t - this%m_previousTime
             ek = setpoint - y
-            vk = (y - this%m_previousSignal) / dt
-            ak = (vk - this%m_previousDerivative) / dt
+            if (dt == 0.0d0) then
+                vk = 0.0d0
+                ak = 0.0d0
+            else
+                vk = (y - this%m_previousSignal) / dt
+                ak = (vk - this%m_previousDerivative) / dt
+            end if
             du = (this%integral_gain * ek - &
                 this%proportional_gain * vk - &
                 this%derivative_gain * ak) * dt

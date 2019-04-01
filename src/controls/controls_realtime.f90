@@ -29,6 +29,12 @@ contains
         ! Initialization
         update = 1.0d0 / this%get_update_rate()
         dt = t - this%m_previousTime
+        
+        ! Quick Return
+        if (dt == 0.0d0) then
+            dydt = 0.0d0
+            return
+        end if
 
         ! Compute the derivative
         dydt = (y - this%m_previousSignal) / dt
@@ -47,5 +53,47 @@ contains
         this%m_previousTime = 0.0d0
     end subroutine
 
+! ******************************************************************************
+    module subroutine rs_reset(this)
+        class(realtime_signal), intent(inout) :: this
+        this%m_previousValue = 0.0d0
+        this%m_previousTime = 0.0d0
+    end subroutine
+
+! ------------------------------------------------------------------------------
+    module subroutine rs_set_fcn(this, fcn)
+        class(realtime_signal), intent(inout) :: this
+        procedure(signal_fcn), intent(in), pointer :: fcn
+        this%m_fcn => fcn
+    end subroutine
+
+! ------------------------------------------------------------------------------
+    module function rs_evaluate(this, t) result(y)
+        ! Arguments
+        class(realtime_signal), intent(inout) :: this
+        real(real64), intent(in) :: t
+        real(real64) :: y
+
+        ! Local Variables
+        real(real64) :: update, dt
+
+        ! Initialization
+        y = 0.0d0
+
+        ! Quick Return
+        if (.not.associated(this%m_fcn)) return
+
+        ! Process
+        update = 1.0d0 / this%get_update_rate()
+        dt = t - this%m_previousTime
+        if (abs(dt) >= update) then
+            this%m_previousValue = this%m_fcn(t)
+            this%m_previousTime = t
+        end if
+
+        ! Define the output
+        y = this%m_previousValue
+    end function
+    
 ! ------------------------------------------------------------------------------
 end submodule
