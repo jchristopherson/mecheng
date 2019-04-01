@@ -1,6 +1,7 @@
 var searchData=
 [
   ['idamax',['IDAMAX',['../interfacecurvefit__calibration_1_1_i_d_a_m_a_x.html',1,'curvefit_calibration']]],
+  ['iir_5ffilter',['iir_filter',['../structsignals_1_1iir__filter.html',1,'signals']]],
   ['incomplete_5fbeta',['incomplete_beta',['../interfacecurvefit__statistics_1_1incomplete__beta.html',1,'curvefit_statistics']]],
   ['incomplete_5fgamma',['incomplete_gamma',['../interfacecurvefit__statistics_1_1incomplete__gamma.html',1,'curvefit_statistics']]],
   ['incomplete_5fgamma_5fcomp',['incomplete_gamma_comp',['../interfacecurvefit__statistics_1_1incomplete__gamma__comp.html',1,'curvefit_statistics']]],

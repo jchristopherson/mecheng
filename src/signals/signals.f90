@@ -151,6 +151,7 @@ module signals
     use, intrinsic :: iso_fortran_env, only : int32, real64
     use real_transform_routines, only : rfft1i, rfft1b, rfft1f
     use complex_transform_routines, only : cfft1i, cfft1b, cfft1f
+    use ferror
     implicit none
     private
     public :: low_pass_filter
@@ -182,6 +183,28 @@ module signals
     public :: finite_diff
     public :: integrate
     public :: trapz_integrate
+    public :: realtime_filter
+    public :: fir_filter
+    public :: iir_filter
+    public :: apply_filter
+    public :: SIG_INVALID_INPUT_ERROR
+    public :: SIG_OUT_OF_MEMORY_ERROR
+    public :: SIG_INDEX_OUT_OF_RANGE_ERROR
+    public :: SIG_UNITIALIZED_ERROR
+
+! ******************************************************************************
+! CONSTANTS
+! ------------------------------------------------------------------------------
+    !> Defines an invalid input error.
+    integer(int32), parameter :: SIG_INVALID_INPUT_ERROR = 5001
+    !> Defines an out-of-memory error.
+    integer(int32), parameter :: SIG_OUT_OF_MEMORY_ERROR = 5002
+    !> Defines an index-out-of-range error.
+    integer(int32), parameter :: SIG_INDEX_OUT_OF_RANGE_ERROR = 5003
+    !> Defines an uninitialized object error.
+    integer(int32), parameter :: SIG_UNITIALIZED_ERROR = 5004
+    !> Defines an array size mismatch error.
+    integer(int32), parameter :: SIG_ARRAY_SIZE_ERROR = 5005
 
 ! ******************************************************************************
 ! GENERAL INTERFACES
@@ -1448,4 +1471,295 @@ interface
 
 end interface
 
+! ******************************************************************************
+! SIGNALS_REALTIME SUBMODULE
+! ------------------------------------------------------------------------------
+    !> @brief Defines a real-time digital filter.
+    type, abstract :: realtime_filter
+    contains
+        !> @brief Applies a real-time digital filter.
+        procedure(apply_filter), deferred, public :: apply
+    end type
+
+    interface
+        !> @brief Applies a real-time digital filter.
+        !!
+        !! @param[in,out] this The realtime_filter object.
+        !! @param[in] x The value to filter.
+        !! @return y The filtered value.
+        function apply_filter(this, x) result(y)
+            use iso_fortran_env
+            import realtime_filter
+            class(realtime_filter), intent(inout) :: this
+            real(real64), intent(in) :: x
+            real(real64) :: y
+        end function
+    end interface
+
+    !> @brief Defines an FIR digital filter.
+    type, extends(realtime_filter) :: fir_filter
+    private
+        !> A buffer used to store previous signal values.
+        real(real64), allocatable, dimension(:) :: m_buffer
+        !> The filter coefficients.
+        real(real64), allocatable, dimension(:) :: m_coefficients
+        !> An iterator to keep track of location within the buffer
+        integer(int32) :: m_iter
+    contains
+        procedure :: fir_init_1
+        procedure :: fir_init_2
+        generic, public :: initialize => fir_init_1, fir_init_2
+        procedure, public :: get_tap_count => fir_get_tap_count
+        procedure, public :: get_coefficient => fir_get_coeff
+        procedure, public :: set_coefficient => fir_set_coeff
+        procedure, public :: apply => fir_apply_filter
+    end type
+
+    !> @brief Defines an IIR digital filter.
+    type, extends(realtime_filter) :: iir_filter
+    private
+        !> The filter numerator coefficients (N + 1 element).
+        real(real64), allocatable, dimension(:) :: m_numer
+        !> The filter denominator coefficients (N element).
+        real(real64), allocatable, dimension(:) :: m_denom
+        !> The filter state vector (N element).
+        real(real64), allocatable, dimension(:) :: m_z
+    contains
+        procedure :: iir_init_1
+        procedure :: iir_init_2
+        generic, public :: initialize => iir_init_1, iir_init_2
+        procedure, public :: get_tap_count => iir_get_tap_count
+        procedure, public :: get_numerator => iir_get_numerator_coeff
+        procedure, public :: set_numerator => iir_set_numerator_coeff
+        procedure, public :: get_denominator => iir_get_denominator_coeff
+        procedure, public :: set_denominator => iir_set_denominator_coeff
+        procedure, public :: apply => iir_apply_filter
+    end type
+
+    interface
+        !> @brief Initializes a new FIR object.
+        !!
+        !! @param[in,out] this The fir_filter object.
+        !! @param[in] taps The number of taps.
+        !! @param[in,out] err An optional errors-based object that if provided 
+        !!  can be used to retrieve information relating to any errors 
+        !!  encountered during execution.  If not provided, a default 
+        !!  implementation of the errors class is used internally to provide 
+        !!  error handling.  Possible errors and warning messages that may be 
+        !!  encountered are as follows.
+        !!  - SIG_INVALID_INPUT_ERROR: Occurs if taps is less than 1.
+        !!  - SIG_OUT_OF_MEMORY_ERROR: Occurs if there is insufficient memory
+        !!      available.
+        module subroutine fir_init_1(this, taps, err)
+            class(fir_filter), intent(inout) :: this
+            integer(int32), intent(in) :: taps
+            class(errors), intent(inout), optional, target :: err
+        end subroutine
+
+        !> @brief Initializes a new FIR object.
+        !!
+        !! @param[in,out] this The fir_filter object.
+        !! @param[in] coeffs An array containing the filter coefficients.
+        !! @param[in,out] err An optional errors-based object that if provided 
+        !!  can be used to retrieve information relating to any errors 
+        !!  encountered during execution.  If not provided, a default 
+        !!  implementation of the errors class is used internally to provide 
+        !!  error handling.  Possible errors and warning messages that may be 
+        !!  encountered are as follows.
+        !!  - SIG_OUT_OF_MEMORY_ERROR: Occurs if there is insufficient memory
+        !!      available.
+        module subroutine fir_init_2(this, coeffs, err)
+            class(fir_filter), intent(inout) :: this
+            real(real64), intent(in), dimension(:) :: coeffs
+            class(errors), intent(inout), optional, target :: err
+        end subroutine
+
+        !> @brief Gets the number of taps.
+        !!
+        !! @param[in] this The fir_filter object.
+        !! @return The number of taps.
+        pure module function fir_get_tap_count(this) result(x)
+            class(fir_filter), intent(in) :: this
+            integer(int32) :: x
+        end function
+
+        !> @brief Gets the requested filter coefficient.
+        !!
+        !! @param[in] this The fir_filter object.
+        !! @param[in] i The index of the filter coefficient to retrieve.
+        !! @return The filter coefficient.
+        pure module function fir_get_coeff(this, i) result(x)
+            class(fir_filter), intent(in) :: this
+            integer(int32), intent(in) :: i
+            real(real64) :: x
+        end function
+
+        !> @brief Sets the requested filter coefficient.
+        !!
+        !! @param[in,out] this The fir_filter object.
+        !! @param[in] i The index of the filter coefficient to retrieve.
+        !! @param[in] x The filter coefficient.
+        !! @param[in,out] err An optional errors-based object that if provided 
+        !!  can be used to retrieve information relating to any errors 
+        !!  encountered during execution.  If not provided, a default 
+        !!  implementation of the errors class is used internally to provide 
+        !!  error handling.  Possible errors and warning messages that may be 
+        !!  encountered are as follows.
+        !!  - SIG_UNITIALIZED_ERROR: Occurs if the filter hasn't been
+        !!      initialized.
+        !!  - SIG_INDEX_OUT_OF_RANGE_ERROR: Occurs if @p i is outside
+        !!      the bounds of the coefficient array.
+        module subroutine fir_set_coeff(this, i, x, err)
+            class(fir_filter), intent(inout) :: this
+            integer(int32), intent(in) :: i
+            real(real64), intent(in) :: x
+            class(errors), intent(inout), optional, target :: err
+        end subroutine
+
+        !> @brief Applies an FIR filter.
+        !!
+        !! @param[in,out] this The fir_filter object.
+        !! @param[in] x The value to filter.
+        !! @return y The filtered value.
+        module function fir_apply_filter(this, x) result(y)
+            class(fir_filter), intent(inout) :: this
+            real(real64), intent(in) :: x
+            real(real64) :: y
+        end function
+
+! --------------------
+        !> @brief Initializes a new IIR object.
+        !!
+        !! @param[in,out] this The iir_filter object.
+        !! @param[in] taps The number of taps.
+        !! @param[in,out] err An optional errors-based object that if provided 
+        !!  can be used to retrieve information relating to any errors 
+        !!  encountered during execution.  If not provided, a default 
+        !!  implementation of the errors class is used internally to provide 
+        !!  error handling.  Possible errors and warning messages that may be 
+        !!  encountered are as follows.
+        !!  - SIG_INVALID_INPUT_ERROR: Occurs if taps is less than 1.
+        !!  - SIG_OUT_OF_MEMORY_ERROR: Occurs if there is insufficient memory
+        !!      available.
+        module subroutine iir_init_1(this, ntaps, err)
+            class(iir_filter), intent(inout) :: this
+            integer(int32), intent(in) :: ntaps
+            class(errors), intent(inout), optional, target :: err
+        end subroutine
+
+        !> @brief Initializes a new IIR object.
+        !!
+        !! @param[in,out] this The iir_filter object.
+        !! @param[in] a An N element array containing the denominator coefficeints
+        !!  (a0 is taken as 1).
+        !! @param[in] b An N+1 element array containing the numerator coefficients.
+        !! @param[in,out] err An optional errors-based object that if provided 
+        !!  can be used to retrieve information relating to any errors 
+        !!  encountered during execution.  If not provided, a default 
+        !!  implementation of the errors class is used internally to provide 
+        !!  error handling.  Possible errors and warning messages that may be 
+        !!  encountered are as follows.
+        !!  - SIG_OUT_OF_MEMORY_ERROR: Occurs if there is insufficient memory
+        !!      available.
+        !!  - SIG_ARRAY_SIZE_ERROR: Occurs if the coefficient array sizes are
+        !!      not correct.
+        module subroutine iir_init_2(this, a, b, err)
+            class(iir_filter), intent(inout) :: this
+            real(real64), intent(in), dimension(:) :: a, b
+            class(errors), intent(inout), optional, target :: err
+        end subroutine
+
+        !> @brief Gets the number of taps.
+        !!
+        !! @param[in] this The iir_filter object.
+        !! @return The number of taps.
+        pure module function iir_get_tap_count(this) result(x)
+            class(iir_filter), intent(in) :: this
+            integer(int32) :: x
+        end function
+
+        !> @brief Gets the requested coefficient from the numerator of the
+        !! transfer function.
+        !!
+        !! @param[in] this The iir_filter object.
+        !! @param[in] i The index of the coefficient to retrieve.
+        !! @return The coefficient.
+        pure module function iir_get_numerator_coeff(this, i) result(x)
+            class(iir_filter), intent(in) :: this
+            integer(int32), intent(in) :: i
+            real(real64) :: x
+        end function
+
+        !> @brief Sets the requested coefficient into the numerator of the
+        !! transfer function.
+        !!
+        !! @param[in,out] this The iir_filter object.
+        !! @param[in] i The index of the coefficient to retrieve.
+        !! @param[in] x The coefficient.
+        !! @param[in,out] err An optional errors-based object that if provided 
+        !!  can be used to retrieve information relating to any errors 
+        !!  encountered during execution.  If not provided, a default 
+        !!  implementation of the errors class is used internally to provide 
+        !!  error handling.  Possible errors and warning messages that may be 
+        !!  encountered are as follows.
+        !!  - SIG_UNITIALIZED_ERROR: Occurs if the filter hasn't been
+        !!      initialized.
+        !!  - SIG_INDEX_OUT_OF_RANGE_ERROR: Occurs if @p i is outside
+        !!      the bounds of the coefficient array.
+        module subroutine iir_set_numerator_coeff(this, i, x, err)
+            class(iir_filter), intent(inout) :: this
+            integer(int32), intent(in) :: i
+            real(real64), intent(in) :: x
+            class(errors), intent(inout), optional, target :: err
+        end subroutine
+
+        !> @brief Gets the requested coefficient from the denominator of the
+        !! transfer function.  Notice, this implementation considers a0 = 1
+        !! such that a1 is the first coefficient.
+        !!
+        !! @param[in] this The iir_filter object.
+        !! @param[in] i The index of the coefficient to retrieve.
+        !! @return The coefficient.
+        pure module function iir_get_denominator_coeff(this, i) result(x)
+            class(iir_filter), intent(in) :: this
+            integer(int32), intent(in) :: i
+            real(real64) :: x
+        end function
+
+        !> @brief Sets the requested coefficient into the denominator of the
+        !! transfer function.  Notice, this implementation considers a0 = 1
+        !! such that a1 is the first coefficient.
+        !!
+        !! @param[in,out] this The iir_filter object.
+        !! @param[in] i The index of the coefficient to retrieve.
+        !! @param[in] x The coefficient.
+        !! @param[in,out] err An optional errors-based object that if provided 
+        !!  can be used to retrieve information relating to any errors 
+        !!  encountered during execution.  If not provided, a default 
+        !!  implementation of the errors class is used internally to provide 
+        !!  error handling.  Possible errors and warning messages that may be 
+        !!  encountered are as follows.
+        !!  - SIG_UNITIALIZED_ERROR: Occurs if the filter hasn't been
+        !!      initialized.
+        !!  - SIG_INDEX_OUT_OF_RANGE_ERROR: Occurs if @p i is outside
+        !!      the bounds of the coefficient array.
+        module subroutine iir_set_denominator_coeff(this, i, x, err)
+            class(iir_filter), intent(inout) :: this
+            integer(int32), intent(in) :: i
+            real(real64), intent(in) :: x
+            class(errors), intent(inout), optional, target :: err
+        end subroutine
+
+        !> @brief Applies an IIR filter.
+        !!
+        !! @param[in,out] this The iir_filter object.
+        !! @param[in] x The value to filter.
+        !! @return y The filtered value.
+        module function iir_apply_filter(this, x) result(y)
+            class(iir_filter), intent(inout) :: this
+            real(real64), intent(in) :: x
+            real(real64) :: y
+        end function
+
+    end interface
 end module

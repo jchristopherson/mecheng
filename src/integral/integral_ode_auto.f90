@@ -182,6 +182,11 @@ contains
         ! Local Variables
         integer(int32) :: flag
 
+        ! Quick Return
+        if (allocated(this%m_iwork)) then
+            if (size(this%m_iwork) == liw) return
+        end if
+
         ! Process
         flag = 0
         if (allocated(this%m_iwork)) then
@@ -192,6 +197,7 @@ contains
         else
             allocate(this%m_iwork(liw), stat = flag)
         end if
+        this%m_iwork = 0
 
         if (flag == 0) then
             if (allocated(this%m_rwork)) then
@@ -203,6 +209,7 @@ contains
                 allocate(this%m_rwork(lrw), stat = flag)
             end if
         end if
+        this%m_rwork = 0.0d0
 
         if (flag == 0 .and. ncnsts > 0) then
             if (allocated(this%m_rststats)) then

@@ -4,6 +4,14 @@ var annotated_dup =
     [ "collection_linked_list", "namespacecollection__linked__list.html", "namespacecollection__linked__list" ],
     [ "collection_list", "namespacecollection__list.html", "namespacecollection__list" ],
     [ "columns", "namespacecolumns.html", "namespacecolumns" ],
+    [ "controls", null, [
+      [ "pid", "structcontrols_1_1pid.html", "structcontrols_1_1pid" ],
+      [ "realtime_derivative", "structcontrols_1_1realtime__derivative.html", "structcontrols_1_1realtime__derivative" ],
+      [ "realtime_object", "structcontrols_1_1realtime__object.html", "structcontrols_1_1realtime__object" ],
+      [ "realtime_reset", "interfacecontrols_1_1realtime__reset.html", "interfacecontrols_1_1realtime__reset" ],
+      [ "realtime_signal", "structcontrols_1_1realtime__signal.html", "structcontrols_1_1realtime__signal" ],
+      [ "signal_fcn", "interfacecontrols_1_1signal__fcn.html", "interfacecontrols_1_1signal__fcn" ]
+    ] ],
     [ "curvefit_calibration", "namespacecurvefit__calibration.html", "namespacecurvefit__calibration" ],
     [ "curvefit_core", "namespacecurvefit__core.html", "namespacecurvefit__core" ],
     [ "curvefit_interp", "namespacecurvefit__interp.html", "namespacecurvefit__interp" ],
@@ -14,6 +22,9 @@ var annotated_dup =
     [ "fortio_hbm", "namespacefortio__hbm.html", "namespacefortio__hbm" ],
     [ "fortio_text", "namespacefortio__text.html", "namespacefortio__text" ],
     [ "fplot_core", "namespacefplot__core.html", "namespacefplot__core" ],
+    [ "fplot_simplify", null, [
+      [ "simplify_polyline", "interfacefplot__simplify_1_1simplify__polyline.html", "interfacefplot__simplify_1_1simplify__polyline" ]
+    ] ],
     [ "geometry", "namespacegeometry.html", "namespacegeometry" ],
     [ "integral_core", "namespaceintegral__core.html", "namespaceintegral__core" ],
     [ "kinematics", null, [
@@ -34,6 +45,30 @@ var annotated_dup =
     ] ],
     [ "linalg_core", "namespacelinalg__core.html", "namespacelinalg__core" ],
     [ "linalg_immutable", "namespacelinalg__immutable.html", "namespacelinalg__immutable" ],
+    [ "neural_networks", null, [
+      [ "c_cost_fcn_diff", "interfaceneural__networks_1_1c__cost__fcn__diff.html", "interfaceneural__networks_1_1c__cost__fcn__diff" ],
+      [ "c_snn_diff_entropy_cost_fcn", "interfaceneural__networks_1_1c__snn__diff__entropy__cost__fcn.html", "interfaceneural__networks_1_1c__snn__diff__entropy__cost__fcn" ],
+      [ "c_snn_diff_quadratic_cost_fcn", "interfaceneural__networks_1_1c__snn__diff__quadratic__cost__fcn.html", "interfaceneural__networks_1_1c__snn__diff__quadratic__cost__fcn" ],
+      [ "c_snn_entropy_cost_fcn", "interfaceneural__networks_1_1c__snn__entropy__cost__fcn.html", "interfaceneural__networks_1_1c__snn__entropy__cost__fcn" ],
+      [ "c_snn_free_network", "interfaceneural__networks_1_1c__snn__free__network.html", "interfaceneural__networks_1_1c__snn__free__network" ],
+      [ "c_snn_get_bias", "interfaceneural__networks_1_1c__snn__get__bias.html", "interfaceneural__networks_1_1c__snn__get__bias" ],
+      [ "c_snn_get_network_output_error", "interfaceneural__networks_1_1c__snn__get__network__output__error.html", "interfaceneural__networks_1_1c__snn__get__network__output__error" ],
+      [ "c_snn_get_neuron_errors", "interfaceneural__networks_1_1c__snn__get__neuron__errors.html", "interfaceneural__networks_1_1c__snn__get__neuron__errors" ],
+      [ "c_snn_get_weights", "interfaceneural__networks_1_1c__snn__get__weights.html", "interfaceneural__networks_1_1c__snn__get__weights" ],
+      [ "c_snn_gradient", "interfaceneural__networks_1_1c__snn__gradient.html", "interfaceneural__networks_1_1c__snn__gradient" ],
+      [ "c_snn_init_network", "interfaceneural__networks_1_1c__snn__init__network.html", "interfaceneural__networks_1_1c__snn__init__network" ],
+      [ "c_snn_quadratic_cost_fcn", "interfaceneural__networks_1_1c__snn__quadratic__cost__fcn.html", "interfaceneural__networks_1_1c__snn__quadratic__cost__fcn" ],
+      [ "c_snn_randomize_weights_and_biases", "interfaceneural__networks_1_1c__snn__randomize__weights__and__biases.html", "interfaceneural__networks_1_1c__snn__randomize__weights__and__biases" ],
+      [ "c_snn_run_network", "interfaceneural__networks_1_1c__snn__run__network.html", "interfaceneural__networks_1_1c__snn__run__network" ],
+      [ "c_snn_set_bias", "interfaceneural__networks_1_1c__snn__set__bias.html", "interfaceneural__networks_1_1c__snn__set__bias" ],
+      [ "c_snn_set_weights", "interfaceneural__networks_1_1c__snn__set__weights.html", "interfaceneural__networks_1_1c__snn__set__weights" ],
+      [ "c_snn_traning_step", "interfaceneural__networks_1_1c__snn__traning__step.html", "interfaceneural__networks_1_1c__snn__traning__step" ],
+      [ "cost_function", "interfaceneural__networks_1_1cost__function.html", "interfaceneural__networks_1_1cost__function" ],
+      [ "cost_function_derivative", "interfaceneural__networks_1_1cost__function__derivative.html", "interfaceneural__networks_1_1cost__function__derivative" ],
+      [ "neural_network", "structneural__networks_1_1neural__network.html", "structneural__networks_1_1neural__network" ],
+      [ "shuffle", "interfaceneural__networks_1_1shuffle.html", "interfaceneural__networks_1_1shuffle" ],
+      [ "snn_network", "structneural__networks_1_1snn__network.html", "structneural__networks_1_1snn__network" ]
+    ] ],
     [ "nonlin_core", "namespacenonlin__core.html", "namespacenonlin__core" ],
     [ "nonlin_least_squares", "namespacenonlin__least__squares.html", "namespacenonlin__least__squares" ],
     [ "nonlin_linesearch", "namespacenonlin__linesearch.html", "namespacenonlin__linesearch" ],
@@ -47,5 +82,10 @@ var annotated_dup =
       [ "string_builder", "structstrings_1_1string__builder.html", "structstrings_1_1string__builder" ],
       [ "string_to_number", "interfacestrings_1_1string__to__number.html", "interfacestrings_1_1string__to__number" ],
       [ "to_string", "interfacestrings_1_1to__string.html", "interfacestrings_1_1to__string" ]
-    ] ]
+    ] ],
+    [ "vibrations", null, [
+      [ "compute_frequency_response", "interfacevibrations_1_1compute__frequency__response.html", "interfacevibrations_1_1compute__frequency__response" ],
+      [ "modal_information", "structvibrations_1_1modal__information.html", "structvibrations_1_1modal__information" ]
+    ] ],
+    [ "network_", "structnetwork__.html", "structnetwork__" ]
 ];

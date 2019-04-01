@@ -86,6 +86,7 @@ set(fplot_sources
     fplot/fplot_multiplot.f90
     fplot/fplot_plot_data_error_bars.f90
     fplot/fplot_plot_data_colored.f90
+    fplot/fplot_simplify.f90
 )
 
 # Define the integral sources
@@ -97,6 +98,8 @@ set(integral_sources
     integral/integral_ode_helper.f90
     integral/integral_ode_integrator.f90
     integral/integral_ode_auto.f90
+    integral/integral_ode_euler.f90
+    integral/integral_ode_rk4.f90
 )
 
 # Define the QUADPACK source files
@@ -405,6 +408,8 @@ set(mechanics_sources
     mechanics/columns.f90
     mechanics/sections.f90
     mechanics/strain.f90
+    mechanics/vibrations.f90
+    mechanics/mechanics_constants.f90
 )
 
 set(nonlin_sources
@@ -440,6 +445,7 @@ set(signals_sources
     signals/signals_spectral_analysis.f90
     signals/signals_diff.f90
     signals/signals_integrate.f90
+    signals/signals_realtime.f90
 )
 
 set(strings_sources
@@ -449,6 +455,13 @@ set(strings_sources
 set(geometry_sources
     geometry/geometry.f90
 )
+
+set(controls_sources
+    controls/controls.f90
+    controls/controls_realtime.f90
+    controls/controls_pid.f90
+)
+
 
 # Define the MECHENG source files
 set(mecheng_sources
@@ -472,6 +485,7 @@ set(mecheng_sources
     ${signals_sources}
     ${strings_sources}
     ${geometry_sources}
+    ${controls_sources}
 )
 
 # Build the library

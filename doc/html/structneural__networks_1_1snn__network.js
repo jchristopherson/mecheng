@@ -1,0 +1,25 @@
+var structneural__networks_1_1snn__network =
+[
+    [ "bias", "structneural__networks_1_1snn__network.html#ab4a3a86d81f9017a3222fb203851e790", null ],
+    [ "bias_pointers", "structneural__networks_1_1snn__network.html#a908b5194cadd154c25a341f7f78f2410", null ],
+    [ "delta", "structneural__networks_1_1snn__network.html#a60bcd8fd4d54da48e6779504e7cbe856", null ],
+    [ "delta_pointers", "structneural__networks_1_1snn__network.html#af280e9a54e4ed9644e95d30186665896", null ],
+    [ "gradient", "structneural__networks_1_1snn__network.html#a0487cd0b9b23b5097031313759ab2dd2", null ],
+    [ "gradient_bias_pointers", "structneural__networks_1_1snn__network.html#ac7473c6cf0c15b9e98191e0aa3fb24d3", null ],
+    [ "gradient_weight_pointers", "structneural__networks_1_1snn__network.html#a55ac14044577c6575937a0f4172f239e", null ],
+    [ "hidden_layer_count", "structneural__networks_1_1snn__network.html#a6838a942cf3f27aa47d9e8dcf81a8d90", null ],
+    [ "input_count", "structneural__networks_1_1snn__network.html#a74e10470c341a2306f4ed7103a0459c5", null ],
+    [ "neuron_per_layer_count", "structneural__networks_1_1snn__network.html#a1bced9a8371f69418a4bbb189f66594e", null ],
+    [ "output", "structneural__networks_1_1snn__network.html#a0c5258db046ed595c8ce5cd5b4a84cea", null ],
+    [ "output_count", "structneural__networks_1_1snn__network.html#a4d4e414517995d059a629be96a2670af", null ],
+    [ "total_bias_count", "structneural__networks_1_1snn__network.html#aa189abc980c1ad2a98c159c57727a6fb", null ],
+    [ "total_coefficient_count", "structneural__networks_1_1snn__network.html#a0e36dcbe300f8dcb1d9119e7c56ffe43", null ],
+    [ "total_layer_count", "structneural__networks_1_1snn__network.html#aae05d861bb391c1ffd440b625cb933a9", null ],
+    [ "total_neuron_count", "structneural__networks_1_1snn__network.html#ae95221853712920bf479c0bad7647361", null ],
+    [ "total_weight_count", "structneural__networks_1_1snn__network.html#a677bc3f40fb1abaac08bf772c5207d78", null ],
+    [ "version", "structneural__networks_1_1snn__network.html#ad468bd4e31b559c26bbaf36ce8ae99b7", null ],
+    [ "weight_pointers", "structneural__networks_1_1snn__network.html#a3f46c750d84cf3864f52a83de5acfc9f", null ],
+    [ "weights", "structneural__networks_1_1snn__network.html#a6da45c38383d8b049e9afa654acf2935", null ],
+    [ "workspace", "structneural__networks_1_1snn__network.html#a93e2e10cb9b90cee7406a26bdf9f59d6", null ],
+    [ "workspace_size", "structneural__networks_1_1snn__network.html#aaf36e07f3a39584d6a69cef5cd2c561f", null ]
+];

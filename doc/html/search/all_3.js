@@ -12,6 +12,7 @@ var searchData=
   ['define_5fx_5ferror_5fdata',['define_x_error_data',['../structfplot__core_1_1plot__data__error__bars.html#a2e4934edcda1cb853c9d2f7f23a1187f',1,'fplot_core::plot_data_error_bars']]],
   ['define_5fxy_5ferror_5fdata',['define_xy_error_data',['../structfplot__core_1_1plot__data__error__bars.html#a8b44a6a017691bab07aeea70c01c2f5c',1,'fplot_core::plot_data_error_bars']]],
   ['define_5fy_5ferror_5fdata',['define_y_error_data',['../structfplot__core_1_1plot__data__error__bars.html#afcf586efb74cc652eca0c940e1a57415',1,'fplot_core::plot_data_error_bars']]],
+  ['derivative_5fgain',['derivative_gain',['../structcontrols_1_1pid.html#a9aca13657ab57330661855e30da2e9bd',1,'controls::pid']]],
   ['det',['det',['../interfacelinalg__core_1_1det.html',1,'linalg_core']]],
   ['dh_5fmtx',['dh_mtx',['../interfacekinematics_1_1dh__mtx.html',1,'kinematics']]],
   ['diag_5fmtx_5fmult',['diag_mtx_mult',['../interfacelinalg__core_1_1diag__mtx__mult.html',1,'linalg_core']]],

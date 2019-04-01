@@ -652,10 +652,26 @@ contains
 
         ! Local Variables
         class(*), pointer :: cpy
+        integer(int32) :: flag
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
 
+        ! Initialization
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+        
         ! Process
-        allocate(cpy, source = x)
-        call this%list%push(cpy, err)
+        allocate(cpy, source = x, stat = flag)
+        if (flag /= 0) then
+            call errmgr%report_error("plist_push", &
+                "Insufficient memory available.", &
+                COLLECTION_OUT_OF_MEMORY_ERROR)
+            return
+        end if
+        call this%list%push(cpy, errmgr)
     end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -684,10 +700,26 @@ contains
 
         ! Local Variables
         class(*), pointer :: cpy
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+        integer(int32) :: flag
+        
+        ! Initialization
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
         
         ! Process
-        allocate(cpy, source = x)
-        call this%list%insert(i, cpy, err)
+        allocate(cpy, source = x, stat = flag)
+        if (flag /= 0) then
+            call errmgr%report_error("plist_insert", &
+                "Insufficient memory available.", &
+                COLLECTION_OUT_OF_MEMORY_ERROR)
+            return
+        end if
+        call this%list%insert(i, cpy, errmgr)
     end subroutine
 
 ! ------------------------------------------------------------------------------

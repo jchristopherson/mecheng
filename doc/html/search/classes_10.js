@@ -2,6 +2,11 @@ var searchData=
 [
   ['rainbow_5fcolormap',['rainbow_colormap',['../structfplot__core_1_1rainbow__colormap.html',1,'fplot_core']]],
   ['rank1_5fupdate',['rank1_update',['../interfacelinalg__core_1_1rank1__update.html',1,'linalg_core']]],
+  ['realtime_5fderivative',['realtime_derivative',['../structcontrols_1_1realtime__derivative.html',1,'controls']]],
+  ['realtime_5ffilter',['realtime_filter',['../structsignals_1_1realtime__filter.html',1,'signals']]],
+  ['realtime_5fobject',['realtime_object',['../structcontrols_1_1realtime__object.html',1,'controls']]],
+  ['realtime_5freset',['realtime_reset',['../interfacecontrols_1_1realtime__reset.html',1,'controls']]],
+  ['realtime_5fsignal',['realtime_signal',['../structcontrols_1_1realtime__signal.html',1,'controls']]],
   ['recip_5fmult_5farray',['recip_mult_array',['../interfacelinalg__core_1_1recip__mult__array.html',1,'linalg_core']]],
   ['reg_5ffcn',['reg_fcn',['../interfacecurvefit__core_1_1reg__fcn.html',1,'curvefit_core']]],
   ['repeatability',['repeatability',['../interfacecurvefit__calibration_1_1repeatability.html',1,'curvefit_calibration']]],

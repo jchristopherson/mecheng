@@ -11,6 +11,7 @@ var searchData=
   ['pi',['pi',['../namespaceconstants.html#a25d12bb3441f2773a3a3e42dac41a9c1',1,'constants']]],
   ['pi_5finit',['pi_init',['../namespacecurvefit__interp.html#a0e59c92e9df69bc586cc39fa94113b9a',1,'curvefit_interp']]],
   ['pi_5fraw_5finterp',['pi_raw_interp',['../namespacecurvefit__interp.html#ab97c09f386142103f839373221eb2333',1,'curvefit_interp']]],
+  ['pid',['pid',['../structcontrols_1_1pid.html',1,'controls']]],
   ['plane',['plane',['../structgeometry_1_1plane.html',1,'geometry']]],
   ['plane_5ffrom_5f3_5fpoints',['plane_from_3_points',['../namespacegeometry.html#a37722dbe90fc85c784397ef91b9ebddf',1,'geometry']]],
   ['plane_5ffrom_5fangle_5faxis',['plane_from_angle_axis',['../interfacegeometry_1_1plane__from__angle__axis.html',1,'geometry']]],
@@ -73,6 +74,7 @@ var searchData=
   ['print_5fstatus',['print_status',['../namespacenonlin__core.html#ac9637db13c24f15661e80eb42b225ea7',1,'nonlin_core']]],
   ['proj',['proj',['../namespacegeometry.html#ad5cf5fd151e428ed558c3c8509f43035',1,'geometry']]],
   ['proj_5fpoint_5f2_5fplane',['proj_point_2_plane',['../namespacegeometry.html#a064a3dfaa8289362a3675df781d823d0',1,'geometry']]],
+  ['proportional_5fgain',['proportional_gain',['../structcontrols_1_1pid.html#ad29894aca71cb6fd8bad626dee3d218a',1,'controls::pid']]],
   ['push',['push',['../structcollection__linked__list_1_1linked__list.html#a315f3da31d5aaa579e3a6dcf74e69bbb',1,'collection_linked_list::linked_list::push()'],['../structcollection__linked__list_1_1persistent__linked__list.html#a89db2d0f5a2965e4383e55c8e50e0db1',1,'collection_linked_list::persistent_linked_list::push()'],['../structcollection__list_1_1list.html#a5e27250a2c342befde23957588281c66',1,'collection_list::list::push()'],['../structcollection__list_1_1persistent__list.html#a04514ab95aa58ab90b6a91e300f33239',1,'collection_list::persistent_list::push()'],['../structfplot__core_1_1plot.html#a5066eea4fa7b7d5bf557e46652ef20fd',1,'fplot_core::plot::push()']]],
   ['push_5flabel',['push_label',['../structfplot__core_1_1plot.html#a89f704e48794d3805d2f13c96082096c',1,'fplot_core::plot']]]
 ];

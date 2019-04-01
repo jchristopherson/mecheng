@@ -4,3 +4,6 @@
 [submodule "src/external/lapack"]
 	path = src/external/lapack
 	url = https://github.com/Reference-LAPACK/lapack.git
+[submodule "src/external/genann"]
+	path = src/external/genann
+	url = https://github.com/codeplea/genann
