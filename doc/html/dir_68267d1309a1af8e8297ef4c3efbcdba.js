@@ -1,6 +1,7 @@
 var dir_68267d1309a1af8e8297ef4c3efbcdba =
 [
     [ "collections", "dir_e20f5f050a3be480293532e15537c055.html", "dir_e20f5f050a3be480293532e15537c055" ],
+    [ "controls", "dir_7afd03d72c1de07a6d47e666c364824c.html", "dir_7afd03d72c1de07a6d47e666c364824c" ],
     [ "curvefit", "dir_9d4f4e96bb96278112a872d23c3c7dd7.html", "dir_9d4f4e96bb96278112a872d23c3c7dd7" ],
     [ "ferror", "dir_df1727fda69080e8ff2932293b2bb1b4.html", "dir_df1727fda69080e8ff2932293b2bb1b4" ],
     [ "fortio", "dir_cf7e33b00f6ad073a4629d4573bc9c37.html", "dir_cf7e33b00f6ad073a4629d4573bc9c37" ],

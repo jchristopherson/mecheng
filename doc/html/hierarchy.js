@@ -142,7 +142,8 @@ var hierarchy =
     [ "integral_core::ode_helper", "structintegral__core_1_1ode__helper.html", null ],
     [ "integral_core::ode_integrator", "structintegral__core_1_1ode__integrator.html", [
       [ "integral_core::ode_auto", "structintegral__core_1_1ode__auto.html", null ],
-      [ "integral_core::ode_euler", "structintegral__core_1_1ode__euler.html", null ]
+      [ "integral_core::ode_euler", "structintegral__core_1_1ode__euler.html", null ],
+      [ "integral_core::ode_rk4", "structintegral__core_1_1ode__rk4.html", null ]
     ] ],
     [ "integral_core::ode_integrator_interface", "interfaceintegral__core_1_1ode__integrator__interface.html", null ],
     [ "integral_core::ode_integrator_reset", "interfaceintegral__core_1_1ode__integrator__reset.html", null ],
@@ -151,8 +152,8 @@ var hierarchy =
     [ "kinematics::operator(*)", "interfacekinematics_1_1operator_07_5_08.html", null ],
     [ "nonlin_polynomials::operator(+)", "interfacenonlin__polynomials_1_1operator_07_09_08.html", null ],
     [ "kinematics::operator(+)", "interfacekinematics_1_1operator_07_09_08.html", null ],
-    [ "nonlin_polynomials::operator(-)", "interfacenonlin__polynomials_1_1operator_07-_08.html", null ],
     [ "kinematics::operator(-)", "interfacekinematics_1_1operator_07-_08.html", null ],
+    [ "nonlin_polynomials::operator(-)", "interfacenonlin__polynomials_1_1operator_07-_08.html", null ],
     [ "kinematics::operator(/)", "interfacekinematics_1_1operator_07_2_08.html", null ],
     [ "fplot_core::pa_get_string_result", "interfacefplot__core_1_1pa__get__string__result.html", null ],
     [ "fplot_core::pd_get_string_result", "interfacefplot__core_1_1pd__get__string__result.html", null ],
@@ -207,6 +208,11 @@ var hierarchy =
       [ "signals::fir_filter", "structsignals_1_1fir__filter.html", null ],
       [ "signals::iir_filter", "structsignals_1_1iir__filter.html", null ]
     ] ],
+    [ "controls::realtime_object", "structcontrols_1_1realtime__object.html", [
+      [ "controls::pid", "structcontrols_1_1pid.html", null ],
+      [ "controls::realtime_derivative", "structcontrols_1_1realtime__derivative.html", null ]
+    ] ],
+    [ "controls::realtime_reset", "interfacecontrols_1_1realtime__reset.html", null ],
     [ "linalg_core::recip_mult_array", "interfacelinalg__core_1_1recip__mult__array.html", null ],
     [ "curvefit_core::reg_fcn", "interfacecurvefit__core_1_1reg__fcn.html", null ],
     [ "curvefit_calibration::repeatability", "interfacecurvefit__calibration_1_1repeatability.html", null ],

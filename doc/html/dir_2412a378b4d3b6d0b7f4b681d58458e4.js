@@ -7,5 +7,6 @@ var dir_2412a378b4d3b6d0b7f4b681d58458e4 =
     [ "integral_ode_auto.f90", "integral__ode__auto_8f90_source.html", null ],
     [ "integral_ode_euler.f90", "integral__ode__euler_8f90_source.html", null ],
     [ "integral_ode_helper.f90", "integral__ode__helper_8f90_source.html", null ],
-    [ "integral_ode_integrator.f90", "integral__ode__integrator_8f90_source.html", null ]
+    [ "integral_ode_integrator.f90", "integral__ode__integrator_8f90_source.html", null ],
+    [ "integral_ode_rk4.f90", "integral__ode__rk4_8f90_source.html", null ]
 ];

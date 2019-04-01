@@ -15,5 +15,6 @@ var namespaceintegral__core =
     [ "ode_integrator", "structintegral__core_1_1ode__integrator.html", "structintegral__core_1_1ode__integrator" ],
     [ "ode_integrator_interface", "interfaceintegral__core_1_1ode__integrator__interface.html", "interfaceintegral__core_1_1ode__integrator__interface" ],
     [ "ode_integrator_reset", "interfaceintegral__core_1_1ode__integrator__reset.html", "interfaceintegral__core_1_1ode__integrator__reset" ],
-    [ "ode_jacobian", "interfaceintegral__core_1_1ode__jacobian.html", "interfaceintegral__core_1_1ode__jacobian" ]
+    [ "ode_jacobian", "interfaceintegral__core_1_1ode__jacobian.html", "interfaceintegral__core_1_1ode__jacobian" ],
+    [ "ode_rk4", "structintegral__core_1_1ode__rk4.html", "structintegral__core_1_1ode__rk4" ]
 ];
