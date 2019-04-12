@@ -37,9 +37,18 @@ contains
     !!     use constants
     !!     implicit none
     !!
+    !!     ! Model Constants
+    !!     real(real64), parameter :: m = 10.0d0
+    !!     real(real64), parameter :: g = 9.81d0
+    !!     real(real64), parameter :: mu = 1.2d0
+    !!     real(real64), parameter :: k = 250.0d3
+    !!     real(real64), parameter :: F = 2.0d3
+    !!     real(real64), parameter :: freq = 5.0d0
+    !!     real(real64), parameter :: eps = 1.0d-4
+    !!
     !!     ! Plot Variables
     !!     type(plot_2d) :: plt
-    !!     type(plot_data_2d) :: d1, d2
+    !!     type(plot_data_2d) :: d1, d2, d3
     !!     class(plot_axis), pointer :: xAxis, yAxis, y2Axis
     !!
     !!     ! Integrator Variables
@@ -49,6 +58,7 @@ contains
     !!
     !!     ! Local Variables
     !!     real(real64), allocatable, dimension(:,:) :: z
+    !!     real(real64), allocatable, dimension(:) :: friction
     !!     real(real64) :: t(2), ic(2)
     !!
     !!     ! Define the solution range and initial conditions
@@ -86,6 +96,21 @@ contains
     !!     call plt%push(d1)
     !!     call plt%push(d2)
     !!     call plt%draw()
+    !!
+    !!     ! Compute the friction force
+    !!     friction = coulomb(mu, m * g, eps, z(:,3))
+    !!
+    !!     ! Plot the force-velocity relationship
+    !!     call plt%set_use_y2_axis(.false.)
+    !!     call plt%clear_all()
+    !!
+    !!     call xAxis%set_title("dx(t)/dt")
+    !!     call yAxis%set_title("F(t)")
+    !!
+    !!     call d3%define_data(z(:,3), friction)
+    !!
+    !!     call plt%push(d3)
+    !!     call plt%draw()
     !! contains
     !!     ! The system under study is a single degree-of-freedom mass-spring
     !!     ! system that utilizes a frictional damper.  The normal force
@@ -95,25 +120,16 @@ contains
     !!     ! m * x" + f(x',mu) + k * x = F(t)
     !!     !
     !!     ! Let:
-    !!     ! m = Mass = 5 kg
-    !!     ! g = Acceleration due to gravity = 9.81 m/s**2
-    !!     ! mu = Friction coefficient = 0.2
-    !!     ! k = Stiffness = 250 N/mm
-    !!     ! F = Forcing amplitude = 2 kN
+    !!     ! m = Mass
+    !!     ! g = Acceleration due to gravity
+    !!     ! mu = Friction coefficient
+    !!     ! k = Stiffness
+    !!     ! F = Forcing amplitude
     !!     subroutine eqn(t, z, dzdt)
     !!         ! Arguments
     !!         real(real64), intent(in) :: t
     !!         real(real64), intent(in), dimension(:) :: z
     !!         real(real64), intent(out), dimension(:) :: dzdt
-    !!
-    !!         ! Constants
-    !!         real(real64), parameter :: m = 5.0d0
-    !!         real(real64), parameter :: g = 9.81d0
-    !!         real(real64), parameter :: mu = 0.2d0
-    !!         real(real64), parameter :: k = 250.0d3
-    !!         real(real64), parameter :: F = 2.0d3
-    !!         real(real64), parameter :: freq = 5.0d0
-    !!         real(real64), parameter :: eps = 1.0d-6
     !!
     !!         ! Local Variables
     !!         real(real64) :: Ft, Ff, N, x, dxdt
@@ -133,8 +149,10 @@ contains
     !!     end subroutine
     !! end program
     !! @endcode
+    !! The above program produces the following plots.
     !! @image html coulomb_friction_model.png
-    function coulomb(mu, normal, eps, velocity) result(f)
+    !! @image html coulomb_friction_model_force_velocity.png
+    pure elemental function coulomb(mu, normal, eps, velocity) result(f)
         ! Arguments
         real(real64), intent(in) :: mu, normal, eps, velocity
         real(real64) :: f
