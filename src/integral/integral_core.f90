@@ -47,6 +47,8 @@ module integral_core
     public :: ode_integrator_interface
     public :: ode_integrator_reset
     public :: ode_auto
+    public :: ode_euler
+    public :: ode_rk4
 
 ! ------------------------------------------------------------------------------
     !> @brief An error flag indicating insufficient memory.
@@ -1057,7 +1059,7 @@ module integral_core
         !!
         !! @par Syntax
         !! @code{.f90}
-        !! logical function integrate(class(ode_integrator) this, class(ode_helper) fcnobj, real(real64) x(:), real(real64) y(:), optional class(errors) err)
+        !! real(real64)(:,:) function integrate(class(ode_integrator) this, class(ode_helper) fcnobj, real(real64) x(:), real(real64) y(:), optional class(errors) err)
         !! @endcode
         !!
         !! @param[in,out] this The ode_integrator object.
@@ -1661,16 +1663,232 @@ module integral_core
     end interface
 
 ! ******************************************************************************
-! INTEGRAL_FIXED_STEP_ODE_INTEGRATOR.F90
+! INTEGRAL_ODE_EULER.F90
 ! ------------------------------------------------------------------------------
     !> @brief Defines an Euler's method type integrator.
+    !!
+    !! @par Remarks
+    !! The Euler integrator is a fixed-step-size integrator.  It utilizes
+    !! the traditional Euler algorithm:
+    !! \f$ x_{k+1} = x_{k} + h f(t_{k}, x_{k}) \f$.
+    !! @par
+    !! The integrator is capable of estimating the error in each step.  Error
+    !! is estimated as follows: \f$ e = \frac{h}{2} \left(f(t_{k}, x_{k}) - 
+    !! f(t_{k+1}, x_{k+1}) \right) \f$.
+    !!
+    !! @par Example
+    !! The following example illustrates how to utilize the Euler integrator.
+    !! It also compares output to using a more advanced, automatic-time-stepping
+    !! type integrator.
+    !! @code{.f90}
+    !! program example
+    !!     use iso_fortran_env
+    !!     use integral_core
+    !!     use fplot_core
+    !!     implicit none
+    !!
+    !!     ! Parameters
+    !!     integer(int32), parameter :: npts = 500
+    !!
+    !!     ! Local Variables
+    !!     integer(int32) :: i
+    !!     type(ode_helper) :: obj
+    !!     type(ode_auto) :: intauto
+    !!     type(ode_euler) :: inteuler
+    !!     procedure(ode_fcn), pointer :: ptr
+    !!     real(real64) :: ic(2), t(2), dt, te(npts)
+    !!     real(real64), allocatable, dimension(:,:) :: xauto, xeuler
+    !!     type(plot_2d) :: plt
+    !!     type(plot_data_2d) :: d1, d2
+    !!     class(plot_axis), pointer :: xAxis, yAxis
+    !!     class(legend), pointer :: lgnd
+    !!
+    !!     ! Set up the integrators
+    !!     ptr => eqn
+    !!     call obj%define_equations(2, ptr)
+    !!
+    !!     ! Define the initial conditions
+    !!     t = [0.0d0, 5.0d-1]
+    !!     ic = [0.0d0, 0.0d0]
+    !!
+    !!     ! Compute the solution using the adaptive integrator
+    !!     xauto = intauto%integrate(obj, t, ic)
+    !!
+    !!     ! Construct a vector cotnaining the points at which we desire a solution
+    !!     ! for the Euler integrator
+    !!     te(1) = 0.0d0
+    !!     dt = maxval(t) / (npts - 1.0d0)
+    !!     do i = 2, npts
+    !!         te(i) = te(i-1) + dt
+    !!     end do
+    !!
+    !!     ! Compute the solution using the Euler integrator
+    !!     xeuler = inteuler%integrate(obj, te, ic)
+    !!
+    !!     ! Plot the solution
+    !!     call plt%initialize()
+    !!     call plt%set_font_size(14)
+    !!
+    !!     lgnd => plt%get_legend()
+    !!     call lgnd%set_is_visible(.true.)
+    !!
+    !!     xAxis => plt%get_x_axis()
+    !!     call xAxis%set_title("t")
+    !!
+    !!     yAxis => plt%get_y_axis()
+    !!     call yAxis%set_title("x(t)")
+    !!
+    !!     call d1%set_name("Auto")
+    !!     call d1%set_line_width(2.0)
+    !!     call d1%set_line_style(LINE_DASHED)
+    !!     call d1%define_data(xauto(:,1), xauto(:,2))
+    !!
+    !!     call d2%set_name("Euler")
+    !!     call d2%set_line_width(2.0)
+    !!     call d2%define_data(xeuler(:,1), xeuler(:,2))
+    !!
+    !!     call plt%push(d1)
+    !!     call plt%push(d2)
+    !!     call plt%draw()
+    !!
+    !! contains
+    !!     ! Assume we have the second order system governing a mechanical
+    !!     ! vibrating system:
+    !!     ! x" + 2 * z * wn * x' + wn**2 * x = 2 * z * wn * y' + wn^2 * y
+    !!     !
+    !!     ! Where: y = Y * sin(w * t)
+    !!     !
+    !!     ! Let:
+    !!     ! - z = Damping Ratio = 0.2
+    !!     ! - wn = Natural Frequency = 10 Hz = 62.8318530 rad/sec
+    !!     ! - Y = Excitation Amplitude = 0.125
+    !!     ! - w = Excitation Frequency = 20 Hz = 125.663706 rad/sec
+    !!     subroutine eqn(t, x, dxdt)
+    !!         ! Arguments
+    !!         real(real64), intent(in) :: t
+    !!         real(real64), intent(in), dimension(:) :: x
+    !!         real(real64), intent(out), dimension(:) :: dxdt
+    !!
+    !!         ! Constants
+    !!         real(real64), parameter :: z = 0.2d0
+    !!         real(real64), parameter :: wn = 62.8318530d0
+    !!         real(real64), parameter :: Y = 0.125d0
+    !!         real(real64), parameter :: w = 125.663706d0
+    !!
+    !!         ! Local Variables
+    !!         real(real64) :: yt, dydt
+    !!
+    !!         ! Compute the excitation
+    !!         yt = Y * sin(w * t)
+    !!         dydt = Y * w * cos(w * t)
+    !!
+    !!         ! Equations
+    !!         dxdt(1) = x(2)
+    !!         dxdt(2) = 2.0d0 * z * wn * (dydt - x(2)) + wn**2 * (yt - x(1))
+    !!     end subroutine
+    !! end program
+    !! @endcode
+    !! The above program produces the following output.
+    !! @image html euler_ode_comparison_1.png
     type, extends(ode_integrator) :: ode_euler
+    private
         real(real64), allocatable, dimension(:) :: m_dydx
-        real(real64), allocatable, dimension(:) :: m_work
+        real(real64), allocatable, dimension(:) :: m_dydx1
+        real(real64), allocatable, dimension(:) :: m_error
+        real(real64), allocatable, dimension(:) :: m_summationError
+        real(real64), allocatable, dimension(:) :: m_y1
         logical :: m_first = .true.
     contains
+        !> @brief Takes a single integration step towards the desired point.
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! logical function step(class(ode_euler) this, class(ode_helper) fcn, real(real64) x, real(real64) y(:), real(real64) xout, real(real64) rtol(:), real(real64) atol(:), optional class(errors) err)
+        !! @endcode
+        !!
+        !! @param[in,out] this The ode_euler object.
+        !! @param[in,out] fcn An ode_helper object containing the ODEs to
+        !!  integrate.
+        !! @param[in,out] x On input, the value of the independent variable at
+        !!  which to start.  On output, the value of the independent variable at
+        !!  which integration terminated.
+        !! @param[in,out] y On input, the value(s) of the dependent variable(s)
+        !!  at the initial value given in @p x.  On output, the value(s) of the
+        !!  dependent variable(s) as evaluated at the output given in @p x.
+        !! @param[in] xout The value of the independent variable at which the
+        !!  solution is desired.
+        !! @param[in] rtol An array containing relative tolerance information
+        !!  for each ODE.
+        !! @param[in] atol An array containing absolute tolerance information
+        !!  for each ODE.
+        !! @param[in,out] err An optional output that can be used to provide
+        !!  an error handling mechanism.  If not provided, a default error
+        !!  handling mechanism will be utilized.  Possible errors that may
+        !!  be encountered are as follows.
+        !!  - INT_OUT_OF_MEMORY_ERROR: Occurs if insufficient memory is 
+        !!      available.
+        !!  - INT_INVALID_INPUT_ERROR: Occurs if an invalid input was supplied.
+        !!
+        !! @return Returns true if the integrator requests a stop; else, false,
+        !!  to continue as normal.  A possible sitaution resulting in a true
+        !!  value is in the event a constraint has been satisfied.
         procedure, public :: step => oe_step
+        !> @brief Resets the state of the integrator.
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! subroutine reset(class(ode_euler) this)
+        !! @endcode
+        !!
+        !! @param[in,out] this The ode_euler object.
         procedure, public :: reset => oe_reset_integrator
+        !> @brief Performs the integration.
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! real(real64)(:,:) function integrate(class(ode_euler) this, class(ode_helper) fcnobj, real(real64) x(:), real(real64) y(:), optional class(errors) err)
+        !! @endcode
+        !!
+        !! @param[in,out] this The ode_euler object.
+        !! @param[in,out] fcnobj The ode_helper object containing the equations
+        !!  to integrate.
+        !! @param[in] x An array containing the values of the independent
+        !!  variable at which the solution is desired.  There must be at least
+        !!  two values in this array.
+        !! @param[in] y An N-element array containing the initial conditions for
+        !!  each of the N ODEs.
+        !! @param[in,out] err An optional output that can be used to provide
+        !!  an error handling mechanism.  If not provided, a default error
+        !!  handling mechanism will be utilized.  Possible errors that may
+        !!  be encountered are as follows.
+        !!  - INT_INVALID_INPUT_ERROR: An invalid input was supplied.
+        !!  - INT_OUT_OF_MEMORY_ERROR: There is insufficient memory available.
+        !!  - INT_LACK_OF_DEFINITION_ERROR: Occurs if no equations have been
+        !!      defined.
+        !!  - INT_ARRAY_SIZE_MISMATCH_ERROR: Occurs if @p y is not sized to
+        !!      match the problem as defined in @p fcnobj, or if the tolerance
+        !!      arrays are not sized to match the problem as defined in
+        !!      @p fcnobj.
+        !!  Notice, specific integrators may have additional errors.  See the
+        !!  @p step routine of the appropriate integrator for more information.
+        !!
+        !! @return Returns the solution in a matrix of N+1 columns.  The
+        !!  first column contains the values of the independent variable at
+        !!  which the solution was computed.  The remaining columns contain the
+        !!  solution points for each ODE.
+        procedure, public :: integrate => oe_integrate
+        !> @brief Retrieves the error estimate from the last integration step.
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! real(real64)(:) function get_last_error_estimate(class(ode_euler) this)
+        !! @endcode
+        !!
+        !! @param[in] this The ode_euler object.
+        !! @return An array containing the most recent error estimate for each
+        !!  equation.
+        procedure, public :: get_last_error_estimate => oe_get_error_est
+        procedure, private :: initialize => oe_init_workspace
     end type
 
     interface
@@ -1688,6 +1906,266 @@ module integral_core
         module subroutine oe_reset_integrator(this)
             class(ode_euler), intent(inout) :: this
         end subroutine
+
+        module subroutine oe_init_workspace(this, neqn, err)
+            class(ode_euler), intent(inout) :: this
+            integer(int32), intent(in) :: neqn
+            class(errors), intent(inout), optional, target :: err
+        end subroutine
+
+        module function oe_integrate(this, fcnobj, x, y, err) result(rst)
+            class(ode_euler), intent(inout) :: this
+            class(ode_helper), intent(inout) :: fcnobj
+            real(real64), intent(in), dimension(:) :: x, y
+            class(errors), intent(inout), optional, target :: err
+            real(real64), allocatable, dimension(:,:) :: rst
+        end function
+
+        pure module function oe_get_error_est(this) result(x)
+            class(ode_euler), intent(in) :: this
+            real(real64), allocatable, dimension(:) :: x
+        end function
+    end interface
+
+! ******************************************************************************
+! INTEGRAL_FIXED_STEP_ODE_INTEGRATOR.F90
+! ------------------------------------------------------------------------------
+    !> @brief Defines a fixed-step, 4th Order Runge-Kutta type integrator.
+    !!
+    !! @par Example
+    !! The following example illustrates how to utilize the 4th Order
+    !! Runge-Kutta integrator.  It also compares output to using a more 
+    !! advanced, automatic-time-stepping type integrator.
+    !! @code{.f90}
+    !! program example
+    !!     use iso_fortran_env
+    !!     use integral_core
+    !!     use fplot_core
+    !!     implicit none
+    !!
+    !!     ! Parameters
+    !!     integer(int32), parameter :: npts = 500
+    !!
+    !!     ! Local Variables
+    !!     integer(int32) :: i
+    !!     type(ode_helper) :: obj
+    !!     type(ode_auto) :: intauto
+    !!     type(ode_rk4) :: inteuler
+    !!     procedure(ode_fcn), pointer :: ptr
+    !!     real(real64) :: ic(2), t(2), dt, te(npts)
+    !!     real(real64), allocatable, dimension(:,:) :: xauto, xeuler
+    !!     type(plot_2d) :: plt
+    !!     type(plot_data_2d) :: d1, d2
+    !!     class(plot_axis), pointer :: xAxis, yAxis
+    !!     class(legend), pointer :: lgnd
+    !!
+    !!     ! Set up the integrators
+    !!     ptr => eqn
+    !!     call obj%define_equations(2, ptr)
+    !!
+    !!     ! Define the initial conditions
+    !!     t = [0.0d0, 5.0d-1]
+    !!     ic = [0.0d0, 0.0d0]
+    !!
+    !!     ! Compute the solution using the adaptive integrator
+    !!     xauto = intauto%integrate(obj, t, ic)
+    !!
+    !!     ! Construct a vector cotnaining the points at which we desire a solution
+    !!     ! for the Euler integrator
+    !!     te(1) = 0.0d0
+    !!     dt = maxval(t) / (npts - 1.0d0)
+    !!     do i = 2, npts
+    !!         te(i) = te(i-1) + dt
+    !!     end do
+    !!
+    !!     ! Compute the solution using the RK4 integrator
+    !!     xeuler = inteuler%integrate(obj, te, ic)
+    !!
+    !!     ! Plot the solution
+    !!     call plt%initialize()
+    !!     call plt%set_font_size(14)
+    !!
+    !!     lgnd => plt%get_legend()
+    !!     call lgnd%set_is_visible(.true.)
+    !!
+    !!     xAxis => plt%get_x_axis()
+    !!     call xAxis%set_title("t")
+    !!
+    !!     yAxis => plt%get_y_axis()
+    !!     call yAxis%set_title("x(t)")
+    !!
+    !!     call d1%set_name("Auto")
+    !!     call d1%set_line_width(2.0)
+    !!     call d1%set_line_style(LINE_DASHED)
+    !!     call d1%define_data(xauto(:,1), xauto(:,2))
+    !!
+    !!     call d2%set_name("RK4")
+    !!     call d2%set_line_width(2.0)
+    !!     call d2%define_data(xeuler(:,1), xeuler(:,2))
+    !!
+    !!     call plt%push(d1)
+    !!     call plt%push(d2)
+    !!     call plt%draw()
+    !!
+    !! contains
+    !!     ! Assume we have the second order system governing a mechanical
+    !!     ! vibrating system:
+    !!     ! x" + 2 * z * wn * x' + wn**2 * x = 2 * z * wn * y' + wn^2 * y
+    !!     !
+    !!     ! Where: y = Y * sin(w * t)
+    !!     !
+    !!     ! Let:
+    !!     ! - z = Damping Ratio = 0.2
+    !!     ! - wn = Natural Frequency = 10 Hz = 62.8318530 rad/sec
+    !!     ! - Y = Excitation Amplitude = 0.125
+    !!     ! - w = Excitation Frequency = 20 Hz = 125.663706 rad/sec
+    !!     subroutine eqn(t, x, dxdt)
+    !!         ! Arguments
+    !!         real(real64), intent(in) :: t
+    !!         real(real64), intent(in), dimension(:) :: x
+    !!         real(real64), intent(out), dimension(:) :: dxdt
+    !!
+    !!         ! Constants
+    !!         real(real64), parameter :: z = 0.2d0
+    !!         real(real64), parameter :: wn = 62.8318530d0
+    !!         real(real64), parameter :: Y = 0.125d0
+    !!         real(real64), parameter :: w = 125.663706d0
+    !!
+    !!         ! Local Variables
+    !!         real(real64) :: yt, dydt
+    !!
+    !!         ! Compute the excitation
+    !!         yt = Y * sin(w * t)
+    !!         dydt = Y * w * cos(w * t)
+    !!
+    !!         ! Equations
+    !!         dxdt(1) = x(2)
+    !!         dxdt(2) = 2.0d0 * z * wn * (dydt - x(2)) + wn**2 * (yt - x(1))
+    !!     end subroutine
+    !! end program
+    !! @endcode
+    !! The above program produces the following output.
+    !! @image html rk4_ode_comparison_1.png
+    type, extends(ode_integrator) :: ode_rk4
+    private
+        real(real64), allocatable, dimension(:) :: m_k1
+        real(real64), allocatable, dimension(:) :: m_k2
+        real(real64), allocatable, dimension(:) :: m_k3
+        real(real64), allocatable, dimension(:) :: m_k4
+        real(real64), allocatable, dimension(:) :: m_work
+        real(real64), allocatable, dimension(:) :: m_summationError
+        real(real64), allocatable, dimension(:) :: m_y1
+    contains
+        !> @brief Takes a single integration step towards the desired point.
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! logical function step(class(ode_rk4) this, class(ode_helper) fcn, real(real64) x, real(real64) y(:), real(real64) xout, real(real64) rtol(:), real(real64) atol(:), optional class(errors) err)
+        !! @endcode
+        !!
+        !! @param[in,out] this The ode_rk4 object.
+        !! @param[in,out] fcn An ode_helper object containing the ODEs to
+        !!  integrate.
+        !! @param[in,out] x On input, the value of the independent variable at
+        !!  which to start.  On output, the value of the independent variable at
+        !!  which integration terminated.
+        !! @param[in,out] y On input, the value(s) of the dependent variable(s)
+        !!  at the initial value given in @p x.  On output, the value(s) of the
+        !!  dependent variable(s) as evaluated at the output given in @p x.
+        !! @param[in] xout The value of the independent variable at which the
+        !!  solution is desired.
+        !! @param[in] rtol An array containing relative tolerance information
+        !!  for each ODE.
+        !! @param[in] atol An array containing absolute tolerance information
+        !!  for each ODE.
+        !! @param[in,out] err An optional output that can be used to provide
+        !!  an error handling mechanism.  If not provided, a default error
+        !!  handling mechanism will be utilized.  Possible errors that may
+        !!  be encountered are as follows.
+        !!  - INT_OUT_OF_MEMORY_ERROR: Occurs if insufficient memory is 
+        !!      available.
+        !!  - INT_INVALID_INPUT_ERROR: Occurs if an invalid input was supplied.
+        !!
+        !! @return Returns true if the integrator requests a stop; else, false,
+        !!  to continue as normal.  A possible sitaution resulting in a true
+        !!  value is in the event a constraint has been satisfied.
+        procedure, public :: step => ork4_step
+        !> @brief Resets the state of the integrator.
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! subroutine reset(class(ode_rk4) this)
+        !! @endcode
+        !!
+        !! @param[in,out] this The ode_rk4 object.
+        procedure, public :: reset => ork4_reset_integrator
+        !> @brief Performs the integration.
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! real(real64)(:,:) function integrate(class(ode_rk4) this, class(ode_helper) fcnobj, real(real64) x(:), real(real64) y(:), optional class(errors) err)
+        !! @endcode
+        !!
+        !! @param[in,out] this The ode_rk4 object.
+        !! @param[in,out] fcnobj The ode_helper object containing the equations
+        !!  to integrate.
+        !! @param[in] x An array containing the values of the independent
+        !!  variable at which the solution is desired.  There must be at least
+        !!  two values in this array.
+        !! @param[in] y An N-element array containing the initial conditions for
+        !!  each of the N ODEs.
+        !! @param[in,out] err An optional output that can be used to provide
+        !!  an error handling mechanism.  If not provided, a default error
+        !!  handling mechanism will be utilized.  Possible errors that may
+        !!  be encountered are as follows.
+        !!  - INT_INVALID_INPUT_ERROR: An invalid input was supplied.
+        !!  - INT_OUT_OF_MEMORY_ERROR: There is insufficient memory available.
+        !!  - INT_LACK_OF_DEFINITION_ERROR: Occurs if no equations have been
+        !!      defined.
+        !!  - INT_ARRAY_SIZE_MISMATCH_ERROR: Occurs if @p y is not sized to
+        !!      match the problem as defined in @p fcnobj, or if the tolerance
+        !!      arrays are not sized to match the problem as defined in
+        !!      @p fcnobj.
+        !!  Notice, specific integrators may have additional errors.  See the
+        !!  @p step routine of the appropriate integrator for more information.
+        !!
+        !! @return Returns the solution in a matrix of N+1 columns.  The
+        !!  first column contains the values of the independent variable at
+        !!  which the solution was computed.  The remaining columns contain the
+        !!  solution points for each ODE.
+        procedure, public :: integrate => ork4_integrate
+        procedure, private :: initialize => ork4_init_workspace
+    end type
+
+    interface
+        module function ork4_step(this, fcn, x, y, xout, rtol, atol, err) result(brk)
+            class(ode_rk4), intent(inout) :: this
+            class(ode_helper), intent(inout) :: fcn
+            real(real64), intent(inout) :: x
+            real(real64), intent(inout), dimension(:) :: y
+            real(real64), intent(in) :: xout
+            real(real64), intent(in), dimension(:) :: rtol, atol
+            class(errors), intent(inout), optional, target :: err
+            logical :: brk
+        end function
+
+        module subroutine ork4_reset_integrator(this)
+            class(ode_rk4), intent(inout) :: this
+        end subroutine
+
+        module subroutine ork4_init_workspace(this, neqn, err)
+            class(ode_rk4), intent(inout) :: this
+            integer(int32), intent(in) :: neqn
+            class(errors), intent(inout), optional, target :: err
+        end subroutine
+
+        module function ork4_integrate(this, fcnobj, x, y, err) result(rst)
+            class(ode_rk4), intent(inout) :: this
+            class(ode_helper), intent(inout) :: fcnobj
+            real(real64), intent(in), dimension(:) :: x, y
+            class(errors), intent(inout), optional, target :: err
+            real(real64), allocatable, dimension(:,:) :: rst
+        end function
     end interface
 
 end module

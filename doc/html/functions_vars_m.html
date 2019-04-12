@@ -120,9 +120,6 @@ $(document).ready(function(){initNavTree('functions_vars_m.html','');});
 <li>m_azimuth
 : <a class="el" href="structfplot__core_1_1plot__3d.html#a31e7daa0c6029d65bbe6dfc370e09f75">fplot_core::plot_3d</a>
 </li>
-<li>m_bias
-: <a class="el" href="structneural__network__core_1_1layer.html#ab1ae22b2de7ae00fa0ebac2acfae6f89">neural_network_core::layer</a>
-</li>
 <li>m_box
 : <a class="el" href="structfplot__core_1_1legend.html#a195d911a2ffb3e4d8d8229b21745db72">fplot_core::legend</a>
 , <a class="el" href="structfplot__core_1_1plot__data__error__bars.html#a0e904bfb3fe7d81b6776040af4461f8e">fplot_core::plot_data_error_bars</a>
@@ -131,10 +128,14 @@ $(document).ready(function(){initNavTree('functions_vars_m.html','');});
 : <a class="el" href="structintegral__core_1_1adaptive__integrator.html#ac8e4d4dc7702f43459677705eefa6acb">integral_core::adaptive_integrator</a>
 </li>
 <li>m_buffer
-: <a class="el" href="structstrings_1_1string__builder.html#a03cfa737d07e29dd03e924472a71e96c">strings::string_builder</a>
+: <a class="el" href="structsignals_1_1fir__filter.html#a498efffb544fbc27a0bdb7cdc8915101">signals::fir_filter</a>
+, <a class="el" href="structstrings_1_1string__builder.html#a03cfa737d07e29dd03e924472a71e96c">strings::string_builder</a>
 </li>
 <li>m_canovershoot
 : <a class="el" href="structintegral__core_1_1ode__integrator.html#af8b1acccaac658b793db41f332a391d3">integral_core::ode_integrator</a>
+</li>
+<li>m_coefficients
+: <a class="el" href="structsignals_1_1fir__filter.html#af081154c1d9b3cb057bc3b2d4d6c4e9f">signals::fir_filter</a>
 </li>
 <li>m_coeffs
 : <a class="el" href="structnonlin__polynomials_1_1polynomial.html#ae4d6fded19102bcf858d0d897dc74c27">nonlin_polynomials::polynomial</a>
@@ -174,6 +175,9 @@ $(document).ready(function(){initNavTree('functions_vars_m.html','');});
 </li>
 <li>m_delta
 : <a class="el" href="structcurvefit__regression_1_1lowess__smoothing.html#a6b36b25690a4f6b91c08b398bdf78af8">curvefit_regression::lowess_smoothing</a>
+</li>
+<li>m_denom
+: <a class="el" href="structsignals_1_1iir__filter.html#a356e1a4035973cc08164bfdc8f8347e1">signals::iir_filter</a>
 </li>
 <li>m_diff
 : <a class="el" href="structnonlin__core_1_1fcn1var__helper.html#a3ac77259ff44c2c92cdd1f80b5b4421d">nonlin_core::fcn1var_helper</a>
@@ -278,14 +282,14 @@ $(document).ready(function(){initNavTree('functions_vars_m.html','');});
 <li>m_initsize
 : <a class="el" href="structnonlin__optimize_1_1nelder__mead.html#aa05ef531dcb5279fcc00f66ddaa36555">nonlin_optimize::nelder_mead</a>
 </li>
-<li>m_inputs
-: <a class="el" href="structneural__network__core_1_1learning__helper.html#a31b854bf6ae942f98b9f0222d749bcc1">neural_network_core::learning_helper</a>
-</li>
 <li>m_inside
 : <a class="el" href="structfplot__core_1_1legend.html#adc69a36d330318bc97b7fae160cb7960">fplot_core::legend</a>
 </li>
 <li>m_istate
 : <a class="el" href="structintegral__core_1_1ode__auto.html#a57af60d28a09024a16287e13c77330f8">integral_core::ode_auto</a>
+</li>
+<li>m_iter
+: <a class="el" href="structsignals_1_1fir__filter.html#ae84dfbd99dba4734bcf90f2d57a7cdd8">signals::fir_filter</a>
 </li>
 <li>m_iwork
 : <a class="el" href="structintegral__core_1_1adaptive__integrator.html#ab436b7c59e3e7a6def496e6db3e76663">integral_core::adaptive_integrator</a>
@@ -303,9 +307,6 @@ $(document).ready(function(){initNavTree('functions_vars_m.html','');});
 </li>
 <li>m_last
 : <a class="el" href="structcollection__linked__list_1_1linked__list.html#a7623e725de7d925809ecbfbb48518995">collection_linked_list::linked_list</a>
-</li>
-<li>m_layers
-: <a class="el" href="structneural__network__core_1_1network.html#a876d3d15937da313ec5f4de7ead11af6">neural_network_core::network</a>
 </li>
 <li>m_legend
 : <a class="el" href="structfplot__core_1_1plot.html#a58b6d2d703429e69ced42f71bb24b587">fplot_core::plot</a>
@@ -377,18 +378,15 @@ $(document).ready(function(){initNavTree('functions_vars_m.html','');});
 <li>m_nfcn
 : <a class="el" href="structnonlin__core_1_1vecfcn__helper.html#a806818129d5723b7ff880af149e32a8c">nonlin_core::vecfcn_helper</a>
 </li>
-<li>m_ninputs
-: <a class="el" href="structneural__network__core_1_1network.html#a531200335f585923267cee13c55529f9">neural_network_core::network</a>
-</li>
 <li>m_node
 : <a class="el" href="structcollection__linked__list_1_1linked__list.html#a28758e7d3df72bf48e5506f9c7117f83">collection_linked_list::linked_list</a>
+</li>
+<li>m_numer
+: <a class="el" href="structsignals_1_1iir__filter.html#a5943ac545d7ede9e58a2c006b2b5b264">signals::iir_filter</a>
 </li>
 <li>m_nvar
 : <a class="el" href="structnonlin__core_1_1fcnnvar__helper.html#a18683497b25cf991e39104b4d8ac0d3e">nonlin_core::fcnnvar_helper</a>
 , <a class="el" href="structnonlin__core_1_1vecfcn__helper.html#ac828cd0e3de7036ced8bae4b11664818">nonlin_core::vecfcn_helper</a>
-</li>
-<li>m_outputs
-: <a class="el" href="structneural__network__core_1_1learning__helper.html#aa9c53161cff18a33b7a65948ec9661c8">neural_network_core::learning_helper</a>
 </li>
 <li>m_plots
 : <a class="el" href="structfplot__core_1_1multiplot.html#af9b41a50d6394721ff548622aa61725d">fplot_core::multiplot</a>
@@ -444,6 +442,12 @@ $(document).ready(function(){initNavTree('functions_vars_m.html','');});
 </li>
 <li>m_simplex
 : <a class="el" href="structnonlin__optimize_1_1nelder__mead.html#af5d3d067795864bdd038f794a08231f2">nonlin_optimize::nelder_mead</a>
+</li>
+<li>m_simplifydata
+: <a class="el" href="structfplot__core_1_1scatter__plot__data.html#a98d9bfb493e1dae5462ac95979fbcbb4">fplot_core::scatter_plot_data</a>
+</li>
+<li>m_simplifyfactor
+: <a class="el" href="structfplot__core_1_1scatter__plot__data.html#a307b01a8a110ab7a676ac51c05d3074b">fplot_core::scatter_plot_data</a>
 </li>
 <li>m_smooth
 : <a class="el" href="structfplot__core_1_1surface__plot.html#ac54f0f8105db3eb118eb8a05b7ca7857">fplot_core::surface_plot</a>
@@ -517,7 +521,6 @@ $(document).ready(function(){initNavTree('functions_vars_m.html','');});
 </li>
 <li>m_weights
 : <a class="el" href="structcurvefit__regression_1_1lowess__smoothing.html#a943060be8513d909ef4996d3926d4b68">curvefit_regression::lowess_smoothing</a>
-, <a class="el" href="structneural__network__core_1_1layer.html#a80bb82dd176124964d7527d0b06a1694">neural_network_core::layer</a>
 </li>
 <li>m_wfunname
 : <a class="el" href="structferror_1_1errors.html#a2473f45e6b8e452dff8eda9ba321cd6c">ferror::errors</a>
@@ -568,6 +571,7 @@ $(document).ready(function(){initNavTree('functions_vars_m.html','');});
 </li>
 <li>m_z
 : <a class="el" href="structfplot__core_1_1surface__plot__data.html#ab528d77583bf8dcde5ab0182f807e6d6">fplot_core::surface_plot_data</a>
+, <a class="el" href="structsignals_1_1iir__filter.html#ad0dc062a1025fc3a170f359a1ef94a52">signals::iir_filter</a>
 </li>
 <li>m_zaxis
 : <a class="el" href="structfplot__core_1_1plot__3d.html#acc0b113abeb246892dde2b8782eac0ca">fplot_core::plot_3d</a>
@@ -580,6 +584,9 @@ $(document).ready(function(){initNavTree('functions_vars_m.html','');});
 </li>
 <li>max_channel_length
 : <a class="el" href="structfortio__hbm_1_1hbm__data__file.html#a476588050ac5d61ab9c07a367454e39d">fortio_hbm::hbm_data_file</a>
+</li>
+<li>mode_shape
+: <a class="el" href="structvibrations_1_1modal__information.html#a534fa0b40b53519b5263d19e8cca52a3">vibrations::modal_information</a>
 </li>
 </ul>
 </div><!-- contents -->

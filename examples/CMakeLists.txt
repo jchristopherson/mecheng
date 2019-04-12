@@ -45,3 +45,23 @@ target_link_libraries(plane_line_example_1 mecheng)
 # LINE EXAMPLE 2
 add_executable(line_example_2 line_example_2.f90)
 target_link_libraries(line_example_2 mecheng)
+
+# ODE EXAMPLE 1
+add_executable(ode_example_1 ode_example_1.f90)
+target_link_libraries(ode_example_1 mecheng)
+
+# ODE EXAMPLE 2
+add_executable(ode_example_2 ode_example_2.f90)
+target_link_libraries(ode_example_2 mecheng)
+
+# REALTIME EXAMPLE 1
+add_executable(realtime_example_1 realtime_example_1.f90)
+target_link_libraries(realtime_example_1 mecheng)
+
+# REALTIME EXAMPLE 2
+add_executable(realtime_example_2 realtime_example_2.f90)
+target_link_libraries(realtime_example_2 mecheng)
+
+# REALTIME EXAMPLE 3
+add_executable(realtime_example_3 realtime_example_3.f90)
+target_link_libraries(realtime_example_3 mecheng)

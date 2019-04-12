@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['backpropagate',['backpropagate',['../structneural__network__core_1_1network.html#adb982dd2adbdebd30dd8ce1183a1493e',1,'neural_network_core::network']]],
   ['bf_5fnonlin',['bf_nonlin',['../interfacecurvefit__calibration_1_1nonlinearity.html#a33a25594bae8c0ded5f9d11100aece36',1,'curvefit_calibration::nonlinearity::bf_nonlin()'],['../namespacecurvefit__calibration.html#a89ea5f78c45c018eb6ea44148e4f7d78',1,'curvefit_calibration::bf_nonlin()']]],
   ['bfm_5fclean_5fup',['bfm_clean_up',['../structfortio__binary_1_1binary__file__manager.html#afd3b164cd6c2bb2ccbd3cc6bb4a75dff',1,'fortio_binary::binary_file_manager::bfm_clean_up()'],['../namespacefortio__binary.html#a09629d64971624b6e5fbd16dbd9489c8',1,'fortio_binary::bfm_clean_up()']]],
   ['bfm_5fclose',['bfm_close',['../namespacefortio__binary.html#a548b96b8f46faebc6600742fd102d641',1,'fortio_binary']]],

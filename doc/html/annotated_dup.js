@@ -4,6 +4,14 @@ var annotated_dup =
     [ "collection_linked_list", "namespacecollection__linked__list.html", "namespacecollection__linked__list" ],
     [ "collection_list", "namespacecollection__list.html", "namespacecollection__list" ],
     [ "columns", "namespacecolumns.html", "namespacecolumns" ],
+    [ "controls", null, [
+      [ "pid", "structcontrols_1_1pid.html", "structcontrols_1_1pid" ],
+      [ "realtime_derivative", "structcontrols_1_1realtime__derivative.html", "structcontrols_1_1realtime__derivative" ],
+      [ "realtime_object", "structcontrols_1_1realtime__object.html", "structcontrols_1_1realtime__object" ],
+      [ "realtime_reset", "interfacecontrols_1_1realtime__reset.html", "interfacecontrols_1_1realtime__reset" ],
+      [ "realtime_signal", "structcontrols_1_1realtime__signal.html", "structcontrols_1_1realtime__signal" ],
+      [ "signal_fcn", "interfacecontrols_1_1signal__fcn.html", "interfacecontrols_1_1signal__fcn" ]
+    ] ],
     [ "curvefit_calibration", "namespacecurvefit__calibration.html", "namespacecurvefit__calibration" ],
     [ "curvefit_core", "namespacecurvefit__core.html", "namespacecurvefit__core" ],
     [ "curvefit_interp", "namespacecurvefit__interp.html", "namespacecurvefit__interp" ],
@@ -14,6 +22,9 @@ var annotated_dup =
     [ "fortio_hbm", "namespacefortio__hbm.html", "namespacefortio__hbm" ],
     [ "fortio_text", "namespacefortio__text.html", "namespacefortio__text" ],
     [ "fplot_core", "namespacefplot__core.html", "namespacefplot__core" ],
+    [ "fplot_simplify", null, [
+      [ "simplify_polyline", "interfacefplot__simplify_1_1simplify__polyline.html", "interfacefplot__simplify_1_1simplify__polyline" ]
+    ] ],
     [ "geometry", "namespacegeometry.html", "namespacegeometry" ],
     [ "integral_core", "namespaceintegral__core.html", "namespaceintegral__core" ],
     [ "kinematics", null, [
@@ -34,12 +45,6 @@ var annotated_dup =
     ] ],
     [ "linalg_core", "namespacelinalg__core.html", "namespacelinalg__core" ],
     [ "linalg_immutable", "namespacelinalg__immutable.html", "namespacelinalg__immutable" ],
-    [ "neural_network_core", null, [
-      [ "cost_function", "interfaceneural__network__core_1_1cost__function.html", "interfaceneural__network__core_1_1cost__function" ],
-      [ "layer", "structneural__network__core_1_1layer.html", "structneural__network__core_1_1layer" ],
-      [ "learning_helper", "structneural__network__core_1_1learning__helper.html", "structneural__network__core_1_1learning__helper" ],
-      [ "network", "structneural__network__core_1_1network.html", "structneural__network__core_1_1network" ]
-    ] ],
     [ "nonlin_core", "namespacenonlin__core.html", "namespacenonlin__core" ],
     [ "nonlin_least_squares", "namespacenonlin__least__squares.html", "namespacenonlin__least__squares" ],
     [ "nonlin_linesearch", "namespacenonlin__linesearch.html", "namespacenonlin__linesearch" ],
@@ -53,5 +58,9 @@ var annotated_dup =
       [ "string_builder", "structstrings_1_1string__builder.html", "structstrings_1_1string__builder" ],
       [ "string_to_number", "interfacestrings_1_1string__to__number.html", "interfacestrings_1_1string__to__number" ],
       [ "to_string", "interfacestrings_1_1to__string.html", "interfacestrings_1_1to__string" ]
+    ] ],
+    [ "vibrations", null, [
+      [ "compute_frequency_response", "interfacevibrations_1_1compute__frequency__response.html", "interfacevibrations_1_1compute__frequency__response" ],
+      [ "modal_information", "structvibrations_1_1modal__information.html", "structvibrations_1_1modal__information" ]
     ] ]
 ];

@@ -16,6 +16,7 @@ var searchData=
   ['fio_5fout_5fof_5fmemory_5ferror',['fio_out_of_memory_error',['../namespacefortio__types.html#ab137ce27e86bbaf933870fb1a8bcf172',1,'fortio_types']]],
   ['fio_5funopened_5ferror',['fio_unopened_error',['../namespacefortio__types.html#a2dc616afc872d825cff992a517db6611',1,'fortio_types']]],
   ['fio_5funsupported_5fversion_5ferror',['fio_unsupported_version_error',['../namespacefortio__types.html#a23447730d7601211807bf7a067079836',1,'fortio_types']]],
+  ['fir_5ffilter',['fir_filter',['../structsignals_1_1fir__filter.html',1,'signals']]],
   ['first_5fderivative',['first_derivative',['../structcurvefit__interp_1_1spline__interp.html#a0a8a8a6ed5018c4aafca49f1d9c8c898',1,'curvefit_interp::spline_interp']]],
   ['fit',['fit',['../structnonlin__polynomials_1_1polynomial.html#ac92ea228d6b80f1936f103f94adcb1ee',1,'nonlin_polynomials::polynomial']]],
   ['fit_5fthru_5fzero',['fit_thru_zero',['../structnonlin__polynomials_1_1polynomial.html#a3ced5fa8b1d410dcf53ff40224f82912',1,'nonlin_polynomials::polynomial']]],
@@ -30,6 +31,7 @@ var searchData=
   ['fplot_5fcore',['fplot_core',['../namespacefplot__core.html',1,'']]],
   ['fplot_5ferrors',['fplot_errors',['../namespacefplot__errors.html',1,'']]],
   ['free_5fresources',['free_resources',['../structfplot__core_1_1plot.html#a95cb39f01fc6f2438ef408d2c41a2f85',1,'fplot_core::plot']]],
+  ['frequency',['frequency',['../structvibrations_1_1modal__information.html#ae2c701468800c9523cdcc8efa366ce29',1,'vibrations::modal_information']]],
   ['from_5fangle_5faxis',['from_angle_axis',['../structkinematics_1_1quaternion.html#abfc982e65ca22d952a1a01faadb833b2',1,'kinematics::quaternion']]],
   ['from_5fmatrix',['from_matrix',['../structkinematics_1_1quaternion.html#a0a25933aa477b681a6b552c2a68daeeb',1,'kinematics::quaternion']]]
 ];

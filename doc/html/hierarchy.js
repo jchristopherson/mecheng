@@ -1,6 +1,7 @@
 var hierarchy =
 [
     [ "kinematics::acceleration_mtx", "interfacekinematics_1_1acceleration__mtx.html", null ],
+    [ "signals::apply_filter", "interfacesignals_1_1apply__filter.html", null ],
     [ "nonlin_polynomials::assignment(=)", "interfacenonlin__polynomials_1_1assignment_07_0A_08.html", null ],
     [ "fortio_binary::binary_file_manager", "structfortio__binary_1_1binary__file__manager.html", [
       [ "fortio_binary::binary_reader", "structfortio__binary_1_1binary__reader.html", null ],
@@ -12,9 +13,9 @@ var hierarchy =
     [ "linalg_core::cholesky_rank1_update", "interfacelinalg__core_1_1cholesky__rank1__update.html", null ],
     [ "fplot_core::cm_get_string_result", "interfacefplot__core_1_1cm__get__string__result.html", null ],
     [ "fplot_core::color", "structfplot__core_1_1color.html", null ],
+    [ "vibrations::compute_frequency_response", "interfacevibrations_1_1compute__frequency__response.html", null ],
     [ "curvefit_statistics::confidence_interval", "interfacecurvefit__statistics_1_1confidence__interval.html", null ],
     [ "collection_containers::container", "structcollection__containers_1_1container.html", null ],
-    [ "neural_network_core::cost_function", "interfaceneural__network__core_1_1cost__function.html", null ],
     [ "curvefit_statistics::covariance", "interfacecurvefit__statistics_1_1covariance.html", null ],
     [ "curvefit_calibration::crosstalk", "interfacecurvefit__calibration_1_1crosstalk.html", null ],
     [ "linalg_core::det", "interfacelinalg__core_1_1det.html", null ],
@@ -81,8 +82,6 @@ var hierarchy =
     [ "nonlin_core::iteration_behavior", "structnonlin__core_1_1iteration__behavior.html", null ],
     [ "nonlin_core::jacobianfcn", "interfacenonlin__core_1_1jacobianfcn.html", null ],
     [ "columns::johnson_buckling", "interfacecolumns_1_1johnson__buckling.html", null ],
-    [ "neural_network_core::layer", "structneural__network__core_1_1layer.html", null ],
-    [ "neural_network_core::learning_helper", "structneural__network__core_1_1learning__helper.html", null ],
     [ "geometry::line", "structgeometry_1_1line.html", null ],
     [ "nonlin_linesearch::line_search", "structnonlin__linesearch_1_1line__search.html", null ],
     [ "curvefit_regression::linear_least_squares", "interfacecurvefit__regression_1_1linear__least__squares.html", null ],
@@ -105,6 +104,7 @@ var hierarchy =
     [ "linalg_immutable::mat_solve_upper_tri", "interfacelinalg__immutable_1_1mat__solve__upper__tri.html", null ],
     [ "curvefit_statistics::mean", "interfacecurvefit__statistics_1_1mean.html", null ],
     [ "curvefit_statistics::median", "interfacecurvefit__statistics_1_1median.html", null ],
+    [ "vibrations::modal_information", "structvibrations_1_1modal__information.html", null ],
     [ "curvefit_regression::moving_average", "interfacecurvefit__regression_1_1moving__average.html", null ],
     [ "linalg_core::mtx_inverse", "interfacelinalg__core_1_1mtx__inverse.html", null ],
     [ "linalg_core::mtx_mult", "interfacelinalg__core_1_1mtx__mult.html", null ],
@@ -112,7 +112,6 @@ var hierarchy =
     [ "linalg_core::mtx_rank", "interfacelinalg__core_1_1mtx__rank.html", null ],
     [ "linalg_core::mult_qr", "interfacelinalg__core_1_1mult__qr.html", null ],
     [ "linalg_core::mult_rz", "interfacelinalg__core_1_1mult__rz.html", null ],
-    [ "neural_network_core::network", "structneural__network__core_1_1network.html", null ],
     [ "nonlin_core::nonlin_optimize_fcn", "interfacenonlin__core_1_1nonlin__optimize__fcn.html", null ],
     [ "nonlin_core::nonlin_solver", "interfacenonlin__core_1_1nonlin__solver.html", null ],
     [ "nonlin_core::nonlin_solver_1var", "interfacenonlin__core_1_1nonlin__solver__1var.html", null ],
@@ -121,17 +120,19 @@ var hierarchy =
     [ "integral_core::ode_fcn", "interfaceintegral__core_1_1ode__fcn.html", null ],
     [ "integral_core::ode_helper", "structintegral__core_1_1ode__helper.html", null ],
     [ "integral_core::ode_integrator", "structintegral__core_1_1ode__integrator.html", [
-      [ "integral_core::ode_auto", "structintegral__core_1_1ode__auto.html", null ]
+      [ "integral_core::ode_auto", "structintegral__core_1_1ode__auto.html", null ],
+      [ "integral_core::ode_euler", "structintegral__core_1_1ode__euler.html", null ],
+      [ "integral_core::ode_rk4", "structintegral__core_1_1ode__rk4.html", null ]
     ] ],
     [ "integral_core::ode_integrator_interface", "interfaceintegral__core_1_1ode__integrator__interface.html", null ],
     [ "integral_core::ode_integrator_reset", "interfaceintegral__core_1_1ode__integrator__reset.html", null ],
     [ "integral_core::ode_jacobian", "interfaceintegral__core_1_1ode__jacobian.html", null ],
-    [ "kinematics::operator(*)", "interfacekinematics_1_1operator_07_5_08.html", null ],
     [ "nonlin_polynomials::operator(*)", "interfacenonlin__polynomials_1_1operator_07_5_08.html", null ],
+    [ "kinematics::operator(*)", "interfacekinematics_1_1operator_07_5_08.html", null ],
     [ "nonlin_polynomials::operator(+)", "interfacenonlin__polynomials_1_1operator_07_09_08.html", null ],
     [ "kinematics::operator(+)", "interfacekinematics_1_1operator_07_09_08.html", null ],
-    [ "nonlin_polynomials::operator(-)", "interfacenonlin__polynomials_1_1operator_07-_08.html", null ],
     [ "kinematics::operator(-)", "interfacekinematics_1_1operator_07-_08.html", null ],
+    [ "nonlin_polynomials::operator(-)", "interfacenonlin__polynomials_1_1operator_07-_08.html", null ],
     [ "kinematics::operator(/)", "interfacekinematics_1_1operator_07_2_08.html", null ],
     [ "fplot_core::pa_get_string_result", "interfacefplot__core_1_1pa__get__string__result.html", null ],
     [ "fplot_core::pd_get_string_result", "interfacefplot__core_1_1pd__get__string__result.html", null ],
@@ -182,6 +183,16 @@ var hierarchy =
     [ "linalg_immutable::qr_results", "structlinalg__immutable_1_1qr__results.html", null ],
     [ "kinematics::quaternion", "structkinematics_1_1quaternion.html", null ],
     [ "linalg_core::rank1_update", "interfacelinalg__core_1_1rank1__update.html", null ],
+    [ "signals::realtime_filter", "structsignals_1_1realtime__filter.html", [
+      [ "signals::fir_filter", "structsignals_1_1fir__filter.html", null ],
+      [ "signals::iir_filter", "structsignals_1_1iir__filter.html", null ]
+    ] ],
+    [ "controls::realtime_object", "structcontrols_1_1realtime__object.html", [
+      [ "controls::pid", "structcontrols_1_1pid.html", null ],
+      [ "controls::realtime_derivative", "structcontrols_1_1realtime__derivative.html", null ],
+      [ "controls::realtime_signal", "structcontrols_1_1realtime__signal.html", null ]
+    ] ],
+    [ "controls::realtime_reset", "interfacecontrols_1_1realtime__reset.html", null ],
     [ "linalg_core::recip_mult_array", "interfacelinalg__core_1_1recip__mult__array.html", null ],
     [ "curvefit_core::reg_fcn", "interfacecurvefit__core_1_1reg__fcn.html", null ],
     [ "curvefit_calibration::repeatability", "interfacecurvefit__calibration_1_1repeatability.html", null ],
@@ -193,7 +204,9 @@ var hierarchy =
     [ "linalg_core::rz_factor", "interfacelinalg__core_1_1rz__factor.html", null ],
     [ "curvefit_calibration::seb", "interfacecurvefit__calibration_1_1seb.html", null ],
     [ "curvefit_calibration::seb_results", "structcurvefit__calibration_1_1seb__results.html", null ],
+    [ "controls::signal_fcn", "interfacecontrols_1_1signal__fcn.html", null ],
     [ "signals::signal_magnitude", "interfacesignals_1_1signal__magnitude.html", null ],
+    [ "fplot_simplify::simplify_polyline", "interfacefplot__simplify_1_1simplify__polyline.html", null ],
     [ "columns::slenderness_ratio", "interfacecolumns_1_1slenderness__ratio.html", null ],
     [ "linalg_core::solve_cholesky", "interfacelinalg__core_1_1solve__cholesky.html", null ],
     [ "linalg_core::solve_least_squares", "interfacelinalg__core_1_1solve__least__squares.html", null ],

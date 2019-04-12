@@ -81,6 +81,7 @@ module curvefit_calibration
     public :: repeatability
     public :: crosstalk
     public :: split_ascend_descend
+    public :: max_difference
 
 ! ******************************************************************************
 ! TYPES
@@ -265,6 +266,9 @@ contains
     !!
     !! @return The nonlinearity error.
     function bf_nonlin(applied, measured, err) result(rst)
+        ! Required Modules
+        use curvefit_regression
+
         ! Arguments
         real(real64), intent(in), dimension(:) :: applied, measured
         class(errors), intent(inout), optional, target :: err
@@ -275,7 +279,7 @@ contains
 
         ! Local Variables
         integer(int32) :: i, n
-        real(real64) :: e
+        real(real64) :: e, slope
         class(errors), pointer :: errmgr
         type(errors), target :: deferr
 
@@ -297,9 +301,13 @@ contains
             return
         end if
 
-        ! Process
+        ! Compute the slope of the best fit line through zero
+        slope = linear_least_squares(measured, applied, errmgr)
+        if (errmgr%has_error_occurred()) return
+
+        ! Compute the nonlinearity error
         do i = 1, n
-            e = measured(i) - applied(i)
+            e = slope * measured(i) - applied(i)
             if (abs(e) > abs(rst)) rst = e
         end do
     end function
@@ -1169,6 +1177,63 @@ contains
         end if
         descend(1:ndescend) = x(i1:i2)
     end subroutine
+
+! ------------------------------------------------------------------------------
+    !> @brief Computes the largest magnitude difference between measured and
+    !! applied values.
+    !!
+    !! @param[in] applied An N-element array containing the values applied to
+    !!  the measurement instrument.
+    !! @param[in] measured An N-element array containing the calibrated output
+    !!  of the instrument as a result of the values given in @p applied.
+    !! @param[out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - CF_ARRAY_SIZE_ERROR: Occurs if @p applied and @p measured are not the
+    !!      same size.
+    !!
+    !! @return The largest magnitude difference.
+    function max_difference(applied, measured, err) result(rst)
+        ! Arguments
+        real(real64), intent(in), dimension(:) :: applied, measured
+        class(errors), intent(inout), optional, target :: err
+        real(real64) :: rst
+
+        ! Parameters
+        real(real64), parameter :: zero = 0.0d0
+
+        ! Local Variables
+        integer(int32) :: i, n
+        real(real64) :: e
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+
+        ! Initialization
+        e = zero
+        rst = zero
+        n = size(applied)
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+
+        ! Input Check
+        if (size(measured) /= n) then
+            call errmgr%report_error("max_difference", "The measured data " // &
+                "array must be the same size as the applied data array.", &
+                CF_ARRAY_SIZE_ERROR)
+            return
+        end if
+
+        ! Process
+        do i = 1, n
+            e = measured(i) - applied(i)
+            if (abs(e) > abs(rst)) rst = e
+        end do
+    end function
 
 ! ------------------------------------------------------------------------------
 end module

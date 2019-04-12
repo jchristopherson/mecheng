@@ -99,6 +99,7 @@ set(integral_sources
     integral/integral_ode_integrator.f90
     integral/integral_ode_auto.f90
     integral/integral_ode_euler.f90
+    integral/integral_ode_rk4.f90
 )
 
 # Define the QUADPACK source files
@@ -458,16 +459,10 @@ set(geometry_sources
 
 set(controls_sources
     controls/controls.f90
+    controls/controls_realtime.f90
+    controls/controls_pid.f90
 )
 
-# Define the NEURAL_NETWORK source files
-set(neural_network_sources
-    neural_network/neural_networks.f90
-    neural_network/snn.h
-    neural_network/snn.c
-    neural_network/snn_wrapper.h
-    neural_network/snn_wrapper.c
-)
 
 # Define the MECHENG source files
 set(mecheng_sources
@@ -492,7 +487,6 @@ set(mecheng_sources
     ${strings_sources}
     ${geometry_sources}
     ${controls_sources}
-    ${neural_network_sources}
 )
 
 # Build the library
