@@ -409,6 +409,7 @@ set(mechanics_sources
     mechanics/strain.f90
     mechanics/vibrations.f90
     mechanics/mechanics_constants.f90
+    mechanics/friction.f90
 )
 
 set(nonlin_sources
