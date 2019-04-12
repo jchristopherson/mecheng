@@ -1,5 +1,7 @@
 var NAVTREEINDEX5 =
 {
+"structfplot__core_1_1plot__label.html#a686590848061ab38fe569229f4bf9505":[1,0,14,20,8],
+"structfplot__core_1_1plot__label.html#a83e92e7f824f33f14d4a8f2552f3d28e":[1,0,14,20,12],
 "structfplot__core_1_1plot__label.html#a9156c3e3b66556190ed17e850134578c":[1,0,14,20,2],
 "structfplot__core_1_1plot__label.html#ace2e7e72b4f6b263509d96e0e2de0d4e":[1,0,14,20,0],
 "structfplot__core_1_1plot__label.html#ad76a1f42a6fc7701e8eff8a10d456eb4":[1,0,14,20,9],
@@ -247,7 +249,5 @@ var NAVTREEINDEX5 =
 "structintegral__core_1_1ode__integrator.html#aae58166a369e161e8cbf40bcd9bb1892":[1,0,17,12,4],
 "structintegral__core_1_1ode__integrator.html#ab1109d16e479ff4efcc5e49428edd5aa":[1,0,17,12,15],
 "structintegral__core_1_1ode__integrator.html#abe1441664da8e16de001b24bedba5265":[1,0,17,12,27],
-"structintegral__core_1_1ode__integrator.html#ac3102e4b9fc399e0e95ebd089c1cb589":[1,0,17,12,13],
-"structintegral__core_1_1ode__integrator.html#ac6888b75837856d105d684ea61097e44":[1,0,17,12,17],
-"structintegral__core_1_1ode__integrator.html#ac931d2a524dc1558d106d5a991088caf":[1,0,17,12,16]
+"structintegral__core_1_1ode__integrator.html#ac3102e4b9fc399e0e95ebd089c1cb589":[1,0,17,12,13]
 };

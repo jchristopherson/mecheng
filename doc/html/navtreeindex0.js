@@ -78,6 +78,7 @@ var NAVTREEINDEX0 =
 "fplot__terminal_8f90_source.html":[2,0,0,5,25],
 "fplot__windows__terminal_8f90_source.html":[2,0,0,5,26],
 "fplot__wxt__terminal_8f90_source.html":[2,0,0,5,27],
+"friction_8f90_source.html":[2,0,0,10,1],
 "functions.html":[1,3,0],
 "functions.html":[1,3,0,0],
 "functions_b.html":[1,3,0,1],
@@ -248,6 +249,5 @@ var NAVTREEINDEX0 =
 "interfacefplot__core_1_1cm__get__string__result.html#ae613c1290455b36ebdb49422b2af612c":[1,0,14,0,0],
 "interfacefplot__core_1_1get__string__result.html":[1,0,14,4],
 "interfacefplot__core_1_1get__string__result.html#ae68c4fd3d533550c638487d6e1f833e7":[1,0,14,4,0],
-"interfacefplot__core_1_1pa__get__string__result.html":[1,0,14,9],
-"interfacefplot__core_1_1pa__get__string__result.html#a6bcc35653a25ae0a0a64feec691b9e5f":[1,0,14,9,0]
+"interfacefplot__core_1_1pa__get__string__result.html":[1,0,14,9]
 };

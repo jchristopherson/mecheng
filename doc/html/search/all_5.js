@@ -32,6 +32,7 @@ var searchData=
   ['fplot_5ferrors',['fplot_errors',['../namespacefplot__errors.html',1,'']]],
   ['free_5fresources',['free_resources',['../structfplot__core_1_1plot.html#a95cb39f01fc6f2438ef408d2c41a2f85',1,'fplot_core::plot']]],
   ['frequency',['frequency',['../structvibrations_1_1modal__information.html#ae2c701468800c9523cdcc8efa366ce29',1,'vibrations::modal_information']]],
+  ['friction',['friction',['../namespacefriction.html',1,'']]],
   ['from_5fangle_5faxis',['from_angle_axis',['../structkinematics_1_1quaternion.html#abfc982e65ca22d952a1a01faadb833b2',1,'kinematics::quaternion']]],
   ['from_5fmatrix',['from_matrix',['../structkinematics_1_1quaternion.html#a0a25933aa477b681a6b552c2a68daeeb',1,'kinematics::quaternion']]]
 ];

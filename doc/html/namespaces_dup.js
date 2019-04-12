@@ -18,6 +18,7 @@ var namespaces_dup =
     [ "fortio_types", "namespacefortio__types.html", null ],
     [ "fplot_core", "namespacefplot__core.html", null ],
     [ "fplot_errors", "namespacefplot__errors.html", null ],
+    [ "friction", "namespacefriction.html", null ],
     [ "geometry", "namespacegeometry.html", null ],
     [ "integral_core", "namespaceintegral__core.html", null ],
     [ "linalg_constants", "namespacelinalg__constants.html", null ],

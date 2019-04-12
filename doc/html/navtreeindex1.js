@@ -1,5 +1,6 @@
 var NAVTREEINDEX1 =
 {
+"interfacefplot__core_1_1pa__get__string__result.html#a6bcc35653a25ae0a0a64feec691b9e5f":[1,0,14,9,0],
 "interfacefplot__core_1_1pd__get__string__result.html":[1,0,14,10],
 "interfacefplot__core_1_1pd__get__string__result.html#a505abeb1ecfd6fe8c156f42bdb505f98":[1,0,14,10,0],
 "interfacefplot__core_1_1spd__get__int__value.html":[1,0,14,26],
@@ -248,6 +249,5 @@ var NAVTREEINDEX1 =
 "interfacesignals_1_1integrate.html#a983844ed10e18da1ee29845c7829ab5b":[1,0,27,6,1],
 "interfacesignals_1_1signal__magnitude.html":[1,0,27,8],
 "interfacesignals_1_1signal__magnitude.html#a86cba4bb62f5adeca9714b412ab1ecdd":[1,0,27,8,1],
-"interfacesignals_1_1signal__magnitude.html#af3c71b4798f7554fcebfb85ccd0c89cb":[1,0,27,8,0],
-"interfacesignals_1_1trapz__integrate.html":[1,0,27,9]
+"interfacesignals_1_1signal__magnitude.html#af3c71b4798f7554fcebfb85ccd0c89cb":[1,0,27,8,0]
 };
