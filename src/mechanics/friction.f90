@@ -9,6 +9,7 @@ module friction
     implicit none
     private
     public coulomb
+    public lu_gre
 
 contains
     !> @brief Applies the Coulomb friction model.
@@ -23,7 +24,7 @@ contains
     !! This model utilizes a regularization parameter \f$ \epsilon \f$ to
     !! assist in dealing with the discontinuity of the pure Coulomb model
     !! when velocity is zero.  The model can be described as follows.
-    !! \par
+    !! @par
     !! \f$ F = \frac{\mu N}{\epsilon} v \f$ when \f$ |v| \leq \epsilon \f$, and
     !! \f$ F = \mu N sgn(v) \f$ when \f$ |v| > \epsilon \f$.
     !!
@@ -163,6 +164,119 @@ contains
         else
             f = mu * normal * sign(1.0d0, velocity)
         end if
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Applies the Lund-Grenoble (Lu-Gre) friction model.
+    !!
+    !! @param[in] mu_s The static friction coefficient.
+    !! @param[in] mu_c The Coulomb (dynamic) friction coefficient.
+    !! @param[in] normal The normal force.
+    !! @param[in] kz The normalized bristle stiffness (units = length**-1).
+    !! @param[in] bz THe normalized bristle damping (units = time * length**-1).
+    !! @param[in] stribeck The Stribeck velocity.
+    !! @param[in] alpha The velocity ratio exponent.
+    !! @param[in] velocity The relative velocity between the contacting bodies.
+    !! @param[in] t0 The time at the previously computed frictional state.
+    !! @param[in] tf The time at which to evaluate the friction model.
+    !! @param[in,out] z0 On input, the bristle deflection at the previously
+    !!  computed frictional state.  On output, the bristle deflection at the
+    !!  requested time @p tf.
+    !! @return The friction force at time @p tf.
+    !!
+    !! @par Remarks
+    !! The Lu-Gre model utilizes a brush-type model to describe frictional
+    !! behaviors.  The brush analogy is why the term "bristle" is utilized.
+    !! However, another perhaps more relevant analogy, would be to consider the
+    !! bristles as asperities and surface irregularities that must deform and
+    !! slide across each other when two bodies make contact, and are forced to
+    !! slide relative to one another.  To that end, the Lu-Gre model can be
+    !! described by the following equations.
+    !! @par
+    !! \f$ \frac{dz}{dt} = v_{r} - \frac{\sigma_{o} |v_{r}| z}{g(v_{r})} \f$
+    !! @par
+    !! \f$ g(v_{r}) = \mu_{c} + \left( \mu_{s} - \mu_{c} \right) 
+    !!  e^{-|\frac{v_{r}}{v_{s}}|^{\alpha}} \f$
+    !! @par
+    !! \f$ F = \left( \sigma_{0} z + \sigma_{1} \frac{dz}{dt} + 
+    !!  \sigma_{2} v_{r} \right) F_{n} \f$
+    !! @par Where:
+    !! \f$ \mu_{s} = \f$ Static Friction Coefficient
+    !! @par
+    !! \f$ \mu_{c} = \f$ Coulomb Friction Coefficient
+    !! @par
+    !! \f$ F_{n} = \f$ Normal Force
+    !! @par
+    !! \f$ z = \f$ Bristle Deflection
+    !! @par
+    !! \f$ v_{r} = \f$ Relative Velocity
+    !! @par
+    !! \f$ v_{s} = \f$ Stribeck Velocity
+    !! @par
+    !! \f$ \alpha = \f$ Velocity Ratio Exponent
+    !! @par
+    !! \f$ \sigma_{0} = \f$ Bristle Stiffness
+    !! @par
+    !! \f$ \sigma_{1} = \f$ Bristle Damping Coefficient
+    !! @par
+    !! \f$ \sigma_{2} = \f$ Viscous Damping Coefficient
+    function lu_gre(mu_s, mu_c, normal, viscous, kz, bz, stribeck, alpha, &
+            velocity, t0, tf, z0) result(f)
+        ! Required Modules
+        use ode_core
+
+        ! Arguments
+        real(real64), intent(in) :: mu_s, mu_c, normal, viscous, kz, bz, &
+            stribeck, alpha, velocity, t0, tf
+        real(real64), intent(inout) :: z0
+        real(real64) :: f
+
+        ! ODE Variables
+        procedure(ode_fcn), pointer :: ptr
+        type(ode_auto) :: integrator
+        type(ode_helper) :: fcn
+
+        ! Local Variables
+        integer(int32) :: npts
+        real(real64) :: ic(1), time(2), vz(1)
+        real(real64), allocatable, dimension(:,:) :: zx
+
+        ! Set up the integrator
+        ptr => bristle_eqn
+        call fcn%define_equations(1, ptr)
+
+        ! Define the initial conditions
+        ic = [z0]
+        time = [t0, tf]
+
+        ! Compute the solution
+        zx = integrator%integrate(fcn, time, ic)
+        npts = size(zx, 1)
+        ic(1) = zx(npts, 2)
+        z0 = ic(1)
+
+        ! Compute the bristle velocity
+        call bristle_eqn(zx(npts, 1), ic, vz)
+
+        ! Compute the friction force
+        f = (kz * z0 + bz * vz(1) + viscous * velocity) * normal
+    contains
+        ! The first-order ODE to solve to determine bristle motion.
+        subroutine bristle_eqn(t, z, dzdt)
+            ! Arguments
+            real(real64), intent(in) :: t
+            real(real64), intent(in), dimension(:) :: z
+            real(real64), intent(out), dimension(:) :: dzdt
+
+            ! Local Variables
+            real(real64) :: g
+
+            ! Compute the friction function
+            g = mu_c + (mu_s - mu_c) * exp(-abs(velocity / stribeck)**alpha)
+
+            ! Compute the bristle velocity
+            dzdt = velocity - kz * abs(velocity) * z(1) / g
+        end subroutine
     end function
 
 end module

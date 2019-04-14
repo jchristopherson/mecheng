@@ -58,5 +58,6 @@ var searchData=
   ['ls_5fsmooth',['ls_smooth',['../namespacecurvefit__regression.html#a3f6b132fcc5e971bd95ffa3e6a202ef5',1,'curvefit_regression']]],
   ['lss_5fget_5ffactor',['lss_get_factor',['../namespacenonlin__least__squares.html#a1e0b514919f21f9226c5ed69eee4018b',1,'nonlin_least_squares']]],
   ['lss_5fset_5ffactor',['lss_set_factor',['../namespacenonlin__least__squares.html#af93ae0c6697ce082b10c9577c17d35f2',1,'nonlin_least_squares']]],
-  ['lss_5fsolve',['lss_solve',['../namespacenonlin__least__squares.html#a974515039f6a26d25f774604eeaef992',1,'nonlin_least_squares']]]
+  ['lss_5fsolve',['lss_solve',['../namespacenonlin__least__squares.html#a974515039f6a26d25f774604eeaef992',1,'nonlin_least_squares']]],
+  ['lu_5fgre',['lu_gre',['../namespacefriction.html#a941884d90a4b1b24fed40b01867da4da',1,'friction']]]
 ];
