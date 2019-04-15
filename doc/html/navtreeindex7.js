@@ -1,5 +1,11 @@
 var NAVTREEINDEX7 =
 {
+"structsignals_1_1realtime__filter.html":[1,0,27,7],
+"structsignals_1_1realtime__filter.html#a1936038a56f2445c6e1983dbaac80bbf":[1,0,27,7,0],
+"structstrings_1_1string.html":[1,0,29,0],
+"structstrings_1_1string.html#ae60ba1127c72e3705c5030d5a113bf3b":[1,0,29,0,0],
+"structstrings_1_1string__builder.html":[1,0,29,1],
+"structstrings_1_1string__builder.html#a03cfa737d07e29dd03e924472a71e96c":[1,0,29,1,4],
 "structstrings_1_1string__builder.html#a134ef0efefd476a8be4ce6d95867ee55":[1,0,29,1,5],
 "structstrings_1_1string__builder.html#a87f650ccd89e8c02e2b922046aab4b6d":[1,0,29,1,1],
 "structstrings_1_1string__builder.html#a8d4992a64af1cca3aea9a4665b5f9528":[1,0,29,1,2],

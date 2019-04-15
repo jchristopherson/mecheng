@@ -137,6 +137,15 @@ procedure, public&#160;</td><td class="memItemRight" valign="bottom"><b>evaluate
 <tr class="memitem:a46027b2f5e0ff388190756e7e50f53df"><td class="memItemLeft" align="right" valign="top">procedure, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structintegral__core_1_1ode__helper.html#a46027b2f5e0ff388190756e7e50f53df">evaluate_constraints</a> =&gt; oh_eval_constraints</td></tr>
 <tr class="memdesc:a46027b2f5e0ff388190756e7e50f53df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluates the constraint equations.  <a href="#a46027b2f5e0ff388190756e7e50f53df">More...</a><br /></td></tr>
 <tr class="separator:a46027b2f5e0ff388190756e7e50f53df"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a53a2e7daca160dbac381f730685c43f2"><td class="memItemLeft" align="right" valign="top">procedure, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structintegral__core_1_1ode__helper.html#a53a2e7daca160dbac381f730685c43f2">get_callback_defined</a> =&gt; oh_get_callback_defined</td></tr>
+<tr class="memdesc:a53a2e7daca160dbac381f730685c43f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines if a callback routine has been defined.  <a href="#a53a2e7daca160dbac381f730685c43f2">More...</a><br /></td></tr>
+<tr class="separator:a53a2e7daca160dbac381f730685c43f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d18f76abb655bc3e84f21fc11b7dbcc"><td class="memItemLeft" align="right" valign="top">procedure, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structintegral__core_1_1ode__helper.html#a0d18f76abb655bc3e84f21fc11b7dbcc">evaluate_callback</a> =&gt; oh_eval_callback</td></tr>
+<tr class="memdesc:a0d18f76abb655bc3e84f21fc11b7dbcc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Evaluates the callback routine.  <a href="#a0d18f76abb655bc3e84f21fc11b7dbcc">More...</a><br /></td></tr>
+<tr class="separator:a0d18f76abb655bc3e84f21fc11b7dbcc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9310b3ebd9f544f3a051ebe0449bf9bb"><td class="memItemLeft" align="right" valign="top"><a id="a9310b3ebd9f544f3a051ebe0449bf9bb"></a>
+procedure, public&#160;</td><td class="memItemRight" valign="bottom"><b>define_callback</b> =&gt; oh_define_callback</td></tr>
+<tr class="separator:a9310b3ebd9f544f3a051ebe0449bf9bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
@@ -160,11 +169,15 @@ integer(int32)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 integer(int32)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structintegral__core_1_1ode__helper.html#a5f0785936c8edb94beb039537ace0114">m_constraints</a> = 0</td></tr>
 <tr class="memdesc:a5f0785936c8edb94beb039537ace0114"><td class="mdescLeft">&#160;</td><td class="mdescRight">The number of constraint equations. <br /></td></tr>
 <tr class="separator:a5f0785936c8edb94beb039537ace0114"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa2023ab6448e5efa0444caabbee20a46"><td class="memItemLeft" align="right" valign="top"><a id="aa2023ab6448e5efa0444caabbee20a46"></a>
+procedure(<a class="el" href="interfaceintegral__core_1_1ode__callback.html">ode_callback</a>), pointer, nopass&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structintegral__core_1_1ode__helper.html#aa2023ab6448e5efa0444caabbee20a46">m_callback</a> =&gt; null()</td></tr>
+<tr class="memdesc:aa2023ab6448e5efa0444caabbee20a46"><td class="mdescLeft">&#160;</td><td class="mdescRight">A pointer to a routine that to be used as a callback upon successful completion of an integration step. <br /></td></tr>
+<tr class="separator:aa2023ab6448e5efa0444caabbee20a46"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Defines a type used to pass information regarding the ODEs to the solver. </p>
 
-<p class="definition">Definition at line <a class="el" href="integral__core_8f90_source.html#l00626">626</a> of file <a class="el" href="integral__core_8f90_source.html">integral_core.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="integral__core_8f90_source.html#l00640">640</a> of file <a class="el" href="integral__core_8f90_source.html">integral_core.f90</a>.</p>
 </div><h2 class="groupheader">Member Function/Subroutine Documentation</h2>
 <a id="aa163a6e0231a59ff2cd93124b899047e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa163a6e0231a59ff2cd93124b899047e">&#9670;&nbsp;</a></span>define_constraints()</h2>
@@ -196,7 +209,7 @@ integer(int32)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 </div>
  </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="integral__core_8f90_source.html#l00900">900</a> of file <a class="el" href="integral__core_8f90_source.html">integral_core.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="integral__core_8f90_source.html#l00917">917</a> of file <a class="el" href="integral__core_8f90_source.html">integral_core.f90</a>.</p>
 
 </div>
 </div>
@@ -231,7 +244,37 @@ integer(int32)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 </div>
  </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="integral__core_8f90_source.html#l00729">729</a> of file <a class="el" href="integral__core_8f90_source.html">integral_core.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="integral__core_8f90_source.html#l00746">746</a> of file <a class="el" href="integral__core_8f90_source.html">integral_core.f90</a>.</p>
+
+</div>
+</div>
+<a id="a0d18f76abb655bc3e84f21fc11b7dbcc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0d18f76abb655bc3e84f21fc11b7dbcc">&#9670;&nbsp;</a></span>evaluate_callback()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">procedure, public integral_core::ode_helper::evaluate_callback </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Evaluates the callback routine. </p>
+<dl class="section user"><dt>Syntax</dt><dd><div class="fragment"><div class="line"><span class="keyword">subroutine </span>evaluate_callback(class(ode_helper) this, real(real64) x, real(real64) y(:))</div></div><!-- fragment --></dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">this</td><td>The <a class="el" href="structintegral__core_1_1ode__helper.html" title="Defines a type used to pass information regarding the ODEs to the solver. ">ode_helper</a> object. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">x</td><td>The value of the independent variable. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">y</td><td>An N-element array containing the values of the dependent variables. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="integral__core_8f90_source.html#l01004">1004</a> of file <a class="el" href="integral__core_8f90_source.html">integral_core.f90</a>.</p>
 
 </div>
 </div>
@@ -262,7 +305,7 @@ integer(int32)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="integral__core_8f90_source.html#l00965">965</a> of file <a class="el" href="integral__core_8f90_source.html">integral_core.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="integral__core_8f90_source.html#l00982">982</a> of file <a class="el" href="integral__core_8f90_source.html">integral_core.f90</a>.</p>
 
 </div>
 </div>
@@ -293,7 +336,36 @@ integer(int32)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="integral__core_8f90_source.html#l00950">950</a> of file <a class="el" href="integral__core_8f90_source.html">integral_core.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="integral__core_8f90_source.html#l00967">967</a> of file <a class="el" href="integral__core_8f90_source.html">integral_core.f90</a>.</p>
+
+</div>
+</div>
+<a id="a53a2e7daca160dbac381f730685c43f2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a53a2e7daca160dbac381f730685c43f2">&#9670;&nbsp;</a></span>get_callback_defined()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">procedure, public integral_core::ode_helper::get_callback_defined </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Determines if a callback routine has been defined. </p>
+<dl class="section user"><dt>Syntax</dt><dd><div class="fragment"><div class="line"><span class="keyword">pure logical </span><span class="keyword">function </span>get_callback_defined(class(ode_helper) this)</div></div><!-- fragment --></dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">this</td><td>The <a class="el" href="structintegral__core_1_1ode__helper.html" title="Defines a type used to pass information regarding the ODEs to the solver. ">ode_helper</a> object. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if a callback routine is defined; else, false. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="integral__core_8f90_source.html#l00992">992</a> of file <a class="el" href="integral__core_8f90_source.html">integral_core.f90</a>.</p>
 
 </div>
 </div>
@@ -322,7 +394,7 @@ integer(int32)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The number of constraint equations. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="integral__core_8f90_source.html#l00910">910</a> of file <a class="el" href="integral__core_8f90_source.html">integral_core.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="integral__core_8f90_source.html#l00927">927</a> of file <a class="el" href="integral__core_8f90_source.html">integral_core.f90</a>.</p>
 
 </div>
 </div>
@@ -351,7 +423,7 @@ integer(int32)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True if the constraint equation routine is defined; else, false. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="integral__core_8f90_source.html#l00921">921</a> of file <a class="el" href="integral__core_8f90_source.html">integral_core.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="integral__core_8f90_source.html#l00938">938</a> of file <a class="el" href="integral__core_8f90_source.html">integral_core.f90</a>.</p>
 
 </div>
 </div>
@@ -380,7 +452,7 @@ integer(int32)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The number of ODEs. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="integral__core_8f90_source.html#l00739">739</a> of file <a class="el" href="integral__core_8f90_source.html">integral_core.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="integral__core_8f90_source.html#l00756">756</a> of file <a class="el" href="integral__core_8f90_source.html">integral_core.f90</a>.</p>
 
 </div>
 </div>
@@ -409,7 +481,7 @@ integer(int32)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Returns true if the equations have been defined (by calling <code>define_equations</code>); else, false if they have not yet been defined. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="integral__core_8f90_source.html#l00752">752</a> of file <a class="el" href="integral__core_8f90_source.html">integral_core.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="integral__core_8f90_source.html#l00769">769</a> of file <a class="el" href="integral__core_8f90_source.html">integral_core.f90</a>.</p>
 
 </div>
 </div>
@@ -438,12 +510,12 @@ integer(int32)&#160;</td><td class="memItemRight" valign="bottom"><a class="el" 
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Returns true if the routine for computing the Jacobian has been defined (by calling <code>define_equations</code>); else, false if it has not. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="integral__core_8f90_source.html#l00765">765</a> of file <a class="el" href="integral__core_8f90_source.html">integral_core.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="integral__core_8f90_source.html#l00782">782</a> of file <a class="el" href="integral__core_8f90_source.html">integral_core.f90</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this type was generated from the following file:<ul>
-<li>C:/Users/jchri/Documents/github/mecheng/src/integral/<a class="el" href="integral__core_8f90_source.html">integral_core.f90</a></li>
+<li>C:/Users/christoj/Documents/Code/mecheng/src/integral/<a class="el" href="integral__core_8f90_source.html">integral_core.f90</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

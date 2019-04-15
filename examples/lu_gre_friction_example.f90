@@ -11,8 +11,8 @@ program example
     ! Model Constants
     real(real64), parameter :: m = 10.0d0
     real(real64), parameter :: g = 9.81d0
-    real(real64), parameter :: mu_s = 1.2d0
-    real(real64), parameter :: mu_c = 0.5d0
+    real(real64), parameter :: mu_s = 1.5d0
+    real(real64), parameter :: mu_c = 1.2d0
     real(real64), parameter :: k = 250.0d3
     real(real64), parameter :: F = 2.0d3
     real(real64), parameter :: freq = 5.0d0

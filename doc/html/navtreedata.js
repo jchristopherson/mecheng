@@ -52,12 +52,12 @@ var NAVTREEINDEX =
 [
 ".html",
 "interfacefplot__core_1_1pa__get__string__result.html#a6bcc35653a25ae0a0a64feec691b9e5f",
-"interfacesignals_1_1trapz__integrate.html",
-"structcontrols_1_1pid.html#a277205247e754d1216894e1efd6b9e91",
-"structfortio__text_1_1text__file__manager.html",
-"structfplot__core_1_1plot__label.html#a686590848061ab38fe569229f4bf9505",
-"structintegral__core_1_1ode__integrator.html#ac6888b75837856d105d684ea61097e44",
-"structstrings_1_1string__builder.html#a134ef0efefd476a8be4ce6d95867ee55"
+"interfacesignals_1_1signal__magnitude.html#a86cba4bb62f5adeca9714b412ab1ecdd",
+"structcontrols_1_1pid.html#a16936ecbd1c21817a4e41224b9cfa465",
+"structfortio__hbm_1_1hbm__data__file.html#a6d2a60d8d9c9b48b564661aa0d1dbc36",
+"structfplot__core_1_1plot__label.html#a4d265d87322364949e5ded5177742400",
+"structintegral__core_1_1ode__integrator.html#aa29c0067d3b5a56f084b1f5425356faa",
+"structsignals_1_1realtime__filter.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

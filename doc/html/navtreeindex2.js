@@ -1,5 +1,7 @@
 var NAVTREEINDEX2 =
 {
+"interfacesignals_1_1signal__magnitude.html#a86cba4bb62f5adeca9714b412ab1ecdd":[1,0,27,8,1],
+"interfacesignals_1_1signal__magnitude.html#af3c71b4798f7554fcebfb85ccd0c89cb":[1,0,27,8,0],
 "interfacesignals_1_1trapz__integrate.html":[1,0,27,9],
 "interfacesignals_1_1trapz__integrate.html#a6431f20b94136b0776525e4144109a77":[1,0,27,9,1],
 "interfacesignals_1_1trapz__integrate.html#ac54d6955ff15c61361d9f85588cd1d96":[1,0,27,9,0],
@@ -247,7 +249,5 @@ var NAVTREEINDEX2 =
 "structcollection__list_1_1persistent__list.html#a89d07d4a16e7df8d3784b51d84fd01b9":[1,0,2,1,1],
 "structcontrols_1_1pid.html":[1,0,4,0],
 "structcontrols_1_1pid.html#a0445121a523a1de3d66c8183f8165311":[1,0,4,0,3],
-"structcontrols_1_1pid.html#a04c90490b7133e07f345dfda689730df":[1,0,4,0,12],
-"structcontrols_1_1pid.html#a16936ecbd1c21817a4e41224b9cfa465":[1,0,4,0,8],
-"structcontrols_1_1pid.html#a18638ffef969af22ce78a98efe990710":[1,0,4,0,10]
+"structcontrols_1_1pid.html#a04c90490b7133e07f345dfda689730df":[1,0,4,0,12]
 };

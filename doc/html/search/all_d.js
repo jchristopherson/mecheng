@@ -1,6 +1,7 @@
 var searchData=
 [
   ['ode_5fauto',['ode_auto',['../structintegral__core_1_1ode__auto.html',1,'integral_core']]],
+  ['ode_5fcallback',['ode_callback',['../interfaceintegral__core_1_1ode__callback.html',1,'integral_core']]],
   ['ode_5fconstraint',['ode_constraint',['../interfaceintegral__core_1_1ode__constraint.html',1,'integral_core']]],
   ['ode_5feuler',['ode_euler',['../structintegral__core_1_1ode__euler.html',1,'integral_core']]],
   ['ode_5ffcn',['ode_fcn',['../interfaceintegral__core_1_1ode__fcn.html',1,'integral_core']]],

@@ -108,9 +108,12 @@ Functions/Subroutines</h2></td></tr>
 <tr class="memitem:a19a1618667c14ac09fe2fe9729792449"><td class="memItemLeft" align="right" valign="top">pure elemental real(real64) function, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefriction.html#a19a1618667c14ac09fe2fe9729792449">coulomb</a> (mu, normal, eps, velocity)</td></tr>
 <tr class="memdesc:a19a1618667c14ac09fe2fe9729792449"><td class="mdescLeft">&#160;</td><td class="mdescRight">Applies the Coulomb friction model.  <a href="#a19a1618667c14ac09fe2fe9729792449">More...</a><br /></td></tr>
 <tr class="separator:a19a1618667c14ac09fe2fe9729792449"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a941884d90a4b1b24fed40b01867da4da"><td class="memItemLeft" align="right" valign="top">real(real64) function, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefriction.html#a941884d90a4b1b24fed40b01867da4da">lu_gre</a> (mu_s, mu_c, normal, viscous, kz, bz, stribeck, alpha, velocity, t0, tf, z0)</td></tr>
-<tr class="memdesc:a941884d90a4b1b24fed40b01867da4da"><td class="mdescLeft">&#160;</td><td class="mdescRight">Applies the Lund-Grenoble (Lu-Gre) friction model.  <a href="#a941884d90a4b1b24fed40b01867da4da">More...</a><br /></td></tr>
-<tr class="separator:a941884d90a4b1b24fed40b01867da4da"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd5ded9b2d328825618e198af0675f17"><td class="memItemLeft" align="right" valign="top">pure elemental real(real64) function, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefriction.html#afd5ded9b2d328825618e198af0675f17">lu_gre</a> (normal, viscous, kz, bz, velocity, z, dzdt)</td></tr>
+<tr class="memdesc:afd5ded9b2d328825618e198af0675f17"><td class="mdescLeft">&#160;</td><td class="mdescRight">Applies the Lund-Grenoble (Lu-Gre) friction model.  <a href="#afd5ded9b2d328825618e198af0675f17">More...</a><br /></td></tr>
+<tr class="separator:afd5ded9b2d328825618e198af0675f17"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf0432bdc1f2452ada600242fa44fcf6"><td class="memItemLeft" align="right" valign="top">pure elemental real(real64) function, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefriction.html#adf0432bdc1f2452ada600242fa44fcf6">lu_gre_velocity</a> (mu_s, mu_c, stribeck, alpha, kz, velocity, z)</td></tr>
+<tr class="memdesc:adf0432bdc1f2452ada600242fa44fcf6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the bristle velocity for the Lu-Gre friction model.  <a href="#adf0432bdc1f2452ada600242fa44fcf6">More...</a><br /></td></tr>
+<tr class="separator:adf0432bdc1f2452ada600242fa44fcf6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><b>friction</b> </p>
@@ -175,31 +178,19 @@ Functions/Subroutines</h2></td></tr>
 </div>
  </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="friction_8f90_source.html#l00157">157</a> of file <a class="el" href="friction_8f90_source.html">friction.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="friction_8f90_source.html#l00158">158</a> of file <a class="el" href="friction_8f90_source.html">friction.f90</a>.</p>
 
 </div>
 </div>
-<a id="a941884d90a4b1b24fed40b01867da4da"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a941884d90a4b1b24fed40b01867da4da">&#9670;&nbsp;</a></span>lu_gre()</h2>
+<a id="afd5ded9b2d328825618e198af0675f17"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afd5ded9b2d328825618e198af0675f17">&#9670;&nbsp;</a></span>lu_gre()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">real(real64) function, public friction::lu_gre </td>
+          <td class="memname">pure elemental real(real64) function, public friction::lu_gre </td>
           <td>(</td>
-          <td class="paramtype">real(real64), intent(in)&#160;</td>
-          <td class="paramname"><em>mu_s</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">real(real64), intent(in)&#160;</td>
-          <td class="paramname"><em>mu_c</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
           <td class="paramtype">real(real64), intent(in)&#160;</td>
           <td class="paramname"><em>normal</em>, </td>
         </tr>
@@ -225,37 +216,19 @@ Functions/Subroutines</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">real(real64), intent(in)&#160;</td>
-          <td class="paramname"><em>stribeck</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">real(real64), intent(in)&#160;</td>
-          <td class="paramname"><em>alpha</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">real(real64), intent(in)&#160;</td>
           <td class="paramname"><em>velocity</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">real(real64), intent(in)&#160;</td>
-          <td class="paramname"><em>t0</em>, </td>
+          <td class="paramname"><em>z</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">real(real64), intent(in)&#160;</td>
-          <td class="paramname"><em>tf</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">real(real64), intent(inout)&#160;</td>
-          <td class="paramname"><em>z0</em>&#160;</td>
+          <td class="paramname"><em>dzdt</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -268,21 +241,113 @@ Functions/Subroutines</h2></td></tr>
 <p>Applies the Lund-Grenoble (Lu-Gre) friction model. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">mu_s</td><td>The static friction coefficient. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">mu_c</td><td>The Coulomb (dynamic) friction coefficient. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">normal</td><td>The normal force. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">viscous</td><td>The viscous damping term (units = time * length**-1). </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">kz</td><td>The normalized bristle stiffness (units = length**-1). </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">bz</td><td>THe normalized bristle damping (units = time * length**-1). </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">stribeck</td><td>The Stribeck velocity. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">alpha</td><td>The velocity ratio exponent. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">velocity</td><td>The relative velocity between the contacting bodies. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">t0</td><td>The time at the previously computed frictional state. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">tf</td><td>The time at which to evaluate the friction model. </td></tr>
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">z0</td><td>On input, the bristle deflection at the previously computed frictional state. On output, the bristle deflection at the requested time <code>tf</code>. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">z</td><td>The bristle deflection. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">dzdt</td><td>The bristle velocity. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The friction force at time <code>tf</code>.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The friction force.</dd></dl>
+<dl class="section user"><dt>Remarks</dt><dd>The Lu-Gre model utilizes a brush-type model to describe frictional behaviors. The brush analogy is why the term "bristle" is utilized. However, another perhaps more relevant analogy, would be to consider the bristles as asperities and surface irregularities that must deform and slide across each other when two bodies make contact, and are forced to slide relative to one another. To that end, the Lu-Gre model can be described by the following equations. </dd></dl>
+<dl class="section user"><dt></dt><dd>\( \frac{dz}{dt} = v_{r} - \frac{\sigma_{o} |v_{r}| z}{g(v_{r})} \) </dd></dl>
+<dl class="section user"><dt></dt><dd>\( g(v_{r}) = \mu_{c} + \left( \mu_{s} - \mu_{c} \right) e^{-|\frac{v_{r}}{v_{s}}|^{\alpha}} \) </dd></dl>
+<dl class="section user"><dt></dt><dd>\( F = \left( \sigma_{0} z + \sigma_{1} \frac{dz}{dt} + \sigma_{2} v_{r} \right) F_{n} \) </dd></dl>
+<dl class="section user"><dt>Where:</dt><dd>\( \mu_{s} = \) Static Friction Coefficient </dd></dl>
+<dl class="section user"><dt></dt><dd>\( \mu_{c} = \) Coulomb Friction Coefficient </dd></dl>
+<dl class="section user"><dt></dt><dd>\( F_{n} = \) Normal Force </dd></dl>
+<dl class="section user"><dt></dt><dd>\( z = \) Bristle Deflection </dd></dl>
+<dl class="section user"><dt></dt><dd>\( v_{r} = \) Relative Velocity </dd></dl>
+<dl class="section user"><dt></dt><dd>\( v_{s} = \) Stribeck Velocity </dd></dl>
+<dl class="section user"><dt></dt><dd>\( \alpha = \) Velocity Ratio Exponent </dd></dl>
+<dl class="section user"><dt></dt><dd>\( \sigma_{0} = \) Bristle Stiffness </dd></dl>
+<dl class="section user"><dt></dt><dd>\( \sigma_{1} = \) Bristle Damping Coefficient </dd></dl>
+<dl class="section user"><dt></dt><dd>\( \sigma_{2} = \) Viscous Damping Coefficient</dd></dl>
+<dl class="section user"><dt>Example</dt><dd>The following example illustrates the use of the Lu-Gre friction model. Notice, as this model consists of an ODE to describe the bristle velocity, the overall system ODE must include the bristle velocity differential equation. <div class="fragment"><div class="line"><span class="keyword">program</span> example</div><div class="line">    <span class="keywordtype">use </span>iso_fortran_env</div><div class="line">    <span class="keywordtype">use </span><a class="code" href="namespacefplot__core.html">fplot_core</a></div><div class="line">    <span class="keywordtype">use </span><a class="code" href="namespacefriction.html">friction</a></div><div class="line">    <span class="keywordtype">use </span><a class="code" href="namespaceintegral__core.html">integral_core</a></div><div class="line">    <span class="keywordtype">use </span><a class="code" href="namespaceconstants.html">constants</a></div><div class="line">    <span class="keywordtype">implicit none</span></div><div class="line"></div><div class="line">    <span class="comment">! Model Constants</span></div><div class="line">    <span class="keywordtype">real(real64)</span>, <span class="keywordtype">parameter</span> :: m = 10.0d0</div><div class="line">    <span class="keywordtype">real(real64)</span>, <span class="keywordtype">parameter</span> :: g = 9.81d0</div><div class="line">    <span class="keywordtype">real(real64)</span>, <span class="keywordtype">parameter</span> :: mu_s = 1.2d0</div><div class="line">    <span class="keywordtype">real(real64)</span>, <span class="keywordtype">parameter</span> :: mu_c = 0.5d0</div><div class="line">    <span class="keywordtype">real(real64)</span>, <span class="keywordtype">parameter</span> :: k = 250.0d3</div><div class="line">    <span class="keywordtype">real(real64)</span>, <span class="keywordtype">parameter</span> :: F = 2.0d3</div><div class="line">    <span class="keywordtype">real(real64)</span>, <span class="keywordtype">parameter</span> :: freq = 5.0d0</div><div class="line">    <span class="keywordtype">real(real64)</span>, <span class="keywordtype">parameter</span> :: alpha = 1.0d0</div><div class="line">    <span class="keywordtype">real(real64)</span>, <span class="keywordtype">parameter</span> :: stribeck = 1.0d-3</div><div class="line">    <span class="keywordtype">real(real64)</span>, <span class="keywordtype">parameter</span> :: bristle_stiffness = 1.0d5</div><div class="line">    <span class="keywordtype">real(real64)</span>, <span class="keywordtype">parameter</span> :: bristle_damping = 1.0d2</div><div class="line">    <span class="keywordtype">real(real64)</span>, <span class="keywordtype">parameter</span> :: viscous_damping = 0.0d0</div><div class="line"></div><div class="line">    <span class="comment">! Plot Variables</span></div><div class="line">    <span class="keywordtype">type</span>(plot_2d) :: plt</div><div class="line">    <span class="keywordtype">type</span>(plot_data_2d) :: d1, d2, d3</div><div class="line">    <span class="keywordtype">class</span>(plot_axis), <span class="keywordtype">pointer</span> :: xAxis, yAxis, y2Axis</div><div class="line"></div><div class="line">    <span class="comment">! Integrator Variables</span></div><div class="line">    <span class="keywordtype">type</span>(ode_helper) :: obj</div><div class="line">    <span class="keywordtype">type</span>(ode_auto) :: integrator</div><div class="line">    <span class="keywordtype">procedure</span>(ode_fcn), <span class="keywordtype">pointer</span> :: ptr</div><div class="line"></div><div class="line">    <span class="comment">! Local Variables</span></div><div class="line">    <span class="keywordtype">real(real64)</span>, <span class="keywordtype">allocatable</span>, <span class="keywordtype">dimension(:,:)</span> :: z</div><div class="line">    <span class="keywordtype">real(real64)</span>, <span class="keywordtype">allocatable</span>, <span class="keywordtype">dimension(:)</span> :: friction, bristle_velocity</div><div class="line">    <span class="keywordtype">real(real64)</span> :: t(2), ic(3)</div><div class="line"></div><div class="line">    <span class="comment">! Define the solution range and initial conditions</span></div><div class="line">    t = [0.0d0, 2.0d0]</div><div class="line">    ic = [0.0d0, 0.0d0, 0.0d0] <span class="comment">! The last term is for the bristle deflection term in the friction model</span></div><div class="line"></div><div class="line">    <span class="comment">! Set up the integrator</span></div><div class="line">    ptr =&gt; eqn</div><div class="line">    <span class="keyword">call </span>obj%define_equations(3, ptr)</div><div class="line"></div><div class="line">    <span class="comment">! Compute the solution</span></div><div class="line">    z = integrator%integrate(obj, t, ic)</div><div class="line"></div><div class="line">    <span class="comment">! Plot the solution</span></div><div class="line">    <span class="keyword">call </span>plt%initialize()</div><div class="line">    <span class="keyword">call </span>plt%set_font_size(14)</div><div class="line">    <span class="keyword">call </span>plt%set_use_y2_axis(.true.)</div><div class="line"></div><div class="line">    xaxis =&gt; plt%get_x_axis()</div><div class="line">    <span class="keyword">call </span>xaxis%set_title(<span class="stringliteral">&quot;t&quot;</span>)</div><div class="line"></div><div class="line">    yaxis =&gt; plt%get_y_axis()</div><div class="line">    <span class="keyword">call </span>yaxis%set_title(<span class="stringliteral">&quot;x(t)&quot;</span>)</div><div class="line"></div><div class="line">    y2axis =&gt; plt%get_y2_axis()</div><div class="line">    <span class="keyword">call </span>y2axis%set_title(<span class="stringliteral">&quot;dx(t)/dt&quot;</span>)</div><div class="line"></div><div class="line">    <span class="keyword">call </span>d1%set_name(<span class="stringliteral">&quot;x(t)&quot;</span>)</div><div class="line">    <span class="keyword">call </span>d1%define_data(z(:,1), z(:,2))</div><div class="line"></div><div class="line">    <span class="keyword">call </span>d2%set_name(<span class="stringliteral">&quot;dx(t)/dt&quot;</span>)</div><div class="line">    <span class="keyword">call </span>d2%set_draw_against_y2(.true.)</div><div class="line">    <span class="keyword">call </span>d2%define_data(z(:,1), z(:,3))</div><div class="line"></div><div class="line">    <span class="keyword">call </span>plt%push(d1)</div><div class="line">    <span class="keyword">call </span>plt%push(d2)</div><div class="line">    <span class="keyword">call </span>plt%draw()</div><div class="line"></div><div class="line">    <span class="comment">! Compute the friction force</span></div><div class="line">    bristle_velocity = lu_gre_velocity(mu_s, mu_c, stribeck, alpha, &amp;</div><div class="line">        bristle_stiffness, z(:,3), z(:,4))</div><div class="line">    <a class="code" href="namespacefriction.html">friction</a> = lu_gre(m * g, viscous_damping, bristle_stiffness, &amp;</div><div class="line">        bristle_damping, z(:,3), z(:,4), bristle_velocity)</div><div class="line"></div><div class="line">    <span class="comment">! Plot the force-velocity relationship</span></div><div class="line">    <span class="keyword">call </span>plt%set_use_y2_axis(.false.)</div><div class="line">    <span class="keyword">call </span>plt%clear_all()</div><div class="line"></div><div class="line">    <span class="keyword">call </span>xaxis%set_title(<span class="stringliteral">&quot;dx(t)/dt&quot;</span>)</div><div class="line">    <span class="keyword">call </span>yaxis%set_title(<span class="stringliteral">&quot;F(t)&quot;</span>)</div><div class="line"></div><div class="line">    <span class="keyword">call </span>d3%define_data(z(:,3), <a class="code" href="namespacefriction.html">friction</a>)</div><div class="line"></div><div class="line">    <span class="keyword">call </span>plt%push(d3)</div><div class="line">    <span class="keyword">call </span>plt%draw()</div><div class="line"><span class="keyword">contains</span></div><div class="line">    <span class="comment">! The system under study is a single degree-of-freedom mass-spring</span></div><div class="line">    <span class="comment">! system that utilizes a frictional damper.  The normal force</span></div><div class="line">    <span class="comment">! is the static weight of the moving body.</span></div><div class="line">    <span class="comment">!</span></div><div class="line">    <span class="comment">! The equation of motion is:</span></div><div class="line">    <span class="comment">! m * x&quot; + f(x&#39;,mu) + k * x = F(t)</span></div><div class="line">    <span class="comment">!</span></div><div class="line">    <span class="comment">! Let:</span></div><div class="line">    <span class="comment">! m = Mass</span></div><div class="line">    <span class="comment">! g = Acceleration due to gravity</span></div><div class="line">    <span class="comment">! mu = Friction coefficient</span></div><div class="line">    <span class="comment">! k = Stiffness</span></div><div class="line">    <span class="comment">! F = Forcing amplitude</span></div><div class="line"><span class="keyword">    subroutine </span>eqn(t, z, dzdt)</div><div class="line">        <span class="comment">! Arguments</span></div><div class="line">        <span class="keywordtype">real(real64)</span>, <span class="keywordtype">intent(in)</span> :: t</div><div class="line">        <span class="keywordtype">real(real64)</span>, <span class="keywordtype">intent(in)</span>, <span class="keywordtype">dimension(:)</span> :: z</div><div class="line">        <span class="keywordtype">real(real64)</span>, <span class="keywordtype">intent(out)</span>, <span class="keywordtype">dimension(:)</span> :: dzdt</div><div class="line"></div><div class="line">        <span class="comment">! Local Variables</span></div><div class="line">        <span class="keywordtype">real(real64)</span> :: Ft, Ff, N, x, dxdt, xb, dxbdt</div><div class="line"></div><div class="line">        <span class="comment">! Initialization</span></div><div class="line">        x = z(1)</div><div class="line">        dxdt = z(2)</div><div class="line">        xb = z(3)   <span class="comment">! Friction model bristle deflection</span></div><div class="line">        ft = f * sin(2.0d0 * pi * freq * t)</div><div class="line">        n = m * g</div><div class="line"></div><div class="line">        <span class="comment">! Compute the bristle velocity</span></div><div class="line">        dxbdt = lu_gre_velocity(mu_s, mu_c, stribeck, alpha, bristle_stiffness, dxdt, xb)</div><div class="line"></div><div class="line">        <span class="comment">! Compute the friction force</span></div><div class="line">        ff = lu_gre(n, viscous_damping, bristle_stiffness, bristle_damping, dxdt, xb, dxbdt)</div><div class="line"></div><div class="line">        <span class="comment">! Equations of motion</span></div><div class="line">        dzdt(1) = dxdt</div><div class="line">        dzdt(2) = (ft - ff - k * x) / m</div><div class="line">        dzdt(3) = dxbdt</div><div class="line"><span class="keyword">    end subroutine</span></div><div class="line"><span class="keyword">end program</span></div></div><!-- fragment --> The above program produces the following plots. <div class="image">
+<img src="lu_gre_friction_model.png" alt="lu_gre_friction_model.png"/>
+</div>
+ <div class="image">
+<img src="lu_gre_friction_model_force_velocity.png" alt="lu_gre_friction_model_force_velocity.png"/>
+</div>
+ </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="friction_8f90_source.html#l00361">361</a> of file <a class="el" href="friction_8f90_source.html">friction.f90</a>.</p>
+
+</div>
+</div>
+<a id="adf0432bdc1f2452ada600242fa44fcf6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adf0432bdc1f2452ada600242fa44fcf6">&#9670;&nbsp;</a></span>lu_gre_velocity()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">pure elemental real(real64) function, public friction::lu_gre_velocity </td>
+          <td>(</td>
+          <td class="paramtype">real(real64), intent(in)&#160;</td>
+          <td class="paramname"><em>mu_s</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">real(real64), intent(in)&#160;</td>
+          <td class="paramname"><em>mu_c</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">real(real64), intent(in)&#160;</td>
+          <td class="paramname"><em>stribeck</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">real(real64), intent(in)&#160;</td>
+          <td class="paramname"><em>alpha</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">real(real64), intent(in)&#160;</td>
+          <td class="paramname"><em>kz</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">real(real64), intent(in)&#160;</td>
+          <td class="paramname"><em>velocity</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">real(real64), intent(in)&#160;</td>
+          <td class="paramname"><em>z</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Computes the bristle velocity for the Lu-Gre friction model. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">mu_s</td><td>The static friction coefficient. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">mu_c</td><td>The Coulomb (dynamic) friction coefficient. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">stribeck</td><td>The Stribeck velocity. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">alpha</td><td>The velocity ratio exponent. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">kz</td><td>The normalized bristle stiffness (units = length**-1). </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">velocity</td><td>The relative velocity between the contacting bodies. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">z</td><td>The bristle deflection. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The bristle velocity.</dd></dl>
 <dl class="section user"><dt>Remarks</dt><dd>The Lu-Gre model utilizes a brush-type model to describe frictional behaviors. The brush analogy is why the term "bristle" is utilized. However, another perhaps more relevant analogy, would be to consider the bristles as asperities and surface irregularities that must deform and slide across each other when two bodies make contact, and are forced to slide relative to one another. To that end, the Lu-Gre model can be described by the following equations. </dd></dl>
 <dl class="section user"><dt></dt><dd>\( \frac{dz}{dt} = v_{r} - \frac{\sigma_{o} |v_{r}| z}{g(v_{r})} \) </dd></dl>
 <dl class="section user"><dt></dt><dd>\( g(v_{r}) = \mu_{c} + \left( \mu_{s} - \mu_{c} \right) e^{-|\frac{v_{r}}{v_{s}}|^{\alpha}} \) </dd></dl>
@@ -298,7 +363,7 @@ Functions/Subroutines</h2></td></tr>
 <dl class="section user"><dt></dt><dd>\( \sigma_{1} = \) Bristle Damping Coefficient </dd></dl>
 <dl class="section user"><dt></dt><dd>\( \sigma_{2} = \) Viscous Damping Coefficient </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="friction_8f90_source.html#l00225">225</a> of file <a class="el" href="friction_8f90_source.html">friction.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="friction_8f90_source.html#l00418">418</a> of file <a class="el" href="friction_8f90_source.html">friction.f90</a>.</p>
 
 </div>
 </div>

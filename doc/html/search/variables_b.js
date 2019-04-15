@@ -11,6 +11,7 @@ var searchData=
   ['m_5fbox',['m_box',['../structfplot__core_1_1legend.html#a195d911a2ffb3e4d8d8229b21745db72',1,'fplot_core::legend::m_box()'],['../structfplot__core_1_1plot__data__error__bars.html#a0e904bfb3fe7d81b6776040af4461f8e',1,'fplot_core::plot_data_error_bars::m_box()']]],
   ['m_5fbreakpoints',['m_breakpoints',['../structintegral__core_1_1adaptive__integrator.html#ac8e4d4dc7702f43459677705eefa6acb',1,'integral_core::adaptive_integrator']]],
   ['m_5fbuffer',['m_buffer',['../structsignals_1_1fir__filter.html#a498efffb544fbc27a0bdb7cdc8915101',1,'signals::fir_filter::m_buffer()'],['../structstrings_1_1string__builder.html#a03cfa737d07e29dd03e924472a71e96c',1,'strings::string_builder::m_buffer()']]],
+  ['m_5fcallback',['m_callback',['../structintegral__core_1_1ode__helper.html#aa2023ab6448e5efa0444caabbee20a46',1,'integral_core::ode_helper']]],
   ['m_5fcanovershoot',['m_canovershoot',['../structintegral__core_1_1ode__integrator.html#af8b1acccaac658b793db41f332a391d3',1,'integral_core::ode_integrator']]],
   ['m_5fcoefficients',['m_coefficients',['../structsignals_1_1fir__filter.html#af081154c1d9b3cb057bc3b2d4d6c4e9f',1,'signals::fir_filter']]],
   ['m_5fcoeffs',['m_coeffs',['../structnonlin__polynomials_1_1polynomial.html#ae4d6fded19102bcf858d0d897dc74c27',1,'nonlin_polynomials::polynomial']]],

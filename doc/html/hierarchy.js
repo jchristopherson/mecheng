@@ -116,6 +116,7 @@ var hierarchy =
     [ "nonlin_core::nonlin_solver", "interfacenonlin__core_1_1nonlin__solver.html", null ],
     [ "nonlin_core::nonlin_solver_1var", "interfacenonlin__core_1_1nonlin__solver__1var.html", null ],
     [ "curvefit_calibration::nonlinearity", "interfacecurvefit__calibration_1_1nonlinearity.html", null ],
+    [ "integral_core::ode_callback", "interfaceintegral__core_1_1ode__callback.html", null ],
     [ "integral_core::ode_constraint", "interfaceintegral__core_1_1ode__constraint.html", null ],
     [ "integral_core::ode_fcn", "interfaceintegral__core_1_1ode__fcn.html", null ],
     [ "integral_core::ode_helper", "structintegral__core_1_1ode__helper.html", null ],
