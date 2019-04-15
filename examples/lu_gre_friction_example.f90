@@ -18,8 +18,8 @@ program example
     real(real64), parameter :: freq = 5.0d0
     real(real64), parameter :: alpha = 1.0d0
     real(real64), parameter :: stribeck = 1.0d-3
-    real(real64), parameter :: bristle_stiffness = 1.0d3
-    real(real64), parameter :: bristle_damping = 1.5d0
+    real(real64), parameter :: bristle_stiffness = 1.0d5
+    real(real64), parameter :: bristle_damping = 1.0d2
     real(real64), parameter :: viscous_damping = 0.0d0
 
     ! Plot Variables
@@ -31,29 +31,19 @@ program example
     type(ode_helper) :: obj
     type(ode_auto) :: integrator
     procedure(ode_fcn), pointer :: ptr
-    procedure(ode_callback), pointer :: cptr
 
     ! Local Variables
     real(real64), allocatable, dimension(:,:) :: z
-    real(real64), allocatable, dimension(:) :: friction
-    real(real64) :: t(2), ic(2)
-
-    ! Friction Model State Variables
-    real(real64) :: tf0, zf0, zf
-
-    ! Set up the initial conditions for the friction model
-    tf0 = 0.0d0     ! Initial solution time
-    zf0 = 0.0d0     ! Initial bristle deflection
+    real(real64), allocatable, dimension(:) :: friction, bristle_velocity
+    real(real64) :: t(2), ic(3)
 
     ! Define the solution range and initial conditions
     t = [0.0d0, 2.0d0]
-    ic = [0.0d0, 0.0d0]
+    ic = [0.0d0, 0.0d0, 0.0d0] ! The last term is for the bristle deflection term in the friction model
 
     ! Set up the integrator
     ptr => eqn
-    cptr => callback
-    call obj%define_equations(2, ptr)
-    call obj%define_callback(cptr)
+    call obj%define_equations(3, ptr)
 
     ! Compute the solution
     z = integrator%integrate(obj, t, ic)
@@ -83,20 +73,23 @@ program example
     call plt%push(d2)
     call plt%draw()
 
-    ! ! Compute the friction force
-    ! friction = coulomb(mu, m * g, eps, z(:,3))
+    ! Compute the friction force
+    bristle_velocity = lu_gre_velocity(mu_s, mu_c, stribeck, alpha, &
+        bristle_stiffness, z(:,3), z(:,4))
+    friction = lu_gre(m * g, viscous_damping, bristle_stiffness, &
+        bristle_damping, z(:,3), z(:,4), bristle_velocity)
 
-    ! ! Plot the force-velocity relationship
-    ! call plt%set_use_y2_axis(.false.)
-    ! call plt%clear_all()
+    ! Plot the force-velocity relationship
+    call plt%set_use_y2_axis(.false.)
+    call plt%clear_all()
 
-    ! call xAxis%set_title("dx(t)/dt")
-    ! call yAxis%set_title("F(t)")
+    call xAxis%set_title("dx(t)/dt")
+    call yAxis%set_title("F(t)")
 
-    ! call d3%define_data(z(:,3), friction)
+    call d3%define_data(z(:,3), friction)
     
-    ! call plt%push(d3)
-    ! call plt%draw()
+    call plt%push(d3)
+    call plt%draw()
 contains
     ! The system under study is a single degree-of-freedom mass-spring
     ! system that utilizes a frictional damper.  The normal force
@@ -118,33 +111,24 @@ contains
         real(real64), intent(out), dimension(:) :: dzdt
 
         ! Local Variables
-        real(real64) :: Ft, Ff, N, x, dxdt
+        real(real64) :: Ft, Ff, N, x, dxdt, xb, dxbdt
 
         ! Initialization
         x = z(1)
         dxdt = z(2)
+        xb = z(3)   ! Friction model bristle deflection
         Ft = F * sin(2.0d0 * pi * freq * t)
         N = m * g
 
+        ! Compute the bristle velocity
+        dxbdt = lu_gre_velocity(mu_s, mu_c, stribeck, alpha, bristle_stiffness, dxdt, xb)
+
         ! Compute the friction force
-        zf = zf0
-        Ff = lu_gre(mu_s, mu_c, N, viscous_damping, bristle_stiffness, &
-            bristle_damping, stribeck, alpha, dxdt, tf0, t, zf)
+        Ff = lu_gre(N, viscous_damping, bristle_stiffness, bristle_damping, dxdt, xb, dxbdt)
 
         ! Equations of motion
         dzdt(1) = dxdt
         dzdt(2) = (Ft - Ff - k * x) / m
-    end subroutine
-
-    ! Callback routine used to store information regarding the
-    ! friction model state at each integration step.
-    subroutine callback(tc, zc)
-        ! Arguments
-        real(real64), intent(in) :: tc
-        real(real64), intent(in), dimension(:) :: zc
-
-        ! Store the friction model state variables
-        tf0 = tc
-        zf0 = zf
+        dzdt(3) = dxbdt
     end subroutine
 end program
