@@ -223,7 +223,7 @@ contains
     function lu_gre(mu_s, mu_c, normal, viscous, kz, bz, stribeck, alpha, &
             velocity, t0, tf, z0) result(f)
         ! Required Modules
-        use ode_core
+        use integral_core
 
         ! Arguments
         real(real64), intent(in) :: mu_s, mu_c, normal, viscous, kz, bz, &
