@@ -69,3 +69,7 @@ target_link_libraries(realtime_example_3 mecheng)
 # COULOMB FRICTION EXAMPLE
 add_executable(coulomb_friction_example coulomb_friction_example.f90)
 target_link_libraries(coulomb_friction_example mecheng)
+
+# LU GRE FRICTION EXAMPLE
+add_executable(lu_gre_friction_example lu_gre_friction_example.f90)
+target_link_libraries(lu_gre_friction_example mecheng)

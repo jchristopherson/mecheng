@@ -102,4 +102,11 @@ contains
     end subroutine
 
 ! ------------------------------------------------------------------------------
+    module subroutine oh_define_callback(this, fcn)
+        class(ode_helper), intent(inout) :: this
+        procedure(ode_callback), intent(in), pointer :: fcn
+        this%m_callback => fcn
+    end subroutine
+
+! ------------------------------------------------------------------------------
 end submodule

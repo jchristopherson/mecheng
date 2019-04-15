@@ -1002,6 +1002,7 @@ module integral_core
         !! @param[in] y An N-element array containing the values of the
         !!  dependent variables.
         procedure, public :: evaluate_callback => oh_eval_callback
+        procedure, public :: define_callback => oh_define_callback
     end type
 
     interface
@@ -1073,6 +1074,11 @@ module integral_core
             class(ode_helper), intent(inout) :: this
             real(real64), intent(in) :: x
             real(real64), intent(in), dimension(:) :: y
+        end subroutine
+
+        module subroutine oh_define_callback(this, fcn)
+            class(ode_helper), intent(inout) :: this
+            procedure(ode_callback), intent(in), pointer :: fcn
         end subroutine
     end interface
 

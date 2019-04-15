@@ -243,7 +243,13 @@ contains
 
         ! Set up the integrator
         ptr => bristle_eqn
-        call fcn%define_equations(1, ptr)
+        call fcn%define_equations(1, ptr) 
+
+        ! Quick Return
+        if (t0 == tf) then
+            f = 0.0d0
+            return
+        end if
 
         ! Define the initial conditions
         ic = [z0]
