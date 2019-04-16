@@ -176,9 +176,13 @@ Functions/Subroutines</h2></td></tr>
  <div class="image">
 <img src="coulomb_friction_model_force_velocity.png" alt="coulomb_friction_model_force_velocity.png"/>
 </div>
- </dd></dl>
+</dd></dl>
+<dl class="section user"><dt>References</dt><dd><ul>
+<li>Quinn, D. Dane. "A New Regularization of Coulomb Friction" ASME Journal of Vibration and Acoustics. 2004, Vol. 126, pp 391-397. </li>
+</ul>
+</dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="friction_8f90_source.html#l00158">158</a> of file <a class="el" href="friction_8f90_source.html">friction.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="friction_8f90_source.html#l00163">163</a> of file <a class="el" href="friction_8f90_source.html">friction.f90</a>.</p>
 
 </div>
 </div>
@@ -252,7 +256,7 @@ Functions/Subroutines</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The friction force.</dd></dl>
-<dl class="section user"><dt>Remarks</dt><dd>The Lu-Gre model utilizes a brush-type model to describe frictional behaviors. The brush analogy is why the term "bristle" is utilized. However, another perhaps more relevant analogy, would be to consider the bristles as asperities and surface irregularities that must deform and slide across each other when two bodies make contact, and are forced to slide relative to one another. To that end, the Lu-Gre model can be described by the following equations. </dd></dl>
+<dl class="section user"><dt>Remarks</dt><dd>The Lu-Gre model utilizes a brush-type model to describe frictional behaviors. The brush analogy is why the term "bristle" is utilized. However, another perhaps more relevant analogy, would be to consider the bristles as asperities and surface irregularities that must deform and slide across each other when two bodies make contact. To that end, the Lu-Gre model can be described by the following equations. </dd></dl>
 <dl class="section user"><dt></dt><dd>\( \frac{dz}{dt} = v_{r} - \frac{\sigma_{o} |v_{r}| z}{g(v_{r})} \) </dd></dl>
 <dl class="section user"><dt></dt><dd>\( g(v_{r}) = \mu_{c} + \left( \mu_{s} - \mu_{c} \right) e^{-|\frac{v_{r}}{v_{s}}|^{\alpha}} \) </dd></dl>
 <dl class="section user"><dt></dt><dd>\( F = \left( \sigma_{0} z + \sigma_{1} \frac{dz}{dt} + \sigma_{2} v_{r} \right) F_{n} \) </dd></dl>
@@ -272,9 +276,14 @@ Functions/Subroutines</h2></td></tr>
  <div class="image">
 <img src="lu_gre_friction_model_force_velocity.png" alt="lu_gre_friction_model_force_velocity.png"/>
 </div>
- </dd></dl>
+</dd></dl>
+<dl class="section user"><dt>References</dt><dd><ul>
+<li>Canudas-De-Wit, C., Tsiortras, P., Velenis, E., Basset, M., Gissinger, G. "Dynamic Friction Models for Road/Tire Longitudinal 
+  Interaction" Vehicle System Dynamics, 2002. </li>
+</ul>
+</dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="friction_8f90_source.html#l00361">361</a> of file <a class="el" href="friction_8f90_source.html">friction.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="friction_8f90_source.html#l00370">370</a> of file <a class="el" href="friction_8f90_source.html">friction.f90</a>.</p>
 
 </div>
 </div>
@@ -361,9 +370,14 @@ Functions/Subroutines</h2></td></tr>
 <dl class="section user"><dt></dt><dd>\( \alpha = \) Velocity Ratio Exponent </dd></dl>
 <dl class="section user"><dt></dt><dd>\( \sigma_{0} = \) Bristle Stiffness </dd></dl>
 <dl class="section user"><dt></dt><dd>\( \sigma_{1} = \) Bristle Damping Coefficient </dd></dl>
-<dl class="section user"><dt></dt><dd>\( \sigma_{2} = \) Viscous Damping Coefficient </dd></dl>
+<dl class="section user"><dt></dt><dd>\( \sigma_{2} = \) Viscous Damping Coefficient</dd></dl>
+<dl class="section user"><dt>References</dt><dd><ul>
+<li>Canudas-De-Wit, C., Tsiortras, P., Velenis, E., Basset, M., Gissinger, G. "Dynamic Friction Models for Road/Tire Longitudinal 
+  Interaction" Vehicle System Dynamics, 2002. </li>
+</ul>
+</dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="friction_8f90_source.html#l00418">418</a> of file <a class="el" href="friction_8f90_source.html">friction.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="friction_8f90_source.html#l00432">432</a> of file <a class="el" href="friction_8f90_source.html">friction.f90</a>.</p>
 
 </div>
 </div>

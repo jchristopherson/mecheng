@@ -154,6 +154,11 @@ contains
     !! The above program produces the following plots.
     !! @image html coulomb_friction_model.png
     !! @image html coulomb_friction_model_force_velocity.png
+    !!
+    !! @par References
+    !! - Quinn, D. Dane. "A New Regularization of Coulomb Friction" 
+    !!  ASME Journal of Vibration and Acoustics.  2004, Vol. 126, 
+    !!  pp 391-397.
     pure elemental function coulomb(mu, normal, eps, velocity) result(f)
         ! Arguments
         real(real64), intent(in) :: mu, normal, eps, velocity
@@ -184,9 +189,8 @@ contains
     !! behaviors.  The brush analogy is why the term "bristle" is utilized.
     !! However, another perhaps more relevant analogy, would be to consider the
     !! bristles as asperities and surface irregularities that must deform and
-    !! slide across each other when two bodies make contact, and are forced to
-    !! slide relative to one another.  To that end, the Lu-Gre model can be
-    !! described by the following equations.
+    !! slide across each other when two bodies make contact.  To that end, 
+    !! the Lu-Gre model can be described by the following equations.
     !! @par
     !! \f$ \frac{dz}{dt} = v_{r} - \frac{\sigma_{o} |v_{r}| z}{g(v_{r})} \f$
     !! @par
@@ -357,6 +361,11 @@ contains
     !! The above program produces the following plots.
     !! @image html lu_gre_friction_model.png
     !! @image html lu_gre_friction_model_force_velocity.png
+    !!
+    !! @par References
+    !! - Canudas-De-Wit, C., Tsiortras, P., Velenis, E., Basset, M., 
+    !!  Gissinger, G. "Dynamic Friction Models for Road/Tire Longitudinal 
+    !!  Interaction" Vehicle System Dynamics, 2002.
     pure elemental function lu_gre(normal, viscous, kz, bz, velocity, z, dzdt) result(f)
         ! Arguments
         real(real64), intent(in) :: normal, viscous, kz, bz, velocity, z, dzdt
@@ -413,6 +422,11 @@ contains
     !! \f$ \sigma_{1} = \f$ Bristle Damping Coefficient
     !! @par
     !! \f$ \sigma_{2} = \f$ Viscous Damping Coefficient
+    !!
+    !! @par References
+    !! - Canudas-De-Wit, C., Tsiortras, P., Velenis, E., Basset, M., 
+    !!  Gissinger, G. "Dynamic Friction Models for Road/Tire Longitudinal 
+    !!  Interaction" Vehicle System Dynamics, 2002.
     pure elemental function lu_gre_velocity(mu_s, mu_c, stribeck, alpha, kz, &
             velocity, z) result(dzdt)
         ! Arguments
@@ -430,4 +444,5 @@ contains
         dzdt = velocity - kz * abs(velocity) * z / g
     end function
 
+! ------------------------------------------------------------------------------
 end module
