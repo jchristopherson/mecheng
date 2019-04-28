@@ -2,6 +2,11 @@
 
 ! TO DO:
 ! - PSD
+! - Correlation
+!   - http://www.cgd.ucar.edu/cas/software/SUBR_UNBIASED_CORRELATION.html
+! - Cross-Spectral Density
+! - Convolution
+! - Transfer Function (Requires Cross-Spectral Density)
 ! - Trapezoidal Integration
 ! - Figure out how to get doxygen to encompass all of the documentation
 
