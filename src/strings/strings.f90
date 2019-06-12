@@ -18,6 +18,11 @@ module strings
     public :: fstr_2_cstr
 
 ! ******************************************************************************
+! PARAMETERS
+! ------------------------------------------------------------------------------
+    integer(int32), parameter :: STRING_BUFFER_SIZE = 2048
+
+! ******************************************************************************
 ! TYPES
 ! ------------------------------------------------------------------------------
     !> @brief Defines a string type.
@@ -88,7 +93,7 @@ contains
         ! Initialization
         this%m_length = 0
         if (.not.allocated(this%m_buffer)) &
-            allocate(character(len = 128) :: this%m_buffer)
+            allocate(character(len = STRING_BUFFER_SIZE) :: this%m_buffer)
     end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -112,7 +117,7 @@ contains
         if (space < n) then
             ! Reallocate a larger buffer
             nb = len(this%m_buffer)
-            allocate(character(len = nb + max(n, 128)) :: temp)
+            allocate(character(len = nb + max(n, STRING_BUFFER_SIZE)) :: temp)
             temp(1:nb) = this%m_buffer
             this%m_buffer = temp
         end if
