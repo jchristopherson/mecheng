@@ -4,7 +4,7 @@ project(mecheng C CXX Fortran)
 
 # Define version information
 set(MECHENG_MAJOR_VERSION 1)
-set(MECHENG_MINOR_VERSION 0)
+set(MECHENG_MINOR_VERSION 1)
 set(MECHENG_PATCH_VERSION 0)
 set(MECHENG_VERSION ${MECHENG_MAJOR_VERSION}.${MECHENG_MINOR_VERSION}.${MECHENG_PATCH_VERSION})
 # Set a default build type if none was specified
