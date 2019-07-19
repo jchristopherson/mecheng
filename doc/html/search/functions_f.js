@@ -30,5 +30,7 @@ var searchData=
   ['reset_5ferror_5fstatus',['reset_error_status',['../structferror_1_1errors.html#a8ee64e42feb5449917383b19aa82f344',1,'ferror::errors']]],
   ['reset_5fwarning_5fstatus',['reset_warning_status',['../structferror_1_1errors.html#a94744a9b38703be4a84ce427dc749b00',1,'ferror::errors']]],
   ['roots',['roots',['../structnonlin__polynomials_1_1polynomial.html#aabefa8eebaed14d790c39cd45c8b7b26',1,'nonlin_polynomials::polynomial']]],
+  ['round_5fdbl',['round_dbl',['../interfacearrays_1_1round.html#abb553c9284e15d97891d4dc902e3050a',1,'arrays::round::round_dbl()'],['../namespacearrays.html#adc4503bfb9fb8cee824e42aa93bb8483',1,'arrays::round_dbl()']]],
+  ['round_5fsngl',['round_sngl',['../interfacearrays_1_1round.html#a2236e3f7b7c30c444e798d3d73d18123',1,'arrays::round::round_sngl()'],['../namespacearrays.html#a6e3ccf84f8d12b753cef14eb1da61932',1,'arrays::round_sngl()']]],
   ['rtz_5f1',['rtz_1',['../interfacecurvefit__calibration_1_1return__to__zero.html#a5429c7ee292af978df20f161d962cd39',1,'curvefit_calibration::return_to_zero::rtz_1()'],['../namespacecurvefit__calibration.html#a62985c9db1f236166fa8c5b525433e05',1,'curvefit_calibration::rtz_1()']]]
 ];

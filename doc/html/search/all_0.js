@@ -6,5 +6,6 @@ var searchData=
   ['append',['append',['../structstrings_1_1string__builder.html#aae37a629101a752ef3da95fce13cfca5',1,'strings::string_builder']]],
   ['apply',['apply',['../structsignals_1_1realtime__filter.html#a1936038a56f2445c6e1983dbaac80bbf',1,'signals::realtime_filter']]],
   ['apply_5ffilter',['apply_filter',['../interfacesignals_1_1apply__filter.html',1,'signals']]],
+  ['arrays',['arrays',['../namespacearrays.html',1,'']]],
   ['assignment_28_3d_29',['assignment(=)',['../interfacenonlin__polynomials_1_1assignment_07_0A_08.html',1,'nonlin_polynomials']]]
 ];

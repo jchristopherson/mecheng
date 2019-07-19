@@ -11,5 +11,6 @@ var searchData=
   ['container',['container',['../structcollection__containers_1_1container.html',1,'collection_containers']]],
   ['cool_5fcolormap',['cool_colormap',['../structfplot__core_1_1cool__colormap.html',1,'fplot_core']]],
   ['covariance',['covariance',['../interfacecurvefit__statistics_1_1covariance.html',1,'curvefit_statistics']]],
-  ['crosstalk',['crosstalk',['../interfacecurvefit__calibration_1_1crosstalk.html',1,'curvefit_calibration']]]
+  ['crosstalk',['crosstalk',['../interfacecurvefit__calibration_1_1crosstalk.html',1,'curvefit_calibration']]],
+  ['cumulative_5fsum',['cumulative_sum',['../interfacearrays_1_1cumulative__sum.html',1,'arrays']]]
 ];

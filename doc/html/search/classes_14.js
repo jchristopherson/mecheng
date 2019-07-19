@@ -1,9 +1,8 @@
 var searchData=
 [
-  ['wheatstone_5fbridge',['wheatstone_bridge',['../interfacestrain_1_1wheatstone__bridge.html',1,'strain']]],
-  ['wheatstone_5fbridge_5fparallel',['wheatstone_bridge_parallel',['../interfacestrain_1_1wheatstone__bridge__parallel.html',1,'strain']]],
-  ['wheatstone_5fbridge_5fseries',['wheatstone_bridge_series',['../interfacestrain_1_1wheatstone__bridge__series.html',1,'strain']]],
-  ['window_5ffunction',['window_function',['../interfacesignals_1_1window__function.html',1,'signals']]],
-  ['windows_5fterminal',['windows_terminal',['../structfplot__core_1_1windows__terminal.html',1,'fplot_core']]],
-  ['wxt_5fterminal',['wxt_terminal',['../structfplot__core_1_1wxt__terminal.html',1,'fplot_core']]]
+  ['value_5fpair',['value_pair',['../structnonlin__core_1_1value__pair.html',1,'nonlin_core']]],
+  ['variance',['variance',['../interfacecurvefit__statistics_1_1variance.html',1,'curvefit_statistics']]],
+  ['vecfcn',['vecfcn',['../interfacenonlin__core_1_1vecfcn.html',1,'nonlin_core']]],
+  ['vecfcn_5fhelper',['vecfcn_helper',['../structnonlin__core_1_1vecfcn__helper.html',1,'nonlin_core']]],
+  ['velocity_5fmtx',['velocity_mtx',['../interfacekinematics_1_1velocity__mtx.html',1,'kinematics']]]
 ];

@@ -1,11 +1,14 @@
 var searchData=
 [
-  ['ferror',['ferror',['../namespaceferror.html',1,'']]],
-  ['fortio_5fbinary',['fortio_binary',['../namespacefortio__binary.html',1,'']]],
-  ['fortio_5fhbm',['fortio_hbm',['../namespacefortio__hbm.html',1,'']]],
-  ['fortio_5ftext',['fortio_text',['../namespacefortio__text.html',1,'']]],
-  ['fortio_5ftypes',['fortio_types',['../namespacefortio__types.html',1,'']]],
-  ['fplot_5fcore',['fplot_core',['../namespacefplot__core.html',1,'']]],
-  ['fplot_5ferrors',['fplot_errors',['../namespacefplot__errors.html',1,'']]],
-  ['friction',['friction',['../namespacefriction.html',1,'']]]
+  ['collection_5fcontainers',['collection_containers',['../namespacecollection__containers.html',1,'']]],
+  ['collection_5ferrors',['collection_errors',['../namespacecollection__errors.html',1,'']]],
+  ['collection_5flinked_5flist',['collection_linked_list',['../namespacecollection__linked__list.html',1,'']]],
+  ['collection_5flist',['collection_list',['../namespacecollection__list.html',1,'']]],
+  ['columns',['columns',['../namespacecolumns.html',1,'']]],
+  ['constants',['constants',['../namespaceconstants.html',1,'']]],
+  ['curvefit_5fcalibration',['curvefit_calibration',['../namespacecurvefit__calibration.html',1,'']]],
+  ['curvefit_5fcore',['curvefit_core',['../namespacecurvefit__core.html',1,'']]],
+  ['curvefit_5finterp',['curvefit_interp',['../namespacecurvefit__interp.html',1,'']]],
+  ['curvefit_5fregression',['curvefit_regression',['../namespacecurvefit__regression.html',1,'']]],
+  ['curvefit_5fstatistics',['curvefit_statistics',['../namespacecurvefit__statistics.html',1,'']]]
 ];

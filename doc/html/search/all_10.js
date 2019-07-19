@@ -49,6 +49,9 @@ var searchData=
   ['rotate_5fx',['rotate_x',['../interfacekinematics_1_1rotate__x.html',1,'kinematics']]],
   ['rotate_5fy',['rotate_y',['../interfacekinematics_1_1rotate__y.html',1,'kinematics']]],
   ['rotate_5fz',['rotate_z',['../interfacekinematics_1_1rotate__z.html',1,'kinematics']]],
+  ['round',['round',['../interfacearrays_1_1round.html',1,'arrays']]],
+  ['round_5fdbl',['round_dbl',['../interfacearrays_1_1round.html#abb553c9284e15d97891d4dc902e3050a',1,'arrays::round::round_dbl()'],['../namespacearrays.html#adc4503bfb9fb8cee824e42aa93bb8483',1,'arrays::round_dbl()']]],
+  ['round_5fsngl',['round_sngl',['../interfacearrays_1_1round.html#a2236e3f7b7c30c444e798d3d73d18123',1,'arrays::round::round_sngl()'],['../namespacearrays.html#a6e3ccf84f8d12b753cef14eb1da61932',1,'arrays::round_sngl()']]],
   ['rtz_5f1',['rtz_1',['../interfacecurvefit__calibration_1_1return__to__zero.html#a5429c7ee292af978df20f161d962cd39',1,'curvefit_calibration::return_to_zero::rtz_1()'],['../namespacecurvefit__calibration.html#a62985c9db1f236166fa8c5b525433e05',1,'curvefit_calibration::rtz_1()']]],
   ['rz_5ffactor',['rz_factor',['../interfacelinalg__core_1_1rz__factor.html',1,'linalg_core']]]
 ];

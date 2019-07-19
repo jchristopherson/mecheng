@@ -51,13 +51,13 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"interfacefplot__core_1_1pa__get__string__result.html#a6bcc35653a25ae0a0a64feec691b9e5f",
-"interfacesignals_1_1signal__magnitude.html#a86cba4bb62f5adeca9714b412ab1ecdd",
-"structcontrols_1_1pid.html#a16936ecbd1c21817a4e41224b9cfa465",
-"structfortio__hbm_1_1hbm__data__file.html#a6d2a60d8d9c9b48b564661aa0d1dbc36",
-"structfplot__core_1_1plot__label.html#a4d265d87322364949e5ded5177742400",
-"structintegral__core_1_1ode__integrator.html#aa29c0067d3b5a56f084b1f5425356faa",
-"structsignals_1_1realtime__filter.html"
+"interfacecurvefit__interp_1_1interp__xy.html#afd0987af32bbbd289d0cec183b693485",
+"interfacenonlin__core_1_1fcn1var.html",
+"structcollection__linked__list_1_1linked__list.html#a28758e7d3df72bf48e5506f9c7117f83",
+"structfortio__binary_1_1binary__writer.html#a0601cd8b2e2cc49bd3b91a882ec9ab48",
+"structfplot__core_1_1plot__data__2d.html#aa1cd95a74492d449b02474876cf72339",
+"structintegral__core_1_1ode__euler.html#a08a06e7673957be9e4c6db512830c128",
+"structnonlin__polynomials_1_1polynomial.html#ac92ea228d6b80f1936f103f94adcb1ee"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

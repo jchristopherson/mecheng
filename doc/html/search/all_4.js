@@ -38,5 +38,14 @@ var searchData=
   ['evaluate_5fconstraints',['evaluate_constraints',['../structintegral__core_1_1ode__helper.html#a46027b2f5e0ff388190756e7e50f53df',1,'integral_core::ode_helper']]],
   ['evaluate_5fjacobian',['evaluate_jacobian',['../structintegral__core_1_1ode__helper.html#a71b0e8ba6a0c8791e3383952033eeba4',1,'integral_core::ode_helper']]],
   ['evaluation_5fcount',['evaluation_count',['../structintegral__core_1_1integration__behavior.html#a10316b0602cfe5f50af486c2bc018f0d',1,'integral_core::integration_behavior']]],
+  ['exists_5fin',['exists_in',['../interfacearrays_1_1exists__in.html',1,'arrays']]],
+  ['exists_5fin_5fcmplxdbl',['exists_in_cmplxdbl',['../interfacearrays_1_1exists__in.html#a772782500da654428d98457dd53122d9',1,'arrays::exists_in::exists_in_cmplxdbl()'],['../namespacearrays.html#af945d9d543b2ff3eda28fa78dc83d41c',1,'arrays::exists_in_cmplxdbl()']]],
+  ['exists_5fin_5fcmplxsngl',['exists_in_cmplxsngl',['../interfacearrays_1_1exists__in.html#a19db762e44497d6978ddbfc31491c4a8',1,'arrays::exists_in::exists_in_cmplxsngl()'],['../namespacearrays.html#ab743a048645ea0518306b37e7daa77f4',1,'arrays::exists_in_cmplxsngl()']]],
+  ['exists_5fin_5fdbl',['exists_in_dbl',['../interfacearrays_1_1exists__in.html#af5392d1288ba88814b9e329d751b334e',1,'arrays::exists_in::exists_in_dbl()'],['../namespacearrays.html#acc1cbe9bf8595a8873c39ed70596148b',1,'arrays::exists_in_dbl()']]],
+  ['exists_5fin_5fint16',['exists_in_int16',['../interfacearrays_1_1exists__in.html#a38c5de2b334578ca7da281cb117184bd',1,'arrays::exists_in::exists_in_int16()'],['../namespacearrays.html#ae206906058de52394dbb19f9e8eed7df',1,'arrays::exists_in_int16()']]],
+  ['exists_5fin_5fint32',['exists_in_int32',['../interfacearrays_1_1exists__in.html#a57e502e4af05c2317b286ed4ae95d537',1,'arrays::exists_in::exists_in_int32()'],['../namespacearrays.html#a43bf115ce3314787b209a762fcb78bdb',1,'arrays::exists_in_int32()']]],
+  ['exists_5fin_5fint64',['exists_in_int64',['../interfacearrays_1_1exists__in.html#a1d520d877ce318a8e66f92d79a3c812c',1,'arrays::exists_in::exists_in_int64()'],['../namespacearrays.html#a2ab529d4dd2d49d0d5f398f93dc0f5db',1,'arrays::exists_in_int64()']]],
+  ['exists_5fin_5fint8',['exists_in_int8',['../interfacearrays_1_1exists__in.html#af86e159135f47944d15d20f6ba4d0e2d',1,'arrays::exists_in::exists_in_int8()'],['../namespacearrays.html#a87b94fb288be26fc4eed3d5808960f06',1,'arrays::exists_in_int8()']]],
+  ['exists_5fin_5fsngl',['exists_in_sngl',['../interfacearrays_1_1exists__in.html#a71e580c7aa21f7acdfdefff72c00c536',1,'arrays::exists_in::exists_in_sngl()'],['../namespacearrays.html#a1de4eeccb04dd91bd2c837c2298d5ae8',1,'arrays::exists_in_sngl()']]],
   ['extrapolate',['extrapolate',['../structnonlin__optimize_1_1nelder__mead.html#a4f23b7fdeadd1789895d385d3646d2a7',1,'nonlin_optimize::nelder_mead']]]
 ];

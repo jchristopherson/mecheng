@@ -1,5 +1,6 @@
 var annotated_dup =
 [
+    [ "arrays", "namespacearrays.html", "namespacearrays" ],
     [ "collection_containers", "namespacecollection__containers.html", "namespacecollection__containers" ],
     [ "collection_linked_list", "namespacecollection__linked__list.html", "namespacecollection__linked__list" ],
     [ "collection_list", "namespacecollection__list.html", "namespacecollection__list" ],
