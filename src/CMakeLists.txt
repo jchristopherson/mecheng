@@ -463,6 +463,9 @@ set(controls_sources
     controls/controls_pid.f90
 )
 
+set(general_sources
+    general/arrays.f90
+)
 
 # Define the MECHENG source files
 set(mecheng_sources
@@ -487,6 +490,7 @@ set(mecheng_sources
     ${strings_sources}
     ${geometry_sources}
     ${controls_sources}
+    ${general_sources}
 )
 
 # Build the library
