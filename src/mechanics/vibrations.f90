@@ -38,9 +38,9 @@ module vibrations
     !> @brief Defines a means of describing a continuous-time linear 
     !! time invariant (LTI) system.
     type :: LTI
-        !> @brief The numerator.
+        !> @brief The numerator of the transfer function.
         type(polynomial), public :: numerator
-        !> @brief The denominator.
+        !> @brief The denominator of the transfer function.
         type(polynomial), public :: denominator
     contains
         procedure, public :: compute_zeros => lti_get_zeros
