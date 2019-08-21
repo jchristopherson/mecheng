@@ -7,12 +7,14 @@ module vibrations
     use curvefit_interp
     use linalg_core
     use constants
+    use nonlin_polynomials
     implicit none
     private
     public :: modal_information
     public :: compute_poincare_section
     public :: compute_modal_response
     public :: compute_frequency_response
+    public :: LTI
 
     ! TO DO:
     ! - Primary Oscillation Frequency Finder (Base upon an FFT, and return the largest magnitude non-DC frequency)
@@ -32,6 +34,18 @@ module vibrations
         module procedure :: compute_frequency_response_2
         module procedure :: compute_frequency_response_3
     end interface
+
+    !> @brief Defines a means of describing a continuous-time linear 
+    !! time invariant (LTI) system.
+    type :: LTI
+        !> @brief The numerator.
+        type(polynomial), public :: numerator
+        !> @brief The denominator.
+        type(polynomial), public :: denominator
+    contains
+        procedure, public :: compute_zeros => lti_get_zeros
+        procedure, public :: compute_poles => lti_get_poles
+    end type
 
 ! ******************************************************************************
 ! VIBRATIONS_POINCARE.F90
@@ -191,4 +205,22 @@ module vibrations
             complex(real64), allocatable, dimension(:,:) :: rsp
         end function
     end interface
+
+! ******************************************************************************
+! VIBRATIONS_LTI.F90
+! ------------------------------------------------------------------------------
+    interface
+        module function lti_get_zeros(this, err) result(z)
+            class(LTI), intent(in) :: this
+            class(errors), intent(inout), optional, target :: err
+            complex(real64), allocatable, dimension(:) :: z
+        end function
+
+        module function lti_get_poles(this, err) result(p)
+            class(LTI), intent(in) :: this
+            class(errors), intent(inout), optional, target :: err
+            complex(real64), allocatable, dimension(:) :: p
+        end function
+    end interface
+
 end module
