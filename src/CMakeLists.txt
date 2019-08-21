@@ -409,6 +409,8 @@ set(mechanics_sources
     mechanics/sections.f90
     mechanics/strain.f90
     mechanics/vibrations.f90
+    mechanics/vibrations_poincare.f90
+    mechanics/vibrations_modal.f90
     mechanics/mechanics_constants.f90
     mechanics/friction.f90
 )
