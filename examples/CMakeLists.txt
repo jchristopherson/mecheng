@@ -77,3 +77,7 @@ target_link_libraries(lu_gre_friction_example mecheng)
 # LTI EXAMPLE 1
 add_executable(lti_example_1 lti_example_1.f90)
 target_link_libraries(lti_example_1 mecheng)
+
+# LTI EXAMPLE 2
+add_executable(lti_example_2 lti_example_2.f90)
+target_link_libraries(lti_example_2 mecheng)
