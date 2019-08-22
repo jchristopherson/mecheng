@@ -15,6 +15,7 @@ module vibrations
     public :: compute_modal_response
     public :: compute_frequency_response
     public :: bode_settings
+    public :: pole_zero_settings
     public :: LTI
 
     ! TO DO:
@@ -36,7 +37,7 @@ module vibrations
         module procedure :: compute_frequency_response_3
     end interface
 
-    !> @brief A container describing BODE plot settings.
+    !> @brief A type describing BODE plot settings.
     type :: bode_settings
         !> @brief Set to true to unwrap the phase plot; else, false.
         logical :: unwrap_phase
@@ -50,6 +51,20 @@ module vibrations
         integer(int32) :: window_width
         !> @brief The plot line width.
         real(real32) :: line_width
+    end type
+
+    !> @brief A type describing pole-zero plot settings.
+    type :: pole_zero_settings
+        !> @brief The name of the font to use.
+        character(len = :), allocatable :: font_name
+        !> @brief The size of the font, in points.
+        integer(int32) :: font_size
+        !> @brief The plot line width.
+        real(real32) :: line_width
+        !> @brief The marker scaling factor.
+        real(real32) :: marker_size
+        !> @brief Show the legend?
+        logical :: show_legend
     end type
 
     !> @brief Defines a means of describing a continuous-time linear 
@@ -137,8 +152,59 @@ module vibrations
         !!  at which to evaluate the transfer function, in Hz.
         !! @param[in] settings An optional input that provides a means of 
         !!  controlling the appearance and behavior of the plot.
+        !!
+        !! @par Example
+        !! @code{.f90}
+        !! program example
+        !!     use iso_fortran_env
+        !!     use vibrations
+        !!     use constants
+        !!     use fplot_core, only : linspace
+        !!     implicit none
+        !!
+        !!     ! Construct the model to represent a mechanical system with
+        !!     ! the following properties:
+        !!     ! - Natural Frequency: 50 Hz
+        !!     ! - Damping Ratio: 0.1
+        !!     ! - Sprung Mass: 20 kg
+        !!     ! - Force Amplitude: 1 kN
+        !!
+        !!     ! Model Parameters
+        !!     real(real64), parameter :: fn = 5.0d1
+        !!     real(real64), parameter :: zeta = 1.0d-1
+        !!     real(real64), parameter :: mass = 2.0d1
+        !!     real(real64), parameter :: force = 1.0d3
+        !!     integer(int32), parameter :: npts = 1000
+        !!
+        !!     ! Local Variables
+        !!     type(LTI) :: sys
+        !!     real(real64) :: wn
+        !!     real(real64), allocatable, dimension(:) :: freq
+        !!
+        !!     ! Build the model noting the equation of motion is:
+        !!     ! x" + 2 zeta * wn x' + wn**2 = F / m
+        !!     wn = 2.0d0 * pi * fn
+        !!     call sys%numerator%initialize([force / mass])
+        !!     call sys%denominator%initialize([wn**2, 2.0d0 * zeta * wn, 1.0d0])
+        !!
+        !!     ! Plot the BODE diagram
+        !!     freq = linspace(1.0d0, 1.0d2, npts)
+        !!     call sys%bode(freq)
+        !! end program
+        !! @endcode
+        !! The above code produces the following output.
+        !! @image html lti_bode_1.png
         procedure, public :: bode => lti_bode
+        procedure, public :: pole_zero_plot => lti_pole_zero_plot
+
+        ! TO DO:
+        ! - Provide a routine to convert to a state space model
+        ! - Provide a pole-zero plotting routine
     end type
+
+    ! TO DO:
+    ! - Provide routines for computing natural frequencies and damping ratios from pole information
+    ! - Create a state-space model type
 
 ! ******************************************************************************
 ! VIBRATIONS_POINCARE.F90
@@ -330,6 +396,12 @@ module vibrations
             class(LTI), intent(in) :: this
             real(real64), intent(in), dimension(:) :: freq
             type(bode_settings), intent(in), optional :: settings
+        end subroutine
+
+        module subroutine lti_pole_zero_plot(this, settings, err)
+            class(LTI), intent(in) :: this
+            type(pole_zero_settings), intent(in), optional :: settings
+            class(errors), intent(inout), optional :: err
         end subroutine
     end interface
 

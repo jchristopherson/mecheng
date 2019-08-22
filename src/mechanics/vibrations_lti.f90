@@ -1,6 +1,7 @@
 ! vibrations_lti.f90
 
 submodule (vibrations) vibrations_lti
+    use fplot_core
 contains
 ! ------------------------------------------------------------------------------
     module function lti_get_zeros(this, err) result(z)
@@ -102,7 +103,6 @@ contains
         ! Required Module Support
         use constants, only : pi
         use arrays, only : unwrap
-        use fplot_core
 
         ! Arguments
         class(LTI), intent(in) :: this
@@ -128,8 +128,8 @@ contains
 
         ! Initialization
         unwrapPhase = .true.
-        fontName = "Calibri"
-        fontSize = 12
+        fontName = "Arial"
+        fontSize = 11
         width = 800
         height = 600
         lineWidth = 1.0
@@ -196,6 +196,52 @@ contains
     end subroutine
 
 ! ------------------------------------------------------------------------------
+    module subroutine lti_pole_zero_plot(this, settings, err)
+        ! Arguments
+        class(LTI), intent(in) :: this
+        type(pole_zero_settings), intent(in), optional :: settings
+        class(errors), intent(inout), optional :: err
+
+        ! Local Variables
+        type(plot_2d) :: plt
+        type(plot_data_2d) :: d1, d2
+        class(plot_axis), pointer :: xAxis, yAxis
+        complex(real64), allocatable, dimension(:) :: poles, zeros
+
+        ! Compute the poles and zeros of the system
+        zeros = this%compute_zeros(err)
+        poles = this%compute_poles(err)
+
+        ! If there are no zero values, simply plot a single zero at the origin
+        if (.not.allocated(zeros)) then
+            zeros = [(0.0d0, 0.0d0)]
+        end if
+        if (size(zeros) < 1) then
+            zeros = [(0.0d0, 0.0d0)]
+        end if
+
+        ! Initialize the plot
+        call plt%initialize()
+        xAxis => plt%get_x_axis()
+        yAxis => plt%get_y_axis()
+
+        ! Define the data
+        call d1%set_name("Pole")
+        call d1%set_draw_line(.false.)
+        call d1%set_draw_markers(.true.)
+        call d1%set_marker_style(MARKER_X)
+        call d1%define_data(real(poles), aimag(poles))
+        call plt%push(d1)
+
+        call d2%set_name("Zero")
+        call d2%set_draw_line(.false.)
+        call d2%set_draw_markers(.true.)
+        call d2%set_marker_style(MARKER_EMPTY_CIRCLE)
+        call d2%define_data(real(zeros), aimag(zeros))
+        call plt%push(d2)
+        
+        call plt%draw()
+    end subroutine
 
 ! ------------------------------------------------------------------------------
 
