@@ -1048,17 +1048,12 @@ contains
     end function
 
 ! ******************************************************************************
-    !> @brief Unwraps an array with pi magnitude jumps.
-    !!
-    !! @param[in] x The N-element array.
-    !! @return The N-element unwrapped array.
-    pure function unwrap_dbl(x) result(p)
-        !  Modules
+    subroutine unwrap_dbl(x)
+        ! Modules
         use constants, only : pi
 
         ! Arguments
-        real(real64), intent(in), dimension(:) :: x
-        real(real64), allocatable, dimension(:) :: p
+        real(real64), intent(inout), dimension(:) :: x
 
         ! Local Variables
         integer(int32) :: i, n
@@ -1068,7 +1063,6 @@ contains
         ! Initialization
         n = size(x)
         cutoff = pi
-        allocate(p(n))
 
         ! Compute the incremental variations
         dp = diff(x)
@@ -1079,26 +1073,20 @@ contains
         dpcorr = round(dp / (2.0d0 * pi), -1)
 
         ! Stop the jump from happening if dp < cutoff
-        do i = 1, n
+        do i = 1, n - 1
             if (abs(dp(i)) < cutoff) dpcorr(i) = 0.0d0
         end do
 
         ! Integrate the corrections
-        p(1) = x(1)
-        p(2:n) = x(2:n) - (2.0d0 * pi) * cumulative_sum(dpcorr)
-    end function
+        x(2:n) = x(2:n) - (2.0d0 * pi) * cumulative_sum(dpcorr)
+    end subroutine
 
 ! ------------------------------------------------------------------------------
-    !> @brief Unwraps an array with pi magnitude jumps.
-    !!
-    !! @param[in] x The N-element array.
-    !! @return The N-element unwrapped array.
-    pure function unwrap_sngl(x) result(p)
+    subroutine unwrap_sngl(x)
         ! Arguments
-        real(real32), intent(in), dimension(:) :: x
-        real(real32), allocatable, dimension(:) :: p
+        real(real32), intent(inout), dimension(:) :: x
 
-        ! Parameters
+        ! Constants
         real(real32), parameter :: pi = 3.14159265359
 
         ! Local Variables
@@ -1109,7 +1097,6 @@ contains
         ! Initialization
         n = size(x)
         cutoff = pi
-        allocate(p(n))
 
         ! Compute the incremental variations
         dp = diff(x)
@@ -1120,14 +1107,13 @@ contains
         dpcorr = round(dp / (2.0 * pi), -1)
 
         ! Stop the jump from happening if dp < cutoff
-        do i = 1, n
+        do i = 1, n - 1
             if (abs(dp(i)) < cutoff) dpcorr(i) = 0.0
         end do
 
         ! Integrate the corrections
-        p(1) = x(1)
-        p(2:n) = x(2:n) - (2.0 * pi) * cumulative_sum(dpcorr)
-    end function
+        x(2:n) = x(2:n) - (2.0 * pi) * cumulative_sum(dpcorr)
+    end subroutine
 
 ! ------------------------------------------------------------------------------
 end module
