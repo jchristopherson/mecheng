@@ -43,8 +43,85 @@ module vibrations
         !> @brief The denominator of the transfer function.
         type(polynomial), public :: denominator
     contains
+        !> @brief Computes the zeros of the transfer function.
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! complex(real64)(:) function compute_zeros(class(LTI) this, optional class (errors) err)
+        !! @endcode
+        !!
+        !! @param[in] this The LTI object.
+        !! @param[in,out] err An optional errors-based object that if provided can be
+        !!  used to retrieve information relating to any errors encountered during
+        !!  execution.  If not provided, a default implementation of the errors
+        !!  class is used internally to provide error handling.  Possible errors and
+        !!  warning messages that may be encountered are as follows.
+        !!  - MECH_INVALID_TRANSFER_FUNCTION_ERROR: Occurs if the transfer function is invalid.
+        !!      See validate for more information.
+        !!  - NL_OUT_OF_MEMORY_ERROR: Occurs if local memory must be allocated, and
+        !!      there is insufficient memory available.
+        !!  - NL_CONVERGENCE_ERROR: Occurs if the algorithm failed to converge.
+        !! @return A complex-valued array containing the zero values.
         procedure, public :: compute_zeros => lti_get_zeros
+        !> @brief Computes the poles of the transfer function.
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! complex(real64)(:) function compute_poles(class(LTI) this, optional class (errors) err)
+        !! @endcode
+        !!
+        !! @param[in] this The LTI object.
+        !! @param[in,out] err An optional errors-based object that if provided can be
+        !!  used to retrieve information relating to any errors encountered during
+        !!  execution.  If not provided, a default implementation of the errors
+        !!  class is used internally to provide error handling.  Possible errors and
+        !!  warning messages that may be encountered are as follows.
+        !!  - MECH_INVALID_TRANSFER_FUNCTION_ERROR: Occurs if the transfer function is invalid.
+        !!      See validate for more information.
+        !!  - NL_OUT_OF_MEMORY_ERROR: Occurs if local memory must be allocated, and
+        !!      there is insufficient memory available.
+        !!  - NL_CONVERGENCE_ERROR: Occurs if the algorithm failed to converge.
+        !! @return A complex-valued array containing the pole values.
         procedure, public :: compute_poles => lti_get_poles
+        !> @brief Validates the structure of the transfer function.  To be valid
+        !! the transfer function must obey the following rules:
+        !!  - Both the numerator and denominator must be valid polynomials.
+        !!  - The order of the denominator must be at least one less than the denominator.
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! pure logical function validate(class(LTI) this)
+        !! @endcode
+        !!
+        !! @param[in] this The LTI object.
+        !! @return Returns true if the transfer function is structured appropriately; else,
+        !!  false.
+        procedure, public :: validate => lti_validate
+        !> @brief Evaluates the transfer function at the specified frequency.
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! complex(real64) function evaluate(class(LTI) this, real(real64) omega)
+        !! @endcode
+        !!
+        !! @param[in] this The LTI object.
+        !! @param[in] omega The frequency, in rad/s.
+        !! @return The value of the transfer function at @p omega.
+        procedure, public :: evaluate => lti_evaluate
+        !> @brief Creates a Bode plot of the transfer function.
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! subroutine bode(class(LTI) this, real(real64) freq(:), optional logical fixphase)
+        !! @endcode
+        !!
+        !! @param[in] this The LTI object.
+        !! @param[in] freq An N-element array containing the frequency values
+        !!  at which to evaluate the transfer function, in Hz.
+        !! @param[in] fixphase An optional input that if set to true unwraps
+        !!  the phase plot to avoid 180 deg jumps; else, false.  The default
+        !!  is true.
+        procedure, public :: bode => lti_bode
     end type
 
 ! ******************************************************************************
@@ -221,6 +298,23 @@ module vibrations
             class(errors), intent(inout), optional, target :: err
             complex(real64), allocatable, dimension(:) :: p
         end function
+
+        pure module function lti_validate(this) result(x)
+            class(LTI), intent(in) :: this
+            logical :: x
+        end function
+
+        elemental module function lti_evaluate(this, omega) result(x)
+            class(LTI), intent(in) :: this
+            real(real64), intent(in) :: omega
+            complex(real64) :: x
+        end function
+
+        module subroutine lti_bode(this, freq, fixphase)
+            class(LTI), intent(in) :: this
+            real(real64), intent(in), dimension(:) :: freq
+            logical, intent(in), optional :: fixphase
+        end subroutine
     end interface
 
 end module
