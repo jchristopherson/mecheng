@@ -14,6 +14,7 @@ module vibrations
     public :: compute_poincare_section
     public :: compute_modal_response
     public :: compute_frequency_response
+    public :: bode_settings
     public :: LTI
 
     ! TO DO:
@@ -34,6 +35,22 @@ module vibrations
         module procedure :: compute_frequency_response_2
         module procedure :: compute_frequency_response_3
     end interface
+
+    !> @brief A container describing BODE plot settings.
+    type :: bode_settings
+        !> @brief Set to true to unwrap the phase plot; else, false.
+        logical :: unwrap_phase
+        !> @brief The name of the font to use.
+        character(len = :), allocatable :: font_name
+        !> @brief The size of the font, in points.
+        integer(int32) :: font_size
+        !> @brief The window height, in system units.
+        integer(int32) :: window_height
+        !> @brief The window width, in system units.
+        integer(int32) :: window_width
+        !> @brief The plot line width.
+        real(real32) :: line_width
+    end type
 
     !> @brief Defines a means of describing a continuous-time linear 
     !! time invariant (LTI) system.
@@ -118,9 +135,8 @@ module vibrations
         !! @param[in] this The LTI object.
         !! @param[in] freq An N-element array containing the frequency values
         !!  at which to evaluate the transfer function, in Hz.
-        !! @param[in] fixphase An optional input that if set to true unwraps
-        !!  the phase plot to avoid 180 deg jumps; else, false.  The default
-        !!  is true.
+        !! @param[in] settings An optional input that provides a means of 
+        !!  controlling the appearance and behavior of the plot.
         procedure, public :: bode => lti_bode
     end type
 
@@ -310,10 +326,10 @@ module vibrations
             complex(real64) :: x
         end function
 
-        module subroutine lti_bode(this, freq, fixphase)
+        module subroutine lti_bode(this, freq, settings)
             class(LTI), intent(in) :: this
             real(real64), intent(in), dimension(:) :: freq
-            logical, intent(in), optional :: fixphase
+            type(bode_settings), intent(in), optional :: settings
         end subroutine
     end interface
 
