@@ -4,6 +4,9 @@
 ! - http://web.mit.edu/2.14/www/Handouts/PoleZero.pdf
 ! - https://lpsa.swarthmore.edu/Representations/SysRepTransformations/TF2SS.html
 
+! TO DO:
+! - Revist conversion to state-space.  See the MATLAB routine tf2ss
+
 submodule (vibrations) vibrations_lti
     use fplot_core
 contains

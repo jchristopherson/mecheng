@@ -1,5 +1,8 @@
 ! vibrations_ss.f90
 
+! References:
+! - https://en.wikipedia.org/wiki/State-space_representation
+
 submodule (vibrations) vibrations_ss
 contains
 ! ------------------------------------------------------------------------------
