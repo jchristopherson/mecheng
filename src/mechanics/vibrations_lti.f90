@@ -2,6 +2,7 @@
 
 ! References:
 ! - http://web.mit.edu/2.14/www/Handouts/PoleZero.pdf
+! - https://lpsa.swarthmore.edu/Representations/SysRepTransformations/TF2SS.html
 
 submodule (vibrations) vibrations_lti
     use fplot_core
@@ -280,6 +281,76 @@ contains
     end subroutine
 
 ! ------------------------------------------------------------------------------
+    module subroutine lti_to_ss(this, ss, err)
+        ! Arguments
+        class(LTI), intent(in) :: this
+        class(state_space), intent(out) :: ss
+        class(errors), intent(inout), optional, target :: err
+
+        ! Local Variables
+        integer(int32) :: i, j, n, nb
+        real(real64) :: a0, b0
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+
+        ! Initialization
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+
+        ! Ensure the transfer function is valid
+        if (.not.this%validate()) then
+            call errmgr%report_error("lti_to_ss", &
+                "The transfer function is not valid.", &
+                MECH_INVALID_TRANSFER_FUNCTION_ERROR)
+            return
+        end if
+
+        ! Allocate space for the matrices
+        n = this%denominator%order()
+        allocate(ss%A(n, n))
+        allocate(ss%B(n, 1))
+        allocate(ss%C(1, n))
+        allocate(ss%D(1, 1))
+
+        ! Construct A
+        do j = 2, n
+            do i = 1, n
+                if (i == j - 1) then
+                    ss%A(i,j) = 1.0d0
+                else
+                    ss%A(i,j) = 0.0d0
+                end if
+            end do
+        end do
+        a0 = this%denominator%get(n+1)  ! Coefficient of the highest power
+        do i = 1, n
+            ss%A(i,1) = -(this%denominator%get(n-i+1)) / a0
+        end do
+
+        ! Construct B
+        ss%B = 0.0d0
+        nb = this%numerator%order()
+        do i = 1, nb
+            ss%B(n-i+1,1) = this%numerator%get(i)
+        end do
+
+        if (nb == n) then
+            b0 = this%numerator%get(nb+1)
+            ss%B(:,1) = (ss%B(:,1) / b0) + ss%A(:,1) * b0
+        else
+            b0 = 0.0d0
+        end if
+
+        ! Construct C
+        ss%C(1,1) = 1.0d0
+        ss%C(1,2:n) = 0.0d0
+
+        ! Construct D
+        ss%D(1,1) = b0
+    end subroutine
 
 ! ******************************************************************************
     pure module function modal_info_from_poles(poles) result(x)
