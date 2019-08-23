@@ -1,5 +1,8 @@
 ! vibrations_lti.f90
 
+! References:
+! - http://web.mit.edu/2.14/www/Handouts/PoleZero.pdf
+
 submodule (vibrations) vibrations_lti
     use fplot_core
 contains
@@ -206,7 +209,26 @@ contains
         type(plot_2d) :: plt
         type(plot_data_2d) :: d1, d2
         class(plot_axis), pointer :: xAxis, yAxis
+        class(legend), pointer :: lgnd
         complex(real64), allocatable, dimension(:) :: poles, zeros
+        character(len = :), allocatable :: fontName
+        integer(int32) :: fontSize
+        real(real32) :: lineWidth, markerSize
+        logical :: showLegend
+
+        ! Initialization
+        fontName = "Arial"
+        fontSize = 11
+        lineWidth = 1.5
+        markerSize = 3.0
+        showLegend = .true.
+        if (present(settings)) then
+            fontName = settings%font_name
+            fontSize = settings%font_size
+            lineWidth = settings%line_width
+            markerSize = settings%marker_size
+            showLegend = settings%show_legend
+        end if
 
         ! Compute the poles and zeros of the system
         zeros = this%compute_zeros(err)
@@ -225,12 +247,24 @@ contains
         xAxis => plt%get_x_axis()
         yAxis => plt%get_y_axis()
 
+        call plt%set_font_name(fontName)
+        call plt%set_font_size(fontSize)
+
+        lgnd => plt%get_legend()
+        call lgnd%set_is_visible(showLegend)
+        call lgnd%set_vertical_position(LEGEND_BOTTOM)
+        call lgnd%set_horizontal_position(LEGEND_CENTER)
+        call lgnd%set_draw_inside_axes(.false.)
+        call lgnd%set_draw_border(.false.)
+
         ! Define the data
         call d1%set_name("Pole")
         call d1%set_draw_line(.false.)
         call d1%set_draw_markers(.true.)
         call d1%set_marker_style(MARKER_X)
         call d1%define_data(real(poles), aimag(poles))
+        call d1%set_marker_scaling(markerSize)
+        call d1%set_line_width(lineWidth)
         call plt%push(d1)
 
         call d2%set_name("Zero")
@@ -238,12 +272,73 @@ contains
         call d2%set_draw_markers(.true.)
         call d2%set_marker_style(MARKER_EMPTY_CIRCLE)
         call d2%define_data(real(zeros), aimag(zeros))
+        call d2%set_marker_scaling(markerSize)
+        call d2%set_line_width(lineWidth)
         call plt%push(d2)
         
         call plt%draw()
     end subroutine
 
 ! ------------------------------------------------------------------------------
+
+! ******************************************************************************
+    pure module function modal_info_from_poles(poles) result(x)
+        use constants
+
+        ! Arguments
+        complex(real64), intent(in), dimension(:) :: poles
+        real(real64), allocatable, dimension(:,:) :: x
+
+        ! Local Variables
+        integer(int32) :: i, j, k, n
+        real(real64) :: tol, arg1, arg2
+        logical :: flag
+        complex(real64), allocatable, dimension(:) :: buffer
+
+        ! Initialization
+        n = size(poles)
+        tol = sqrt(epsilon(tol))
+
+        ! Process
+        allocate(buffer(n))
+        i = 1
+        j = 0
+        do while (i <= n)
+            k = i + 1
+            flag = .false.
+            if (k <= n) then
+                arg1 = abs(aimag(poles(i)))
+                arg2 = abs(aimag(poles(k)))
+                if (abs(arg1 - arg2) < tol) then
+                    j = j + 1
+                    buffer(j) = poles(i)
+                    flag = .true.
+                end if
+            end if
+
+            if (flag) then
+                ! A complex-conjugate pair was found
+                i = i + 2
+            else
+                ! No complex-conjugate pair was found
+                i = i + 1
+            end if
+        end do
+
+        ! Quick return
+        if (j == 0) return
+
+        ! Allocate space for the output
+        allocate(x(j,2))
+
+        ! Compute the magnitude of each value to determine the natural
+        ! frequency values, in Hz
+        x(:,1) = abs(buffer(1:j)) / (2.0d0 * pi)
+
+        ! Compute the angle of each value from the negative real axis to
+        ! determine the damping ratio
+        x(:,2) = cos( atan2( abs(aimag(buffer(1:j))), abs(real(buffer(1:j))) ) )
+    end function
 
 ! ------------------------------------------------------------------------------
 end submodule

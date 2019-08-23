@@ -17,6 +17,7 @@ module vibrations
     public :: bode_settings
     public :: pole_zero_settings
     public :: LTI
+    public :: modal_info_from_poles
 
     ! TO DO:
     ! - Primary Oscillation Frequency Finder (Base upon an FFT, and return the largest magnitude non-DC frequency)
@@ -144,7 +145,7 @@ module vibrations
         !!
         !! @par Syntax
         !! @code{.f90}
-        !! subroutine bode(class(LTI) this, real(real64) freq(:), optional logical fixphase)
+        !! subroutine bode(class(LTI) this, real(real64) freq(:), optional type(bode_settings) settings)
         !! @endcode
         !!
         !! @param[in] this The LTI object.
@@ -195,15 +196,73 @@ module vibrations
         !! The above code produces the following output.
         !! @image html lti_bode_1.png
         procedure, public :: bode => lti_bode
+        !> @brief Draws a pole-zero plot for the LTI system.
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! subroutine pole_zero_plot(class(LTI) this, optional type(pole_zero_settings) settings, optional class(errors) err)
+        !! @endcode
+        !!
+        !! @param[in] this The LTI object.
+        !! @param[in] settings An optional input that provides a means of 
+        !!  controlling the appearance and behavior of the plot.
+        !! @param[in,out] err An optional errors-based object that if provided can be
+        !!  used to retrieve information relating to any errors encountered during
+        !!  execution.  If not provided, a default implementation of the errors
+        !!  class is used internally to provide error handling.  Possible errors and
+        !!  warning messages that may be encountered are as follows.
+        !!  - MECH_INVALID_TRANSFER_FUNCTION_ERROR: Occurs if the transfer function is invalid.
+        !!      See validate for more information.
+        !!  - NL_OUT_OF_MEMORY_ERROR: Occurs if local memory must be allocated, and
+        !!      there is insufficient memory available.
+        !!  - NL_CONVERGENCE_ERROR: Occurs if the algorithm failed to converge.
+        !!
+        !! @par Example
+        !! @code{.f90}
+        !! program example
+        !!     use iso_fortran_env
+        !!     use vibrations
+        !!     use constants
+        !!     use fplot_core, only : linspace
+        !!     implicit none
+        !!
+        !!     ! Construct the model to represent a mechanical system with
+        !!     ! the following properties:
+        !!     ! - Natural Frequency: 50 Hz
+        !!     ! - Damping Ratio: 0.1
+        !!     ! - Sprung Mass: 20 kg
+        !!     ! - Force Amplitude: 1 kN
+        !!
+        !!     ! Model Parameters
+        !!     real(real64), parameter :: fn = 5.0d1
+        !!     real(real64), parameter :: zeta = 1.0d-1
+        !!     real(real64), parameter :: mass = 2.0d1
+        !!     real(real64), parameter :: force = 1.0d3
+        !!     integer(int32), parameter :: npts = 1000
+        !!
+        !!     ! Local Variables
+        !!     type(LTI) :: sys
+        !!     real(real64) :: wn
+        !!
+        !!     ! Build the model noting the equation of motion is:
+        !!     ! x" + 2 zeta * wn x' + wn**2 = F / m
+        !!     wn = 2.0d0 * pi * fn
+        !!     call sys%numerator%initialize([force / mass])
+        !!     call sys%denominator%initialize([wn**2, 2.0d0 * zeta * wn, 1.0d0])
+        !!
+        !!     ! Plot the pole-zero diagram
+        !!     call sys%pole_zero_plot()
+        !! end program
+        !! @endcode
+        !! The above code produces the following output.
+        !! @image html lti_pole_zero_1.png
         procedure, public :: pole_zero_plot => lti_pole_zero_plot
 
         ! TO DO:
         ! - Provide a routine to convert to a state space model
-        ! - Provide a pole-zero plotting routine
     end type
 
     ! TO DO:
-    ! - Provide routines for computing natural frequencies and damping ratios from pole information
     ! - Create a state-space model type
 
 ! ******************************************************************************
@@ -403,6 +462,75 @@ module vibrations
             type(pole_zero_settings), intent(in), optional :: settings
             class(errors), intent(inout), optional :: err
         end subroutine
+    end interface
+
+    interface
+        !> @brief Computes the resonant frequency and damping ratio information
+        !! for a system given the complex-valued pole information for the system.
+        !!
+        !! @param[in] poles An N-element array containing the system poles.
+        !! @return An M-by-2 matrix containing the natural frequency values, in Hz,
+        !!  in the first column, and the damping ratio values in the second column.
+        !!  M is less than or equal to N noting that complex-conjugate pairs are
+        !!  representative of only one resonant mode.
+        !!
+        !! @par Example
+        !! @code{.f90}
+        !! program example
+        !!     use iso_fortran_env
+        !!     use vibrations
+        !!     use constants
+        !!     use fplot_core, only : linspace
+        !!     implicit none
+        !!
+        !!     ! Construct the model to represent a mechanical system with
+        !!     ! the following properties:
+        !!     ! - Natural Frequency: 50 Hz
+        !!     ! - Damping Ratio: 0.1
+        !!     ! - Sprung Mass: 20 kg
+        !!     ! - Force Amplitude: 1 kN
+        !!
+        !!     ! Model Parameters
+        !!     real(real64), parameter :: fn = 5.0d1
+        !!     real(real64), parameter :: zeta = 1.0d-1
+        !!     real(real64), parameter :: mass = 2.0d1
+        !!     real(real64), parameter :: force = 1.0d3
+        !!     integer(int32), parameter :: npts = 1000
+        !!
+        !!     ! Local Variables
+        !!     type(LTI) :: sys
+        !!     real(real64) :: wn
+        !!     complex(real64), allocatable, dimension(:) :: poles
+        !!     real(real64), allocatable, dimension(:,:) :: info
+        !!
+        !!     ! Build the model noting the equation of motion is:
+        !!     ! x" + 2 zeta * wn x' + wn**2 = F / m
+        !!     wn = 2.0d0 * pi * fn
+        !!     call sys%numerator%initialize([force / mass])
+        !!     call sys%denominator%initialize([wn**2, 2.0d0 * zeta * wn, 1.0d0])
+        !!
+        !!     ! Compute the system poles
+        !!     poles = sys%compute_poles()
+        !!
+        !!     ! Compute the modal information for the system
+        !!     info = modal_info_from_poles(poles)
+        !!
+        !!     ! Display the resonant frequency and damping ratio
+        !!     print '(AI0)', "# of modes found: ", size(info, 1)
+        !!     print '(AF5.2A)', "Natural Frequency: ", info(1,1), " Hz"
+        !!     print '(AF4.2)', "Damping Ratio: ", info(1, 2)
+        !! end program
+        !! @endcode
+        !! The above program produces the following output.
+        !! @code{.txt}
+        !! # of modes found: 1
+        !! Natural Frequency: 50.00 Hz
+        !! Damping Ratio: 0.10
+        !! @endcode
+        pure module function modal_info_from_poles(poles) result(x)
+            complex(real64), intent(in), dimension(:) :: poles
+            real(real64), allocatable, dimension(:,:) :: x
+        end function
     end interface
 
 end module
