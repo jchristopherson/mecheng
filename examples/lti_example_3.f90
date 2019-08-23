@@ -4,7 +4,6 @@ program example
     use iso_fortran_env
     use vibrations
     use constants
-    use fplot_core, only : linspace
     implicit none
 
     ! Construct the model to represent a mechanical system with
