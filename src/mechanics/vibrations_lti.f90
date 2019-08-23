@@ -333,7 +333,7 @@ contains
         ! Construct B
         ss%B = 0.0d0
         nb = this%numerator%order()
-        do i = 1, nb
+        do i = 1, nb + 1
             ss%B(n-i+1,1) = this%numerator%get(i)
         end do
 
