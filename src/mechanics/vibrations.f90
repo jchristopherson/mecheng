@@ -17,6 +17,7 @@ module vibrations
     public :: bode_settings
     public :: pole_zero_settings
     public :: LTI
+    public :: state_space
     public :: modal_info_from_poles
 
     ! TO DO:
@@ -69,7 +70,7 @@ module vibrations
     end type
 
     !> @brief Defines a means of describing a continuous-time linear 
-    !! time invariant (LTI) system.
+    !! time invariant (LTI) system by means of a transfer function.
     type :: LTI
         !> @brief The numerator of the transfer function.
         type(polynomial), public :: numerator
@@ -257,9 +258,75 @@ module vibrations
         !! The above code produces the following output.
         !! @image html lti_pole_zero_1.png
         procedure, public :: pole_zero_plot => lti_pole_zero_plot
+        !> @brief Converts the transfer function form of the LTI system to a
+        !! state-space representation.
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! subroutine to_state_space(class(LTI) this, class(state_space) ss, optional class(errors) err)
+        !! @endcode
+        !!
+        !! @param[in] this The LTI object.
+        !! @param[out] ss The state-space model object to populate.
+        !! @param[in,out] err An optional errors-based object that if provided can be
+        !!  used to retrieve information relating to any errors encountered during
+        !!  execution.  If not provided, a default implementation of the errors
+        !!  class is used internally to provide error handling.  Possible errors and
+        !!  warning messages that may be encountered are as follows.
+        !!  - MECH_INVALID_TRANSFER_FUNCTION_ERROR: Occurs if the transfer function is invalid.
+        !!      See validate for more information.
+        !!
+        !! @par Example
+        !! @code{.f90}
+        !! @endcode
+        procedure, public :: to_state_space => lti_to_ss
+    end type
 
-        ! TO DO:
-        ! - Provide a routine to convert to a state space model
+    !> @brief Defines a means of describing a time-invariant system by means of 
+    !! a state-space representation.
+    !!
+    !! @par Description
+    !! A continuous-time dynamic oscillator can be described by the state-space equations
+    !! @par \f$ \frac{dx}{dt} = A x + B u \f$
+    !! @par \f$ y = C x + D u \f$,
+    !! @par where x is the state vector, and u is the forcing function vector.
+    !! @par The state space representation can be related to the transfer function
+    !! representation by
+    !! @par \f$ H(s) = C(s I - A)^{-1} B + D.
+    !! @par In a discrete-time system, the a dynamic oscillator can be described by
+    !! the state-space equations
+    !! @par \f$ x(k+1) = A x(k) + B u(k) \f$
+    !! @par \f$ y(k) = C x(k) + D u(k) \f$,
+    !! @par where x is the state vector, and u is the forcing function vector.
+    !! @par The state space representation can be related to the transfer function
+    !! representation by
+    !! @par \f$ H(z) = C(z I - A)^{-1} B + D.
+    type :: state_space
+    private
+        !> @brief The state matrix.  If the system has p inputs, q outputs,
+        !! and is described by n state variables, this matrix is then
+        !! n-by-n in size.
+        real(real64), public, allocatable, dimension(:,:) :: A
+        !! @brief The input-to-state matrix.  If the system has p inputs,
+        !! q outputs, and is described by n state variables, this matrix is
+        !! then n-by-p in size.
+        real(real64), public, allocatable, dimension(:,:) :: B
+        !> @brief The state-to-output matrix.  If the system has p inputs,
+        !! q outputs, and is described by n state variables, this matrix is
+        !! then q-by-n in size.
+        real(real64), public, allocatable, dimension(:,:) :: C
+        !> @brief The feedthrough matrix.  If the system has p inputs,
+        !! q outputs, and is described by n state variables, this matrix is
+        !! then q-by-p in size.
+        real(real64), public, allocatable, dimension(:,:) :: D
+    contains
+        generic, public :: evaluate_inplace => ss_eval_npts_inplace, ss_eval_inplace
+        generic, public :: evaluate => ss_eval_npts, ss_eval
+
+        procedure :: ss_eval_npts_inplace
+        procedure :: ss_eval_inplace
+        procedure :: ss_eval_npts
+        procedure :: ss_eval
     end type
 
     ! TO DO:
@@ -462,6 +529,12 @@ module vibrations
             type(pole_zero_settings), intent(in), optional :: settings
             class(errors), intent(inout), optional :: err
         end subroutine
+
+        module subroutine lti_to_ss(this, ss, err)
+            class(LTI), intent(in) :: this
+            class(state_space), intent(out) :: ss
+            class(errors), intent(inout), optional, target :: err
+        end subroutine
     end interface
 
     interface
@@ -530,6 +603,42 @@ module vibrations
         pure module function modal_info_from_poles(poles) result(x)
             complex(real64), intent(in), dimension(:) :: poles
             real(real64), allocatable, dimension(:,:) :: x
+        end function
+    end interface
+
+! ******************************************************************************
+! VIBRATIONS_SS.F90
+! ------------------------------------------------------------------------------
+    interface
+        module subroutine ss_eval_npts_inplace(this, x, u, y, err)
+            class(state_space), intent(in) :: this
+            real(real64), intent(inout), dimension(:) :: x
+            real(real64), intent(in), dimension(:,:) :: u
+            real(real64), intent(out), dimension(:,:) :: y
+            class(errors), intent(inout), optional, target :: err
+        end subroutine
+
+        module subroutine ss_eval_inplace(this, x, u, y, err)
+            class(state_space), intent(in) :: this
+            real(real64), intent(inout), dimension(:) :: x
+            real(real64), intent(in), dimension(:) :: u
+            real(real64), intent(out), dimension(:) :: y
+            class(errors), intent(inout), optional, target :: err
+        end subroutine
+
+        module function ss_eval_npts(this, xo, u, err) result(y)
+            class(state_space), intent(in) :: this
+            real(real64), intent(in), dimension(:) :: xo
+            real(real64), intent(in), dimension(:,:) :: u
+            class(errors), intent(inout), optional, target :: err
+            real(real64), allocatable, dimension(:,:) :: y
+        end function
+
+        module function ss_eval(this, xo, u, err) result(y)
+            class(state_space), intent(in) :: this
+            real(real64), intent(in), dimension(:) :: xo, u
+            class(errors), intent(inout), optional, target :: err
+            real(real64), allocatable, dimension(:) :: y
         end function
     end interface
 
