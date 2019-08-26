@@ -5,6 +5,7 @@ program example
     use vibrations
     use constants
     use fplot_core
+    use integral_core
     implicit none
 
     ! Construct the model to represent a mechanical system with
@@ -28,12 +29,16 @@ program example
     ! Local Variables
     type(LTI) :: sys
     type(state_space) :: mdl
-    real(real64) :: wn, xo(2)
     integer(int32) :: i
-    real(real64) :: t(npts), u(1, npts), y(1, npts)
+    real(real64) :: wn, xo(2), t(2)
+    real(real64), allocatable, dimension(:,:) :: mdlOut, dirOut
+    type(ode_helper) :: ssObj, dirObj
+    type(ode_auto) :: integrator
+    procedure(ode_fcn), pointer :: ssFcn, dirFcn
     type(plot_2d) :: plt
-    type(plot_data_2d) :: ds1
+    type(plot_data_2d) :: ds1, ds2
     class(plot_axis), pointer :: xAxis, yAxis
+    class(legend), pointer :: lgnd
 
     ! Build the model noting the equation of motion is:
     ! x" + 2 zeta * wn x' + wn**2 = F / m
@@ -67,20 +72,23 @@ program example
     do i = 1, size(mdl%D, 1)
         print *, mdl%D(i,:)
     end do
+    
+    ! Set up the integrator
+    ssFcn => state_space_model
+    call ssObj%define_equations(2, ssFcn)
 
-    ! Build a sample time vector, and a forcing function
-    do i = 1, npts
-        if (i == 1) then
-            t(i) = 0.0d0
-        else
-            t(i) = t(i-1) + dt
-        end if
-        u(1,i) = sin(2.0d0 * pi * freq * t(i))
-    end do
+    dirFcn => direct_equations
+    call dirObj%define_equations(2, dirFcn)
 
-    ! Evaluate the state-space model assuming an initial zero-state
-    xo = 0.0d0
-    call mdl%evaluate_inplace(xo, u, y)
+    ! Define the initial conditions
+    t = [0.0d0, 1.0d0]
+    xo = [0.0d0, 0.0d0]
+
+    ! Perform the integration
+    mdlOut = integrator%integrate(ssObj, t, xo)
+
+    call integrator%reset()
+    dirOut = integrator%integrate(dirObj, t, xo)
 
     ! Plot the solution
     call plt%initialize()
@@ -93,7 +101,54 @@ program example
     call xAxis%set_title("Time (s)")
     call yAxis%set_title("Position (mm)")
 
-    call ds1%define_data(t, 1.0d3 * y(1,:))
+    lgnd => plt%get_legend()
+    call lgnd%set_is_visible(.true.)
+    call lgnd%set_draw_border(.false.)
+    call lgnd%set_draw_inside_axes(.false.)
+    call lgnd%set_horizontal_position(LEGEND_CENTER)
+
+    call ds1%set_name("State-Space Model")
+    call ds1%define_data(mdlOut(:,1), 1.0d3 * mdlOut(:,2))
     call plt%push(ds1)
+
+    call ds2%set_name("Direct")
+    call ds2%define_data(dirOut(:,1), 1.0d3 * dirOut(:,2))
+    call ds2%set_draw_line(.false.)
+    call ds2%set_draw_markers(.true.)
+    call plt%push(ds2)
+
     call plt%draw()
+
+contains
+    ! The routine utilizing the state-space model
+    subroutine state_space_model(t, x, dxdt)
+        ! Arguments
+        real(real64), intent(in) :: t
+        real(real64), intent(in), dimension(:) :: x
+        real(real64), intent(out), dimension(:) :: dxdt
+
+        ! Local Variables
+        real(real64) :: u(1)
+        real(real64), allocatable, dimension(:) :: y
+
+        ! Define the forcing function
+        u(1) = sin(2.0d0 * pi * freq * t)
+
+        ! Evaluate the state space model
+        dxdt = x    ! Use to store the current state, the model will update
+        y = mdl%evaluate(dxdt, u)
+    end subroutine
+
+    ! Direct application of the equations
+    subroutine direct_equations(t, x, dxdt)
+        ! Arguments
+        real(real64), intent(in) :: t
+        real(real64), intent(in), dimension(:) :: x
+        real(real64), intent(out), dimension(:) :: dxdt
+
+        ! Define the output
+        dxdt(1) = x(2)
+        dxdt(2) = (force / mass) * sin(2.0d0 * pi * freq * t) - &
+            (2.0d0 * zeta * wn * x(2) + wn**2 * x(1))
+    end subroutine
 end program
