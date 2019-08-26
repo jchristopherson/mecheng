@@ -89,3 +89,7 @@ target_link_libraries(lti_example_3 mecheng)
 # LTI EXAMPLE 4
 add_executable(lti_example_4 lti_example_4.f90)
 target_link_libraries(lti_example_4 mecheng)
+
+# LTI EXAMPLE 5
+add_executable(lti_example_5 lti_example_5.f90)
+target_link_libraries(lti_example_5 mecheng)
