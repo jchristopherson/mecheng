@@ -146,7 +146,7 @@ module vibrations
         !!
         !! @par Syntax
         !! @code{.f90}
-        !! subroutine bode(class(LTI) this, real(real64) freq(:), optional type(bode_settings) settings)
+        !! subroutine bode(class(LTI) this, real(real64) freq(:), optional type(bode_settings) settings, optional class(errors) err)
         !! @endcode
         !!
         !! @param[in] this The LTI object.
@@ -154,6 +154,13 @@ module vibrations
         !!  at which to evaluate the transfer function, in Hz.
         !! @param[in] settings An optional input that provides a means of 
         !!  controlling the appearance and behavior of the plot.
+        !! @param[in,out] err An optional errors-based object that if provided can be
+        !!  used to retrieve information relating to any errors encountered during
+        !!  execution.  If not provided, a default implementation of the errors
+        !!  class is used internally to provide error handling.  Possible errors and
+        !!  warning messages that may be encountered are as follows.
+        !!  - MECH_INVALID_TRANSFER_FUNCTION_ERROR: Occurs if the transfer function is invalid.
+        !!      See validate for more information.
         !!
         !! @par Example
         !! @code{.f90}
@@ -881,16 +888,17 @@ module vibrations
             complex(real64) :: x
         end function
 
-        module subroutine lti_bode(this, freq, settings)
+        module subroutine lti_bode(this, freq, settings, err)
             class(LTI), intent(in) :: this
             real(real64), intent(in), dimension(:) :: freq
             type(bode_settings), intent(in), optional :: settings
+            class(errors), intent(inout), optional, target :: err
         end subroutine
 
         module subroutine lti_pole_zero_plot(this, settings, err)
             class(LTI), intent(in) :: this
             type(pole_zero_settings), intent(in), optional :: settings
-            class(errors), intent(inout), optional :: err
+            class(errors), intent(inout), optional, target :: err
         end subroutine
 
         module subroutine lti_to_ss(this, ss, err)

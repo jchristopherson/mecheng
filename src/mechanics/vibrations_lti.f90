@@ -103,7 +103,7 @@ contains
     end function
 
 ! ------------------------------------------------------------------------------
-    module subroutine lti_bode(this, freq, settings)
+    module subroutine lti_bode(this, freq, settings, err)
         ! Required Module Support
         use constants, only : pi
         use arrays, only : unwrap
@@ -112,11 +112,14 @@ contains
         class(LTI), intent(in) :: this
         real(real64), intent(in), dimension(:) :: freq
         type(bode_settings), intent(in), optional :: settings
+        class(errors), intent(inout), optional, target :: err
 
         ! Parameters
         real(real64), parameter :: zero = 0.0d0
 
         ! Local Variables
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
         class(terminal), pointer :: term
         type(multiplot) :: plt
         type(plot_2d) :: plt1, plt2
@@ -131,6 +134,11 @@ contains
         real(real32) :: lineWidth
 
         ! Initialization
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
         unwrapPhase = .true.
         fontName = "Arial"
         fontSize = 11
@@ -144,6 +152,14 @@ contains
             height = settings%window_height
             width = settings%window_width
             lineWidth = settings%line_width
+        end if
+
+        ! Ensure the transfer function is valid
+        if (.not.this%validate()) then
+            call errmgr%report_error("lti_bode", &
+                "The transfer function is not valid.", &
+                MECH_INVALID_TRANSFER_FUNCTION_ERROR)
+            return
         end if
 
         ! Construct the transfer function, and convert the gain to dB
@@ -204,9 +220,11 @@ contains
         ! Arguments
         class(LTI), intent(in) :: this
         type(pole_zero_settings), intent(in), optional :: settings
-        class(errors), intent(inout), optional :: err
+        class(errors), intent(inout), optional, target :: err
 
         ! Local Variables
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
         type(plot_2d) :: plt
         type(plot_data_2d) :: d1, d2
         class(plot_axis), pointer :: xAxis, yAxis
@@ -218,6 +236,11 @@ contains
         logical :: showLegend
 
         ! Initialization
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
         fontName = "Arial"
         fontSize = 11
         lineWidth = 1.5
@@ -229,6 +252,14 @@ contains
             lineWidth = settings%line_width
             markerSize = settings%marker_size
             showLegend = settings%show_legend
+        end if
+
+        ! Ensure the transfer function is valid
+        if (.not.this%validate()) then
+            call errmgr%report_error("lti_pole_zero_plot", &
+                "The transfer function is not valid.", &
+                MECH_INVALID_TRANSFER_FUNCTION_ERROR)
+            return
         end if
 
         ! Compute the poles and zeros of the system
