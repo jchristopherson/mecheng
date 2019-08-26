@@ -52,6 +52,110 @@ contains
     end function
 
 ! ------------------------------------------------------------------------------
+    module function ss_tf_eval(this, s, err) result(h)
+        use linalg_core
+
+        ! Arguments
+        class(state_space), intent(in) :: this
+        complex(real64), intent(in) :: s
+        class(errors), intent(inout), optional, target :: err
+        complex(real64), allocatable, dimension(:,:) :: h
+
+        ! Local Variables
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+        integer(int32) :: n, nb, flag, nout, nin
+        integer(int32), allocatable, dimension(:) :: pvt
+        complex(real64), allocatable, dimension(:,:) :: a, x
+
+        ! Initialization
+        n = size(this%A, 1)
+        nb = size(this%B, 2)
+        nin = size(this%D, 2)
+        nout = size(this%D, 1)
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+
+        ! The transfer function H(s) can be computed as follows:
+        ! H(s) = C * (s * I - A)**-1 * B + D.  The matrix inversion
+        ! component is more readily computed by letting 
+        ! X = (s * I - A)**-1 * B (i.e. solving (s * I - A) * X = B) 
+        ! by means of LU or QR factorization.  As s * I - A should be
+        ! full rank, LU factorization with partial pivoting is the 
+        ! preferred method.
+
+        ! Local Memory Allocation
+        allocate(a(n, n), stat = flag)
+        if (flag == 0) allocate(x(n, nb), stat = flag)
+        if (flag == 0) allocate(h(nout, nin), stat = flag)
+        if (flag == 0) allocate(pvt(n), stat = flag)
+        if (flag /= 0) then
+            call errmgr%report_error("ss_tf_eval", &
+                "Insufficient memory available.", &
+                MECH_OUT_OF_MEMORY_ERROR)
+            return
+        end if
+
+        ! Compute H(s) = C * (s * I - A)**-1 * B + D
+        call compute_h(this%A, this%B, this%C, this%D, s, h, a, x, pvt)
+    end function
+
+! ------------------------------------------------------------------------------
+    module function ss_tf_eval_array(this, s, err) result(h)
+        ! Arguments
+        class(state_space), intent(in) :: this
+        complex(real64), intent(in), dimension(:) :: s
+        class(errors), intent(inout), optional, target :: err
+        complex(real64), allocatable, dimension(:,:,:) :: h
+
+        ! Local Variables
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+        integer(int32) :: k, npts, n, nb, flag, nin, nout
+        integer(int32), allocatable, dimension(:) :: pvt
+        complex(real64), allocatable, dimension(:,:) :: a, x
+
+        ! Initialization
+        n = size(this%A, 1)
+        nb = size(this%B, 2)
+        nin = size(this%D, 2)
+        nout = size(this%D, 1)
+        npts = size(s)
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+
+        ! The transfer function H(s) can be computed as follows:
+        ! H(s) = C * (s * I - A)**-1 * B + D.  The matrix inversion
+        ! component is more readily computed by letting 
+        ! X = (s * I - A)**-1 * B (i.e. solving (s * I - A) * X = B) 
+        ! by means of LU or QR factorization.  As s * I - A should be
+        ! full rank, LU factorization with partial pivoting is the 
+        ! preferred method.
+
+        ! Local Memory Allocation
+        allocate(a(n, n), stat = flag)
+        if (flag == 0) allocate(x(n, nb), stat = flag)
+        if (flag == 0) allocate(h(nout, nin, npts))
+        if (flag == 0) allocate(pvt(n), stat = flag)
+        if (flag /= 0) then
+            call errmgr%report_error("ss_tf_eval_array", &
+                "Insufficient memory available.", &
+                MECH_OUT_OF_MEMORY_ERROR)
+            return
+        end if
+
+        ! Loop over each point in S
+        do k = 1, npts
+            ! Compute H(s) = C * (s * I - A)**-1 * B + D
+            call compute_h(this%A, this%B, this%C, this%D, s(k), h(:,:,k), a, x, pvt)
+        end do
+    end function
 
 ! ------------------------------------------------------------------------------
 
@@ -61,8 +165,48 @@ contains
 
 ! ------------------------------------------------------------------------------
 
-! ------------------------------------------------------------------------------
+! ******************************************************************************
+    ! Computes: H(s) = C * (s * I - A) * B + D
+    subroutine compute_h(A, B, C, D, s, H, workA, workB, iwork)
+        use linalg_core
 
+        ! Arguments
+        real(real64), intent(in), dimension(:,:) :: A, B, C, D
+        complex(real64), intent(in) :: s
+        complex(real64), intent(out), dimension(:,:) :: H, workA, workB
+        integer(int32), intent(out), dimension(:) :: iwork
+
+        ! Parameters
+        complex(real64), parameter :: one = (1.0d0, 0.0d0)
+
+        ! Local Variables
+        integer(int32) :: i, j, n, nin, nout
+
+        ! Initialization
+        n = size(A, 1)
+        nin = size(h, 1)
+        nout = size(h, 2)
+
+        ! Process
+        do j = 1, n
+            do i = 1, n
+                if (i == j) then
+                    workA(i,j) = s - A(i,j)
+                else
+                    workA(i,j) = -cmplx(A(i,j), kind = real64)
+                end if
+            end do
+        end do
+
+        ! Solve (s * I - A) * X = B for X
+        call lu_factor(workA, iwork)
+        workB = cmplx(B, kind = real64)
+        call solve_lu(workA, iwork, workB)
+
+        ! Compute H = C * X + D as X = (s * I - A)**-1 * B
+        h = cmplx(D, kind = real64)
+        call zgemm('N', 'N', nin, nout, n, one, C, nin, workA, n, one, h, nin)
+    end subroutine
 ! ------------------------------------------------------------------------------
 
 ! ------------------------------------------------------------------------------

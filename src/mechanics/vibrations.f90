@@ -697,6 +697,10 @@ module vibrations
         !! @endcode
         !! @html image lti_state_space_1.png
         procedure, public :: evaluate => ss_eval
+        generic, public :: evaluate_transfer_function => ss_tf_eval, ss_tf_eval_array
+
+        procedure :: ss_tf_eval
+        procedure :: ss_tf_eval_array
     end type
 
     ! TO DO:
@@ -986,6 +990,20 @@ module vibrations
             real(real64), intent(in), dimension(:) :: u
             class(errors), intent(inout), optional, target :: err
             real(real64), allocatable, dimension(:) :: y
+        end function
+
+        module function ss_tf_eval(this, s, err) result(h)
+            class(state_space), intent(in) :: this
+            complex(real64), intent(in) :: s
+            class(errors), intent(inout), optional, target :: err
+            complex(real64), allocatable, dimension(:,:) :: h
+        end function
+
+        module function ss_tf_eval_array(this, s, err) result(h)
+            class(state_space), intent(in) :: this
+            complex(real64), intent(in), dimension(:) :: s
+            class(errors), intent(inout), optional, target :: err
+            complex(real64), allocatable, dimension(:,:,:) :: h
         end function
     end interface
 
