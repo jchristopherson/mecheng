@@ -66,7 +66,7 @@ contains
         type(errors), target :: deferr
         integer(int32) :: n, nb, flag, nout, nin
         integer(int32), allocatable, dimension(:) :: pvt
-        complex(real64), allocatable, dimension(:,:) :: a, x
+        complex(real64), allocatable, dimension(:,:) :: a, c, x
 
         ! Initialization
         n = size(this%A, 1)
@@ -92,6 +92,7 @@ contains
         if (flag == 0) allocate(x(n, nb), stat = flag)
         if (flag == 0) allocate(h(nout, nin), stat = flag)
         if (flag == 0) allocate(pvt(n), stat = flag)
+        if (flag == 0) allocate(c(nout, n), stat = flag)
         if (flag /= 0) then
             call errmgr%report_error("ss_tf_eval", &
                 "Insufficient memory available.", &
@@ -100,7 +101,7 @@ contains
         end if
 
         ! Compute H(s) = C * (s * I - A)**-1 * B + D
-        call compute_h(this%A, this%B, this%C, this%D, s, h, a, x, pvt)
+        call compute_h(this%A, this%B, this%C, this%D, s, h, a, x, c, pvt)
     end function
 
 ! ------------------------------------------------------------------------------
@@ -116,7 +117,7 @@ contains
         type(errors), target :: deferr
         integer(int32) :: k, npts, n, nb, flag, nin, nout
         integer(int32), allocatable, dimension(:) :: pvt
-        complex(real64), allocatable, dimension(:,:) :: a, x
+        complex(real64), allocatable, dimension(:,:) :: a, c, x
 
         ! Initialization
         n = size(this%A, 1)
@@ -143,6 +144,7 @@ contains
         if (flag == 0) allocate(x(n, nb), stat = flag)
         if (flag == 0) allocate(h(nout, nin, npts))
         if (flag == 0) allocate(pvt(n), stat = flag)
+        if (flag == 0) allocate(c(nout, n), stat = flag)
         if (flag /= 0) then
             call errmgr%report_error("ss_tf_eval_array", &
                 "Insufficient memory available.", &
@@ -153,7 +155,8 @@ contains
         ! Loop over each point in S
         do k = 1, npts
             ! Compute H(s) = C * (s * I - A)**-1 * B + D
-            call compute_h(this%A, this%B, this%C, this%D, s(k), h(:,:,k), a, x, pvt)
+            call compute_h(this%A, this%B, this%C, this%D, s(k), &
+                h(:,:,k), a, x, c, pvt)
         end do
     end function
 
@@ -167,13 +170,13 @@ contains
 
 ! ******************************************************************************
     ! Computes: H(s) = C * (s * I - A) * B + D
-    subroutine compute_h(A, B, C, D, s, H, workA, workB, iwork)
+    subroutine compute_h(A, B, C, D, s, H, workA, workB, workC, iwork)
         use linalg_core
 
         ! Arguments
         real(real64), intent(in), dimension(:,:) :: A, B, C, D
         complex(real64), intent(in) :: s
-        complex(real64), intent(out), dimension(:,:) :: H, workA, workB
+        complex(real64), intent(out), dimension(:,:) :: H, workA, workB, workC
         integer(int32), intent(out), dimension(:) :: iwork
 
         ! Parameters
@@ -201,12 +204,14 @@ contains
         ! Solve (s * I - A) * X = B for X
         call lu_factor(workA, iwork)
         workB = cmplx(B, kind = real64)
-        call solve_lu(workA, iwork, workB)
+        call solve_lu(workA, iwork, workB) ! workB holds X upon completion of this call
 
         ! Compute H = C * X + D as X = (s * I - A)**-1 * B
         h = cmplx(D, kind = real64)
-        call zgemm('N', 'N', nin, nout, n, one, C, nin, workA, n, one, h, nin)
+        workC = cmplx(C, kind = real64)
+        call zgemm('N', 'N', nin, nout, n, one, workC, nin, workB, n, one, h, nin)
     end subroutine
+    
 ! ------------------------------------------------------------------------------
 
 ! ------------------------------------------------------------------------------
