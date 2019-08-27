@@ -29,6 +29,7 @@ program example
     real(real64) :: wn
     real(real64), allocatable, dimension(:) :: freq, omega, &
         magLTI, phaseLTI, magSS, phaseSS
+    complex(real64) :: offset
     complex(real64), allocatable, dimension(:) :: s, tfLTI
     complex(real64), allocatable, dimension(:,:,:) :: tfSS
     type(multiplot) :: plt
@@ -58,10 +59,11 @@ program example
     tfSS = mdl%evaluate_transfer_function(s)
 
     ! Compute the magnitude and phase for each
-    magLTI = 2.0d1 * log10(abs(tfLTI))
+    offset = sys%evaluate(0.0d0)
+    magLTI = 2.0d1 * log10(abs(tfLTI / offset))
     phaseLTI = (1.8d2 / pi) * atan2(aimag(tfLTI), real(tfLTI))
 
-    magSS = 2.0d1 * log10(abs(tfSS(1,1,:)))
+    magSS = 2.0d1 * log10(abs(tfSS(1,1,:) / offset))
     phaseSS = (1.8d2 / pi) * atan2(aimag(tfSS(1,1,:)), real(tfSS(1,1,:)))
 
     ! Set up the plots
