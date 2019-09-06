@@ -1218,7 +1218,7 @@ module vibrations
         !!  excite the system of differential equations.  Units are expected
         !!  to be rad/s.
         !! @param[in] xo An M-element array containing the initial conditions 
-        !   for the initial excitation 
+        !!   for the initial excitation 
         !!  frequency analysis.
         !! @param[in] opt An optional input allowing controls over the process.
         !! @param[in,out] err An optional errors-based object that if provided can be
