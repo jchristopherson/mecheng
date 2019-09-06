@@ -8,6 +8,7 @@ module vibrations
     use linalg_core
     use constants
     use nonlin_polynomials
+    use integral_core
     implicit none
     private
     public :: modal_information
@@ -19,10 +20,14 @@ module vibrations
     public :: LTI
     public :: state_space
     public :: modal_info_from_poles
+    public :: harmonic_ode_fcn
+    public :: frequency_sweep_options
+    public :: compute_frequency_sweep
 
     ! TO DO:
     ! - Primary Oscillation Frequency Finder (Base upon an FFT, and return the largest magnitude non-DC frequency)
-    ! - Frequency Sweep Type FRF's
+    ! - FRF fitting
+    ! - LTI Transfer Function Math?
 
     !> @brief Contains modal information such as frequency and mode shape.
     type modal_information
@@ -69,6 +74,42 @@ module vibrations
         logical :: show_legend
     end type
 
+    interface
+        !> @brief Defines the signature of a routine for computing the values of
+        !! a system of differential equations exposed to a harmonic forcing 
+        !! function.
+        !!
+        !! @param[in] t The value of the independent variable at which to 
+        !!  evaluate the system of equations.
+        !! @param[in] x An N-element array containing the values of the 
+        !!  dependent variables at @p t.
+        !! @param[in] freq The frequency of the harmonic excitation, in rad/s.
+        !! @param[out] dxdt An N-element array where the output of the N
+        !!  ODE's should be written.
+        subroutine harmonic_ode_fcn(t, x, freq, dxdt)
+            use iso_fortran_env, only : real64
+            real(real64), intent(in) :: t, freq
+            real(real64), intent(in), dimension(:) :: x
+            real(real64), intent(out), dimension(:) :: dxdt
+        end subroutine
+    end interface
+
+    !> @brief A type containing options for frequency sweep FRF analyses.
+    type frequency_sweep_options
+        !> @brief The integrator to use.
+        class(ode_integrator), pointer :: integrator
+        !> @brief The number of forced oscillations to apply.
+        integer(int32) :: forced_cycle_count
+        !> @brief The number of the forced oscillations to utilize for
+        !! performing the actual measurement portion of the task.  This
+        !! value must be less than forced_cycle_count.
+        integer(int32) :: measured_cycle_count
+        !> @brief Set to true to display the status of the operation
+        !! to the command line; else, set to false to suppress printing.
+        logical :: display_status
+    end type
+
+! ------------------------------------------------------------------------------
     !> @brief Defines a means of describing a continuous-time linear 
     !! time invariant (LTI) system by means of a transfer function.
     type :: LTI
@@ -1160,6 +1201,183 @@ module vibrations
             complex(real64), intent(in), dimension(:) :: s
             class(errors), intent(inout), optional, target :: err
             complex(real64), allocatable, dimension(:,:,:) :: h
+        end function
+    end interface
+
+! ******************************************************************************
+! VIBRATIONS_SWEEP.F90
+! ------------------------------------------------------------------------------
+    interface
+        !> @brief Computes the frequency response of a system of harmonically 
+        !! excited differential equations by sweeping through the supplied
+        !! frequency range.
+        !!
+        !! @param[in] fcn A pointer to the routine containing the differential
+        !!  equations on which to operate.
+        !! @param[in] freq An N-element array of frequency values at which to
+        !!  excite the system of differential equations.  Units are expected
+        !!  to be rad/s.
+        !! @param[in] xo An M-element array containing the initial conditions 
+        !   for the initial excitation 
+        !!  frequency analysis.
+        !! @param[in] opt An optional input allowing controls over the process.
+        !! @param[in,out] err An optional errors-based object that if provided can be
+        !!  used to retrieve information relating to any errors encountered during
+        !!  execution.  If not provided, a default implementation of the errors
+        !!  class is used internally to provide error handling.  Possible errors and
+        !!  warning messages that may be encountered are as follows.
+        !!  - MECH_OUT_OF_MEMORY_ERROR: Occurs if insufficient memory is available.
+        !!  - MECH_INVALID_INPUT_ERROR: Occurs if an invalid option is specified.
+        !! @return An N-by-M matrix containing the responses of the M differential
+        !!  equations for each of the N frequency points of interest.
+        !!
+        !! @par Example
+        !! The following example illustrates how to compute the frequency response
+        !! of the Duffing equation.
+        !! @code{.f90}
+        !! program example
+        !!     use iso_fortran_env
+        !!     use vibrations
+        !!     use fplot_core
+        !!     use constants
+        !!     implicit none
+        !!
+        !!     ! Model Parameters
+        !!     real(real64), parameter :: delta = 1.0d-1
+        !!     real(real64), parameter :: alpha = 1.0d0
+        !!     real(real64), parameter :: gamma = 1.0d0
+        !!     real(real64), parameter :: beta = 2.0d-1
+        !!
+        !!     ! Additional Parameters
+        !!     integer(int32), parameter :: nfreq = 200
+        !!
+        !!     ! Local Variables
+        !!     procedure(harmonic_ode_fcn), pointer :: fcn
+        !!     real(real64) :: fup(nfreq), fdown(nfreq), xo(2)
+        !!     real(real64), allocatable, dimension(:,:) :: rup, rdown, ans
+        !!     type(plot_2d) :: plt
+        !!     type(plot_data_2d) :: dup, ddown, dans
+        !!     class(plot_axis), pointer :: xAxis, yAxis
+        !!     class(legend), pointer :: lgnd
+        !!
+        !!     ! Initialization
+        !!     fcn => duffing
+        !!     fup = linspace(1.0d-1, 1.0d0, nfreq)
+        !!     fdown = linspace(1.0d0, 1.0d-1, nfreq)
+        !!     xo = [0.0d0, 0.0d0]
+        !!
+        !!     ! Sweep through frequency to compute the solution - both up and down
+        !!     rup = compute_frequency_sweep(fcn, 2.0d0 * pi * fup, xo)
+        !!     rdown = compute_frequency_sweep(fcn, 2.0d0 * pi * fdown, xo)
+        !!
+        !!     ! Compute the analytical estimate of the FRF
+        !!     ans = duffing_frf()
+        !!
+        !!     ! Set up the plot
+        !!     call plt%initialize()
+        !!     call plt%set_font_size(11)
+        !!     call plt%set_font_name("Arial")
+        !!     xAxis => plt%get_x_axis()
+        !!     yAxis => plt%get_y_axis()
+        !!     lgnd => plt%get_legend()
+        !!
+        !!     call xAxis%set_title("Frequency")
+        !!     call xAxis%set_is_log_scaled(.true.)
+        !!     call yAxis%set_title("Amplitude")
+        !!     call lgnd%set_is_visible(.true.)
+        !!     call lgnd%set_horizontal_position(LEGEND_LEFT)
+        !!
+        !!     call dans%set_name("Analytical")
+        !!     call dans%define_data(ans(:,1), ans(:,2))
+        !!
+        !!     call dup%set_name("Upward")
+        !!     call dup%define_data(fup, rup(:,1))
+        !!     call dup%set_draw_line(.false.)
+        !!     call dup%set_draw_markers(.true.)
+        !!     call dup%set_marker_style(MARKER_EMPTY_CIRCLE)
+        !!
+        !!     call ddown%set_name("Downward")
+        !!     call ddown%define_data(fdown, rdown(:,1))
+        !!     call ddown%set_draw_line(.false.)
+        !!     call ddown%set_draw_markers(.true.)
+        !!     call ddown%set_marker_style(MARKER_X)
+        !!
+        !!     call plt%push(dans)
+        !!     call plt%push(dup)
+        !!     call plt%push(ddown)
+        !!     call plt%draw()
+        !!
+        !! contains
+        !!     ! The Duffing equation.
+        !!     !
+        !!     ! x" + delta * x' + alpha * x + beta * x**3 = gamma * sin(omega * t)
+        !!     subroutine duffing(t, x, omega, dxdt)
+        !!         real(real64), intent(in) :: t, omega
+        !!         real(real64), intent(in), dimension(:) :: x
+        !!         real(real64), intent(out), dimension(:) :: dxdt
+        !!
+        !!         ! Equations of motion
+        !!         dxdt(1) = x(2)
+        !!         dxdt(2) = gamma * sin(omega * t) - delta * x(2) - alpha * x(1) - beta * x(1)**3
+        !!     end subroutine
+        !!
+        !!     ! An analytical representation of the frequency response of Duffing's equation.
+        !!     function duffing_frf() result(rst)
+        !!         ! Arguments
+        !!         real(real64), allocatable, dimension(:,:) :: rst
+        !!
+        !!         ! Parameters
+        !!         integer(int32), parameter :: npts = 100
+        !!         real(real64), parameter :: maxfreq = 1.0d0
+        !!         real(real64), parameter :: minfreq = 1.0d-2
+        !!
+        !!         ! Local Variables
+        !!         integer(int32) :: i, j
+        !!         real(real64) :: w2, f, x
+        !!         real(real64), allocatable, dimension(:) :: z, arg1, arg2
+        !!         real(real64), allocatable, dimension(:,:) :: buffer
+        !!
+        !!         ! Initialization
+        !!         z = linspace(1.0d-2, 1.0d1, npts)
+        !!         allocate(buffer(2 * npts, 2))
+        !!
+        !!         ! Process
+        !!         arg1 = 4.0d0 * gamma**2 - 3.0d0 * beta * delta**2 * z**4 + &
+        !!             (delta**4 - 4.0d0 * alpha * delta**2) * z**2
+        !!         arg2 = 3.0d0 * beta * z**3 + (4.0d0 * alpha - 2.0d0 * delta**2) * z
+        !!
+        !!         j = 0
+        !!         do i = 1, npts
+        !!             if (arg1(i) < 0.0d0) cycle
+        !!             w2 = (2.0d0 * sqrt(arg1(i)) + arg2(i)) / (4.0d0 * z(i))
+        !!             f = sqrt(w2) / (2.0d0 * pi)
+        !!             if (f < minfreq .or. f > maxfreq) cycle
+        !!             j = j + 1
+        !!             buffer(j,1) = f
+        !!             buffer(j,2) = z(i)
+        !!         end do
+        !!         do i = 1, npts
+        !!             if (arg1(i) < 0.0d0) cycle
+        !!             w2 = -(2.0d0 * sqrt(arg1(i)) - arg2(i)) / (4.0d0 * z(i))
+        !!             f = sqrt(w2) / (2.0d0 * pi)
+        !!             if (f < minfreq .or. f > maxfreq) cycle
+        !!             j = j + 1
+        !!             buffer(j,1) = f
+        !!             buffer(j,2) = z(i)
+        !!         end do
+        !!         allocate(rst(j,2))
+        !!         rst = buffer(1:j,:)
+        !!     end function
+        !! end program
+        !! @endcode
+        !! The above program produces the following output.
+        !! @image html frequency_sweep_duffing.png
+        module function compute_frequency_sweep(fcn, freq, xo, opt, err) result(rst)
+            procedure(harmonic_ode_fcn), intent(in), pointer :: fcn
+            real(real64), intent(in), dimension(:) :: freq, xo
+            type(frequency_sweep_options), intent(in), optional :: opt
+            class(errors), intent(inout), optional, target :: err
+            real(real64), allocatable, dimension(:,:) :: rst
         end function
     end interface
 
