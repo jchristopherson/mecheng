@@ -413,6 +413,7 @@ set(mechanics_sources
     mechanics/vibrations_modal.f90
     mechanics/vibrations_lti.f90
     mechanics/vibrations_ss.f90
+    mechanics/vibrations_sweep.f90
     mechanics/mechanics_constants.f90
     mechanics/friction.f90
 )
