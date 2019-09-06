@@ -93,3 +93,7 @@ target_link_libraries(lti_example_4 mecheng)
 # LTI EXAMPLE 5
 add_executable(lti_example_5 lti_example_5.f90)
 target_link_libraries(lti_example_5 mecheng)
+
+# FREQUENCY SWEEP EXAMPLE 1
+add_executable(frequency_sweep_example_1 frequency_sweep_example_1.f90)
+target_link_libraries(frequency_sweep_example_1 mecheng)
