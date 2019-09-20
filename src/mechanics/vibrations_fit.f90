@@ -127,6 +127,8 @@ contains
     !       - M-by-(N+1) - Dk
     !       - M-by-2*(N+1) - Ac
     !       - N - Cc
+    !       - N - Bc
+    !       - N-by-N - LAMBDA
     ! - dwork: An X-element workspace array.
     !       X = 
     !       Breakdown:
@@ -147,12 +149,12 @@ contains
 
         ! Local Variables
         integer(int32) :: ns, n, ndk, nac, nar, ntau, nq, nescale, nx, &
-            e1, s2, e2, s3, e3, &
+            e1, s2, e2, s3, e3, s4, e4, s5, e5, &
             e1r, s2r, e2r, s3r, e3r, s4r, e4r, s5r, e5r
         integer(int32), pointer, dimension(:) :: cindex, ipvt
         real(real64) :: eps, zerotol, scale
-        complex(real64), pointer, dimension(:,:) :: dk, ac
-        complex(real64), pointer, dimension(:) :: cc
+        complex(real64), pointer, dimension(:,:) :: dk, ac, lambda
+        complex(real64), pointer, dimension(:) :: cc, bc
         real(real64), pointer, dimension(:,:) :: ar, q
         real(real64), pointer, dimension(:) :: tau, escale, x
 
@@ -175,6 +177,10 @@ contains
         e2 = s2 + nac - 1
         s3 = e2 + 1
         e3 = s3 + n - 1
+        s4 = e3 + 1
+        e4 = s4 + n - 1
+        s5 = e4 + 1
+        e5 = s5 + n * n - 1
 
         e1r = nar
         s2r = e1r + 1
@@ -192,6 +198,8 @@ contains
         dk(1:ns,1:n+1) => cwork(1:e1)
         ac(1:ns,1:2*(n+1)) => cwork(s2:e2)
         cc => cwork(s3:e3)
+        bc => cwork(s4:e4)
+        lambda(1:n,1:n) => cwork(s5:e5)
 
         ar(1:2*ns,1:2*(n+1)) => dwork(1:e1r)
         tau => dwork(s2r:e2r)
@@ -216,6 +224,11 @@ contains
         call c_to_cmplx(c, cindex, cc)
 
         ! Compute the new pole locations (zeros)
+        ! POLES is overwritten with the new pole location information
+        call compute_zeros(poles, bc, cc(1,:), d, lambda)
+
+        ! Determine which of the new poles are complex-valued
+        call label_complex_values(poles, zerotol, cindex)
 
         ! Construct the overall state space matrices
     end subroutine
@@ -440,31 +453,41 @@ contains
 
 ! ------------------------------------------------------------------------------
     ! Compute the zeros of the system.
+    !
+    ! - poles: On input, the current estimate of the pole locations.  On output,
+    !       the updated estimate.
+    ! - b: An N-element complex-valued workspace array.
+    ! - c: An N-element complex valued "C" matrix from the state-space definition
+    !       of the system - the C matrix is 1-by-n.
+    ! - d: A 1-by-1 matrix containing the "D" matrix from the state-space
+    !       definition of the system.
+    ! - lambda: An N-by-N complex-valued workspace array.
     subroutine compute_zeros(poles, b, c, d, lambda)
         use linalg_core
 
         ! Arguments
         complex(real64), intent(inout), dimension(:) :: poles
-        complex(real64), intent(out), dimension(:,:) :: b  ! N-by-1
-        complex(real64), intent(inout), dimension(:) :: c  ! N
-        real(real64), intent(in), dimension(:,:) :: d   ! 1 -by- 1
-        complex(real64), intent(out), dimension(:,:) :: lambda  ! N-by-N
+        complex(real64), intent(out), dimension(:) :: b
+        complex(real64), intent(out), dimension(:,:) :: lambda
+        complex(real64), intent(inout), dimension(:) :: c
+        real(real64), intent(in), dimension(:,:) :: d
 
         ! Parameters
         complex(real64), parameter :: zero = (0.0d0, 0.0d0)
         complex(real64), parameter :: one = (1.0d0, 0.0d0)
         complex(real64), parameter :: two = (2.0d0, 0.0d0)
+        complex(real64), parameter :: j = (0.0d0, 1.0d0)
 
         ! Local Variables
-        integer(int32) :: i, n, m
-        complex(real64) :: koko, alpha
+        integer(int32) :: i, n, m, n1
+        complex(real64) :: koko, alpha, temp
 
         ! Initialization
         n = size(poles)
 
         lambda = zero
         do i = 1, n
-            b(i,1) = 1.0d0
+            b(i) = one
             lambda(i,i) = poles(i)
         end do
 
@@ -479,8 +502,8 @@ contains
                     lambda(m,m) = real(lambda(m,m))
                     lambda(m+1,m+1) = lambda(m,m)
 
-                    b(m,1) = two
-                    b(m+1,1) = zero
+                    b(m) = two
+                    b(m+1) = zero
                     koko = c(m)
                     c(m) = cmplx(real(koko))
                     c(m+1) = cmplx(aimag(koko))
@@ -502,9 +525,34 @@ contains
         ! Compute the eigenvalues
         call eigen(lambda, poles)
 
-        ! Correct any unstable poles - force them to be stable (i.e. ensure the real components are negative)
+        ! Correct any unstable poles - force them to be stable 
+        ! (i.e. ensure the real components are negative)
+        do i = 1, n
+            if (real(poles(i)) > 0.0d0) then
+                ! The real component is positive - unstable pole
+                poles(i) = poles(i) - 2.0d0 * poles(i)
+            end if
+        end do
 
-        ! Sort the poles
+        ! Sort the poles into ascending order
+        call sort(poles, .true.)
+
+        ! Now ensure real-valued poles are placed first in the array
+        do i = 1, n
+            do m = i + 1, n
+                if (aimag(poles(m)) == 0.0d0 .and. aimag(poles(i)) /= 0.0d0) then
+                    temp = poles(i)
+                    poles(i) = poles(m)
+                    poles(m) = temp
+                end if
+            end do
+        end do
+        n1 = 0
+        do i = 1, n
+            if (aimag(poles(i)) == 0.0d0) n1 = i
+        end do
+        if (n1 < n) call sort(poles(n+1:n), .true.)
+        poles = poles - 2.0d0 * j * aimag(poles)
     end subroutine
 
 ! ------------------------------------------------------------------------------
