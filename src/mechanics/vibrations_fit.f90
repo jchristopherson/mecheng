@@ -116,6 +116,9 @@ contains
     ! - b [out]: An N+1 -by- 1 matrix.
     ! - c [out]: A 1 -by- N matrix.
     ! - d [out]: A 1 -by- 1 matrix.
+    ! - fit [out]: An M-element array containing the fitted data.
+    ! - delta [out]: An M-element array containing the difference between the
+    !       fitted and raw data.
     ! - iwork: An X-element workspace array.
     !       X = 2 * N + 1
     !   Breakdown:
@@ -129,6 +132,7 @@ contains
     !       - N - Cc
     !       - N - Bc
     !       - N-by-N - LAMBDA
+    !       - M - Bb
     ! - dwork: An X-element workspace array.
     !       X = 
     !       Breakdown:
@@ -137,26 +141,28 @@ contains
     !       - 2*M-by-MIN(2*M, 2*(N + 1)) - Q
     !       - N+1 - escale
     !       - N+1 - x
-    subroutine vector_fit(f, s, poles, weights, a, b, c, d, iwork, cwork, dwork)
+    !       - 2*M - Br
+    subroutine vector_fit(f, s, poles, weights, a, b, c, d, fit, delta, iwork, cwork, dwork)
         ! Arguments
         complex(real64), intent(in), dimension(:) :: f, s
         complex(real64), intent(inout), dimension(:) :: poles
         real(real64), intent(in), dimension(:) :: weights
         real(real64), intent(out), dimension(:,:) :: a, b, c, d
+        complex(real64), intent(out), dimension(:) :: fit, delta
         integer(int32), intent(out), target, dimension(:) :: iwork
         complex(real64), intent(out), target, dimension(:) :: cwork
         real(real64), intent(out), target, dimension(:) :: dwork
 
         ! Local Variables
         integer(int32) :: ns, n, ndk, nac, nar, ntau, nq, nescale, nx, &
-            e1, s2, e2, s3, e3, s4, e4, s5, e5, &
-            e1r, s2r, e2r, s3r, e3r, s4r, e4r, s5r, e5r
+            e1, s2, e2, s3, e3, s4, e4, s5, e5, s6, e6 &
+            e1r, s2r, e2r, s3r, e3r, s4r, e4r, s5r, e5r, s6r, e6r
         integer(int32), pointer, dimension(:) :: cindex, ipvt
         real(real64) :: eps, zerotol, scale
         complex(real64), pointer, dimension(:,:) :: dk, ac, lambda
-        complex(real64), pointer, dimension(:) :: cc, bc
+        complex(real64), pointer, dimension(:) :: cc, bc, bb
         real(real64), pointer, dimension(:,:) :: ar, q
-        real(real64), pointer, dimension(:) :: tau, escale, x
+        real(real64), pointer, dimension(:) :: tau, escale, x, br
 
         ! Initialization
         ns = size(s)
@@ -181,6 +187,8 @@ contains
         e4 = s4 + n - 1
         s5 = e4 + 1
         e5 = s5 + n * n - 1
+        s6 = e5 + 1
+        e6 = s6 + ns - 1
 
         e1r = nar
         s2r = e1r + 1
@@ -191,6 +199,8 @@ contains
         e4r = s4r + nescale - 1
         s5r = e4r + 1
         e5r = s5r + nx - 1
+        s6r = e5r + 1
+        e6r = s6r + 2 * ns - 1
 
         cindex => iwork(1:n)
         ipvt => iwork(n+1:2*n+1)
@@ -200,12 +210,14 @@ contains
         cc => cwork(s3:e3)
         bc => cwork(s4:e4)
         lambda(1:n,1:n) => cwork(s5:e5)
+        bb => cwork(s6:e6)
 
         ar(1:2*ns,1:2*(n+1)) => dwork(1:e1r)
         tau => dwork(s2r:e2r)
         q(1:2*ns, 1:ntau) => dwork(s3r:e3r)
         escale => dwork(s4r:e4r)
         x => dwork(s5r:e5r)
+        br => dwork(s6r:e6r)
 
         ! Determine which poles are complex-valued
         call label_complex_values(poles, zerotol, cindex)
@@ -231,6 +243,15 @@ contains
         call label_complex_values(poles, zerotol, cindex)
 
         ! Construct the overall state space matrices
+        call build_denominator(s, poles, cindex, dk)
+        call to_cmplx_state_space(weights, f, dk, ac, ar(:,1:n+1), bb, br, &
+            c, d, escale)
+        call c_to_cmplx(c, cindex, cc)
+
+        ! Construct the actual fit
+        call compute_fit_and_error(f, s, poles, cc, d, dk(:,1:n), delta)
+
+        ! Put the complex-valued state space matrices into real form
     end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -329,7 +350,7 @@ contains
 ! ------------------------------------------------------------------------------
     ! Construct the state-space matrices from the denominator.
     !
-    ! - weights: M-element weighting vector
+    ! - weights: M-element weighting vector.
     ! - f: M-element frequency response vector containing data to be fitted.
     ! - dk: An M-by-(N+1) matrix.
     ! - ac: An M-by-2*(N+1) matrix.
@@ -365,7 +386,7 @@ contains
 
         ! Initialization
         ns = size(dk, 1)
-        n = size(dk, 2) - 1 ! DK is Ns -by- N + 1
+        n = size(dk, 2) - 1 ! DK is Ns -by- (N + 1)
         offset = n + 1;
 
         ! Process
@@ -556,8 +577,108 @@ contains
     end subroutine
 
 ! ------------------------------------------------------------------------------
+    ! Constructs the C matrix into its complex-valued form.
+    !
+    ! - weights: M-element weighting vector.
+    ! - f: M-element frequency response vector containing data to be fitted.
+    ! - dk: An M-by-(N+1) matrix.
+    ! - ac: An M-by-2*(N+1) matrix.
+    ! - ar: A 2*M-by-(N+1) matrix.
+    ! - bc: An M element array.
+    ! - br: A 2*M element array.
+    ! - cr: A 1-by-N matrix.
+    ! - dr: A 1-by-1 matrix.
+    ! - escale: An N+1 element array.
+    subroutine to_cmplx_state_space(weights, f, dk, ac, ar, bc, br, cr, escale)
+        use linalg_core
+
+        ! Arguments
+        real(real64), intent(in), dimension(:) :: weights
+        complex(real64), intent(in), dimension(:) :: f
+        complex(real64), intent(in), dimension(:,:) :: dk
+        complex(real64), intent(out), dimension(:,:) :: ac
+        complex(real64), intent(out), dimension(:) :: bc
+        real(real64), intent(out), dimension(:,:) :: ar, cr, dr
+        real(real64), intent(out), dimension(:) :: escale, br, work
+
+        ! Local Variables
+        integer(int32) :: i, ns, n
+
+        ! Initialization
+        ns = size(dk, 1)
+        n = size(dk, 2) - 1 ! DK is Ns -by- (N + 1)
+
+        ! Process
+        do i = 1, n
+            ac(:,i) = weights * dk(:,i)
+        end do
+        ac(:,n+1) = cmplx(weights, real64)
+        ar(ns+1:2*ns,:) = aimag(ac(1:ns,:))
+        ar(1:ns,:) = real(ac(1:ns,:))
+        bc(1:ns) = weights * f
+        br(ns+1:2*ns) = aimag(bc(1:ns))
+        br(1:ns) = real(bc(1:ns))
+        
+        ! Rescale A
+        do i = 1, n + 1
+            escale(i) = norm(ar(:,i))
+            a(:,i) = a(:,i) / escale(i)
+        end do
+
+        ! Solve A * X = B for X via a least-squares solver
+        call solve_least_squares(ar, br) ! AR & BR are overwritten
+        br(1:n+1) = br(1:n+1) / escale   ! Rescale the solution
+        cr = br(1:n) ! The first N elements of BR contain the solution for C
+
+        ! The N+1th element of BR contains D
+        dr(1,1) = br(n+1)
+    end subroutine
 
 ! ------------------------------------------------------------------------------
+    !
+    ! - f: M-element frequency response vector containing data to be fitted.
+    ! - s: An M-element array containing the complex frequency points.
+    ! - poles: An N-element array containing the pole locations.
+    ! - c: The 1-by-N complex form of the C matrix.
+    ! - d: The 1-by-1 D matrix.
+    ! - dk: An M-by-N matrix.
+    ! - fit [out]: An M-element array containing the fitted data.
+    ! - delta [out]: An M-element array containing the difference between the
+    !       raw data and the fitted data.
+    subroutine compute_fit_and_error(f, s, poles, c, d, dk, delta)
+        ! Arguments
+        complex(real64), intent(in), dimension(:) :: f, s, poles, c
+        complex(real64), intent(out), dimension(:,:) :: dk
+        complex(real64), intent(out), dimension(:) :: fit, delta
+        real(real64), intent(in), dimension(:,:) :: d
+
+        ! Parameters
+        complex(real64), parameter :: one = (1.0d0, 0.0d0)
+
+        ! Local Variables
+        integer(int32) :: i, n, ns
+
+        ! Initialization
+        n = size(poles)
+        ns = size(s)
+
+        ! Process
+        do i = 1, n
+            dk(:,i) = 1.0d0 / (s - poles(i))
+        end do
+
+        ! Compute: FIT = DK * C + D
+        !
+        ! - FIT is M-by-1
+        ! - DK is M-by-N
+        ! - C is N-by-1
+        ! - D is 1-by-1
+        fit = cmplx(d(1,1), real64)
+        call ZGEMV('N', ns, n, one, dk, ns, c, 1, one, fit, 1)
+
+        ! Compute the difference between the fitted and actual
+        delta = fit - f
+    end subroutine
 
 ! ------------------------------------------------------------------------------
 end submodule
