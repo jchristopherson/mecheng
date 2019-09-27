@@ -155,7 +155,7 @@ contains
 
         ! Local Variables
         integer(int32) :: ns, n, ndk, nac, nar, ntau, nq, nescale, nx, &
-            e1, s2, e2, s3, e3, s4, e4, s5, e5, s6, e6 &
+            e1, s2, e2, s3, e3, s4, e4, s5, e5, s6, e6, &
             e1r, s2r, e2r, s3r, e3r, s4r, e4r, s5r, e5r, s6r, e6r
         integer(int32), pointer, dimension(:) :: cindex, ipvt
         real(real64) :: eps, zerotol, scale
@@ -237,7 +237,7 @@ contains
 
         ! Compute the new pole locations (zeros)
         ! POLES is overwritten with the new pole location information
-        call compute_zeros(poles, bc, cc(1,:), d, lambda)
+        call compute_zeros(poles, bc, cc, d, lambda)
 
         ! Determine which of the new poles are complex-valued
         call label_complex_values(poles, zerotol, cindex)
@@ -249,7 +249,7 @@ contains
         call c_to_cmplx(c, cindex, cc)
 
         ! Construct the actual fit
-        call compute_fit_and_error(f, s, poles, cc, d, dk(:,1:n), delta)
+        call compute_fit_and_error(f, s, poles, cc, d, dk(:,1:n), fit, delta)
 
         ! Put the complex-valued state space matrices into real form
     end subroutine
@@ -526,8 +526,8 @@ contains
                     b(m) = two
                     b(m+1) = zero
                     koko = c(m)
-                    c(m) = cmplx(real(koko))
-                    c(m+1) = cmplx(aimag(koko))
+                    c(m) = cmplx(real(koko), real64)
+                    c(m+1) = cmplx(aimag(koko), real64)
                     m = m + 1
                 end if
             end if
@@ -589,7 +589,7 @@ contains
     ! - cr: A 1-by-N matrix.
     ! - dr: A 1-by-1 matrix.
     ! - escale: An N+1 element array.
-    subroutine to_cmplx_state_space(weights, f, dk, ac, ar, bc, br, cr, escale)
+    subroutine to_cmplx_state_space(weights, f, dk, ac, ar, bc, br, cr, dr, escale)
         use linalg_core
 
         ! Arguments
@@ -599,7 +599,7 @@ contains
         complex(real64), intent(out), dimension(:,:) :: ac
         complex(real64), intent(out), dimension(:) :: bc
         real(real64), intent(out), dimension(:,:) :: ar, cr, dr
-        real(real64), intent(out), dimension(:) :: escale, br, work
+        real(real64), intent(out), dimension(:) :: escale, br
 
         ! Local Variables
         integer(int32) :: i, ns, n
@@ -622,13 +622,13 @@ contains
         ! Rescale A
         do i = 1, n + 1
             escale(i) = norm(ar(:,i))
-            a(:,i) = a(:,i) / escale(i)
+            ar(:,i) = ar(:,i) / escale(i)
         end do
 
         ! Solve A * X = B for X via a least-squares solver
         call solve_least_squares(ar, br) ! AR & BR are overwritten
         br(1:n+1) = br(1:n+1) / escale   ! Rescale the solution
-        cr = br(1:n) ! The first N elements of BR contain the solution for C
+        cr(1,:) = br(1:n) ! The first N elements of BR contain the solution for C
 
         ! The N+1th element of BR contains D
         dr(1,1) = br(n+1)
@@ -645,7 +645,7 @@ contains
     ! - fit [out]: An M-element array containing the fitted data.
     ! - delta [out]: An M-element array containing the difference between the
     !       raw data and the fitted data.
-    subroutine compute_fit_and_error(f, s, poles, c, d, dk, delta)
+    subroutine compute_fit_and_error(f, s, poles, c, d, dk, fit, delta)
         ! Arguments
         complex(real64), intent(in), dimension(:) :: f, s, poles, c
         complex(real64), intent(out), dimension(:,:) :: dk
@@ -673,7 +673,7 @@ contains
         ! - DK is M-by-N
         ! - C is N-by-1
         ! - D is 1-by-1
-        fit = cmplx(d(1,1), real64)
+        fit = cmplx(d(1,1), real64) ! Fill FIT with D(1,1)
         call ZGEMV('N', ns, n, one, dk, ns, c, 1, one, fit, 1)
 
         ! Compute the difference between the fitted and actual
