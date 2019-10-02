@@ -3,6 +3,7 @@
 submodule (vibrations) vibrations_fit
 contains
 ! ------------------------------------------------------------------------------
+    ! Takes a single step of the fitting algorithm.
     !
     ! - f: An M-element array containing the complex-valued frequency response
     !       function to fit.
@@ -25,7 +26,7 @@ contains
     !   - N - cindex
     !   - N + 1 - ipvt
     ! - cwork: An X-element workspace array.
-    !       X = 
+    !       X = N**2 + (3*M + 2)*N + 4*M
     !       Breakdown:
     !       - M-by-(N+1) - Dk
     !       - M-by-2*(N+1) - Ac
@@ -34,7 +35,8 @@ contains
     !       - N-by-N - LAMBDA
     !       - M - Bb
     ! - dwork: An X-element workspace array.
-    !       X = 
+    !       X = (2*M + 1)*S + (4*M + 2)*N + 6*M + 2
+    !           Where: S = MIN(2*M, 2*(N+1))
     !       Breakdown:
     !       - 2*M-by-2*(N+1) - Ar
     !       - MIN(2*M, 2*(N + 1)) - tau
