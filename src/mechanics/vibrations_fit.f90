@@ -3,6 +3,49 @@
 submodule (vibrations) vibrations_fit
 contains
 ! ------------------------------------------------------------------------------
+    module function fit_frf(freq, amp, phase, order, niter, err) result(mdl)
+        ! Arguments
+        real(real64), intent(in), dimension(:) :: freq, amp, phase
+        integer(int32), intent(in) :: order
+        integer(int32), intent(in), optional :: niter
+        class(errors), intent(inout), target, optional :: err
+        type(state_space) :: mdl
+
+        ! Local Variables
+        integer(int32) :: npts, flag, liwork, lcwork, ldwork, minmn
+        type(errors), target :: deferr
+        class(errors), pointer :: errmgr
+        integer(int32), allocatable, dimension(:) :: iwork
+        complex(real64), allocatable, dimension(:) :: cwork
+        real(real64), allocatable, dimension(:) :: rwork
+
+        ! Initialization
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+        npts = size(freq)
+        minmn = min(2 * npts, 2 * (order + 1))
+        liwork = 2 * order + 1
+        lcwork = order**2 + (3 * npts + 2) * order + 4 * npts
+        ldwork = (2 * npts + 1) * minmn + (4 * npts + 2) * order + 6 * npts + 2
+
+        ! Input Check
+
+        ! Workspace Allocation
+        allocate(iwork(liwork), stat = flag)
+        if (flag == 0) allocate(cwork(lcwork), stat = flag)
+        if (flag == 0) allocate(dwork(ldwork), stat = flag)
+        if (flag /= 0) then
+            call errmgr%report_error("fit_frf", &
+                "Insufficient memory available.", &
+                MECH_OUT_OF_MEMORY_ERROR)
+            return
+        end if
+    end function
+
+! ------------------------------------------------------------------------------
     ! Takes a single step of the fitting algorithm.
     !
     ! References:
