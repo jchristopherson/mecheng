@@ -3,106 +3,6 @@
 submodule (vibrations) vibrations_fit
 contains
 ! ------------------------------------------------------------------------------
-    pure function partial_fraction_basis_function(s, a, p) result(phi)
-        ! Arguments
-        complex(real64), intent(in) :: s
-        complex(real64), intent(in), dimension(:) :: a
-        integer(int32), intent(in) :: p
-        complex(real64) :: phi
-
-        ! Process
-        phi = 1.0d0 / (s + a(p))
-    end function
-
-! ------------------------------------------------------------------------------
-    pure function frequency_basis_function(s, a, p) result(phi)
-        ! Arguments
-        complex(real64), intent(in) :: s
-        complex(real64), intent(in), dimension(:) :: a
-        integer(int32), intent(in) :: p
-        complex(real64) :: phi
-
-        ! Parameters
-        complex(real64), parameter :: zero = (0.0d0, 0.0d0)
-        complex(real64), parameter :: one = (1.0d0, 0.0d0)
-        complex(real64), parameter :: ten = (1.0d1, 0.0d0)
-        complex(real64), parameter :: p1 = (1.0d-1, 0.0d0)
-
-        ! Local Variables
-        integer(int32) :: i, ep
-        complex(real64) :: temp
-
-        ! Compute the product of s / (s + a(i)) from i = 1 to p - 1
-        if (p == 1) then
-            phi = zero
-        else if (p == 2) then
-            phi = s / (s + a(1))
-        else
-            temp = one
-            ep = 0
-            do i = 1, p - 1
-                temp = temp * (s / (s + a(i)))
-                if (temp == zero) then
-                    phi = zero
-                    return
-                end if
-                
-                do while (abs(temp) < 1.0d0)
-                    temp = ten * temp
-                    ep = ep - 1
-                end do
-
-                do while (abs(temp) > 1.0d1)
-                    temp = p1 * temp
-                    ep = ep + 1
-                end do
-            end do
-            phi = temp * ten**ep
-        end if
-
-        ! Compute the full basis function
-        phi = phi * abs(a(p)) / (s + a(p))
-    end function
-
-! ------------------------------------------------------------------------------
-    pure function evaluate_polynomial(phi, coeff) result(r)
-        ! Arguments
-        complex(real64), intent(in), dimension(:) :: phi! N element array of 
-                                                        ! basis function values
-        real(real64), intent(in), dimension(:) :: coeff ! N-element coefficient array
-                                                        ! (the highest power coefficient is one)
-        complex(real64) :: r                            ! value of the polynomial
-
-        ! Parameters
-        complex(real64), parameter :: zero = (0.0d0, 0.0d0)
-
-        ! Local Variables
-        integer(int32) :: i, n, nz
-
-        ! Initialization
-        n = size(coeff) ! If n < size(z), the order of the polynomial in
-                        ! the denominator (source of phi) is greater than
-                        ! that of the numerator.  This is OK as this is
-                        ! equivalent to stating that the numerator 
-                        ! polynomial is of equal order, but contains
-                        ! zero-valued coefficients for the higher order
-                        ! terms.
-        nz = size(phi)  ! For the non-standard case where the order of
-                        ! the numerator is greater than that of the
-                        ! denominator.
-        n = min(n, nz)
-
-        ! Process
-        r = zero
-        do i = 1, n
-            ! Process
-            r = r + coeff(i) * phi(i)
-        end do
-    end function
-
-! ------------------------------------------------------------------------------
-
-! ------------------------------------------------------------------------------
     !
     ! - f: An M-element array containing the complex-valued frequency response
     !       function to fit.
@@ -252,6 +152,7 @@ contains
         call compute_fit_and_error(f, s, poles, cc, d, dk(:,1:n), fit, delta)
 
         ! Put the complex-valued state space matrices into real form
+        call convert_to_real_form(poles, bc, cc, cindex, a, b, c)
     end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -678,6 +579,65 @@ contains
 
         ! Compute the difference between the fitted and actual
         delta = fit - f
+    end subroutine
+
+! ------------------------------------------------------------------------------
+    ! Converts the model to a real-valued state-space model.
+    !
+    ! - poles: An N-element array containing the pole locations.
+    ! - bc: An N-element array containing the complex B matrix.
+    ! - cc: An N-element array containing the complex C matrix.
+    ! - cindex: An N-element array determining what pole values are real,
+    !       complex, and/or complex-conjugates.  See label_complex_values for
+    !       more info.
+    ! - a: An N-by-N matrix A.
+    ! - b: An N-by-1 matrix B.
+    ! - c: A 1-by-N matrix C.
+    subroutine convert_to_real_form(poles, bc, cc, cindex, a, b, c)
+        ! Arguments
+        complex(real64), intent(in), dimension(:) :: poles, bc, cc
+        real(real64), intent(out), dimension(:,:) :: a, b, c
+
+        ! Local Variables
+        integer(int32) :: i, n
+        real(real64) :: a1, a2, b1, b2, c1, c2
+
+        ! Initialization
+        n = size(poles)
+
+        ! Process
+        i = 0
+        do
+            i = i + 1
+            if (i == 1) then
+                a1 = real(poles(i))
+                a2 = aimag(poles(i))
+                b1 = 2.0d0 * real(bc(i))
+                b2 = -2.0d0 * aimag(bc(i))
+                c1 = real(cc(i))
+                c2 = aimag(cc(i))
+
+                a(i,i) = a1
+                a(i,i+1) = a2
+                a(i+1,i) = -a2
+                a(i+1,i+1) = a1
+
+                b(i,1) = b1
+                b(i+1,1) = b2
+
+                c(1,i) = c1
+                c(1,i+1) = c2
+
+                i = i + 1
+            else if (i == 0) then
+                a(i,i) = real(poles(i))
+                b(i,1) = real(bc(i))
+                c(1,i) = real(cc(i))
+            end if
+
+            ! Check i
+            if (i >= n) exit
+        end do
     end subroutine
 
 ! ------------------------------------------------------------------------------
