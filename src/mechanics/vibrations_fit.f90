@@ -3,21 +3,26 @@
 submodule (vibrations) vibrations_fit
 contains
 ! ------------------------------------------------------------------------------
-    module function fit_frf(freq, amp, phase, order, niter, err) result(mdl)
+    module function fit_frf(freq, amp, phase, order, niter, weights, err) result(mdl)
         ! Arguments
         real(real64), intent(in), dimension(:) :: freq, amp, phase
         integer(int32), intent(in) :: order
         integer(int32), intent(in), optional :: niter
+        real(real64), intent(in), dimension(:), optional :: weights
         class(errors), intent(inout), target, optional :: err
         type(state_space) :: mdl
 
+        ! Parameters
+        complex(real64), parameter :: j = (0.0d0, 1.0d0)
+
         ! Local Variables
-        integer(int32) :: npts, flag, liwork, lcwork, ldwork, minmn
+        integer(int32) :: npts, flag, liwork, lcwork, ldwork, minmn, i, ni
         type(errors), target :: deferr
         class(errors), pointer :: errmgr
+        character(len = 256) :: errmsg
         integer(int32), allocatable, dimension(:) :: iwork
-        complex(real64), allocatable, dimension(:) :: cwork
-        real(real64), allocatable, dimension(:) :: rwork
+        complex(real64), allocatable, dimension(:) :: cwork, s, frf
+        real(real64), allocatable, dimension(:) :: rwork, wghts
 
         ! Initialization
         if (present(err)) then
@@ -30,8 +35,52 @@ contains
         liwork = 2 * order + 1
         lcwork = order**2 + (3 * npts + 2) * order + 4 * npts
         ldwork = (2 * npts + 1) * minmn + (4 * npts + 2) * order + 6 * npts + 2
+        allocate(wghts(npts), stat = flag)
+        if (flag /= 0) then
+            call errmgr%report_error("fit_Frf", "Insufficient memory available.", &
+                MECH_OUT_OF_MEMORY_ERROR)
+            return
+        end if
+        
+        ! Establish Defaults
+        if (present(niter)) then
+            ni = niter
+        else
+            ni = 5
+        end if
+        if (present(weights)) then
+            if (size(weights) /= npts) then
+                write (errmsg, '(AI0AI0A)') &
+                    "The weighting array is improperly sized.  Expected ", npts, &
+                    " elements, but found ", size(weights), "."
+                call errmgr%report_error("fit_frf", trim(errmsg), MECH_ARRAY_SIZE_ERROR)
+                return
+            end if
+            wghts = weights
+        else
+            wghts = 1.0d0
+        end if
 
         ! Input Check
+        if (order < 1) then
+            call errmgr%report_error("fit_frf", "Requested order is less than 1.", &
+                MECH_INVALID_INPUT_ERROR)
+            return
+        end if
+        if (size(amp) /= npts) then
+            write (errmsg, '(AI0AI0A)') &
+                "The amplitude array is improperly sized.  Expected ", npts, &
+                " elements, but found ", size(amp), "."
+            call errmgr%report_error("fit_frf", trim(errmsg), MECH_ARRAY_SIZE_ERROR)
+            return
+        end if
+        if (size(phase) /= npts) then
+            write (errmsg, '(AI0AI0A)') &
+                "The phase array is improperly sized.  Expected ", npts, &
+                " elements, but found ", size(phase), "."
+            call errmgr%report_error("fit_frf", trim(errmsg), MECH_ARRAY_SIZE_ERROR)
+            return
+        end if
 
         ! Workspace Allocation
         allocate(iwork(liwork), stat = flag)
@@ -43,6 +92,12 @@ contains
                 MECH_OUT_OF_MEMORY_ERROR)
             return
         end if
+
+        ! Set up the complex-valued frequency and FRF vectors
+        s = j * freq
+        frf = amp * (cos(phase) + j * sin(phase))
+
+        ! Construct an initial estimate of pole locations
     end function
 
 ! ------------------------------------------------------------------------------
