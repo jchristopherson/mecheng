@@ -1,5 +1,7 @@
 ! vibrations_fit.f90
 
+! TO DO: Continue debugging at line 502
+
 submodule (vibrations) vibrations_fit
 contains
 ! ------------------------------------------------------------------------------
@@ -71,6 +73,12 @@ contains
         end if
 
         ! Input Check
+        if (ni < 1) then
+            call errmgr%report_error("fft_fit_frf", &
+                "There must be at least 1 iteration allowed.", &
+                MECH_INVALID_INPUT_ERROR)
+            return
+        end if
         if (order < 2) then
             call errmgr%report_error("fft_fit_frf", "Requested order is less than 2.", &
                 MECH_INVALID_INPUT_ERROR)
@@ -104,7 +112,7 @@ contains
 
         ! Allocate output information
         allocate(this%frf(npts), stat = flag)
-        if (flag == 0) allocate(this%poles(npts), stat = flag)
+        if (flag == 0) allocate(this%poles(order), stat = flag)
         if (flag == 0) allocate(this%residual(npts), stat = flag)
         if (flag == 0) allocate(this%rms(ni), stat = flag)
         if (flag == 0) allocate(this%model%A(order, order), stat = flag)
@@ -283,8 +291,8 @@ contains
         scale = norm2(abs(weights * f)) / real(ns)
 
         ! Extract the state space matrices
-        call denom_to_state_space(weights, f, dk, ac, ar, tau, q, &
-            ipvt, escale, x, a, b, c, d)
+        call denom_to_state_space(scale, weights, f, dk, &
+            ac, ar, bb, br, tau, q, ipvt, escale, x, a, b, c, d)
 
         ! Construct a complex-valued version of C
         call c_to_cmplx(c, cindex, cc)
@@ -391,13 +399,15 @@ contains
         dk(:,n+1) = one
 
         ! Process
-        do i = 1, n
+        i = 1
+        do while (i <= n)
             if (cindex(i) == 0) then
                 dk(:,i) = one / (s - poles(i))
+                i = i + 1
             else if (cindex(i) == 1) then
-                dk(:,i) = one / (s - poles(i)) + one / (s - poles(i))
-            else if (cindex(i) == 2) then
-                dk(:,i) = j / (s - poles(i)) - j / (s - poles(i))
+                dk(:,i) = one / (s - poles(i)) + one / (s - conjg(poles(i)))
+                dk(:,i+1) = j / (s - poles(i)) - j / (s - conjg(poles(i)))
+                i = i + 2
             end if
         end do
     end subroutine
@@ -405,11 +415,14 @@ contains
 ! ------------------------------------------------------------------------------
     ! Construct the state-space matrices from the denominator.
     !
+    ! - problem scaling factor.
     ! - weights: M-element weighting vector.
     ! - f: M-element frequency response vector containing data to be fitted.
     ! - dk: An M-by-(N+1) matrix.
     ! - ac: An M-by-2*(N+1) matrix.
     ! - ar: An 2*M-by-2*(N+1) matrix.
+    ! - bc: An M-element array.
+    ! - br: A 2*M-element array.
     ! - tau: A MIN(2*M,2*(N+1)) array.
     ! - q: An 2*M-by-MIN(2*M,2*(N+1)) matrix.
     ! - pvt: An N+1 array.
@@ -419,25 +432,32 @@ contains
     ! - b: An N+1-by-1 matrix.
     ! - c: A 1-by-N matrix.
     ! - d: A 1-by-1 matrix.
-    subroutine denom_to_state_space(weights, f, dk, ac, ar, tau, q, pvt, &
-            escale, x, a, b, c, d)
+    subroutine denom_to_state_space(scale, weights, f, dk, ac, ar, bc, br, &
+            tau, q, pvt, escale, x, a, b, c, d)
         use linalg_core
 
         ! Arguments
+        real(real64), intent(in) :: scale
         real(real64), intent(in), dimension(:) :: weights
         complex(real64), intent(in), dimension(:) :: f
         complex(real64), intent(in), dimension(:,:) :: dk
         complex(real64), intent(out), dimension(:,:) :: ac
+        complex(real64), intent(out), dimension(:) :: bc
         real(real64), intent(out), dimension(:,:) :: ar
-        real(real64), intent(out), dimension(:) :: tau, escale, x
+        real(real64), intent(out), dimension(:) :: tau, escale, x, br
         real(real64), intent(out), dimension(:,:) :: q
         integer(int32), intent(out), dimension(:) :: pvt
 
         ! State Space Matrix Outputs
         real(real64), intent(out), dimension(:,:) :: a, b, c, d
 
+        ! Parameters
+        real(real64), parameter :: tol_low = 1.0d-18
+        real(real64), parameter :: tol_high = 1.0d18
+
         ! Local Variables
-        integer(int32) :: i, ns, n, offset, ind1, ind2
+        integer(int32) :: i, ns, n, offset, ind, ind1, ind2
+        real(real64) :: dnew
 
         ! Initialization
         ns = size(dk, 1)
@@ -467,26 +487,93 @@ contains
         ! matrix A
         ind1 = offset + 1
         ind2 = 2 * offset
-        a = ar(ind1:ind2,ind1:ind2)
 
         ! Construct B
         b(:,1) = q(size(q, 1), offset + 1:size(q, 2)) * scale * real(ns)
 
         ! Finish working on A
         do i = 1, offset
-            escale(i) = 1.0d0 / norm2(a(:,i))
-            a(:,i) = escale(i) * a(:,i)
+            ind = ind1 + i - 1
+            escale(i) = 1.0d0 / norm2(ar(:,ind))
+            ar(:,ind) = escale(i) * ar(:,ind)
         end do
 
-        ! Utilize LU-factorization to solve A * X = B, for X
-        ar(ind1:ind2,ind1:ind2) = a
-        call lu_factor(ar(ind1:ind2,ind1:ind2), pvt)    ! AR(IND1:IND2,IND1:IND2) is overwritten with L/U
+        ! Solve A * X = B, for X
+        
+        ! TO DO: Continue debugging here.  AR is not properly transfering to the solve command
+
         x = b(:,1)   ! Protect B from being overwritten
-        call solve_lu(ar(ind1:ind2,ind1:ind2), pvt, x)
+        call solve_triangular_system(.true., .false., .true., ar(ind1:ind2,ind1:ind2), x)
+
+        ! TO DO: R is upper triangular - LU not needed for solution
+
+        ! Update X
+        x = x * escale
 
         ! Build C & D
         C(1,:) = x(1:n)
         D(1,1) = x(offset)
+
+        ! Ensure D isn't too big or too small
+        if (abs(x(offset)) < tol_low .or. abs(x(offset)) > tol_high) then
+            if (x(offset) == 0.0d0) then
+                dnew = 1.0d0
+            else if (abs(x(offset)) < tol_low) then
+                dnew = sign(1.0d0, x(offset)) * tol_low
+            else if (abs(x(offset)) > tol_high) then
+                dnew = sign(1.0d0, x(offset)) * tol_high
+            end if
+
+            do i = 1, offset
+                ac(:,i) = weights * dk(:,i)
+            end do
+            do i = 1, offset
+                ac(:,offset+i) = -weights * dk(:,i) * f
+            end do
+            ar(1:ns,:) = real(ac)
+            ar(ns+1:2*ns,:) = aimag(ac)
+            bc = dnew * weights * f
+            br(1:ns) = real(bc)
+            br(ns+1:2*ns) = aimag(bc)
+
+            ! Compute the QR factorization of AR, and then form Q & R fully
+            call qr_factor(ar, tau)
+            call form_qr(ar, tau, q)    ! R is stored in AR
+            
+            ! Extract the trailing submatrix from R, and store in the state-space
+            ! matrix A
+            ind1 = offset + 1
+            ind2 = 2 * offset
+            a = ar(ind1:ind2,ind1:ind2)
+            
+            ! Compute B = Q(:,IND1:IND2)**T * BR
+            ! 
+            ! - Q(:,IND1:IND2) is 2*NS-by-N
+            ! - BR is 2*NS-by-1
+            ! - B is then N-by-1
+            call DGEMM('T', 'N', n, 1, 2*ns, 1.0d0, q, 2*ns, br, 2*ns, 0.0d0, b, n)
+
+            ! Finish working on A
+            do i = 1, offset
+                escale(i) = 1.0d0 / norm2(a(:,i))
+                a(:,i) = escale(i) * a(:,i)
+            end do
+
+            ! Utilize LU-factorization to solve A * X = B, for X
+            ar(ind1:ind2,ind1:ind2) = a
+            call lu_factor(ar(ind1:ind2,ind1:ind2), pvt)    ! AR(IND1:IND2,IND1:IND2) is overwritten with L/U
+            x = b(:,1)   ! Protect B from being overwritten
+            call solve_lu(ar(ind1:ind2,ind1:ind2), pvt, x)
+
+            ! TO DO: R is upper triangular - LU not needed for solution
+
+            ! Update X
+            x = x * escale
+            
+            ! Build C & D
+            C(1,:) = x(1:n)
+            D(1,1) = dnew
+        end if
     end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -830,7 +917,7 @@ contains
             alf = -1e-2 * work(i)
             
             poles(k) = alf - j * work(i)
-            poles(k+1) = alf + j * work(k)
+            poles(k+1) = alf + j * work(i)
             k = k + 2
         end do
     end subroutine

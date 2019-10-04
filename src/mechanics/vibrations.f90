@@ -919,6 +919,49 @@ module vibrations
         !> @brief A state-space model of the system.
         type(state_space), public :: model
     contains
+        !> @brief Utilizes a relaxed vector fitting algorithm to fit a state-space
+        !! model the supplied FRF.
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! subroutine fit(class(frf_fitting_tool) this, real(real64) freq(:), real(real64) amp(:), real(real64) phase(:), integer(int32) order, optional integer(int32) niter, optional real(real64) weights(:), optional class(errors) err)
+        !! @endcode
+        !!
+        !! @param[in,out] this The frf_fitting_tool object.
+        !! @param[in] freq An N-element array containing the frequency values 
+        !!  at which the frequency response function is defined, in radians/sec.
+        !! @param[in] amp An N-element array containing the amplitude of the
+        !!  frequency response.  Notice, this input must not be log scaled 
+        !!  (e.g. in units of dB).
+        !! @param[in] phase An N-element array containing the phase of the
+        !!  frequency response, in radians.
+        !! @param[in] order The order of the system (must be at least 2).
+        !! @param[in] niter An optional input defining the number of iterations
+        !!  to perform.  The default value is 5.
+        !! @param[in] weights An optional N-element array that can be used to
+        !!  weight values at specific frequencies.  The default is unity such
+        !!  that no bias is shown.
+        !! @param[in,out] err An optional errors-based object that if provided can be
+        !!  used to retrieve information relating to any errors encountered during
+        !!  execution.  If not provided, a default implementation of the errors
+        !!  class is used internally to provide error handling.  Possible errors and
+        !!  warning messages that may be encountered are as follows.
+        !!  - MECH_OUT_OF_MEMORY_ERROR: Occurs if insufficient memory is available.
+        !!  - MECH_ARRAY_SIZE_ERROR: Occurs if @p amp, @p phase, or @p weights are
+        !!      not sized appropriately.
+        !!  - MECH_INVALID_INPUT_ERROR: Occurs if @p order or @p niter are invalid.
+        !!
+        !! @par References:
+        !! 1. B. Gustavsen and A. Semlyen, "Rational approximation of frequency 
+        !!    domain responses by Vector Fitting", IEEE Trans. Power Delivery, 
+        !!    vol. 14, no. 3, pp. 1052-1061, July 1999. Link
+        !! 2. B. Gustavsen, "Improving the pole relocating properties of vector 
+        !!    fitting", IEEE Trans. Power Delivery, vol. 21, no. 3, pp. 1587-1592, 
+        !!    July 2006. Link 
+        !! 3. D. Deschrijver, M. Mrozowski, T. Dhaene, and D. De Zutter, 
+        !!    “Macromodeling of  Multiport Systems Using a Fast Implementation of 
+        !!    the Vector Fitting Method”, IEEE Microwave and Wireless Components 
+        !!    Letters, vol. 18, no. 6, pp. 383-385, June 2008.
         procedure, public :: fit => fft_fit_frf
     end type
 
