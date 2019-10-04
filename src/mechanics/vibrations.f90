@@ -23,6 +23,7 @@ module vibrations
     public :: harmonic_ode_fcn
     public :: frequency_sweep_options
     public :: compute_frequency_sweep
+    public :: frf_fitting_tool
 
     ! TO DO:
     ! - Primary Oscillation Frequency Finder (Base upon an FFT, and return the largest magnitude non-DC frequency)
@@ -903,6 +904,24 @@ module vibrations
         procedure :: ss_tf_eval_array
     end type
 
+    !> @brief A type containing FRF fitting operations.
+    type frf_fitting_tool
+    private
+        !> @brief The complex-valued frequency response function.
+        complex(real64), public, allocatable, dimension(:) :: frf
+        !> @brief The location of each pole.
+        complex(real64), public, allocatable, dimension(:) :: poles
+        !> @brief A complex-valued array containing the difference between the
+        !! fit FRF and the supplied FRF.
+        complex(real64), public, allocatable, dimension(:) :: residual
+        !> @brief An array containing the RMS error for each iteration.
+        real(real64), public, allocatable, dimension(:) :: rms
+        !> @brief A state-space model of the system.
+        type(state_space), public :: model
+    contains
+        procedure, public :: fit => fft_fit_frf
+    end type
+
 ! ******************************************************************************
 ! VIBRATIONS_POINCARE.F90
 ! ------------------------------------------------------------------------------
@@ -1381,4 +1400,19 @@ module vibrations
         end function
     end interface
 
+! ******************************************************************************
+! VIBRATIONS_FIT.F90
+! ------------------------------------------------------------------------------
+    interface
+        module subroutine fft_fit_frf(this, freq, amp, phase, order, niter, weights, err)
+            class(frf_fitting_tool), intent(inout) :: this
+            real(real64), intent(in), dimension(:) :: freq, amp, phase
+            integer(int32), intent(in) :: order
+            integer(int32), intent(in), optional :: niter
+            real(real64), intent(in), dimension(:), optional :: weights
+            class(errors), intent(inout), target, optional :: err
+        end subroutine
+    end interface
+
+! ------------------------------------------------------------------------------
 end module

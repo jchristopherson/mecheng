@@ -3,26 +3,35 @@
 submodule (vibrations) vibrations_fit
 contains
 ! ------------------------------------------------------------------------------
-    module function fit_frf(freq, amp, phase, order, niter, weights, err) result(mdl)
+    module subroutine fft_fit_frf(this, freq, amp, phase, order, niter, weights, err)
         ! Arguments
+        class(frf_fitting_tool), intent(inout) :: this
         real(real64), intent(in), dimension(:) :: freq, amp, phase
         integer(int32), intent(in) :: order
         integer(int32), intent(in), optional :: niter
         real(real64), intent(in), dimension(:), optional :: weights
         class(errors), intent(inout), target, optional :: err
-        type(state_space) :: mdl
 
         ! Parameters
         complex(real64), parameter :: j = (0.0d0, 1.0d0)
 
         ! Local Variables
-        integer(int32) :: npts, flag, liwork, lcwork, ldwork, minmn, i, ni
+        integer(int32) :: npts, flag, liwork, lcwork, lrwork, minmn, i, ni
         type(errors), target :: deferr
         class(errors), pointer :: errmgr
         character(len = 256) :: errmsg
         integer(int32), allocatable, dimension(:) :: iwork
         complex(real64), allocatable, dimension(:) :: cwork, s, frf
         real(real64), allocatable, dimension(:) :: rwork, wghts
+
+        ! Clean up the existing object
+        if (allocated(this%poles)) deallocate(this%poles)
+        if (allocated(this%residual)) deallocate(this%residual)
+        if (allocated(this%rms)) deallocate(this%rms)
+        if (allocated(this%model%A)) deallocate(this%model%A)
+        if (allocated(this%model%B)) deallocate(this%model%B)
+        if (allocated(this%model%C)) deallocate(this%model%C)
+        if (allocated(this%model%D)) deallocate(this%model%D)
 
         ! Initialization
         if (present(err)) then
@@ -34,10 +43,10 @@ contains
         minmn = min(2 * npts, 2 * (order + 1))
         liwork = 2 * order + 1
         lcwork = order**2 + (3 * npts + 2) * order + 4 * npts
-        ldwork = (2 * npts + 1) * minmn + (4 * npts + 2) * order + 6 * npts + 2
+        lrwork = (2 * npts + 1) * minmn + (4 * npts + 2) * order + 6 * npts + 2
         allocate(wghts(npts), stat = flag)
         if (flag /= 0) then
-            call errmgr%report_error("fit_Frf", "Insufficient memory available.", &
+            call errmgr%report_error("fft_fit_frf", "Insufficient memory available.", &
                 MECH_OUT_OF_MEMORY_ERROR)
             return
         end if
@@ -53,7 +62,7 @@ contains
                 write (errmsg, '(AI0AI0A)') &
                     "The weighting array is improperly sized.  Expected ", npts, &
                     " elements, but found ", size(weights), "."
-                call errmgr%report_error("fit_frf", trim(errmsg), MECH_ARRAY_SIZE_ERROR)
+                call errmgr%report_error("fft_fit_frf", trim(errmsg), MECH_ARRAY_SIZE_ERROR)
                 return
             end if
             wghts = weights
@@ -62,8 +71,8 @@ contains
         end if
 
         ! Input Check
-        if (order < 1) then
-            call errmgr%report_error("fit_frf", "Requested order is less than 1.", &
+        if (order < 2) then
+            call errmgr%report_error("fft_fit_frf", "Requested order is less than 2.", &
                 MECH_INVALID_INPUT_ERROR)
             return
         end if
@@ -71,23 +80,39 @@ contains
             write (errmsg, '(AI0AI0A)') &
                 "The amplitude array is improperly sized.  Expected ", npts, &
                 " elements, but found ", size(amp), "."
-            call errmgr%report_error("fit_frf", trim(errmsg), MECH_ARRAY_SIZE_ERROR)
+            call errmgr%report_error("fft_fit_frf", trim(errmsg), MECH_ARRAY_SIZE_ERROR)
             return
         end if
         if (size(phase) /= npts) then
             write (errmsg, '(AI0AI0A)') &
                 "The phase array is improperly sized.  Expected ", npts, &
                 " elements, but found ", size(phase), "."
-            call errmgr%report_error("fit_frf", trim(errmsg), MECH_ARRAY_SIZE_ERROR)
+            call errmgr%report_error("fft_fit_frf", trim(errmsg), MECH_ARRAY_SIZE_ERROR)
             return
         end if
 
         ! Workspace Allocation
         allocate(iwork(liwork), stat = flag)
         if (flag == 0) allocate(cwork(lcwork), stat = flag)
-        if (flag == 0) allocate(dwork(ldwork), stat = flag)
+        if (flag == 0) allocate(rwork(lrwork), stat = flag)
         if (flag /= 0) then
-            call errmgr%report_error("fit_frf", &
+            call errmgr%report_error("fft_fit_frf", &
+                "Insufficient memory available.", &
+                MECH_OUT_OF_MEMORY_ERROR)
+            return
+        end if
+
+        ! Allocate output information
+        allocate(this%frf(npts), stat = flag)
+        if (flag == 0) allocate(this%poles(npts), stat = flag)
+        if (flag == 0) allocate(this%residual(npts), stat = flag)
+        if (flag == 0) allocate(this%rms(ni), stat = flag)
+        if (flag == 0) allocate(this%model%A(order, order), stat = flag)
+        if (flag == 0) allocate(this%model%B(order, 1), stat = flag)
+        if (flag == 0) allocate(this%model%C(1, order), stat = flag)
+        if (flag == 0) allocate(this%model%D(1, 1), stat = flag)
+        if (flag /= 0) then
+            call errmgr%report_error("fft_fit_frf", &
                 "Insufficient memory available.", &
                 MECH_OUT_OF_MEMORY_ERROR)
             return
@@ -98,7 +123,20 @@ contains
         frf = amp * (cos(phase) + j * sin(phase))
 
         ! Construct an initial estimate of pole locations
-    end function
+        call create_pole_estimate(freq, order, this%poles, rwork)
+
+        ! Iteration Loop
+        do i = 1, ni
+            ! Compute the fit and update the pole locations
+            call vector_fit(frf, s, this%poles, wghts, &
+                this%model%A, this%model%B, this%model%C, this%model%D, &
+                this%frf, this%residual, &
+                iwork, cwork, rwork)
+
+            ! Compute the RMS error of the current step
+            this%rms(i) = norm2(abs(this%residual))
+        end do
+    end subroutine
 
 ! ------------------------------------------------------------------------------
     ! Takes a single step of the fitting algorithm.
@@ -638,7 +676,7 @@ contains
         
         ! Rescale A
         do i = 1, n + 1
-            escale(i) = norm(ar(:,i))
+            escale(i) = norm2(ar(:,i))
             ar(:,i) = ar(:,i) / escale(i)
         end do
 
@@ -712,6 +750,7 @@ contains
     subroutine convert_to_real_form(poles, bc, cc, cindex, a, b, c)
         ! Arguments
         complex(real64), intent(in), dimension(:) :: poles, bc, cc
+        integer(int32), intent(in), dimension(:) :: cindex
         real(real64), intent(out), dimension(:,:) :: a, b, c
 
         ! Local Variables
@@ -725,7 +764,7 @@ contains
         i = 0
         do
             i = i + 1
-            if (i == 1) then
+            if (cindex(i) == 1) then
                 a1 = real(poles(i))
                 a2 = aimag(poles(i))
                 b1 = 2.0d0 * real(bc(i))
@@ -745,7 +784,7 @@ contains
                 c(1,i+1) = c2
 
                 i = i + 1
-            else if (i == 0) then
+            else if (cindex(i) == 0) then
                 a(i,i) = real(poles(i))
                 b(i,1) = real(bc(i))
                 c(1,i) = real(cc(i))
@@ -753,6 +792,46 @@ contains
 
             ! Check i
             if (i >= n) exit
+        end do
+    end subroutine
+
+! ------------------------------------------------------------------------------
+    ! Creates an estimate of pole locations used to initialize the fitting
+    ! routine.
+    !
+    ! - freq: An N-element array containing the frequency points in rad/s.
+    ! - order: The order of the system to fit (at least 2).
+    ! - poles: An ORDER-element array where the pole estimates will be written.
+    ! - work: An ORDER/2-element workspace array.
+    subroutine create_pole_estimate(freq, order, poles, work)
+        use fplot_core, only : linspace
+
+        ! Arguments
+        real(real64), intent(in), dimension(:) :: freq
+        integer(int32), intent(in) :: order
+        complex(real64), intent(out), dimension(:) :: poles
+        real(real64), intent(out), dimension(:) :: work
+
+        ! Parameters
+        complex(real64), parameter :: zero = (0.0d0, 0.0d0)
+        complex(real64), parameter :: j = (0.0d0, 1.0d0)
+
+        ! Local Variables
+        integer(int32) :: i, k, npts, m
+        real(real64) :: alf
+
+        ! Initialization
+        npts = size(freq)
+        m = max(order / 2, 1)
+        work(1:m) = linspace(freq(1), freq(npts), m)
+        poles = zero
+        k = 1
+        do i = 1, m
+            alf = -1e-2 * work(i)
+            
+            poles(k) = alf - j * work(i)
+            poles(k+1) = alf + j * work(k)
+            k = k + 2
         end do
     end subroutine
 
