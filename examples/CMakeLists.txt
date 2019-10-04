@@ -97,3 +97,8 @@ target_link_libraries(lti_example_5 mecheng)
 # FREQUENCY SWEEP EXAMPLE 1
 add_executable(frequency_sweep_example_1 frequency_sweep_example_1.f90)
 target_link_libraries(frequency_sweep_example_1 mecheng)
+
+# FRF FITTING EXAMPLE 1
+add_executable(frf_fit_example_1 frf_fit_example.f90)
+target_link_libraries(frf_fit_example_1 mecheng)
+
