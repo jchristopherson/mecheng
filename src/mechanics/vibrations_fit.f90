@@ -313,8 +313,8 @@ contains
 
         ! Construct the overall state space matrices
         ! call build_denominator(s, poles, cindex, dk)
-        call to_cmplx_state_space(weights, f, dk, ac, ar(:,1:n+1), bb, br, &
-            c, d, escale)
+        call to_cmplx_state_space(weights, s, f, poles, cindex, dk, ac, &
+            ar(:,1:n+1), bb, br, c, d, escale)
         call c_to_cmplx(c, cindex, cc)
 
         ! Construct the actual fit
@@ -720,7 +720,12 @@ contains
     ! Constructs the C matrix into its complex-valued form.
     !
     ! - weights: M-element weighting vector.
+    ! - s: M-element array containing the frequency points.
     ! - f: M-element frequency response vector containing data to be fitted.
+    ! - poles: An N-element array containing the current pole locations.
+    ! - cindex: An N-element array determining what pole values are real,
+    !       complex, and/or complex-conjugates.  See label_complex_values for
+    !       more info.
     ! - dk: An M-by-(N+1) matrix.
     ! - ac: An M-by-2*(N+1) matrix.
     ! - ar: A 2*M-by-(N+1) matrix.
@@ -729,12 +734,13 @@ contains
     ! - cr: A 1-by-N matrix.
     ! - dr: A 1-by-1 matrix.
     ! - escale: An N+1 element array.
-    subroutine to_cmplx_state_space(weights, f, dk, ac, ar, bc, br, cr, dr, escale)
+    subroutine to_cmplx_state_space(weights, s, f, poles, cindex, dk, ac, ar, bc, br, cr, dr, escale)
         use linalg_core
 
         ! Arguments
         real(real64), intent(in), dimension(:) :: weights
-        complex(real64), intent(in), dimension(:) :: f
+        complex(real64), intent(in), dimension(:) :: s, f, poles
+        integer(int32), intent(in), dimension(:) :: cindex
         complex(real64), intent(inout), dimension(:,:) :: dk
         complex(real64), intent(out), dimension(:,:) :: ac
         complex(real64), intent(out), dimension(:) :: bc
