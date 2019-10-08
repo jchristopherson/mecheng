@@ -767,6 +767,7 @@ contains
             else if (cindex(i) == 1) then
                 dk(:,i) = weights / (s - poles(i)) + weights / (s - conjg(poles(i)))
                 dk(:,i+1) = j * weights / (s - poles(i)) - j * weights / (s - conjg(poles(i)))
+                i = i + 2
             end if
         end do
 
