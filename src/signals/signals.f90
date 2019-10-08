@@ -5,7 +5,9 @@
 ! - Correlation
 !   - http://www.cgd.ucar.edu/cas/software/SUBR_UNBIASED_CORRELATION.html
 ! - Cross-Spectral Density
-! - Convolution
+! - Convolution & Deconvolution
+!   - REF: http://terpconnect.umd.edu/~toh/spectrum/Deconvolution.html
+!   - Deconvolution: ydc=ifft(fft(yc)./fft([c zeros(1,2000)])).*sum(c);
 ! - Transfer Function (Requires Cross-Spectral Density)
 ! - Trapezoidal Integration
 ! - Figure out how to get doxygen to encompass all of the documentation
