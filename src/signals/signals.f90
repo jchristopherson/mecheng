@@ -194,6 +194,8 @@ module signals
     public :: fir_filter
     public :: iir_filter
     public :: apply_filter
+    public :: conv
+    public :: deconv
     public :: SIG_INVALID_INPUT_ERROR
     public :: SIG_OUT_OF_MEMORY_ERROR
     public :: SIG_INDEX_OUT_OF_RANGE_ERROR
@@ -1769,4 +1771,20 @@ end interface
         end function
 
     end interface
+
+! ******************************************************************************
+! SIGNALS_WINDOWS ROUTINES
+! ------------------------------------------------------------------------------
+    interface
+        module function conv(u, v) result(r)
+            real(real64), intent(in), dimension(:) :: u, v
+            real(real64), allocatable, dimension(:) :: r
+        end function
+
+        module function deconv(u, v) result(r)
+            real(real64), intent(in), dimension(:) :: u, v
+            real(real64), allocatable, dimension(:) :: r
+        end function
+    end interface
+
 end module
