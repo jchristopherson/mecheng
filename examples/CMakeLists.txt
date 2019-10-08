@@ -102,3 +102,7 @@ target_link_libraries(frequency_sweep_example_1 mecheng)
 add_executable(frf_fit_example_1 frf_fit_example.f90)
 target_link_libraries(frf_fit_example_1 mecheng)
 
+# CONVOLUTION EXAMPLE 1
+add_executable(signal_conv_example_1 signal_conv_example_1.f90)
+target_link_libraries(signal_conv_example_1 mecheng)
+
