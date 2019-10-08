@@ -1776,14 +1776,16 @@ end interface
 ! SIGNALS_WINDOWS ROUTINES
 ! ------------------------------------------------------------------------------
     interface
-        module function conv(u, v) result(r)
+        module function conv(u, v, err) result(r)
             real(real64), intent(in), dimension(:) :: u, v
-            real(real64), allocatable, dimension(:) :: r
+            class(errors), intent(inout), optional, target :: err
+            real(real64), dimension(size(u)) :: r
         end function
 
-        module function deconv(u, v) result(r)
+        module function deconv(u, v, err) result(r)
             real(real64), intent(in), dimension(:) :: u, v
-            real(real64), allocatable, dimension(:) :: r
+            class(errors), intent(inout), optional, target :: err
+            real(real64), dimension(size(u)) :: r
         end function
     end interface
 
