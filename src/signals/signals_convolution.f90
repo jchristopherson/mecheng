@@ -59,7 +59,7 @@ contains
         class(errors), intent(inout) :: err
 
         ! Local Variables
-        integer(int32) :: nu, nv, nv2, n, npts, nz, nzend, flag
+        integer(int32) :: nu, nv, nv2, n, flag
         real(real64), allocatable, dimension(:) :: uz, vz, temp
         complex(real64), allocatable, dimension(:) :: cu, cv, q
 
@@ -79,17 +79,11 @@ contains
             return
         end if
 
-        ! Fill in u and pad the end with zeros
+        ! Fill in u and v, and pad the end with zeros
         uz(1:nu) = u
         uz(nu+1:n) = 0.0d0
-
-        ! Populate and wrap around the response vector
-        npts = nv - nv2 ! # of values in the upper half of V
-        nz = n - nv ! # of zero values in the padded version of V
-        nzend = npts + nz + 1
-        vz(1:npts) = v(nv2+1:nv)
-        vz(npts+1:nzend) = 0.0d0
-        vz(nzend+1:n) = v(1:nv2)
+        vz(1:nv) = v
+        vz(nv+1:n) = 0.0d0
 
         ! Compute the FFTs, and then perform the proper operations
         cu = rfft(uz)
