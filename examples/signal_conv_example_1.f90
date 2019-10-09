@@ -16,9 +16,10 @@ program example
     ! Local Variables
     integer(int32) :: i
     real(real64) :: dt, ts(ns), tr(nr), xs(ns), xr(nr), c(ns), xsc(ns)
-    type(plot_2d) :: plt
-    type(plot_data_2d) :: d1, d2
-    class(plot_axis), pointer :: xAxis, yAxis
+    type(multiplot) :: plt
+    type(plot_2d) :: plt1, plt2
+    type(plot_data_2d) :: d1, d2, d3
+    class(plot_axis), pointer :: x1, y1
     class(legend), pointer :: lgnd
 
     ! Create the signal
@@ -45,20 +46,28 @@ program example
     xsc = deconv(c, xr)
 
     ! Create plots of the signal and its deconvolution
-    call plt%initialize()
+    call plt%initialize(2, 1)
+    call plt1%initialize()
+    call plt2%initialize()
+    call plt%set(1, 1, plt1)
+    call plt%set(2, 1, plt2)
     call plt%set_font_name("Arial")
     call plt%set_font_size(11)
-    xAxis => plt%get_x_axis()
-    yAxis => plt%get_y_axis()
-    lgnd => plt%get_legend()
+    x1 => plt1%get_x_axis()
+    y1 => plt1%get_y_axis()
+    lgnd => plt1%get_legend()
 
-    call d1%set_name("Original")
+    call d1%set_name("Signal 1")
     call d1%define_data(ts, xs)
 
-    call d2%set_name("Reconstructed")
-    call d2%define_data(ts, xsc)
+    call d2%set_name("Signal 2")
+    call d2%define_data(tr, xr)
 
-    call plt%push(d1)
-    call plt%push(d2)
+    call d3%set_name("Convolved")
+    call d3%defin_data(tx, c)
+
+    call plt1%push(d1)
+    call plt1%push(d2)
+    call plt1%push(d3)
     call plt%draw()
 end program
