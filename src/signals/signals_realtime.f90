@@ -158,6 +158,23 @@ contains
             y = y + this%m_buffer(j) * this%m_coefficients(i)
         end do
     end function
+
+! ------------------------------------------------------------------------------
+    module function fir_apply_filter_array(this, x) result(y)
+        ! Arguments
+        class(fir_filter), intent(inout) :: this
+        real(real64), intent(in), dimension(:) :: x
+        real(real64), dimension(size(x)) :: y
+
+        ! Local Variables
+        integer(int32) :: i, n
+        
+        ! Process
+        n = size(x)
+        do i = 1, n
+            y(i) = this%apply(x(i))
+        end do
+    end function
     
 ! ------------------------------------------------------------------------------
 ! ------------------------------------------------------------------------------
@@ -390,8 +407,21 @@ contains
         end do
     end function
 ! ------------------------------------------------------------------------------
+    module function iir_apply_filter_array(this, x) result(y)
+        ! Arguments
+        class(iir_filter), intent(inout) :: this
+        real(real64), intent(in), dimension(:) :: x
+        real(real64), dimension(size(x)) :: y
 
-! ------------------------------------------------------------------------------
+        ! Local Variables
+        integer(int32) :: i, n
+        
+        ! Process
+        n = size(x)
+        do i = 1, n
+            y(i) = this%apply(x(i))
+        end do
+    end function
 
 ! ------------------------------------------------------------------------------
 end submodule

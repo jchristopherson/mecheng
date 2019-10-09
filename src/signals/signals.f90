@@ -1487,7 +1487,9 @@ end interface
     type, abstract :: realtime_filter
     contains
         !> @brief Applies a real-time digital filter.
-        procedure(apply_filter), deferred, public :: apply
+        procedure(apply_filter), deferred :: apply_scalar
+        procedure(apply_filter_array), deferred :: apply_array
+        generic, public :: apply => apply_scalar, apply_array
     end type
 
     interface
@@ -1502,6 +1504,19 @@ end interface
             class(realtime_filter), intent(inout) :: this
             real(real64), intent(in) :: x
             real(real64) :: y
+        end function
+
+        !> @brief Applies a real-time digital filter.
+        !!
+        !! @param[in,out] this The realtime_filter object.
+        !! @param[in] x An N-element array of values to filter.
+        !! @return y An N-element array containing the filtered values.
+        function apply_filter_array(this, x) result(y)
+            use iso_fortran_env
+            import realtime_filter
+            class(realtime_filter), intent(inout) :: this
+            real(real64), intent(in), dimension(:) :: x
+            real(real64), dimension(size(x)) :: y
         end function
     end interface
 
@@ -1521,7 +1536,9 @@ end interface
         procedure, public :: get_tap_count => fir_get_tap_count
         procedure, public :: get_coefficient => fir_get_coeff
         procedure, public :: set_coefficient => fir_set_coeff
-        procedure, public :: apply => fir_apply_filter
+        ! procedure, public :: apply => fir_apply_filter
+        procedure :: apply_scalar => fir_apply_filter
+        procedure :: apply_array => fir_apply_filter_array
     end type
 
     !> @brief Defines an IIR digital filter.
@@ -1542,7 +1559,9 @@ end interface
         procedure, public :: set_numerator => iir_set_numerator_coeff
         procedure, public :: get_denominator => iir_get_denominator_coeff
         procedure, public :: set_denominator => iir_set_denominator_coeff
-        procedure, public :: apply => iir_apply_filter
+        procedure :: apply_scalar => iir_apply_filter
+        procedure :: apply_array => iir_apply_filter_array
+        ! generic, public :: apply => iir_apply_filter, iir_apply_filter_array
     end type
 
     interface
@@ -1634,6 +1653,17 @@ end interface
             class(fir_filter), intent(inout) :: this
             real(real64), intent(in) :: x
             real(real64) :: y
+        end function
+
+        !> @brief Applies an FIR filter.
+        !!
+        !! @param[in,out] this The iir_filter object.
+        !! @param[in] x An N-element array of values to filter.
+        !! @return y An N-element array containing the filtered values.
+        module function fir_apply_filter_array(this, x) result(y)
+            class(fir_filter), intent(inout) :: this
+            real(real64), intent(in), dimension(:) :: x
+            real(real64), dimension(size(x)) :: y
         end function
 
 ! --------------------
@@ -1768,6 +1798,17 @@ end interface
             class(iir_filter), intent(inout) :: this
             real(real64), intent(in) :: x
             real(real64) :: y
+        end function
+
+        !> @brief Applies an IIR filter.
+        !!
+        !! @param[in,out] this The iir_filter object.
+        !! @param[in] x An N-element array of values to filter.
+        !! @return y An N-element array containing the filtered values.
+        module function iir_apply_filter_array(this, x) result(y)
+            class(iir_filter), intent(inout) :: this
+            real(real64), intent(in), dimension(:) :: x
+            real(real64), dimension(size(x)) :: y
         end function
 
     end interface
