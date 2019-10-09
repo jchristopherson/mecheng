@@ -67,7 +67,7 @@ contains
         nu = size(u)
         nv = size(v)
         nv2 = max(nv / 2, 1)
-        n = 2**next_power_of_two(nu + nv)
+        n = nu + nv2
 
         ! Local memory allocation
         allocate(uz(n), stat = flag)
