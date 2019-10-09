@@ -13,21 +13,14 @@ contains
         class(errors), pointer :: errmgr
         type(errors), target :: deferr
 
-        ! Initialization
-        nu = size(u)
-        nv = size(v)
-        if (present(err)) then
-            errmgr => err
-        else
-            errmgr => deferr
-        end if
-
-        ! Compute the convolution
+        ! Process
         call conv_engine(.true., u, v, r, errmgr)
     end function
 
 ! ------------------------------------------------------------------------------
     module function deconv(u, v, err) result(r)
+        use linalg_core, only : solve_least_squares
+
         ! Arguments
         real(real64), intent(in), dimension(:) :: u, v
         class(errors), intent(inout), optional, target :: err
@@ -38,15 +31,13 @@ contains
         type(errors), target :: deferr
 
         ! Initialization
-        nu = size(u)
-        nv = size(v)
         if (present(err)) then
             errmgr => err
         else
             errmgr => deferr
         end if
 
-        ! Compute the deconvolution
+        ! Process
         call conv_engine(.false., u, v, r, errmgr)
     end function
 
