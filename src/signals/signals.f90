@@ -1831,6 +1831,14 @@ end interface
         !!
         !! @param[in] u An N-element input array.
         !! @param[in] v An M-element intput array.
+        !! @param[in] sol An optional input specifying how to return the
+        !!  solution.  The following values are valid.
+        !!  - SIG_FULL_CONVOLUTION: This is the default setting, and defines
+        !!      that the entire convolution is returned.
+        !!  - SIG_VALID_CONVOLUTION: Only returns the parts of the 
+        !!      convolution that are computed without the zero-padded edges.
+        !!  - SIG_SAME_CONVOLUTION: Returns the central N-element portion of
+        !!      the convolution (same size as @p u).
         !! @param[in,out] err An optional errors-based object that if provided 
         !!  can be used to retrieve information relating to any errors 
         !!  encountered during execution.  If not provided, a default 
