@@ -2006,7 +2006,7 @@ end interface
         module function deconv(u, v, err) result(r)
             real(real64), intent(in), dimension(:) :: u, v
             class(errors), intent(inout), optional, target :: err
-            real(real64), dimension(size(u)) :: r
+            real(real64), allocatable, dimension(:) :: r
         end function
     end interface
 

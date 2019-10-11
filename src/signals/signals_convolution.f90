@@ -70,7 +70,7 @@ contains
         q = tu * tv
 
         ! Compute the inverse transform to obtain the full solution
-        temp = ifft(q)
+        temp = ifft(q) * n
 
         ! Determine which solution the user is after
         if (s == SIG_VALID_CONVOLUTION) then
@@ -93,12 +93,15 @@ contains
         ! Arguments
         real(real64), intent(in), dimension(:) :: u, v
         class(errors), intent(inout), optional, target :: err
-        real(real64), dimension(size(u)) :: r
+        real(real64), allocatable, dimension(:) :: r
 
         ! Local Variables
         class(errors), pointer :: errmgr
         type(errors), target :: deferr
-
+        integer(int32) :: nu, nv, n, n2, flag
+        real(real64), allocatable, dimension(:) :: uz, vz
+        complex(real64), allocatable, dimension(:) :: tu, tv, q, temp
+        
         ! Initialization
         if (present(err)) then
             errmgr => err
@@ -106,62 +109,45 @@ contains
             errmgr => deferr
         end if
 
-        ! Process
-        call conv_engine(.false., u, v, r, errmgr)
-    end function
-
-! ------------------------------------------------------------------------------
-    subroutine conv_engine(convolve, u, v, r, err)
-        ! Arguments
-        logical, intent(in) :: convolve
-        real(real64), intent(in), dimension(:) :: u, v
-        real(real64), intent(out), dimension(:) :: r
-        class(errors), intent(inout) :: err
-
-        ! Local Variables
-        integer(int32) :: nu, nv, nv2, n, flag
-        real(real64), allocatable, dimension(:) :: uz, vz, temp
-        complex(real64), allocatable, dimension(:) :: cu, cv, q
-
-        ! Initialization
         nu = size(u)
         nv = size(v)
-        nv2 = max(nv / 2, 1)
-        n = nu + nv2
+        n = nu - nv + 1
+        n2 = 2**next_power_of_two(nu)
 
-        ! Local memory allocation
-        allocate(uz(n), stat = flag)
-        if (flag == 0) allocate(vz(n), stat = flag)
+        ! Quick Return
+        if (nv > nu) then
+            allocate(r(1))
+            r(1) = 0.0d0
+            return
+        end if
+
+        ! Local Memory Allocation
+        allocate(uz(n2), stat = flag)
+        if (flag == 0) allocate(vz(n2), stat = flag)
         if (flag /= 0) then
-            call err%report_error("conv_engine", &
+            call errmgr%report_error("deconv", &
                 "Insufficient memory available.", &
                 SIG_OUT_OF_MEMORY_ERROR)
             return
         end if
 
-        ! Fill in u and v, and pad the end with zeros
+        ! Pad with zeros as necessary
         uz(1:nu) = u
-        uz(nu+1:n) = 0.0d0
+        uz(nu+1:n2) = 0.0d0
         vz(1:nv) = v
-        vz(nv+1:n) = 0.0d0
+        vz(nv+1:n2) = 0.0d0
 
-        ! Compute the FFTs, and then perform the proper operations
-        cu = rfft(uz)
-        cv = rfft(vz)
-        if (convolve) then
-            ! Multiply as this is a convolution operation
-            q = cu * cv
-        else
-            ! Divide as this is a deconvolution operation
-            q = cu / cv
-        end if
+        ! Compute the FFT's, and then perform the deconvolution
+        tu = fft(uz)
+        tv = fft(vz)
+        q = tu / tv
 
-        ! Compute the inverse transform
-        temp = irfft(q)
+        ! Compute the inverse transform to obtain the full solution
+        temp = ifft(q) / nu
 
-        ! Only return the relevant portion of the transform
-        r = temp(1:nu)
-    end subroutine
+        ! Extract the relevant portion of the solution
+        r = real(temp(1:n))
+    end function
 
-! ------------------------------------------------------------------------------
+! ------------------------------------------------------------------------------    
 end submodule
