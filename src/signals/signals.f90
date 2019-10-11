@@ -200,6 +200,9 @@ module signals
     public :: SIG_OUT_OF_MEMORY_ERROR
     public :: SIG_INDEX_OUT_OF_RANGE_ERROR
     public :: SIG_UNITIALIZED_ERROR
+    public :: SIG_FULL_CONVOLUTION
+    public :: SIG_VALID_CONVOLUTION
+    public :: SIG_SAME_CONVOLUTION
 
 ! ******************************************************************************
 ! CONSTANTS
@@ -214,6 +217,15 @@ module signals
     integer(int32), parameter :: SIG_UNITIALIZED_ERROR = 5004
     !> Defines an array size mismatch error.
     integer(int32), parameter :: SIG_ARRAY_SIZE_ERROR = 5005
+
+    ! ----------
+    !> Defines a full convolution.
+    integer(int32), parameter :: SIG_FULL_CONVOLUTION = 10001
+    !> Defines only the valid portion of the convolution solution.
+    integer(int32), parameter :: SIG_VALID_CONVOLUTION = 10002
+    !> Defines the segment of the convolution solution that matches
+    !! the dimension of the input signal.
+    integer(int32), parameter :: SIG_SAME_CONVOLUTION = 10003
 
 ! ******************************************************************************
 ! GENERAL INTERFACES
@@ -1900,10 +1912,11 @@ end interface
         !! end program
         !! @endcode
         !! @image html convolution_plot_1.png
-        module function conv(u, v, err) result(r)
+        module function conv(u, v, sol, err) result(r)
             real(real64), intent(in), dimension(:) :: u, v
+            integer(int32), intent(in), optional :: sol
             class(errors), intent(inout), optional, target :: err
-            real(real64), dimension(size(u)) :: r
+            real(real64), allocatable, dimension(:) :: r
         end function
 
         !> @brief Computes the deconvolution of an array with another.
