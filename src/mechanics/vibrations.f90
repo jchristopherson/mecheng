@@ -485,6 +485,7 @@ module vibrations
         !! end program
         !! @endcode
         !! The above program produces the following outputs:
+        !! @image html lti_state_space_1.png
         !! @code{.txt}
         !! A (2x2):
         !! -62.831853071795869        1.0000000000000000
@@ -500,7 +501,6 @@ module vibrations
         !! D (1x1):
         !! 0.0000000000000000
         !! @endcode
-        !! @html image lti_state_space_1.png
         procedure, public :: to_state_space => lti_to_ss
     end type
 
@@ -721,6 +721,7 @@ module vibrations
         !!     end subroutine
         !! end program
         !! @endcode
+        !! @image html lti_state_space_1.png
         !! The above program produces the following outputs:
         !! @code{.txt}
         !! A (2x2):
@@ -737,7 +738,6 @@ module vibrations
         !! D (1x1):
         !! 0.0000000000000000
         !! @endcode
-        !! @html image lti_state_space_1.png
         procedure, public :: evaluate => ss_eval
         !> @brief Utilizes the state-space model to compute the transfer function at the
         !! defind frequency points.
