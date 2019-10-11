@@ -229,12 +229,12 @@ Functions/Subroutines</h2></td></tr>
 <tr class="memitem:a6e3ccf84f8d12b753cef14eb1da61932"><td class="memItemLeft" align="right" valign="top">pure elemental real(real32) function&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearrays.html#a6e3ccf84f8d12b753cef14eb1da61932">round_sngl</a> (x, p)</td></tr>
 <tr class="memdesc:a6e3ccf84f8d12b753cef14eb1da61932"><td class="mdescLeft">&#160;</td><td class="mdescRight">Rounds a number to the required precision, but rounds 0.5 dow to the next lowest value.  <a href="#a6e3ccf84f8d12b753cef14eb1da61932">More...</a><br /></td></tr>
 <tr class="separator:a6e3ccf84f8d12b753cef14eb1da61932"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8f89407e99847cade00823f912d57173"><td class="memItemLeft" align="right" valign="top">pure real(real64) function, dimension(:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearrays.html#a8f89407e99847cade00823f912d57173">unwrap_dbl</a> (x)</td></tr>
-<tr class="memdesc:a8f89407e99847cade00823f912d57173"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unwraps an array with pi magnitude jumps.  <a href="#a8f89407e99847cade00823f912d57173">More...</a><br /></td></tr>
-<tr class="separator:a8f89407e99847cade00823f912d57173"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8a12f94be32f1a6ab05915d78f8f91e6"><td class="memItemLeft" align="right" valign="top">pure real(real32) function, dimension(:), allocatable&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacearrays.html#a8a12f94be32f1a6ab05915d78f8f91e6">unwrap_sngl</a> (x)</td></tr>
-<tr class="memdesc:a8a12f94be32f1a6ab05915d78f8f91e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unwraps an array with pi magnitude jumps.  <a href="#a8a12f94be32f1a6ab05915d78f8f91e6">More...</a><br /></td></tr>
-<tr class="separator:a8a12f94be32f1a6ab05915d78f8f91e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a46eb1a43829c240411707b1b9782177c"><td class="memItemLeft" align="right" valign="top"><a id="a46eb1a43829c240411707b1b9782177c"></a>
+subroutine&#160;</td><td class="memItemRight" valign="bottom"><b>unwrap_dbl</b> (x)</td></tr>
+<tr class="separator:a46eb1a43829c240411707b1b9782177c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac358c017125d3bfd1c53992704fb038f"><td class="memItemLeft" align="right" valign="top"><a id="ac358c017125d3bfd1c53992704fb038f"></a>
+subroutine&#160;</td><td class="memItemRight" valign="bottom"><b>unwrap_sngl</b> (x)</td></tr>
+<tr class="separator:ac358c017125d3bfd1c53992704fb038f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><b>arrays</b> </p>
@@ -1693,72 +1693,6 @@ Functions/Subroutines</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>The result of the operation. </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="arrays_8f90_source.html#l01034">1034</a> of file <a class="el" href="arrays_8f90_source.html">arrays.f90</a>.</p>
-
-</div>
-</div>
-<a id="a8f89407e99847cade00823f912d57173"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8f89407e99847cade00823f912d57173">&#9670;&nbsp;</a></span>unwrap_dbl()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">pure real(real64) function, dimension(:), allocatable arrays::unwrap_dbl </td>
-          <td>(</td>
-          <td class="paramtype">real(real64), dimension(:), intent(in)&#160;</td>
-          <td class="paramname"><em>x</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Unwraps an array with pi magnitude jumps. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">x</td><td>The N-element array. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>The N-element unwrapped array. </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="arrays_8f90_source.html#l01056">1056</a> of file <a class="el" href="arrays_8f90_source.html">arrays.f90</a>.</p>
-
-</div>
-</div>
-<a id="a8a12f94be32f1a6ab05915d78f8f91e6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8a12f94be32f1a6ab05915d78f8f91e6">&#9670;&nbsp;</a></span>unwrap_sngl()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">pure real(real32) function, dimension(:), allocatable arrays::unwrap_sngl </td>
-          <td>(</td>
-          <td class="paramtype">real(real32), dimension(:), intent(in)&#160;</td>
-          <td class="paramname"><em>x</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Unwraps an array with pi magnitude jumps. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">x</td><td>The N-element array. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>The N-element unwrapped array. </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="arrays_8f90_source.html#l01097">1097</a> of file <a class="el" href="arrays_8f90_source.html">arrays.f90</a>.</p>
 
 </div>
 </div>

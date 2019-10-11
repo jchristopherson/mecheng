@@ -19,6 +19,7 @@ var searchData=
   ['int_5frepeated_5ferror_5ftest_5ffailure',['int_repeated_error_test_failure',['../namespaceintegral__core.html#a24784098c88969e0a24bf492f217d72d',1,'integral_core']]],
   ['int_5fround_5foff_5ferror',['int_round_off_error',['../namespaceintegral__core.html#a00f12dd90b87d9f5568d6de4b2429f6d',1,'integral_core']]],
   ['integral_5fgain',['integral_gain',['../structcontrols_1_1pid.html#a84a217a5e2e8b5ae0819729f65ca4edd',1,'controls::pid']]],
+  ['integrator',['integrator',['../structvibrations_1_1frequency__sweep__options.html#a1a071225534d9162c1631afbdac9b132',1,'vibrations::frequency_sweep_options']]],
   ['item',['item',['../structcollection__containers_1_1container.html#ab70eda5aab7f8f795a1d74e2a8da3be4',1,'collection_containers::container::item()'],['../structcollection__containers_1_1dll__node.html#a08ee5109625ac5e0e47b90f262ad41ad',1,'collection_containers::dll_node::item()']]],
   ['iter_5fcount',['iter_count',['../structnonlin__core_1_1iteration__behavior.html#a17f34afe0453e0efe5284f51d5db1b52',1,'nonlin_core::iteration_behavior']]]
 ];

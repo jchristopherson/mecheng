@@ -61,7 +61,14 @@ var annotated_dup =
       [ "to_string", "interfacestrings_1_1to__string.html", "interfacestrings_1_1to__string" ]
     ] ],
     [ "vibrations", null, [
+      [ "bode_settings", "structvibrations_1_1bode__settings.html", "structvibrations_1_1bode__settings" ],
       [ "compute_frequency_response", "interfacevibrations_1_1compute__frequency__response.html", "interfacevibrations_1_1compute__frequency__response" ],
-      [ "modal_information", "structvibrations_1_1modal__information.html", "structvibrations_1_1modal__information" ]
+      [ "frequency_sweep_options", "structvibrations_1_1frequency__sweep__options.html", "structvibrations_1_1frequency__sweep__options" ],
+      [ "frf_fitting_tool", "structvibrations_1_1frf__fitting__tool.html", "structvibrations_1_1frf__fitting__tool" ],
+      [ "harmonic_ode_fcn", "interfacevibrations_1_1harmonic__ode__fcn.html", "interfacevibrations_1_1harmonic__ode__fcn" ],
+      [ "lti", "structvibrations_1_1lti.html", "structvibrations_1_1lti" ],
+      [ "modal_information", "structvibrations_1_1modal__information.html", "structvibrations_1_1modal__information" ],
+      [ "pole_zero_settings", "structvibrations_1_1pole__zero__settings.html", "structvibrations_1_1pole__zero__settings" ],
+      [ "state_space", "structvibrations_1_1state__space.html", "structvibrations_1_1state__space" ]
     ] ]
 ];

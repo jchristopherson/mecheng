@@ -1,6 +1,7 @@
 var namespacesignals =
 [
     [ "apply_filter", "interfacesignals_1_1apply__filter.html", "interfacesignals_1_1apply__filter" ],
+    [ "apply_filter_array", "interfacesignals_1_1apply__filter__array.html", "interfacesignals_1_1apply__filter__array" ],
     [ "finite_diff", "interfacesignals_1_1finite__diff.html", "interfacesignals_1_1finite__diff" ],
     [ "fir_filter", "structsignals_1_1fir__filter.html", "structsignals_1_1fir__filter" ],
     [ "fourier_diff", "interfacesignals_1_1fourier__diff.html", "interfacesignals_1_1fourier__diff" ],

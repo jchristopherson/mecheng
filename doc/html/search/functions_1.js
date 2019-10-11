@@ -9,6 +9,7 @@ var searchData=
   ['bfm_5fmove_5fto_5fstart',['bfm_move_to_start',['../namespacefortio__binary.html#a87ed7739ce46a4d2dab98d6db2c73a40',1,'fortio_binary']]],
   ['bfm_5fset_5fis_5flittle_5fendian',['bfm_set_is_little_endian',['../namespacefortio__binary.html#a480160dd3ff616d3deb6592df5be4163',1,'fortio_binary']]],
   ['bfm_5fset_5fposition',['bfm_set_position',['../namespacefortio__binary.html#ae6182210368f4622286e8bd2000cc665',1,'fortio_binary']]],
+  ['bode',['bode',['../structvibrations_1_1lti.html#ae33a24991d8264d8d3f9bb2d987b8ef0',1,'vibrations::lti']]],
   ['br_5feof',['br_eof',['../namespacefortio__binary.html#af10a5d871a9d91705791d416753dbf31',1,'fortio_binary']]],
   ['br_5finit',['br_init',['../namespacefortio__binary.html#a04ddc09cb7ddf270fb6da8e3304ae5c2',1,'fortio_binary']]],
   ['br_5fread_5fchar',['br_read_char',['../namespacefortio__binary.html#ae25370b863c388c86a1324902cb8ebe0',1,'fortio_binary']]],

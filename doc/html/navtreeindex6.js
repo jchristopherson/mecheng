@@ -1,5 +1,10 @@
 var NAVTREEINDEX6 =
 {
+"structintegral__core_1_1ode__auto.html#aa750d26ae0ae31b5e7c1d45a11a4a5f0":[1,0,18,7,3],
+"structintegral__core_1_1ode__auto.html#ac36e4a651771f34246340c806504434b":[1,0,18,7,2],
+"structintegral__core_1_1ode__auto.html#acf053c0ab90c954fbea452537ede1933":[1,0,18,7,7],
+"structintegral__core_1_1ode__auto.html#af672d690a71a7658f25d7bf066fcea98":[1,0,18,7,5],
+"structintegral__core_1_1ode__euler.html":[1,0,18,10],
 "structintegral__core_1_1ode__euler.html#a08a06e7673957be9e4c6db512830c128":[1,0,18,10,10],
 "structintegral__core_1_1ode__euler.html#a0e07128ab58004733383f47d8a4cbbb6":[1,0,18,10,9],
 "structintegral__core_1_1ode__euler.html#a2c51df406ab49d586183a4aba2486ac0":[1,0,18,10,6],
@@ -244,10 +249,5 @@ var NAVTREEINDEX6 =
 "structnonlin__polynomials_1_1polynomial.html#a3ced5fa8b1d410dcf53ff40224f82912":[1,0,26,4,5],
 "structnonlin__polynomials_1_1polynomial.html#a637144f7851d5e8030f8922f8cafa7ef":[1,0,26,4,3],
 "structnonlin__polynomials_1_1polynomial.html#a80a74956544433b7a45babcfb4443980":[1,0,26,4,1],
-"structnonlin__polynomials_1_1polynomial.html#aa08e7f997021e5fb2c5f51b70809e19a":[1,0,26,4,11],
-"structnonlin__polynomials_1_1polynomial.html#aa457fde9f1a8040f259115fc974cd620":[1,0,26,4,7],
-"structnonlin__polynomials_1_1polynomial.html#aabefa8eebaed14d790c39cd45c8b7b26":[1,0,26,4,12],
-"structnonlin__polynomials_1_1polynomial.html#aadbe3b5e2c3ca7df84bffeb71faa33fd":[1,0,26,4,0],
-"structnonlin__polynomials_1_1polynomial.html#ab589ca8bc5c99a0b18f8df3a877790fd":[1,0,26,4,13],
-"structnonlin__polynomials_1_1polynomial.html#ab8217dd1d64e540d1be5fc21b5a47600":[1,0,26,4,9]
+"structnonlin__polynomials_1_1polynomial.html#aa08e7f997021e5fb2c5f51b70809e19a":[1,0,26,4,11]
 };

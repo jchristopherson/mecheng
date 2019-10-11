@@ -135,8 +135,9 @@ var NAVTREEINDEX1 =
 "interfacelinalg__core_1_1diag__mtx__mult.html#acda2e3def961341e0a586d24a52d072d":[1,0,20,4,3],
 "interfacelinalg__core_1_1eigen.html":[1,0,20,5],
 "interfacelinalg__core_1_1eigen.html#a16c33318e21dcb941b66f3bd07d0afb5":[1,0,20,5,0],
-"interfacelinalg__core_1_1eigen.html#a33c75fab4fe39686bad8ac658450943e":[1,0,20,5,1],
-"interfacelinalg__core_1_1eigen.html#a722595e0199e4c48c3161d4401183861":[1,0,20,5,2],
+"interfacelinalg__core_1_1eigen.html#a33c75fab4fe39686bad8ac658450943e":[1,0,20,5,2],
+"interfacelinalg__core_1_1eigen.html#a722595e0199e4c48c3161d4401183861":[1,0,20,5,3],
+"interfacelinalg__core_1_1eigen.html#a7ea7b48fee19b83b201ce15ed0376d75":[1,0,20,5,1],
 "interfacelinalg__core_1_1form__lu.html":[1,0,20,6],
 "interfacelinalg__core_1_1form__lu.html#a57bb63f215ba1bcd839b8eb89864d321":[1,0,20,6,2],
 "interfacelinalg__core_1_1form__lu.html#a7c1d66b1f0c96969e1aebcc6e4f7c786":[1,0,20,6,3],
@@ -248,6 +249,5 @@ var NAVTREEINDEX1 =
 "interfacelinalg__immutable_1_1mat__solve__upper__tri.html":[1,0,21,9],
 "interfacelinalg__immutable_1_1mat__solve__upper__tri.html#a59e1f0aed5b9fd5b952542d8e669fdbd":[1,0,21,9,1],
 "interfacelinalg__immutable_1_1mat__solve__upper__tri.html#a8085ffccaa724ae8f60c897fa38691f7":[1,0,21,9,2],
-"interfacelinalg__immutable_1_1mat__solve__upper__tri.html#a93e3f2a1097e88c8da32d6e13eb0472f":[1,0,21,9,3],
-"interfacelinalg__immutable_1_1mat__solve__upper__tri.html#a97f528aee778d8ddfdcb52058d048de7":[1,0,21,9,0]
+"interfacelinalg__immutable_1_1mat__solve__upper__tri.html#a93e3f2a1097e88c8da32d6e13eb0472f":[1,0,21,9,3]
 };

@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['c',['c',['../structgeometry_1_1plane.html#a5eab2d287f870a28611271a24bb4ae29',1,'geometry::plane']]],
+  ['c',['c',['../structvibrations_1_1state__space.html#a7fce57fae4e6a43b279096beb4624f41',1,'vibrations::state_space::c()'],['../structgeometry_1_1plane.html#a5eab2d287f870a28611271a24bb4ae29',1,'geometry::plane::c()']]],
   ['cf_5farray_5findex_5ferror',['cf_array_index_error',['../namespacecurvefit__core.html#a48c53f7b30a8c17857936c4a156fcbdf',1,'curvefit_core']]],
   ['cf_5farray_5fsize_5ferror',['cf_array_size_error',['../namespacecurvefit__core.html#a0b9bcddc99b580017d5c4bdfc632fd90',1,'curvefit_core']]],
   ['cf_5fconvergence_5ferror',['cf_convergence_error',['../namespacecurvefit__core.html#a82f4dd671b926fe90f4106ebcba6848c',1,'curvefit_core']]],
@@ -54,9 +54,8 @@ var searchData=
   ['companion_5fmtx',['companion_mtx',['../structnonlin__polynomials_1_1polynomial.html#aadbe3b5e2c3ca7df84bffeb71faa33fd',1,'nonlin_polynomials::polynomial']]],
   ['compute_5fdiff2',['compute_diff2',['../structcurvefit__interp_1_1spline__interp.html#a6f6466e0b36221b31704871408b937c6',1,'curvefit_interp::spline_interp']]],
   ['compute_5ffrequency_5fresponse',['compute_frequency_response',['../interfacevibrations_1_1compute__frequency__response.html',1,'vibrations']]],
-  ['compute_5ffrequency_5fresponse_5f1',['compute_frequency_response_1',['../interfacevibrations_1_1compute__frequency__response.html#a6edc45cb54901dff71efb42a3c9f77da',1,'vibrations::compute_frequency_response']]],
-  ['compute_5ffrequency_5fresponse_5f2',['compute_frequency_response_2',['../interfacevibrations_1_1compute__frequency__response.html#a091343c5029a3525e503ab349e07b7ab',1,'vibrations::compute_frequency_response']]],
-  ['compute_5ffrequency_5fresponse_5f3',['compute_frequency_response_3',['../interfacevibrations_1_1compute__frequency__response.html#ae9f612dec3ea6a3d84b1259fcaa0f928',1,'vibrations::compute_frequency_response']]],
+  ['compute_5fpoles',['compute_poles',['../structvibrations_1_1lti.html#af929ff52916b5c75bd3ec91640c93334',1,'vibrations::lti']]],
+  ['compute_5fzeros',['compute_zeros',['../structvibrations_1_1lti.html#aedde0eaafffdfa8fd232c65fd1c76bb7',1,'vibrations::lti']]],
   ['conf_5fint',['conf_int',['../interfacecurvefit__statistics_1_1confidence__interval.html#a4799c46c9c0dcaaaad29d673c39efbae',1,'curvefit_statistics::confidence_interval::conf_int()'],['../namespacecurvefit__statistics.html#a9908eaf95660708a544acb3f4881a5a8',1,'curvefit_statistics::conf_int()']]],
   ['confidence_5finterval',['confidence_interval',['../interfacecurvefit__statistics_1_1confidence__interval.html',1,'curvefit_statistics']]],
   ['conjugate',['conjugate',['../structkinematics_1_1quaternion.html#a2d5859dc7db2e93b6e7535323abc4d25',1,'kinematics::quaternion']]],

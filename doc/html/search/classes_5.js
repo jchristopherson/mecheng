@@ -11,5 +11,7 @@ var searchData=
   ['form_5flu',['form_lu',['../interfacelinalg__core_1_1form__lu.html',1,'linalg_core']]],
   ['form_5fqr',['form_qr',['../interfacelinalg__core_1_1form__qr.html',1,'linalg_core']]],
   ['fourier_5fdiff',['fourier_diff',['../interfacesignals_1_1fourier__diff.html',1,'signals']]],
-  ['fourier_5fdiff2',['fourier_diff2',['../interfacesignals_1_1fourier__diff2.html',1,'signals']]]
+  ['fourier_5fdiff2',['fourier_diff2',['../interfacesignals_1_1fourier__diff2.html',1,'signals']]],
+  ['frequency_5fsweep_5foptions',['frequency_sweep_options',['../structvibrations_1_1frequency__sweep__options.html',1,'vibrations']]],
+  ['frf_5ffitting_5ftool',['frf_fitting_tool',['../structvibrations_1_1frf__fitting__tool.html',1,'vibrations']]]
 ];

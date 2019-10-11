@@ -10,6 +10,7 @@ var searchData=
   ['to_5fhex_5fstring',['to_hex_string',['../structfplot__core_1_1color.html#a42eb9db85bdfba9b95d4208a78a5c00e',1,'fplot_core::color']]],
   ['to_5fidentity',['to_identity',['../structkinematics_1_1quaternion.html#a8651c1f4ef5bdb92aa66e8cf63445f78',1,'kinematics::quaternion']]],
   ['to_5fmatrix',['to_matrix',['../structkinematics_1_1quaternion.html#a9a13e9757859c7e7019ec36d38bbcf25',1,'kinematics::quaternion']]],
+  ['to_5fstate_5fspace',['to_state_space',['../structvibrations_1_1lti.html#ad4f3102d98e4d8bee7cdb643d49ead87',1,'vibrations::lti']]],
   ['to_5fstring',['to_string',['../structstrings_1_1string__builder.html#afa24fdffbfe1ece66aadb31fbda62586',1,'strings::string_builder']]],
   ['to_5fstring_5fcmplx_5f32',['to_string_cmplx_32',['../interfacestrings_1_1to__string.html#a965375d954b348bf0981c1cc664be3bc',1,'strings::to_string']]],
   ['to_5fstring_5fcmplx_5f32_5ffmt',['to_string_cmplx_32_fmt',['../interfacestrings_1_1to__string.html#a163c39e49da091320f8ed8ae852d7fb6',1,'strings::to_string']]],

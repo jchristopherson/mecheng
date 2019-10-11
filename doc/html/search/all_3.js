@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['d',['d',['../structgeometry_1_1plane.html#af7d151fe8dc9005399ca0ff8ff7d6cee',1,'geometry::plane']]],
+  ['d',['d',['../structvibrations_1_1state__space.html#ad296323dcb497b50ebcf6f284dd34800',1,'vibrations::state_space::d()'],['../structgeometry_1_1plane.html#af7d151fe8dc9005399ca0ff8ff7d6cee',1,'geometry::plane::d()']]],
   ['data_5fformat',['data_format',['../structfortio__hbm_1_1hbm__data__channel.html#a9f4b6df5c27b38c38ffdb3f4e1fc0e7d',1,'fortio_hbm::hbm_data_channel']]],
   ['data_5fwidth',['data_width',['../structfortio__hbm_1_1hbm__data__channel.html#ae18d170491460782da6570c363a934df',1,'fortio_hbm::hbm_data_channel']]],
   ['date',['date',['../structfortio__hbm_1_1hbm__data__channel.html#a83b35ba75d5f864f1e175e85e132da6e',1,'fortio_hbm::hbm_data_channel']]],
@@ -12,6 +12,7 @@ var searchData=
   ['define_5fx_5ferror_5fdata',['define_x_error_data',['../structfplot__core_1_1plot__data__error__bars.html#a2e4934edcda1cb853c9d2f7f23a1187f',1,'fplot_core::plot_data_error_bars']]],
   ['define_5fxy_5ferror_5fdata',['define_xy_error_data',['../structfplot__core_1_1plot__data__error__bars.html#a8b44a6a017691bab07aeea70c01c2f5c',1,'fplot_core::plot_data_error_bars']]],
   ['define_5fy_5ferror_5fdata',['define_y_error_data',['../structfplot__core_1_1plot__data__error__bars.html#afcf586efb74cc652eca0c940e1a57415',1,'fplot_core::plot_data_error_bars']]],
+  ['denominator',['denominator',['../structvibrations_1_1lti.html#a9d4781775ce372a160693f97b95fb49b',1,'vibrations::lti']]],
   ['derivative_5fgain',['derivative_gain',['../structcontrols_1_1pid.html#a9aca13657ab57330661855e30da2e9bd',1,'controls::pid']]],
   ['det',['det',['../interfacelinalg__core_1_1det.html',1,'linalg_core']]],
   ['dh_5fmtx',['dh_mtx',['../interfacekinematics_1_1dh__mtx.html',1,'kinematics']]],
@@ -26,6 +27,7 @@ var searchData=
   ['diff_5fint8',['diff_int8',['../interfacearrays_1_1diff.html#a699292b26d65f60fc5082d0bf5fce0f3',1,'arrays::diff::diff_int8()'],['../namespacearrays.html#a3701a3db8567c0a44492efa637b667d5',1,'arrays::diff_int8()']]],
   ['diff_5fsngl',['diff_sngl',['../interfacearrays_1_1diff.html#a8ae37ed6e97b7e134b36067b302d0d71',1,'arrays::diff::diff_sngl()'],['../namespacearrays.html#afcf87b3db3073fe63c193489896f757c',1,'arrays::diff_sngl()']]],
   ['direction',['direction',['../structgeometry_1_1line.html#a011553f65390130eb45053a7888de9a7',1,'geometry::line']]],
+  ['display_5fstatus',['display_status',['../structvibrations_1_1frequency__sweep__options.html#a399b366bdb2b85eb66196effb671c8d4',1,'vibrations::frequency_sweep_options']]],
   ['dll_5fnode',['dll_node',['../structcollection__containers_1_1dll__node.html',1,'collection_containers']]],
   ['draw',['draw',['../structfplot__core_1_1plot.html#a537d2c8fe375c61f1cdd94ed702c9eac',1,'fplot_core::plot::draw()'],['../structfplot__core_1_1multiplot.html#a2a92376d9c066576040fe4bbb159195d',1,'fplot_core::multiplot::draw()']]]
 ];

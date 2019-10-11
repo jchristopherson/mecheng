@@ -1,6 +1,7 @@
 var structsignals_1_1fir__filter =
 [
-    [ "apply", "structsignals_1_1fir__filter.html#aa8d2118dffab541472bad60b447de037", null ],
+    [ "apply_array", "structsignals_1_1fir__filter.html#a497c8c55b9fea3fff2ad88761b345592", null ],
+    [ "apply_scalar", "structsignals_1_1fir__filter.html#af11f3c2d2877f3df456f608eb842b064", null ],
     [ "fir_init_1", "structsignals_1_1fir__filter.html#ab5fad4849413d4a9c09c19700508aa61", null ],
     [ "fir_init_2", "structsignals_1_1fir__filter.html#ae2203e1f3601c1f6322f97bfc782102e", null ],
     [ "get_coefficient", "structsignals_1_1fir__filter.html#a44232211ae9db9007b0aeffd415558f2", null ],

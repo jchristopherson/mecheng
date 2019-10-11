@@ -156,10 +156,15 @@ var searchData=
   ['marker_5ffilled_5fsquare',['marker_filled_square',['../namespacefplot__core.html#a925e2ca369cd0c7794c38d6f2c0ae3fc',1,'fplot_core']]],
   ['marker_5ffilled_5ftriangle',['marker_filled_triangle',['../namespacefplot__core.html#aee19422210a01b45b0a946072071aa89',1,'fplot_core']]],
   ['marker_5fplus',['marker_plus',['../namespacefplot__core.html#a1c6bffe3a206bcc5400d7e339f482779',1,'fplot_core']]],
+  ['marker_5fsize',['marker_size',['../structvibrations_1_1pole__zero__settings.html#a339137860e24aa24142fe4203e1a27f8',1,'vibrations::pole_zero_settings']]],
   ['marker_5fx',['marker_x',['../namespacefplot__core.html#aa8584a251e760fd4545d03c0a4506fa6',1,'fplot_core']]],
   ['max_5fchannel_5flength',['max_channel_length',['../structfortio__hbm_1_1hbm__data__file.html#a476588050ac5d61ab9c07a367454e39d',1,'fortio_hbm::hbm_data_file']]],
+  ['measured_5fcycle_5fcount',['measured_cycle_count',['../structvibrations_1_1frequency__sweep__options.html#a6489849b7bb1cef59aa9088a7aa5bbcd',1,'vibrations::frequency_sweep_options']]],
   ['mech_5farray_5fsize_5ferror',['mech_array_size_error',['../namespacemechanics__constants.html#aa9f76d489963893c3cb2bb64487454b9',1,'mechanics_constants']]],
   ['mech_5finvalid_5finput_5ferror',['mech_invalid_input_error',['../namespacemechanics__constants.html#a21c5cea3993c1c5f101add206e000408',1,'mechanics_constants']]],
+  ['mech_5finvalid_5ftransfer_5ffunction_5ferror',['mech_invalid_transfer_function_error',['../namespacemechanics__constants.html#af385c19eaebc785ba325b99a04e7d317',1,'mechanics_constants']]],
+  ['mech_5fnull_5freference_5ferror',['mech_null_reference_error',['../namespacemechanics__constants.html#a2d5aba4e884392d7029bf8ed8002d26d',1,'mechanics_constants']]],
   ['mech_5fout_5fof_5fmemory_5ferror',['mech_out_of_memory_error',['../namespacemechanics__constants.html#a383be62c46f4a0183c046a204ebb21d6',1,'mechanics_constants']]],
-  ['mode_5fshape',['mode_shape',['../structvibrations_1_1modal__information.html#a534fa0b40b53519b5263d19e8cca52a3',1,'vibrations::modal_information']]]
+  ['mode_5fshape',['mode_shape',['../structvibrations_1_1modal__information.html#a534fa0b40b53519b5263d19e8cca52a3',1,'vibrations::modal_information']]],
+  ['model',['model',['../structvibrations_1_1frf__fitting__tool.html#ab94b9bab6b0c67237be0e4426f5dfdf0',1,'vibrations::frf_fitting_tool']]]
 ];

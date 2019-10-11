@@ -17,6 +17,8 @@ var searchData=
   ['wheatstone_5fbridge_5fseries_5f3',['wheatstone_bridge_series_3',['../interfacestrain_1_1wheatstone__bridge__series.html#a018c34a84c489ee597147c8947bb4b4e',1,'strain::wheatstone_bridge_series::wheatstone_bridge_series_3()'],['../namespacestrain.html#ada18d739bdba3abd821f146f205674a2',1,'strain::wheatstone_bridge_series_3()']]],
   ['wheatstone_5fbridge_5fseries_5f4',['wheatstone_bridge_series_4',['../interfacestrain_1_1wheatstone__bridge__series.html#a6635d023a6021f3fe36384cb1273dbfa',1,'strain::wheatstone_bridge_series::wheatstone_bridge_series_4()'],['../namespacestrain.html#a16a72818e3f8dcf6bed748e3eab91863',1,'strain::wheatstone_bridge_series_4()']]],
   ['window_5ffunction',['window_function',['../interfacesignals_1_1window__function.html',1,'signals']]],
+  ['window_5fheight',['window_height',['../structvibrations_1_1bode__settings.html#ad0e842390a24662747ae93dfb59611a2',1,'vibrations::bode_settings']]],
+  ['window_5fwidth',['window_width',['../structvibrations_1_1bode__settings.html#a138b28627acf4f135d9bba9a380bbb93',1,'vibrations::bode_settings']]],
   ['windows_5fterminal',['windows_terminal',['../structfplot__core_1_1windows__terminal.html',1,'fplot_core']]],
   ['write',['write',['../structfortio__binary_1_1binary__writer.html#ad6c667787b9610ffc592feab6e095514',1,'fortio_binary::binary_writer::write()'],['../structfortio__text_1_1text__writer.html#aba6ce75ecdcf82adb24c4a8b90d167e5',1,'fortio_text::text_writer::write()']]],
   ['write_5fline',['write_line',['../structfortio__text_1_1text__writer.html#acecc164a515053dd4b45e3a00045c9b9',1,'fortio_text::text_writer']]],

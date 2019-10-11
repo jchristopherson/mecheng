@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['unwrap_5fdbl',['unwrap_dbl',['../interfacearrays_1_1unwrap.html#a7f1f9b1c7875ac3961eb55e0250a8ae6',1,'arrays::unwrap::unwrap_dbl()'],['../namespacearrays.html#a8f89407e99847cade00823f912d57173',1,'arrays::unwrap_dbl()']]],
-  ['unwrap_5fsngl',['unwrap_sngl',['../interfacearrays_1_1unwrap.html#af956664288ab12b5358c7cbaddd35f83',1,'arrays::unwrap::unwrap_sngl()'],['../namespacearrays.html#a8a12f94be32f1a6ab05915d78f8f91e6',1,'arrays::unwrap_sngl()']]]
+  ['validate',['validate',['../structvibrations_1_1lti.html#a143793a13a745d0edf71fb78b8ebd9c6',1,'vibrations::lti']]],
+  ['variance_5fdbl',['variance_dbl',['../interfacecurvefit__statistics_1_1variance.html#ab2e171dbc006ffa7138045f651571da8',1,'curvefit_statistics::variance::variance_dbl()'],['../namespacecurvefit__statistics.html#ac6b53b3a5a822d3e1862f547dc253993',1,'curvefit_statistics::variance_dbl()']]]
 ];

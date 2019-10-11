@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['validate',['validate',['../structvibrations_1_1lti.html#a143793a13a745d0edf71fb78b8ebd9c6',1,'vibrations::lti']]],
   ['value_5fpair',['value_pair',['../structnonlin__core_1_1value__pair.html',1,'nonlin_core']]],
   ['values',['values',['../structfortio__hbm_1_1hbm__data__channel.html#aa3d97971351f5a6999af905261764de5',1,'fortio_hbm::hbm_data_channel::values()'],['../structlinalg__immutable_1_1eigen__results.html#abb60901ab160c6fd232cfb46ed0bf3cc',1,'linalg_immutable::eigen_results::values()']]],
   ['variance',['variance',['../interfacecurvefit__statistics_1_1variance.html',1,'curvefit_statistics']]],

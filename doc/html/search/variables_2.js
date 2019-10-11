@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['c',['c',['../structgeometry_1_1plane.html#a5eab2d287f870a28611271a24bb4ae29',1,'geometry::plane']]],
+  ['c',['c',['../structvibrations_1_1state__space.html#a7fce57fae4e6a43b279096beb4624f41',1,'vibrations::state_space::c()'],['../structgeometry_1_1plane.html#a5eab2d287f870a28611271a24bb4ae29',1,'geometry::plane::c()']]],
   ['cf_5farray_5findex_5ferror',['cf_array_index_error',['../namespacecurvefit__core.html#a48c53f7b30a8c17857936c4a156fcbdf',1,'curvefit_core']]],
   ['cf_5farray_5fsize_5ferror',['cf_array_size_error',['../namespacecurvefit__core.html#a0b9bcddc99b580017d5c4bdfc632fd90',1,'curvefit_core']]],
   ['cf_5fconvergence_5ferror',['cf_convergence_error',['../namespacecurvefit__core.html#a82f4dd671b926fe90f4106ebcba6848c',1,'curvefit_core']]],

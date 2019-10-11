@@ -15,6 +15,8 @@ var searchData=
   ['binary_5freader',['binary_reader',['../structfortio__binary_1_1binary__reader.html',1,'fortio_binary']]],
   ['binary_5fwriter',['binary_writer',['../structfortio__binary_1_1binary__writer.html',1,'fortio_binary']]],
   ['blue',['blue',['../structfplot__core_1_1color.html#a208e32c7d0b0798118575c2234f4cc94',1,'fplot_core::color']]],
+  ['bode',['bode',['../structvibrations_1_1lti.html#ae33a24991d8264d8d3f9bb2d987b8ef0',1,'vibrations::lti']]],
+  ['bode_5fsettings',['bode_settings',['../structvibrations_1_1bode__settings.html',1,'vibrations']]],
   ['br_5feof',['br_eof',['../namespacefortio__binary.html#af10a5d871a9d91705791d416753dbf31',1,'fortio_binary']]],
   ['br_5finit',['br_init',['../namespacefortio__binary.html#a04ddc09cb7ddf270fb6da8e3304ae5c2',1,'fortio_binary']]],
   ['br_5fread_5fchar',['br_read_char',['../namespacefortio__binary.html#ae25370b863c388c86a1324902cb8ebe0',1,'fortio_binary']]],

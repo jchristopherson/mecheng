@@ -18,5 +18,6 @@ var searchData=
   ['line_5fdashed',['line_dashed',['../namespacefplot__core.html#ae9305c0a47c3fb21e45154a0b9457353',1,'fplot_core']]],
   ['line_5fdotted',['line_dotted',['../namespacefplot__core.html#ab81a32face043abe51b8740e56c816b2',1,'fplot_core']]],
   ['line_5fsolid',['line_solid',['../namespacefplot__core.html#ac41508e74ce45d09f835bd676ea7d3d6',1,'fplot_core']]],
+  ['line_5fwidth',['line_width',['../structvibrations_1_1bode__settings.html#a919d100d1bffde98dd88a662820acc7b',1,'vibrations::bode_settings::line_width()'],['../structvibrations_1_1pole__zero__settings.html#ac6e6e3fef481107728dc0a8c73bc9b8c',1,'vibrations::pole_zero_settings::line_width()']]],
   ['linearization_5fmode',['linearization_mode',['../structfortio__hbm_1_1hbm__data__channel.html#aea0d6d641d395aa3f73bd25750eaf1bf',1,'fortio_hbm::hbm_data_channel']]]
 ];

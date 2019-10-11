@@ -46,5 +46,6 @@ var searchData=
   ['nr_5fset_5fmax_5feval',['nr_set_max_eval',['../namespacecurvefit__regression.html#a349ea7bf84018849535d6a4d38fff0a1',1,'curvefit_regression']]],
   ['nr_5fset_5fprint_5fstatus',['nr_set_print_status',['../namespacecurvefit__regression.html#a35b7ae3a74b61140b68a04afb587ed15',1,'curvefit_regression']]],
   ['nr_5fset_5fvar_5ftol',['nr_set_var_tol',['../namespacecurvefit__regression.html#a646658121ff9c68ab7a66112eeb1d67e',1,'curvefit_regression']]],
-  ['nr_5fsolve',['nr_solve',['../namespacecurvefit__regression.html#a3f4db72026888b383aa744bf7bab0d1c',1,'curvefit_regression']]]
+  ['nr_5fsolve',['nr_solve',['../namespacecurvefit__regression.html#a3f4db72026888b383aa744bf7bab0d1c',1,'curvefit_regression']]],
+  ['numerator',['numerator',['../structvibrations_1_1lti.html#a6cef6df8a46e5831366a3f4739854c05',1,'vibrations::lti']]]
 ];

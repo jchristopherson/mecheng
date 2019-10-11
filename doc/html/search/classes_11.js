@@ -22,6 +22,7 @@ var searchData=
   ['spline_5finterp',['spline_interp',['../structcurvefit__interp_1_1spline__interp.html',1,'curvefit_interp']]],
   ['split_5fascend_5fdescend',['split_ascend_descend',['../interfacecurvefit__calibration_1_1split__ascend__descend.html',1,'curvefit_calibration']]],
   ['standard_5fdeviation',['standard_deviation',['../interfacecurvefit__statistics_1_1standard__deviation.html',1,'curvefit_statistics']]],
+  ['state_5fspace',['state_space',['../structvibrations_1_1state__space.html',1,'vibrations']]],
   ['string',['string',['../structstrings_1_1string.html',1,'strings']]],
   ['string_5fbuilder',['string_builder',['../structstrings_1_1string__builder.html',1,'strings']]],
   ['string_5fto_5fnumber',['string_to_number',['../interfacestrings_1_1string__to__number.html',1,'strings']]],

@@ -19,6 +19,7 @@ var searchData=
   ['plot_5flabel',['plot_label',['../structfplot__core_1_1plot__label.html',1,'fplot_core']]],
   ['plot_5fobject',['plot_object',['../structfplot__core_1_1plot__object.html',1,'fplot_core']]],
   ['png_5fterminal',['png_terminal',['../structfplot__core_1_1png__terminal.html',1,'fplot_core']]],
+  ['pole_5fzero_5fsettings',['pole_zero_settings',['../structvibrations_1_1pole__zero__settings.html',1,'vibrations']]],
   ['polynomial',['polynomial',['../structnonlin__polynomials_1_1polynomial.html',1,'nonlin_polynomials']]],
   ['polynomial_5finterp',['polynomial_interp',['../structcurvefit__interp_1_1polynomial__interp.html',1,'curvefit_interp']]]
 ];

@@ -2,11 +2,13 @@ var hierarchy =
 [
     [ "kinematics::acceleration_mtx", "interfacekinematics_1_1acceleration__mtx.html", null ],
     [ "signals::apply_filter", "interfacesignals_1_1apply__filter.html", null ],
+    [ "signals::apply_filter_array", "interfacesignals_1_1apply__filter__array.html", null ],
     [ "nonlin_polynomials::assignment(=)", "interfacenonlin__polynomials_1_1assignment_07_0A_08.html", null ],
     [ "fortio_binary::binary_file_manager", "structfortio__binary_1_1binary__file__manager.html", [
       [ "fortio_binary::binary_reader", "structfortio__binary_1_1binary__reader.html", null ],
       [ "fortio_binary::binary_writer", "structfortio__binary_1_1binary__writer.html", null ]
     ] ],
+    [ "vibrations::bode_settings", "structvibrations_1_1bode__settings.html", null ],
     [ "columns::buckling_load", "interfacecolumns_1_1buckling__load.html", null ],
     [ "linalg_core::cholesky_factor", "interfacelinalg__core_1_1cholesky__factor.html", null ],
     [ "linalg_core::cholesky_rank1_downdate", "interfacelinalg__core_1_1cholesky__rank1__downdate.html", null ],
@@ -57,8 +59,11 @@ var hierarchy =
     [ "linalg_core::form_qr", "interfacelinalg__core_1_1form__qr.html", null ],
     [ "signals::fourier_diff", "interfacesignals_1_1fourier__diff.html", null ],
     [ "signals::fourier_diff2", "interfacesignals_1_1fourier__diff2.html", null ],
+    [ "vibrations::frequency_sweep_options", "structvibrations_1_1frequency__sweep__options.html", null ],
+    [ "vibrations::frf_fitting_tool", "structvibrations_1_1frf__fitting__tool.html", null ],
     [ "fplot_core::get_string_result", "interfacefplot__core_1_1get__string__result.html", null ],
     [ "nonlin_core::gradientfcn", "interfacenonlin__core_1_1gradientfcn.html", null ],
+    [ "vibrations::harmonic_ode_fcn", "interfacevibrations_1_1harmonic__ode__fcn.html", null ],
     [ "fortio_hbm::hbm_data_channel", "structfortio__hbm_1_1hbm__data__channel.html", null ],
     [ "fortio_hbm::hbm_data_file", "structfortio__hbm_1_1hbm__data__file.html", null ],
     [ "curvefit_calibration::hysteresis", "interfacecurvefit__calibration_1_1hysteresis.html", null ],
@@ -96,6 +101,7 @@ var hierarchy =
       [ "collection_list::persistent_list", "structcollection__list_1_1persistent__list.html", null ]
     ] ],
     [ "curvefit_regression::lowess_smoothing", "structcurvefit__regression_1_1lowess__smoothing.html", null ],
+    [ "vibrations::lti", "structvibrations_1_1lti.html", null ],
     [ "linalg_core::lu_factor", "interfacelinalg__core_1_1lu__factor.html", null ],
     [ "linalg_immutable::lu_results", "structlinalg__immutable_1_1lu__results.html", null ],
     [ "linalg_immutable::lu_results_cmplx", "structlinalg__immutable_1_1lu__results__cmplx.html", null ],
@@ -182,6 +188,7 @@ var hierarchy =
         [ "fplot_core::wxt_terminal", "structfplot__core_1_1wxt__terminal.html", null ]
       ] ]
     ] ],
+    [ "vibrations::pole_zero_settings", "structvibrations_1_1pole__zero__settings.html", null ],
     [ "nonlin_polynomials::polynomial", "structnonlin__polynomials_1_1polynomial.html", null ],
     [ "linalg_core::qr_factor", "interfacelinalg__core_1_1qr__factor.html", null ],
     [ "linalg_core::qr_rank1_update", "interfacelinalg__core_1_1qr__rank1__update.html", null ],
@@ -228,6 +235,7 @@ var hierarchy =
     [ "fplot_core::spd_set_value", "interfacefplot__core_1_1spd__set__value.html", null ],
     [ "curvefit_calibration::split_ascend_descend", "interfacecurvefit__calibration_1_1split__ascend__descend.html", null ],
     [ "curvefit_statistics::standard_deviation", "interfacecurvefit__statistics_1_1standard__deviation.html", null ],
+    [ "vibrations::state_space", "structvibrations_1_1state__space.html", null ],
     [ "strings::string", "structstrings_1_1string.html", null ],
     [ "strings::string_builder", "structstrings_1_1string__builder.html", null ],
     [ "strings::string_to_number", "interfacestrings_1_1string__to__number.html", null ],

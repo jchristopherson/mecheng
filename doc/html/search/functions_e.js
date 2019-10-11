@@ -26,6 +26,7 @@ var searchData=
   ['pln_5feval_5f1',['pln_eval_1',['../namespacegeometry.html#ab945b82a34a434c57bb87aa3d49a67ad',1,'geometry']]],
   ['pln_5feval_5f2',['pln_eval_2',['../namespacegeometry.html#a24aa690bb53353dc5640f459857cc0e2',1,'geometry']]],
   ['pln_5fnormal',['pln_normal',['../namespacegeometry.html#a7f2d8e72b3f63379e29b4d7ce3d1def8',1,'geometry']]],
+  ['pole_5fzero_5fplot',['pole_zero_plot',['../structvibrations_1_1lti.html#a6a591fa2c26a3c74955615e506f9635a',1,'vibrations::lti']]],
   ['poly_5fcompanion_5fmtx',['poly_companion_mtx',['../namespacenonlin__polynomials.html#a73e15b4ed645b9f672085fdf0c35256a',1,'nonlin_polynomials']]],
   ['poly_5fdbl_5fequals',['poly_dbl_equals',['../interfacenonlin__polynomials_1_1assignment_07_0A_08.html#aece2a1a5690e79ae3868f5f2461028a7',1,'nonlin_polynomials::assignment(=)::poly_dbl_equals()'],['../namespacenonlin__polynomials.html#a966529b4b45ad23dae7fe3b7e842ca08',1,'nonlin_polynomials::poly_dbl_equals()']]],
   ['poly_5fdbl_5fmult',['poly_dbl_mult',['../interfacenonlin__polynomials_1_1operator_07_5_08.html#a93e4ce5fb2c616a1c6477f6fb8addfac',1,'nonlin_polynomials::operator(*)::poly_dbl_mult()'],['../namespacenonlin__polynomials.html#a96288e9730f24e65c61d3ac0970000b2',1,'nonlin_polynomials::poly_dbl_mult()']]],

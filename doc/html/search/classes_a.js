@@ -12,6 +12,7 @@ var searchData=
   ['linked_5flist',['linked_list',['../structcollection__linked__list_1_1linked__list.html',1,'collection_linked_list']]],
   ['list',['list',['../structcollection__list_1_1list.html',1,'collection_list']]],
   ['lowess_5fsmoothing',['lowess_smoothing',['../structcurvefit__regression_1_1lowess__smoothing.html',1,'curvefit_regression']]],
+  ['lti',['lti',['../structvibrations_1_1lti.html',1,'vibrations']]],
   ['lu_5ffactor',['lu_factor',['../interfacelinalg__core_1_1lu__factor.html',1,'linalg_core']]],
   ['lu_5fresults',['lu_results',['../structlinalg__immutable_1_1lu__results.html',1,'linalg_immutable']]],
   ['lu_5fresults_5fcmplx',['lu_results_cmplx',['../structlinalg__immutable_1_1lu__results__cmplx.html',1,'linalg_immutable']]]

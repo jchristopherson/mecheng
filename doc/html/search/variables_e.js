@@ -8,6 +8,7 @@ var searchData=
   ['plot_5finvalid_5foperation_5ferror',['plot_invalid_operation_error',['../namespacefplot__errors.html#a4e51e94150cf61807209618ddf49c978',1,'fplot_errors']]],
   ['plot_5fout_5fof_5fmemory_5ferror',['plot_out_of_memory_error',['../namespacefplot__errors.html#adc52a2e51a08eef130e6fa2f3bbedc53',1,'fplot_errors']]],
   ['plotdata_5fmax_5fname_5flength',['plotdata_max_name_length',['../namespacefplot__core.html#acfa29ac62a50b61ea009b20a898d45e5',1,'fplot_core']]],
+  ['poles',['poles',['../structvibrations_1_1frf__fitting__tool.html#aef47a3ffde3962ad8acce870dbbdcdf8',1,'vibrations::frf_fitting_tool']]],
   ['previous',['previous',['../structcollection__containers_1_1dll__node.html#a13e06c69b64a092b8be6a1e9b2bd720f',1,'collection_containers::dll_node']]],
   ['proportional_5fgain',['proportional_gain',['../structcontrols_1_1pid.html#ad29894aca71cb6fd8bad626dee3d218a',1,'controls::pid']]]
 ];
