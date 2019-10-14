@@ -956,6 +956,7 @@ contains
         ! Arguments
         real(real64), intent(in), dimension(:) :: u, v
         complex(real64), intent(out), dimension(:) :: coeffs, poles
+        integer(int32), intent(out) :: k
 
         ! Parameters
         real(real64), parameter :: tol = 1.0d-3
@@ -1196,8 +1197,30 @@ contains
     end subroutine
 
 ! ------------------------------------------------------------------------------
+    ! Implementation of the MATLAB routine RESI2 for computing the residue of
+    ! a repeated pole.
+    !
+    !
+    subroutine resi2(u, v, pole, n, k, coeff)
+        ! Arguments
+        real(real64), intent(in), dimension(:) :: u, v
+        complex(real64), intent(in), dimension(:) :: pole
+        integer(int32), intent(in) :: n, k
+        complex(real64), intent(out), dimension(:) :: coeff
+
+        ! Local Variables
+    end subroutine
 
 ! ------------------------------------------------------------------------------
+    ! Implementation of the MATLAB routine POLYDER for computing the derivative
+    ! of the polynomial ratio U / V as A / B.
+    subroutine polyder(u, v, a, b)
+        use signals, only : conv
+        
+        ! Arguments
+        real(real64), intent(in), dimension(:) :: u, v
+        real(real64), intent(out), dimension(:) :: a, b
+    end subroutine
 
 ! ------------------------------------------------------------------------------
 
