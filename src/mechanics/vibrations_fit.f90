@@ -983,7 +983,7 @@ contains
     !       (KMAX+1)-by-(KMAX+1)
     ! - work: A M-element workspae array.
     !       M = (2*KMAX + 8) * N
-    ! - cwork: A P element workspace array.
+    ! - cwork: A P-element workspace array.
     !       P = KMAX**2 + 3*KMAX + 2
     subroutine orthogonal(rec, omega, phitheta, kmax, p, coeff, work, cwork)
         ! Arguments
@@ -1075,7 +1075,7 @@ contains
             jk(1,i+1) = j**i
         end do
 
-        ! Compute coeff = (JK**T * JK) * COEFF
+        ! Compute coeff = (JK**H * JK) * COEFF
         ! JK is 1-by-(KMAX+1)
         ! COEFF is (KMAX+1)-by-(KMAX+1)
         call ZGEMM('C', 'N', kmax+1, kmax+1, 1, one, jk, 1, jk, 1, zero, cc)
@@ -1083,8 +1083,118 @@ contains
     end subroutine
 
 ! ------------------------------------------------------------------------------
+    ! This is an implementation of MATLAB's MPOLES routine that identifies
+    ! repeated poles and their multiplicities.
+    !
+    ! - p: N-element list of poles.
+    ! - mpoles_tol: Tolerance for similarity checking.
+    ! - reorder: True to sort the poles.
+    ! - mults [Output]: N-element list of pole multiplicities.
+    ! - indx [Output]: N-element list of indices used to sort P.
+    ! - iwork: 3*N-element workspace array.
+    ! - work: N-element workspace array.
+    subroutine mpoles(p, mpoles_tol, reorder, mults, indx, iwork, work)
+        use linalg_core, only : sort
+
+        ! Arguments
+        complex(real64), intent(inout), dimension(:) :: p
+        real(real64), intent(in) :: mpoles_tol
+        logical, intent(in) :: reorder
+        integer(int32), intent(out), dimension(:) :: mults, indx
+        integer(int32), intent(out), dimension(:), target :: iwork
+        real(real64), intent(out), dimensioin(:), target :: work
+
+        ! Local Variables
+        integer(int32) :: i, ii, j, np, nind, kk, done
+        integer(int32), pointer, dimension(:) :: ind, jkl, track
+        real(real64), pointer, dimension(:) :: test
+
+        ! Initialization
+        np = size(p)
+
+        ! Pointer assignment
+        ind => iwork(1:np)
+        jkl => iwork(np+1:2*np)
+        track => iwork(2*np+1:3*np)
+        test => work(1:np)
+
+        ! Initialization
+        do i = 1, np
+            ind(i) = i
+        end do
+
+        ! Reorder - if requested
+        if (reorder) then
+            test = -abs(p)
+            call sort(t, ind, .true.)
+            p = p(ind)
+        end if
+
+        ! Process
+        mults = 0.0d0
+        indx = 0
+        ii = 1
+        pt = p
+        do while (np > 1)
+            test(1:np) = abs(p(1) - p(1:np))
+            if (abs(p(1)) > 0.0d0) then
+                call find_less_than(test(1:np), mpoles_tol * abs(p(1)), &
+                    jkl, nind)
+            else
+                call find_less_than(test(1:np), mpoles_tol, jkl, nind)
+            end if
+
+            track(1:np) = 1
+            do i = 1, nind
+                kk = i - 1
+                mults(ii+kk) = kk + 1
+                done = jkl(i)
+                indx(ii+kk) = ind(done)
+                track(done) = -1
+            end do
+
+            ! Reshape P and IND
+            j = 0
+            do i = 1, np
+                if (track(i) /= -1) then
+                    j = j + 1
+                    p(j) = p(i)
+                    ind(j) = ind(i)
+                end if
+            end do
+
+            ! Increment the tracking variables
+            ii = ii + nind
+            np = np - nind
+        end do
+    end subroutine
 
 ! ------------------------------------------------------------------------------
+    ! Finds all items in an array less than the specified value.
+    !
+    ! - arg: An N-element array to search.
+    ! - item: The comparison item.
+    ! - ind [Output]: An N-element buffer array containing the output.
+    ! - nind [Output]: The number of values written to ind.
+    subroutine find_less_than(arg, item, ind, nind)
+        ! Arguments
+        real(real64), intent(in), dimension(:) :: arg
+        real(real64), intent(in) :: item
+        integer(int32), intent(out), dimension(:) :: ind
+        integer(int32), intent(out) :: nind
+
+        ! Local Variables
+        integer(int32) :: i
+
+        ! Process
+        nind = 0
+        do i = 1, size(arg)
+            if (arg(i) < item) then
+                nind = nind + 1
+                ind(nind) = i
+            end if
+        end do
+    end subroutine
 
 ! ------------------------------------------------------------------------------
 
