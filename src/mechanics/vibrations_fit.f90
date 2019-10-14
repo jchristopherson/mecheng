@@ -1102,7 +1102,7 @@ contains
         logical, intent(in) :: reorder
         integer(int32), intent(out), dimension(:) :: mults, indx
         integer(int32), intent(out), dimension(:), target :: iwork
-        real(real64), intent(out), dimensioin(:), target :: work
+        real(real64), intent(out), dimension(:), target :: work
 
         ! Local Variables
         integer(int32) :: i, ii, j, np, nind, kk, done
@@ -1126,7 +1126,7 @@ contains
         ! Reorder - if requested
         if (reorder) then
             test = -abs(p)
-            call sort(t, ind, .true.)
+            call sort(test, ind, .true.)
             p = p(ind)
         end if
 
@@ -1134,7 +1134,6 @@ contains
         mults = 0.0d0
         indx = 0
         ii = 1
-        pt = p
         do while (np > 1)
             test(1:np) = abs(p(1) - p(1:np))
             if (abs(p(1)) > 0.0d0) then
