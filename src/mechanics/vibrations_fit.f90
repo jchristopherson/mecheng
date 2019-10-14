@@ -957,10 +957,130 @@ contains
         real(real64), intent(in), dimension(:) :: u, v
         complex(real64), intent(out), dimension(:) :: coeffs, poles
 
+        ! Parameters
+        real(real64), parameter :: tol = 1.0d-3
+
         ! Local Variables
     end subroutine
 
 ! ------------------------------------------------------------------------------
+    ! Computes the orthogonal polynomial coefficients required for the
+    ! rational fraction polynomials method.  This is an implementation of
+    ! the original MATLAB code found at:
+    ! https://www.mathworks.com/matlabcentral/fileexchange/3805-rational-fraction-polynomial-method
+    !
+    ! Inputs:
+    ! - rec: An N-element array containing the FRF measurements.
+    ! - omega: An N-element array containing the frequency points (rad/sec).
+    ! - phitheta: Weighting function (must be 1 for phi matrix, or 2 for
+    !       the theta matrix).
+    ! - kmax: Degree of the polynomial.
+    ! - p [Output]: Matrix of the orthogonal polynomials evaluated at each
+    !       frequency point.
+    !       N-by-(KMAX+1)
+    ! - coeff [Output]: Matrix used to transform between the orthogonal
+    !       polynomial coefficients and the standard polynomial.
+    !       (KMAX+1)-by-(KMAX+1)
+    ! - work: A M-element workspae array.
+    !       M = (2*KMAX + 8) * N
+    ! - cwork: A P element workspace array.
+    !       P = KMAX**2 + 3*KMAX + 2
+    subroutine orthogonal(rec, omega, phitheta, kmax, p, coeff, work, cwork)
+        ! Arguments
+        complex(real64), intent(in), dimension(:) :: rec
+        real(real64), intent(in), dimension(:) :: omega
+        integer(int32), intent(in) :: phitheta, kmax
+        complex(real64), intent(out), dimension(:,:) :: coeff, p
+        real(real64), intent(out), dimension(:), target :: work
+        complex(real64), intent(out), dimension(:), target :: cwork
+
+        ! Parameters
+        complex(real64), parameter :: j = (0.0d0, 1.0d0)
+        complex(real64), parameter :: one = (1.0d0, 0.0d0)
+        complex(real64), parameter :: zero = (0.0d0, 0.0d0)
+
+        ! Local Variables
+        integer(int32) :: i, n, &
+            e1, s2, e2, s3, e3, s4, e4, s5, e5, s6, e6, s7, e7, s8, e8, &
+            ec1, sc2, ec2
+        real(real64) :: vkml, dk
+        real(real64), pointer, dimension(:) :: q, r_minus1, r_o, t, t1
+        real(real64), pointer, dimension(:,:) :: r, rt, ct
+        complex(real64), pointer, dimension(:,:) :: jk, cc
+
+        ! Initialization
+        n = size(omega)
+
+        ! Pointer Assignment
+        e1 = n
+        s2 = e1 + 1
+        e2 = s2 + n - 1
+        s3 = e2 + 1
+        e3 = s3 + n - 1
+        s4 = e3 + 1
+        e4 = s4 + n * (2 + kmax) - 1
+        s5 = e4 + 1
+        e5 = s5 + n * (1 + kmax) - 1
+        s6 = e5 + 1
+        e6 = s6 + n - 1
+        s7 = e6 + 1
+        e7 = s7 + n - 1
+        s8 = e7 + 1
+        e8 = s8 + (kmax + 1) * (kmax + 2) - 1
+
+        ec1 = kmax + 1
+        sc2 = ec1 + 1
+        ec2 = sc2 + (kmax + 1)**2
+
+        q => work(1:e1)                 ! N-element
+        r_minus1 => work(s2:e2)         ! N-element
+        r_o => work(s3:e3)              ! N-element
+        r(1:n,1:2+kmax) => work(s4:e4)  ! N-by-2+KMAX
+        rt(1:n,1:1+kmax) => work(s5:e5) ! N-by-1+KMAX
+        t => work(s6:e6)                ! N-element
+        t1 => work(s7:e7)               ! N-element
+        ct(1:kmax+1,1:kmax+2) => work(s8:e8)    ! KMAX+1 -by- KMAX+2
+        jk(1:1,1:kmax+1) => cwork(1:ec1)! 1-by-1+KMAX
+        cc(1:kmax+1,1:kmax+1) => cwork(sc2:ec2) ! KMAX+1 -by- KMAX+1
+
+        ! Process
+        if (phitheta == 1) then
+            q = 1.0d0
+        else if (phitheta == 2) then
+            q = (abs(rec))**2
+        end if
+        r_minus1 = 0.0d0
+        r_o = 1.0d0 / sqrt(2.0d0 * sum(q))
+        r(:,1) = r_minus1
+        r(:,2) = r_o
+
+        ct = 0.0d0
+        ct(1,2) = 1.0d0 / sqrt(2.0d0 * sum(q))
+        do i = 1, kmax
+            t = omega * r(:,i+1) * r(:,i) * q
+            vkml = 2.0d0 * sum(t)
+            
+            t = omega * r(:,i+1) - vkml * r(:,i)
+            t1 = (t**2) * q
+            dk = sqrt(2.0d0 * sum(t1))
+            r(:,2+i) = t / dk
+            ct(:,i+2) = -vkml * ct(:,i)
+            ct(2:i+1,i+2) = ct(2:i+1,i+2) + ct(1:i,i+1)
+            ct(:,i+2) = ct(:,i+2) / dk
+        end do
+        rt = r(:,2:2+kmax)  ! Orthogonal Polynomial Matrix
+        coeff = cmplx(ct(:,2:2+kmax), kind = real64)
+        do i = 0, kmax
+            p(:,i+1) = r(:,i+1) * j**i
+            jk(1,i+1) = j**i
+        end do
+
+        ! Compute coeff = (JK**T * JK) * COEFF
+        ! JK is 1-by-(KMAX+1)
+        ! COEFF is (KMAX+1)-by-(KMAX+1)
+        call ZGEMM('C', 'N', kmax+1, kmax+1, 1, one, jk, 1, jk, 1, zero, cc)
+        coeff = matmul(cc, coeff)
+    end subroutine
 
 ! ------------------------------------------------------------------------------
 
