@@ -1214,12 +1214,41 @@ contains
 ! ------------------------------------------------------------------------------
     ! Implementation of the MATLAB routine POLYDER for computing the derivative
     ! of the polynomial ratio U / V as A / B.
-    subroutine polyder(u, v, a, b)
+    !
+    ! - u:
+    ! - v:
+    ! - a:
+    ! - b:
+    ! - work:
+    subroutine polyder(u, v, a, b, work)
         use signals, only : conv
         
         ! Arguments
         real(real64), intent(in), dimension(:) :: u, v
         real(real64), intent(out), dimension(:) :: a, b
+        real(real64), intent(out), dimension(:), target :: work
+
+        ! Local Variables
+        integer(int32) :: nu, nv, e1, s2, e2, s3, e3, s4, e4
+        real(real64), pointer, dimension(:) :: up, vp, a1, a2
+
+        ! Initialization
+        nu = size(u)
+        nv = size(v)
+
+        ! Assign the pointers
+        e1 = nu - 1
+        s2 = e1 + 1
+        e2 = s2 + nv - 1
+        s3 = e2 + 1
+        e3 = s3 + nu + nv - 3
+        s4 = e3 + 1
+        e4 = s4 + nu + nv - 3
+        
+        up => work(1:e1)        ! NU-1
+        vp => work(s2:e2)       ! NV-1
+        a1 => work(s3:e3)       ! (NU-1) + NV - 1 = NU + NV - 2
+        a2 => work(s4:e4)       ! NU + (NV-1) - 1 = NU + NV - 2
     end subroutine
 
 ! ------------------------------------------------------------------------------
