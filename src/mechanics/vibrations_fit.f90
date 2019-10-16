@@ -1215,26 +1215,30 @@ contains
     ! Implementation of the MATLAB routine POLYDER for computing the derivative
     ! of the polynomial ratio U / V as A / B.
     !
-    ! - u:
-    ! - v:
-    ! - a:
-    ! - b:
-    ! - work:
-    subroutine polyder(u, v, a, b, work)
+    ! - u: An M-element array.
+    ! - v: An N-element array.
+    ! - a [Output]: An M+N-2 element array.
+    ! - b [Output]: An N+N-1 element array.
+    ! - work: 3 * (M + N) - 6 element workspace array.
+    subroutine polyder(u, v, a, b, na, nb, work)
         use signals, only : conv
         
         ! Arguments
         real(real64), intent(in), dimension(:) :: u, v
         real(real64), intent(out), dimension(:) :: a, b
+        integer(int32), intent(out) :: na, nb
         real(real64), intent(out), dimension(:), target :: work
 
         ! Local Variables
-        integer(int32) :: nu, nv, e1, s2, e2, s3, e3, s4, e4
+        integer(int32) :: i, j, nu, nv, e1, s2, e2, s3, e3, &
+            s4, e4, ind
         real(real64), pointer, dimension(:) :: up, vp, a1, a2
 
         ! Initialization
         nu = size(u)
         nv = size(v)
+        na = 0
+        nb = 0
 
         ! Assign the pointers
         e1 = nu - 1
@@ -1249,6 +1253,59 @@ contains
         vp => work(s2:e2)       ! NV-1
         a1 => work(s3:e3)       ! (NU-1) + NV - 1 = NU + NV - 2
         a2 => work(s4:e4)       ! NU + (NV-1) - 1 = NU + NV - 2
+
+        ! Array Initialization
+        j = nu - 1
+        do i = 1, nu - 1
+            up(i) = u(i) * j
+            j = j - 1
+        end do
+
+        j = nv - 1
+        do i = 1, nv - 1
+            vp(i) = v(i) * j
+            j = j - 1
+        end do
+
+        ! Process
+        a1 = conv(up, v)
+        a2 = conv(u, vp)
+
+        ! Pad A1 & A2 with zeros to ensure they're the same length.  If all
+        ! goes well, they should be
+        a = a1 - a2
+
+        ! Compute B
+        b = conv(v, v)
+
+        ! Trim zeros from A and B
+        ind = 0
+        do i = 1, size(a)
+            if (a(i) == 0.0d0) then
+                ind = i
+                exit
+            end if
+        end do
+        if (ind == 0) then
+            na = size(a)
+        else
+            na = size(a) - ind + 1
+            a(1:na) = a(ind:size(a))
+        end if
+
+        ind = 0
+        do i = 1, size(b)
+            if (b(i) == 0.0d0) then
+                ind = i
+                exit
+            end if
+        end do
+        if (ind == 0) then
+            nb = size(b)
+        else
+            nb = size(b) - ind + 1
+            b(1:nb) = b(ind:size(b))
+        end if
     end subroutine
 
 ! ------------------------------------------------------------------------------
