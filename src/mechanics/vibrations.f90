@@ -962,7 +962,7 @@ module vibrations
         !!    “Macromodeling of  Multiport Systems Using a Fast Implementation of 
         !!    the Vector Fitting Method”, IEEE Microwave and Wireless Components 
         !!    Letters, vol. 18, no. 6, pp. 383-385, June 2008.
-        procedure, public :: fit => fft_fit_frf
+        ! procedure, public :: fit => fft_fit_frf
     end type
 
 ! ******************************************************************************
@@ -1447,14 +1447,14 @@ module vibrations
 ! VIBRATIONS_FIT.F90
 ! ------------------------------------------------------------------------------
     interface
-        module subroutine fft_fit_frf(this, freq, amp, phase, order, niter, weights, err)
-            class(frf_fitting_tool), intent(inout) :: this
-            real(real64), intent(in), dimension(:) :: freq, amp, phase
-            integer(int32), intent(in) :: order
-            integer(int32), intent(in), optional :: niter
-            real(real64), intent(in), dimension(:), optional :: weights
-            class(errors), intent(inout), target, optional :: err
-        end subroutine
+        ! module subroutine fft_fit_frf(this, freq, amp, phase, order, niter, weights, err)
+        !     class(frf_fitting_tool), intent(inout) :: this
+        !     real(real64), intent(in), dimension(:) :: freq, amp, phase
+        !     integer(int32), intent(in) :: order
+        !     integer(int32), intent(in), optional :: niter
+        !     real(real64), intent(in), dimension(:), optional :: weights
+        !     class(errors), intent(inout), target, optional :: err
+        ! end subroutine
     end interface
 
 ! ------------------------------------------------------------------------------
