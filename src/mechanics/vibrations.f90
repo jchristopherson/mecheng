@@ -918,7 +918,19 @@ module vibrations
         real(real64), public, allocatable, dimension(:) :: rms
         !> @brief A state-space model of the system.
         type(state_space), public :: model
+        
+        ! ---------- PRIVATE MEMBER VARIABLES ---------- !
+        !> @brief Allow for solution relaxation.
+        logical, private :: m_relax = .true.
+        !> @brief Stabalize any unstable poles.
+        logical, private :: m_stabalize = .true.
     contains
+        procedure, public :: initialize => fit_init
+        procedure, public :: get_iteration_count => fit_get_iter_count
+        procedure, public :: get_allow_relaxation => fit_get_relax
+        procedure, public :: set_allow_relaxation => fit_set_relax
+        procedure, public :: get_stabalize_poles => fit_get_stabalize
+        procedure, public :: set_stabalize_poles => fit_set_stabalize
         !> @brief Utilizes a relaxed vector fitting algorithm to fit a state-space
         !! model the supplied FRF.
         !!
@@ -1447,6 +1459,37 @@ module vibrations
 ! VIBRATIONS_FIT.F90
 ! ------------------------------------------------------------------------------
     interface
+        module subroutine fit_init(this, order, nfreq, niter, err)
+            class(frf_fitting_tool), intent(inout) :: this
+            integer(int32), intent(in) :: order, nfreq, niter
+            class(errors), intent(inout), optional, target :: err
+        end subroutine
+
+        pure module function fit_get_iter_count(this) result(n)
+            class(frf_fitting_tool), intent(in) :: this
+            integer(int32) :: n
+        end function
+
+        pure module function fit_get_relax(this) result(x)
+            class(frf_fitting_tool), intent(in) :: this
+            logical :: x
+        end function
+
+        module subroutine fit_set_relax(this, x)
+            class(frf_fitting_tool), intent(inout) :: this
+            logical, intent(in) :: x
+        end subroutine
+
+        pure module function fit_get_stabalize(this) result(x)
+            class(frf_fitting_tool), intent(in) :: this
+            logical :: x
+        end function
+
+        module subroutine fit_set_stabalize(this, x)
+            class(frf_fitting_tool), intent(inout) :: this
+            logical, intent(in) :: x
+        end subroutine
+
         ! module subroutine fft_fit_frf(this, freq, amp, phase, order, niter, weights, err)
         !     class(frf_fitting_tool), intent(inout) :: this
         !     real(real64), intent(in), dimension(:) :: freq, amp, phase

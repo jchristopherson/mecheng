@@ -5,6 +5,249 @@
 submodule (vibrations) vibrations_fit
 contains
 ! ------------------------------------------------------------------------------
+    module subroutine fit_init(this, order, nfreq, niter, err)
+        ! Arguments
+        class(frf_fitting_tool), intent(inout) :: this
+        integer(int32), intent(in) :: order, nfreq, niter
+        class(errors), intent(inout), optional, target :: err
+
+        ! Parameters
+        complex(real64), parameter :: zero = (0.0d0, 0.0d0)
+
+        ! Local Variables
+        integer(int32) :: flag
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+
+        ! Initialization
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+
+        ! Input Check
+        if (order < 2) then
+            call errmgr%report_error("fit_init", &
+                "The requested model order must be at least 2.", &
+                MECH_INVALID_INPUT_ERROR)
+            return
+        end if
+        if (order >= nfreq) then
+            call errmgr%report_error("fit_init", &
+                "The requested model order must not equal or exceed the number " // &
+                "of available data points", MECH_INVALID_INPUT_ERROR)
+            return
+        end if
+        if (niter < 1) then
+            call errmgr%report_error("fit_init", &
+                "There must be at least 1 iteration.", &
+                MECH_INVALID_INPUT_ERROR)
+            return
+        end if
+
+        ! Process
+        if (allocated(this%frf)) deallocate(this%frf)
+        if (allocated(this%poles)) deallocate(this%poles)
+        if (allocated(this%residual)) deallocate(this%residual)
+        if (allocated(this%rms)) deallocate(this%rms)
+        if (allocated(this%model%A)) deallocate(this%model%A)
+        if (allocated(this%model%B)) deallocate(this%model%B)
+        if (allocated(this%model%C)) deallocate(this%model%C)
+        if (allocated(this%model%D)) deallocate(this%model%D)
+
+        ! Allocate memory
+        allocate(this%frf(nfreq), stat = flag)
+        if (flag == 0) allocate(this%poles(order), stat = flag)
+        if (flag == 0) allocate(this%residual(nfreq), stat = flag)
+        if (flag == 0) allocate(this%rms(niter), stat = flag)
+        if (flag == 0) allocate(this%model%A(order, order), stat = flag)
+        if (flag == 0) allocate(this%model%B(order, 1), stat = flag)
+        if (flag == 0) allocate(this%model%C(1, order), stat = flag)
+        if (flag == 0) allocate(this%model%D(1, 1), stat = flag)
+        if (flag /= 0) then
+            call errmgr%report_error("fit_init", &
+                "Insufficient memory available.", &
+                MECH_OUT_OF_MEMORY_ERROR)
+            return
+        end if
+
+        ! Initialize each array
+        this%frf = zero
+        this%poles = zero
+        this%residual = zero
+        this%rms = zero
+    end subroutine
+
+! ------------------------------------------------------------------------------
+    pure module function fit_get_iter_count(this) result(n)
+        class(frf_fitting_tool), intent(in) :: this
+        integer(int32) :: n
+        if (allocated(this%rms)) then
+            n = size(this%rms)
+        else
+            n = 0
+        end if
+    end function
+
+! ------------------------------------------------------------------------------
+    pure module function fit_get_relax(this) result(x)
+        class(frf_fitting_tool), intent(in) :: this
+        logical :: x
+        x = this%m_relax
+    end function
+
+! --------------------
+    module subroutine fit_set_relax(this, x)
+        class(frf_fitting_tool), intent(inout) :: this
+        logical, intent(in) :: x
+        this%m_relax = x
+    end subroutine
+
+! ------------------------------------------------------------------------------
+    pure module function fit_get_stabalize(this) result(x)
+        class(frf_fitting_tool), intent(in) :: this
+        logical :: x
+        x = this%m_stabalize
+    end function
+
+! --------------------
+    module subroutine fit_set_stabalize(this, x)
+        class(frf_fitting_tool), intent(inout) :: this
+        logical, intent(in) :: x
+        this%m_stabalize = x
+    end subroutine
+
+! ------------------------------------------------------------------------------
+
+! ------------------------------------------------------------------------------
+    module subroutine fit_frf_1(this, freq, amp, phase, order, weights, niter, err)
+        use constants, only : pi
+        use curvefit_statistics, only : mean
+
+        ! Arguments
+        class(frf_fitting_tool), intent(inout) :: this
+        real(real64), intent(in), dimension(:) :: freq, amp, phase, weights
+        integer(int32), intent(in), optional :: niter
+        class(errors), intent(inout), optional, target :: err
+
+        ! Parameters
+        complex(real64), parameter :: i1 = (0.0d0, 1.0d0)
+
+        ! Local Variables
+        integer(int32) :: m, n, ni, liwork, lcwork, lwork, flag
+        integer(int32), allocatable, dimension(:) :: iwork
+        real(real64), allocatable, dimension(:) :: work, omega, theta, r2
+        complex(real64), allocatable, dimension(:) :: cwork, frf
+        logical :: stabalize, relax
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+        character(len = 256) :: errmsg
+
+        ! Initialization
+        m = order
+        n = size(freq)
+        liwork = m
+        lcwork = (3 * n + 2) * m + 5 * n
+        lwork = 2 * m**2 + (8 * n + 10) * m + 10 * n + 9
+        ni = 5
+        relax = this%get_allow_relaxation()
+        stabalize = this%get_stabalize_poles()
+        if (present(niter)) ni = niter
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+
+        ! Input Checking
+        if (order < 2) then
+            call errmgr%report_error("fit_frf_1", &
+                "The requested model order must be at least 2.", &
+                MECH_INVALID_INPUT_ERROR)
+            return
+        end if
+        if (order >= n) then
+            write(errmsg, '(AI0AI0A)') "The requested model order ", &
+                order, " must not equal or exceed the number of data points ", &
+                n, "."
+            call errmgr%report_error("fit_frf_1", trim(errmsg), &
+                MECH_INVALID_INPUT_ERROR)
+            return
+        end if
+        if (ni < 1) then
+            call errmgr%report_error("fit_frf_1", &
+                "The number of iterations must be at least 1.", &
+                MECH_INVALID_INPUT_ERROR)
+            return
+        end if
+        if (size(amp) /= n) then
+            write(errmsg, '(AI0AI0A)') &
+                "The input amplitude array was expected to have ", n, &
+                " elements, but was found to have ", size(amp), " elements."
+            call errmgr%report_error("fit_frf_1", trim(errmsg), &
+                MECH_ARRAY_SIZE_ERROR)
+            return
+        end if
+        if (size(phase) /= n) then
+            write(errmsg, '(AI0AI0A)') &
+                "The input phase array was expected to have ", n, &
+                " elements, but was found to have ", size(phase), " elements."
+            call errmgr%report_error("fit_frf_1", trim(errmsg), &
+                MECH_ARRAY_SIZE_ERROR)
+            return
+        end if
+        if (size(weights) /= n) then
+            write(errmsg, '(AI0AI0A)') &
+                "The input weighting array was expected to have ", n, &
+                " elements, but was found to have ", size(weights), " elements."
+            call errmgr%report_error("fit_frf_1", trim(errmsg), &
+                MECH_ARRAY_SIZE_ERROR)
+            return
+        end if
+
+        ! Allocate workspace arrays
+        allocate(iwork(liwork), stat = flag)
+        if (flag == 0) allocate(work(lwork), stat = flag)
+        if (flag == 0) allocate(work(lcwork), stat = flag)
+        if (flag == 0) allocate(omega(n), stat = flag)
+        if (flag == 0) allocate(frf(n), stat = flag)
+        if (flag == 0) allocate(theta(n), stat = flag)
+        if (flag == 0) allocate(r2(n), stat = flag)
+        if (flag /= 0) then
+            call errmgr%report_error("fit_frf_1", &
+                "Insufficient memory available.", &
+                MECH_OUT_OF_MEMORY_ERROR)
+            return
+        end if
+
+        ! Ensure the FRF_FITTING_TOOL is properly initialized
+        call this%initialize(order, n, ni, errmgr)
+
+        ! Establish a frequency vector in units of rad/s
+        omega = 2.0d0 * pi * freq
+
+        ! Generate an estimate of pole locations
+        call estimate_poles(omega, order, this%poles)
+
+        ! Convert the frequency vector to its complex-valued representation
+        omega = i1 * omega
+
+        ! Convert the frequency response into its complex-valued form
+        theta = pi * phase / 1.8d2
+        frf = amp * (cos(theta) + i1 * sin(theta))
+
+        ! Fitting Process
+        do i = 1, ni
+            ! Compute the fit
+            call frf_fit_core(omega, frf, this%poles, weights, relax, stabalize, &
+                this%model, this%frf, this%residual, work, cwork, iwork, errmgr)
+            
+            ! Compute the RMS of the error
+            r2 = real(this%residual**2)
+            this%rms(i) = sqrt(mean(r2))
+        end do
+    end subroutine
 
 ! ------------------------------------------------------------------------------
     ! Applies a relaxed vector fitting algorithm to the problem of fitting a
