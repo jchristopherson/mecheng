@@ -106,7 +106,7 @@ function [SER, fit, dif] = frf_fit(omega, frf, order, weights)
     ind2 = 2 * np + 1;
     R22 = R(ind1:ind2,ind1:ind2); # R22 is Np-by-Np, and is upper triangular
     AA = R22;
-    bb = Q(:,ind1:ind2).' * b;  # Q**T is Np-by-2*N & b is N-by-1
+    bb = Q(:,ind1:ind2).' * b;  # Q**T is Np-by-2*N & b is 2*N-by-1
     
     for i = 1:np
       Escale(i) = 1 ./ norm(AA(:,i));
