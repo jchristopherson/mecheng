@@ -25,11 +25,6 @@ module vibrations
     public :: compute_frequency_sweep
     public :: frf_fitting_tool
 
-    ! TO DO:
-    ! - Primary Oscillation Frequency Finder (Base upon an FFT, and return the largest magnitude non-DC frequency)
-    ! - FRF fitting
-    ! - LTI Transfer Function Math?
-
     !> @brief Contains modal information such as frequency and mode shape.
     type modal_information
         !> The modal frequency, in Hz.
@@ -925,11 +920,80 @@ module vibrations
         !> @brief Stabalize any unstable poles.
         logical, private :: m_stabalize = .true.
     contains
+        !> @brief Initializes the frf_fitting_tool instance.
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! subroutine initialize(class(frf_fitting_tool) this, integer(int32) order, integer(int32) nfreq, integer(int32) niter, optional class(errors) err)
+        !! @endcode
+        !!
+        !! @param[in,out] this The frf_fitting_tool object.
+        !! @param[in] order The desired order of model to fit to the data.  Must be
+        !!  greater than or equal to 2.
+        !! @param[in] nfreq The number of frequency points.  This value must be
+        !!  greater than the order of the model to fit.
+        !! @param[in] niter The number of iterations to perform.
+        !! @param[in,out] err An optional errors-based object that if provided can be
+        !!  used to retrieve information relating to any errors encountered during
+        !!  execution.  If not provided, a default implementation of the errors
+        !!  class is used internally to provide error handling.  Possible errors and
+        !!  warning messages that may be encountered are as follows.
+        !!  - MECH_OUT_OF_MEMORY_ERROR: Occurs if insufficient memory is available.
+        !!  - MECH_INVALID_INPUT_ERROR: Occurs if the order or iteration count variables
+        !!      are not properly input.
         procedure, public :: initialize => fit_init
+        !> @brief Gets the number of iterations allowed for the fitting operation.
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! pure integer(int32) function get_iteration_count(class(frf_fitting_tool) this)
+        !! @endcode
+        !!
+        !! @param[in] this The frf_fitting_tool object.
+        !! @returns The number of iterations.
         procedure, public :: get_iteration_count => fit_get_iter_count
+        !> @brief Gets a value determining if relaxation of the solution
+        !! should be allowed.
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! pure logical function get_allow_relaxation(class(frf_fitting_tool) this)
+        !! @endcode
+        !!
+        !! @param[in] this The frf_fitting_tool object.
+        !! @returns True if relaxation is to be allowed; else, false.
         procedure, public :: get_allow_relaxation => fit_get_relax
+        !> @brief Sets a value determining if relaxation of the solution 
+        !! should be allowed.
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! subroutine set_allow_relaxation(class(frf_fitting_tool) this, logical x)
+        !! @endcode
+        !!
+        !! @param[in,out] this The frf_fitting_tool object.
+        !! @param[in] x Set to true to allow relaxation; else, set to false.
         procedure, public :: set_allow_relaxation => fit_set_relax
+        !> @brief Gets a value determining if unstable poles should be stabalized.
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! pure logical function get_stabalize_poles(class(frf_fitting_tool) this)
+        !! @endcode
+        !!
+        !! @param[in] this The frf_fitting_tool object.
+        !! @returns Returns true if stabalization is allowed; else, false.
         procedure, public :: get_stabalize_poles => fit_get_stabalize
+        !> @brief Sets a value determining if unstable poles should be stabalized.
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! subroutine set_stabalize_poles(class(frf_fitting_tool) this, logical x)
+        !! @endcode
+        !!
+        !! @param[in,out] this The frf_fitting_tool object.
+        !! @param[in] x Set to true to force stabalization of unstable poles; else,
+        !!  set to false.
         procedure, public :: set_stabalize_poles => fit_set_stabalize
         !> @brief Applies a relaxed vector fitting algorithm to the problem of fitting a
         !! frequency response function.
