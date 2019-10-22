@@ -139,7 +139,7 @@ contains
         ! Local Variables
         integer(int32) :: m, n, ni, liwork, lcwork, lwork, flag
         integer(int32), allocatable, dimension(:) :: iwork
-        real(real64), allocatable, dimension(:) :: work, omega, theta, r2, wghts
+        real(real64), allocatable, dimension(:) :: work, theta, r2, wghts
         complex(real64), allocatable, dimension(:) :: cwork, frf, s
         logical :: stabalize, relax
         class(errors), pointer :: errmgr
@@ -204,7 +204,6 @@ contains
         allocate(iwork(liwork), stat = flag)
         if (flag == 0) allocate(work(lwork), stat = flag)
         if (flag == 0) allocate(cwork(lcwork), stat = flag)
-        if (flag == 0) allocate(omega(n), stat = flag)
         if (flag == 0) allocate(frf(n), stat = flag)
         if (flag == 0) allocate(theta(n), stat = flag)
         if (flag == 0) allocate(r2(n), stat = flag)
@@ -235,14 +234,11 @@ contains
         ! Ensure the FRF_FITTING_TOOL is properly initialized
         call this%initialize(order, n, ni, errmgr)
 
-        ! Establish a frequency vector in units of rad/s
-        omega = 2.0d0 * pi * freq
-
         ! Generate an estimate of pole locations
-        call estimate_poles(omega, order, this%poles)
+        call estimate_poles(freq, order, this%poles)
 
         ! Convert the frequency vector to its complex-valued representation
-        s = i1 * omega
+        s = i1 * freq
 
         ! Convert the frequency response into its complex-valued form
         theta = pi * phase / 1.8d2

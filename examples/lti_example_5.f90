@@ -21,7 +21,6 @@ program example
     real(real64), parameter :: mass = 2.0d1
     real(real64), parameter :: force = 1.0d3
     integer(int32), parameter :: npts = 1000
-    complex(real64), parameter :: j = (0.0d0, 1.0d0)
 
     ! Local Variables
     type(LTI) :: sys
@@ -30,7 +29,7 @@ program example
     real(real64), allocatable, dimension(:) :: freq, omega, &
         magLTI, phaseLTI, magSS, phaseSS
     complex(real64) :: offset
-    complex(real64), allocatable, dimension(:) :: s, tfLTI
+    complex(real64), allocatable, dimension(:) :: tfLTI
     complex(real64), allocatable, dimension(:,:,:) :: tfSS
     type(multiplot) :: plt
     type(plot_2d) :: plt1, plt2
@@ -50,13 +49,12 @@ program example
     ! Construct the frequency vector
     freq = linspace(1.0d0, 1.0d2, npts)
     omega = 2.0d0 * pi * freq
-    s = j * omega
 
     ! Evaluate the transfer function via the LTI object
     tfLTI = sys%evaluate(omega)
 
     ! Evaluate the transfer function via the state-space model
-    tfSS = mdl%evaluate_transfer_function(s)
+    tfSS = mdl%evaluate_transfer_function(omega)
 
     ! Compute the magnitude and phase for each
     offset = sys%evaluate(0.0d0)

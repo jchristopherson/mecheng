@@ -66,7 +66,7 @@ program example
     print '(AF5.1A)', "Mode 2: ", info(2)%frequency, " Hz"
 
     ! Attempt to fit the FRF
-    call fit%fit(freq, frf_mag, frf_phase, 4)
+    call fit%fit(omega, frf_mag, frf_phase, 4)
 
     ! Extract the magnitude and phase components
     fit_mag = abs(fit%frf)

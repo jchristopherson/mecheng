@@ -52,14 +52,17 @@ contains
     end function
 
 ! ------------------------------------------------------------------------------
-    module function ss_tf_eval(this, s, err) result(h)
+    module function ss_tf_eval(this, freq, err) result(h)
         use linalg_core
 
         ! Arguments
         class(state_space), intent(in) :: this
-        complex(real64), intent(in) :: s
+        real(real64), intent(in) :: freq
         class(errors), intent(inout), optional, target :: err
         complex(real64), allocatable, dimension(:,:) :: h
+
+        ! Parameters
+        complex(real64), parameter :: i1 = (0.0d0, 1.0d0)
 
         ! Local Variables
         class(errors), pointer :: errmgr
@@ -67,6 +70,7 @@ contains
         integer(int32) :: n, nb, flag, nout, nin
         integer(int32), allocatable, dimension(:) :: pvt
         complex(real64), allocatable, dimension(:,:) :: a, c, x
+        complex(real64) :: s
 
         ! Initialization
         n = size(this%A, 1)
@@ -101,16 +105,20 @@ contains
         end if
 
         ! Compute H(s) = C * (s * I - A)**-1 * B + D
+        s = i1 * freq
         call compute_h(this%A, this%B, this%C, this%D, s, h, a, x, c, pvt)
     end function
 
 ! ------------------------------------------------------------------------------
-    module function ss_tf_eval_array(this, s, err) result(h)
+    module function ss_tf_eval_array(this, freq, err) result(h)
         ! Arguments
         class(state_space), intent(in) :: this
-        complex(real64), intent(in), dimension(:) :: s
+        real(real64), intent(in), dimension(:) :: freq
         class(errors), intent(inout), optional, target :: err
         complex(real64), allocatable, dimension(:,:,:) :: h
+
+        ! Parameters
+        complex(real64), parameter :: i1 = (0.0d0, 1.0d0)
 
         ! Local Variables
         class(errors), pointer :: errmgr
@@ -118,13 +126,14 @@ contains
         integer(int32) :: k, npts, n, nb, flag, nin, nout
         integer(int32), allocatable, dimension(:) :: pvt
         complex(real64), allocatable, dimension(:,:) :: a, c, x
+        complex(real64) :: s
 
         ! Initialization
         n = size(this%A, 1)
         nb = size(this%B, 2)
         nin = size(this%D, 2)
         nout = size(this%D, 1)
-        npts = size(s)
+        npts = size(freq)
         if (present(err)) then
             errmgr => err
         else
@@ -155,7 +164,8 @@ contains
         ! Loop over each point in S
         do k = 1, npts
             ! Compute H(s) = C * (s * I - A)**-1 * B + D
-            call compute_h(this%A, this%B, this%C, this%D, s(k), &
+            s = i1 * freq(k)
+            call compute_h(this%A, this%B, this%C, this%D, s, &
                 h(:,:,k), a, x, c, pvt)
         end do
     end function

@@ -743,8 +743,8 @@ module vibrations
         !! @endcode
         !!
         !! @param[in] this The state_space object.
-        !! @param[in] s An M-element array containing the complex-valued frequency points
-        !!  of interest.
+        !! @param[in] freq An M-element array containing the frequency points
+        !!  of interest in units of rad/s.
         !! @param[in,out] err An optional errors-based object that if provided can be
         !!  used to retrieve information relating to any errors encountered during
         !!  execution.  If not provided, a default implementation of the errors
@@ -777,16 +777,15 @@ module vibrations
         !!     real(real64), parameter :: mass = 2.0d1
         !!     real(real64), parameter :: force = 1.0d3
         !!     integer(int32), parameter :: npts = 1000
-        !!     complex(real64), parameter :: j = (0.0d0, 1.0d0)
         !!
         !!     ! Local Variables
         !!     type(LTI) :: sys
         !!     type(state_space) :: mdl
         !!     real(real64) :: wn
-        !!     real(real64), allocatable, dimension(:) :: freq, omega, &
+        !!     real(real64), allocatable, dimension(:) :: freq, &
         !!         magLTI, phaseLTI, magSS, phaseSS
         !!     complex(real64) :: offset
-        !!     complex(real64), allocatable, dimension(:) :: s, tfLTI
+        !!     complex(real64), allocatable, dimension(:) :: tfLTI
         !!     complex(real64), allocatable, dimension(:,:,:) :: tfSS
         !!     type(multiplot) :: plt
         !!     type(plot_2d) :: plt1, plt2
@@ -805,14 +804,12 @@ module vibrations
         !!
         !!     ! Construct the frequency vector
         !!     freq = linspace(1.0d0, 1.0d2, npts)
-        !!     omega = 2.0d0 * pi * freq
-        !!     s = j * omega
         !!
         !!     ! Evaluate the transfer function via the LTI object
-        !!     tfLTI = sys%evaluate(omega)
+        !!     tfLTI = sys%evaluate(freq)
         !!
         !!     ! Evaluate the transfer function via the state-space model
-        !!     tfSS = mdl%evaluate_transfer_function(s)
+        !!     tfSS = mdl%evaluate_transfer_function(freq)
         !!
         !!     ! Compute the magnitude and phase for each
         !!     offset = sys%evaluate(0.0d0)
@@ -1004,7 +1001,7 @@ module vibrations
         !! @endcode
         !!
         !! @param[in,out] this The frf_fitting_tool object.
-        !! @param[in] freq An N-element array containing the frequency values in Hz.
+        !! @param[in] freq An N-element array containing the frequency values in rad/s.
         !! @param[in] amp An N-element array containing the amplitude values.  Ensure that
         !!  the values are not log scaled (e.g. units of dB).
         !! @param[in] phase An N-element array containing the phase values in degrees.
@@ -1096,7 +1093,7 @@ module vibrations
         !!     print '(AF5.1A)', "Mode 2: ", info(2)%frequency, " Hz"
         !!
         !!     ! Attempt to fit the FRF
-        !!     call fit%fit(freq, frf_mag, frf_phase, 4)
+        !!     call fit%fit(omega, frf_mag, frf_phase, 4)
         !!
         !!     ! Extract the magnitude and phase components
         !!     fit_mag = abs(fit%frf)
@@ -1260,7 +1257,7 @@ module vibrations
         !! @param[in] f An M-by-N forcing function matrix with each of the M
         !!  rows representing a discrete excitation frequency.
         !! @param[in] freq An M-element array containing the frequency points
-        !!  at which to analyze the system.  The units are expected to be rad/s.
+        !!  at which to analyze the system.  The units are expected to be Hz.
         !! @param[in,out] err An optional errors-based object that if provided can be
         !!  used to retrieve information relating to any errors encountered during
         !!  execution.  If not provided, a default implementation of the errors
@@ -1292,7 +1289,7 @@ module vibrations
         !! @param[in] f An M-by-N forcing function matrix with each of the M
         !!  rows representing a discrete excitation frequency.
         !! @param[in] freq An M-element array containing the frequency points
-        !!  at which to analyze the system.  The units are expected to be rad/s.
+        !!  at which to analyze the system.  The units are expected to be Hz.
         !! @param[in,out] err An optional errors-based object that if provided can be
         !!  used to retrieve information relating to any errors encountered during
         !!  execution.  If not provided, a default implementation of the errors
@@ -1323,7 +1320,7 @@ module vibrations
         !! @param[in] f An M-by-N forcing function matrix with each of the M
         !!  rows representing a discrete excitation frequency.
         !! @param[in] freq An M-element array containing the frequency points
-        !!  at which to analyze the system.  The units are expected to be rad/s.
+        !!  at which to analyze the system.  The units are expected to be Hz.
         !! @param[in,out] err An optional errors-based object that if provided can be
         !!  used to retrieve information relating to any errors encountered during
         !!  execution.  If not provided, a default implementation of the errors
@@ -1475,16 +1472,16 @@ module vibrations
             real(real64), allocatable, dimension(:) :: y
         end function
 
-        module function ss_tf_eval(this, s, err) result(h)
+        module function ss_tf_eval(this, freq, err) result(h)
             class(state_space), intent(in) :: this
-            complex(real64), intent(in) :: s
+            real(real64), intent(in) :: freq
             class(errors), intent(inout), optional, target :: err
             complex(real64), allocatable, dimension(:,:) :: h
         end function
 
-        module function ss_tf_eval_array(this, s, err) result(h)
+        module function ss_tf_eval_array(this, freq, err) result(h)
             class(state_space), intent(in) :: this
-            complex(real64), intent(in), dimension(:) :: s
+            real(real64), intent(in), dimension(:) :: freq
             class(errors), intent(inout), optional, target :: err
             complex(real64), allocatable, dimension(:,:,:) :: h
         end function
@@ -1502,7 +1499,7 @@ module vibrations
         !!  equations on which to operate.
         !! @param[in] freq An N-element array of frequency values at which to
         !!  excite the system of differential equations.  Units are expected
-        !!  to be rad/s.
+        !!  to be Hz.
         !! @param[in] xo An M-element array containing the initial conditions 
         !!   for the initial excitation 
         !!  frequency analysis.
