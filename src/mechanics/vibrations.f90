@@ -931,13 +931,36 @@ module vibrations
         procedure, public :: set_allow_relaxation => fit_set_relax
         procedure, public :: get_stabalize_poles => fit_get_stabalize
         procedure, public :: set_stabalize_poles => fit_set_stabalize
-        !> @brief
+        !> @brief Applies a relaxed vector fitting algorithm to the problem of fitting a
+        !! frequency response function.
         !!
         !! @par Syntax
         !! @code{.f90}
-        !!
+        !! subroutine fit(class(frf_fitting_tool) this, real(real64) freq(:), real(real64) amp(:), real(real64) phase(:), integer(int32) order, optional real(real64) weights(:), optional integer(int32) niter, optional class(errors) err)
         !! @endcode
         !!
+        !! @param[in,out] this The frf_fitting_tool object.
+        !! @param[in] freq An N-element array containing the frequency values in Hz.
+        !! @param[in] amp An N-element array containing the amplitude values.  Ensure that
+        !!  the values are not log scaled (e.g. units of dB).
+        !! @param[in] phase An N-element array containing the phase values in degrees.
+        !! @param[in] order The desired order of model to fit to the data.  Must be
+        !!  greater than or equal to 2.
+        !! @param[in] weights An optional N-element array used to specify weighting for
+        !!  each of the N frequency points.  The default is a unity weighting for all
+        !!  frequency points.
+        !! @param[in] niter An optional input controlling the number of iterations to
+        !!  utilize.  This value must be greater than or equal to 1 if supplied.  The
+        !!  default is 5.
+        !! @param[in,out] err An optional errors-based object that if provided can be
+        !!  used to retrieve information relating to any errors encountered during
+        !!  execution.  If not provided, a default implementation of the errors
+        !!  class is used internally to provide error handling.  Possible errors and
+        !!  warning messages that may be encountered are as follows.
+        !!  - MECH_OUT_OF_MEMORY_ERROR: Occurs if insufficient memory is available.
+        !!  - MECH_INVALID_INPUT_ERROR: Occurs if the order or iteration count variables
+        !!      are not properly input.
+        !!  - MECH_ARRAY_SIZE_ERROR: Occurs if any of the arrays are not appropriately sized.
         !!
         !! @par Example
         !! The following example illustrates fitting the FRF of a 2 DOF
@@ -949,7 +972,6 @@ module vibrations
         !!     use fplot_core
         !!     use constants
         !!     use arrays
-        !!     use linalg_core
         !!     implicit none
         !!
         !!     ! Parameters
@@ -1087,6 +1109,18 @@ module vibrations
         !! Damping Ratio 1: 0.0165
         !! Damping Ratio 2: 0.0215
         !! @endcode
+        !!
+        !! @par References
+        !! - B. Gustavsen and A. Semlyen, "Rational approximation of frequency       
+        !!   domain responses by Vector Fitting", IEEE Trans. Power Delivery,        
+        !!   vol. 14, no. 3, pp. 1052-1061, July 1999.
+        !! - B. Gustavsen, "Improving the pole relocating properties of vector
+        !!   fitting", IEEE Trans. Power Delivery, vol. 21, no. 3, pp. 1587-1592,
+        !!   July 2006. 
+        !! - D. Deschrijver, M. Mrozowski, T. Dhaene, and D. De Zutter,
+        !!   "Macromodeling of Multiport Systems Using a Fast Implementation of
+        !!   the Vector Fitting Method", IEEE Microwave and Wireless Components 
+        !!   Letters, vol. 18, no. 6, pp. 383-385, June 2008.
         procedure, public :: fit => fit_frf_1
         
     end type
