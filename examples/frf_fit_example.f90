@@ -6,7 +6,6 @@ program example
     use fplot_core
     use constants
     use arrays
-    use linalg_core
     implicit none
 
     ! Parameters
