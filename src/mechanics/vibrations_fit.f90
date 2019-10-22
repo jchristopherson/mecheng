@@ -127,7 +127,9 @@ contains
 
         ! Arguments
         class(frf_fitting_tool), intent(inout) :: this
-        real(real64), intent(in), dimension(:) :: freq, amp, phase, weights
+        real(real64), intent(in), dimension(:) :: freq, amp, phase
+        integer(int32), intent(in) :: order
+        real(real64), intent(in), dimension(:), optional :: weights
         integer(int32), intent(in), optional :: niter
         class(errors), intent(inout), optional, target :: err
 
@@ -137,8 +139,8 @@ contains
         ! Local Variables
         integer(int32) :: m, n, ni, liwork, lcwork, lwork, flag
         integer(int32), allocatable, dimension(:) :: iwork
-        real(real64), allocatable, dimension(:) :: work, omega, theta, r2
-        complex(real64), allocatable, dimension(:) :: cwork, frf
+        real(real64), allocatable, dimension(:) :: work, omega, theta, r2, wghts
+        complex(real64), allocatable, dimension(:) :: cwork, frf, s
         logical :: stabalize, relax
         class(errors), pointer :: errmgr
         type(errors), target :: deferr
@@ -148,7 +150,7 @@ contains
         m = order
         n = size(freq)
         liwork = m
-        lcwork = (3 * n + 2) * m + 5 * n
+        lcwork = (3 * n + 2) * m + 4 * n
         lwork = 2 * m**2 + (8 * n + 10) * m + 10 * n + 9
         ni = 5
         relax = this%get_allow_relaxation()
@@ -197,28 +199,37 @@ contains
                 MECH_ARRAY_SIZE_ERROR)
             return
         end if
-        if (size(weights) /= n) then
-            write(errmsg, '(AI0AI0A)') &
-                "The input weighting array was expected to have ", n, &
-                " elements, but was found to have ", size(weights), " elements."
-            call errmgr%report_error("fit_frf_1", trim(errmsg), &
-                MECH_ARRAY_SIZE_ERROR)
-            return
-        end if
 
         ! Allocate workspace arrays
         allocate(iwork(liwork), stat = flag)
         if (flag == 0) allocate(work(lwork), stat = flag)
-        if (flag == 0) allocate(work(lcwork), stat = flag)
+        if (flag == 0) allocate(cwork(lcwork), stat = flag)
         if (flag == 0) allocate(omega(n), stat = flag)
         if (flag == 0) allocate(frf(n), stat = flag)
         if (flag == 0) allocate(theta(n), stat = flag)
         if (flag == 0) allocate(r2(n), stat = flag)
+        if (flag == 0) allocate(wghts(n), stat = flag)
+        if (flag == 0) allocate(s(n), stat = flag)
         if (flag /= 0) then
             call errmgr%report_error("fit_frf_1", &
                 "Insufficient memory available.", &
                 MECH_OUT_OF_MEMORY_ERROR)
             return
+        end if
+
+        ! Establish the weighting factors
+        if (present(weights)) then
+            if (size(weights) /= n) then
+                write(errmsg, '(AI0AI0A)') &
+                    "The input weighting array was expected to have ", n, &
+                    " elements, but was found to have ", size(weights), " elements."
+                call errmgr%report_error("fit_frf_1", trim(errmsg), &
+                    MECH_ARRAY_SIZE_ERROR)
+                return
+            end if
+            wghts = weights
+        else
+            wghts = 1.0d0
         end if
 
         ! Ensure the FRF_FITTING_TOOL is properly initialized
@@ -231,7 +242,7 @@ contains
         call estimate_poles(omega, order, this%poles)
 
         ! Convert the frequency vector to its complex-valued representation
-        omega = i1 * omega
+        s = i1 * omega
 
         ! Convert the frequency response into its complex-valued form
         theta = pi * phase / 1.8d2
@@ -240,7 +251,7 @@ contains
         ! Fitting Process
         do i = 1, ni
             ! Compute the fit
-            call frf_fit_core(omega, frf, this%poles, weights, relax, stabalize, &
+            call frf_fit_core(s, frf, this%poles, wghts, relax, stabalize, &
                 this%model, this%frf, this%residual, work, cwork, iwork, errmgr)
             
             ! Compute the RMS of the error
@@ -274,7 +285,7 @@ contains
     ! - dif [Output]: An N-element array containing the difference between
     !       fitted and actual data.
     ! - work: A K-element workspace array where K is 2*M**2 + (8*N + 10)*M + 10*N + 9.
-    ! - cwork: An L-element workspace array where L is (3*N + 2)*M + 5*N.
+    ! - cwork: An L-element workspace array where L is (3*N + 2)*M + 4*N.
     ! - iwork: An M-element workspace array.
     ! - err: An error handler used to capture any errors from QR factorization
     !       or eigenvalue extraction routines.
@@ -299,7 +310,7 @@ contains
         complex(real64), intent(inout), dimension(:) :: poles
         real(real64), intent(in), dimension(:) :: weights
         logical, intent(in) :: relax, stable
-        class(state_space), intent(out) :: mdl
+        class(state_space), intent(inout) :: mdl
         real(real64), intent(out), target, dimension(:) :: work
         complex(real64), intent(out), target, dimension(:) :: fit, dif, cwork
         integer(int32), intent(out), target, dimension(:) :: iwork
@@ -350,7 +361,7 @@ contains
         s2c = e1c + 1
         e2c = s2c + n * (2* np1) - 1
         s3c = e2c + 1
-        e3c = s3c + 2 * n - 1
+        e3c = s3c + n - 1
         s4c = e3c + 1
         e4c = s4c + np - 1
         s5c = e4c + 1
@@ -370,7 +381,7 @@ contains
 
         Dk(1:n,1:np1) => cwork(1:e1c)       ! N-by-(NP+1)
         Ac(1:n,1:2*np1) => cwork(s2c:e2c)   ! N-by-2*(NP+1)
-        bc => cwork(s3c:e3c)                ! 2*N-element
+        bc => cwork(s3c:e3c)                ! N-element
         Cc => cwork(s4c:e4c)                ! NP-element
         eigenvals => cwork(s5c:e5c)         ! NP-element
 
@@ -381,7 +392,7 @@ contains
         do i = 1, np
             if (cindex(i) == 0) then
                 Dk(:,i) = one / (s - poles(i))
-            else
+            else if (cindex(i) == 1) then
                 Dk(:,i) = one / (s - poles(i)) + one / (s - conjg(poles(i)))
                 Dk(:,i+1) = i1 / (s - poles(i)) - i1 / (s - conjg(poles(i)))
             end if
@@ -476,7 +487,7 @@ contains
 
             ! Scale the problem
             do i = 1, np
-                Escale(i) = 1.0d0 / norm(R(:,i))
+                Escale(i) = 1.0d0 / norm2(R(:,i))
                 R(:,i) = Escale(i) * R(:,i)
             end do
 
@@ -533,12 +544,15 @@ contains
 
                     mdl%C(1,m) = real(Cc(m))
                     mdl%C(1,m+1) = aimag(Cc(m))
+
+                    m = m + 1
                 end if
             end if
         end do
 
         ! Compute ZER = LAMBDA - B * C / D - use LAMBDA to store ZER
-        call DGEMM('N', 'N', np, np, 1, -1.0d0, mdl%B, np, mdl%C, 1, 1.0d0, lambda, np)
+        call DGEMM('N', 'N', np, np, 1, -1.0d0 / mdl%D(1,1), mdl%B, np, &
+            mdl%C, 1, 1.0d0, lambda, np)
 
         ! Compute the eigenvalues - lambda is overwritten by this call
         call eigen(lambda, eigenvals, err = err)
