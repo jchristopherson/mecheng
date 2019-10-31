@@ -105,17 +105,17 @@ contains
     end subroutine
 
 ! ------------------------------------------------------------------------------
-    pure module function fit_get_stabalize(this) result(x)
+    pure module function fit_get_stabilize(this) result(x)
         class(frf_fitting_tool), intent(in) :: this
         logical :: x
-        x = this%m_stabalize
+        x = this%m_stabilize
     end function
 
 ! --------------------
-    module subroutine fit_set_stabalize(this, x)
+    module subroutine fit_set_stabilize(this, x)
         class(frf_fitting_tool), intent(inout) :: this
         logical, intent(in) :: x
-        this%m_stabalize = x
+        this%m_stabilize = x
     end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -141,7 +141,7 @@ contains
         integer(int32), allocatable, dimension(:) :: iwork
         real(real64), allocatable, dimension(:) :: work, theta, r2, wghts
         complex(real64), allocatable, dimension(:) :: cwork, frf, s
-        logical :: stabalize, relax
+        logical :: stabilize, relax
         class(errors), pointer :: errmgr
         type(errors), target :: deferr
         character(len = 256) :: errmsg
@@ -154,7 +154,7 @@ contains
         lwork = 2 * m**2 + (8 * n + 10) * m + 10 * n + 9
         ni = 5
         relax = this%get_allow_relaxation()
-        stabalize = this%get_stabalize_poles()
+        stabilize = this%get_stabilize_poles()
         if (present(niter)) ni = niter
         if (present(err)) then
             errmgr => err
@@ -247,7 +247,7 @@ contains
         ! Fitting Process
         do i = 1, ni
             ! Compute the fit
-            call frf_fit_core(s, frf, this%poles, wghts, relax, stabalize, &
+            call frf_fit_core(s, frf, this%poles, wghts, relax, stabilize, &
                 this%model, this%frf, this%residual, work, cwork, iwork, errmgr)
             
             ! Compute the RMS of the error

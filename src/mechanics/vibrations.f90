@@ -914,8 +914,8 @@ module vibrations
         ! ---------- PRIVATE MEMBER VARIABLES ---------- !
         !> @brief Allow for solution relaxation.
         logical, private :: m_relax = .true.
-        !> @brief Stabalize any unstable poles.
-        logical, private :: m_stabalize = .true.
+        !> @brief Stabilize any unstable poles.
+        logical, private :: m_stabilize = .true.
     contains
         !> @brief Initializes the frf_fitting_tool instance.
         !!
@@ -971,27 +971,27 @@ module vibrations
         !! @param[in,out] this The frf_fitting_tool object.
         !! @param[in] x Set to true to allow relaxation; else, set to false.
         procedure, public :: set_allow_relaxation => fit_set_relax
-        !> @brief Gets a value determining if unstable poles should be stabalized.
+        !> @brief Gets a value determining if unstable poles should be stabilized.
         !!
         !! @par Syntax
         !! @code{.f90}
-        !! pure logical function get_stabalize_poles(class(frf_fitting_tool) this)
+        !! pure logical function get_stabilize_poles(class(frf_fitting_tool) this)
         !! @endcode
         !!
         !! @param[in] this The frf_fitting_tool object.
         !! @returns Returns true if stabalization is allowed; else, false.
-        procedure, public :: get_stabalize_poles => fit_get_stabalize
-        !> @brief Sets a value determining if unstable poles should be stabalized.
+        procedure, public :: get_stabilize_poles => fit_get_stabilize
+        !> @brief Sets a value determining if unstable poles should be stabilized.
         !!
         !! @par Syntax
         !! @code{.f90}
-        !! subroutine set_stabalize_poles(class(frf_fitting_tool) this, logical x)
+        !! subroutine set_stabilize_poles(class(frf_fitting_tool) this, logical x)
         !! @endcode
         !!
         !! @param[in,out] this The frf_fitting_tool object.
         !! @param[in] x Set to true to force stabalization of unstable poles; else,
         !!  set to false.
-        procedure, public :: set_stabalize_poles => fit_set_stabalize
+        procedure, public :: set_stabilize_poles => fit_set_stabilize
         !> @brief Applies a relaxed vector fitting algorithm to the problem of fitting a
         !! frequency response function.
         !!
@@ -1689,12 +1689,12 @@ module vibrations
             logical, intent(in) :: x
         end subroutine
 
-        pure module function fit_get_stabalize(this) result(x)
+        pure module function fit_get_stabilize(this) result(x)
             class(frf_fitting_tool), intent(in) :: this
             logical :: x
         end function
 
-        module subroutine fit_set_stabalize(this, x)
+        module subroutine fit_set_stabilize(this, x)
             class(frf_fitting_tool), intent(inout) :: this
             logical, intent(in) :: x
         end subroutine
