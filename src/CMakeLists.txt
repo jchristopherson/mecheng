@@ -497,6 +497,7 @@ set(signals_sources
 
 set(strings_sources
     strings/strings.f90
+    strings/string_helper.cpp
 )
 
 set(geometry_sources

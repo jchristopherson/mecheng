@@ -83,6 +83,9 @@ else (Fortran_COMPILER_NAME MATCHES "gfortran.*")
   set(CMAKE_Fortran_FLAGS_DEBUG   "-O0 -g -Wall")
 endif (Fortran_COMPILER_NAME MATCHES "gfortran.*")
 
+# Locate C/C++ Headers
+include_directories(${PROJECT_SOURCE_DIR}/include)
+
 # Build the library
 add_subdirectory(src)
 
