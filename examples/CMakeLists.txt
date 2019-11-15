@@ -106,3 +106,6 @@ target_link_libraries(frf_fit_example_1 mecheng)
 add_executable(signal_conv_example_1 signal_conv_example_1.f90)
 target_link_libraries(signal_conv_example_1 mecheng)
 
+# STRINGS EXAMPLE 1
+add_executable(strings_example strings_example.f90)
+target_link_libraries(strings_example mecheng)
