@@ -243,6 +243,48 @@ contains
     !! @param[out] iwork An optional workspace array of same size as @p buffer.
     !!
     !! @return The actual number of strings written to @p buffer.
+    !!
+    !! @par Example
+    !! @code{.f90}
+    !! program example
+    !!     use iso_fortran_env
+    !!     use strings
+    !!     implicit none
+    !!
+    !!     ! Create a string to split
+    !!     character(len = *), parameter :: str = "This,is,a,test,,string,with,repeating,,,delimiters"
+    !!
+    !!     ! Local Variables
+    !!     type(string) :: buffer(50)  ! Arbitrarily chosen buffer size
+    !!     integer(int32) :: i, n
+    !!
+    !!     ! Split the string
+    !!     n = split_string(str, ",", buffer)
+    !!
+    !!     ! Print the results
+    !!     print '(A)', "Split: " // str
+    !!     print '(AI0A)', "  ", n, " strings created:"
+    !!     do i = 1, n
+    !!         print '(AI0A)', achar(9), i, ". " // trim(buffer(i)%str)
+    !!     end do
+    !! end program
+    !! @endcode
+    !! The above code produces the following output.
+    !! @code{.txt}
+    !! Split: This,is,a,test,,string,with,repeating,,,delimiters
+    !!   11 strings created:
+    !!         1. This
+    !!         2. is
+    !!         3. a
+    !!         4. test
+    !!         5.
+    !!         6. string
+    !!         7. with
+    !!         8. repeating
+    !!         9.
+    !!         10.
+    !!         11. delimiters
+    !! @endcode
     function split_string_by_char(txt, delim, buffer, def, iwork) result(n)
         ! Arguments
         character(len = *), intent(in) :: txt
