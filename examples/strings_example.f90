@@ -6,7 +6,8 @@ program example
     implicit none
 
     ! Create a string to split
-    character(len = *), parameter :: str = "This,is,a,test,,string,with,repeating,,,delimiters"
+    character(len = *), parameter :: str = "2/5/2019 1:55:19 PM,500000,12375," &
+        // "Pine_PZT_100K_1_2_1_3_0_435mm,DN-014,7200,0.435,,,nm,0,1,-8.58e\r\n"
     
     ! Local Variables
     type(string) :: buffer(50)  ! Arbitrarily chosen buffer size

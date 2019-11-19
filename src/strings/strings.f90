@@ -212,9 +212,16 @@ contains
                 buffer(j:j) = txt(i:i)
             else
                 ! Reached a delimiter character
-                if (j == 0) cycle
+                ! if (j == 0) cycle
+                ! k = k + 1
+                ! stbuffer(k)%str = buffer(1:j)
+                ! j = 0
                 k = k + 1
-                stbuffer(k)%str = buffer(1:j)
+                if (j == 0) then
+                    allocate(character(len = 0) :: stbuffer(k)%str)
+                else
+                    stbuffer(k)%str = buffer(1:j)
+                end if
                 j = 0
             end if
         end do
