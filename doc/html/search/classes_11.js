@@ -21,6 +21,8 @@ var searchData=
   ['spd_5fset_5fvalue',['spd_set_value',['../interfacefplot__core_1_1spd__set__value.html',1,'fplot_core']]],
   ['spline_5finterp',['spline_interp',['../structcurvefit__interp_1_1spline__interp.html',1,'curvefit_interp']]],
   ['split_5fascend_5fdescend',['split_ascend_descend',['../interfacecurvefit__calibration_1_1split__ascend__descend.html',1,'curvefit_calibration']]],
+  ['split_5fstring',['split_string',['../interfacestrings_1_1split__string.html',1,'strings']]],
+  ['split_5fstring_5fdelim',['split_string_delim',['../interfacestrings_1_1split__string__delim.html',1,'strings']]],
   ['standard_5fdeviation',['standard_deviation',['../interfacecurvefit__statistics_1_1standard__deviation.html',1,'curvefit_statistics']]],
   ['state_5fspace',['state_space',['../structvibrations_1_1state__space.html',1,'vibrations']]],
   ['string',['string',['../structstrings_1_1string.html',1,'strings']]],

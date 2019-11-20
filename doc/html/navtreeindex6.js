@@ -1,5 +1,11 @@
 var NAVTREEINDEX6 =
 {
+"structintegral__core_1_1nonadaptive__integrator.html#af11385657d8704d06d0dd0fb84ab6f2c":[1,0,18,6,3],
+"structintegral__core_1_1ode__auto.html":[1,0,18,7],
+"structintegral__core_1_1ode__auto.html#a1398b5464a33536ccfea7ca999625c7f":[1,0,18,7,0],
+"structintegral__core_1_1ode__auto.html#a27a6078feaf046439a3678844c37788d":[1,0,18,7,6],
+"structintegral__core_1_1ode__auto.html#a558e473b0438b3acab769c9baaf906a3":[1,0,18,7,1],
+"structintegral__core_1_1ode__auto.html#a57af60d28a09024a16287e13c77330f8":[1,0,18,7,4],
 "structintegral__core_1_1ode__auto.html#aa750d26ae0ae31b5e7c1d45a11a4a5f0":[1,0,18,7,3],
 "structintegral__core_1_1ode__auto.html#ac36e4a651771f34246340c806504434b":[1,0,18,7,2],
 "structintegral__core_1_1ode__auto.html#acf053c0ab90c954fbea452537ede1933":[1,0,18,7,7],
@@ -243,11 +249,5 @@ var NAVTREEINDEX6 =
 "structnonlin__optimize_1_1nelder__mead.html#ad09b33f9ff6f17e1cc0d56befa1a77b4":[1,0,25,2,1],
 "structnonlin__optimize_1_1nelder__mead.html#af135618858e807fc51ebd6063ac9c736":[1,0,25,2,4],
 "structnonlin__optimize_1_1nelder__mead.html#af262957b196243601501c8540ed6edf2":[1,0,25,2,2],
-"structnonlin__optimize_1_1nelder__mead.html#af5d3d067795864bdd038f794a08231f2":[1,0,25,2,7],
-"structnonlin__polynomials_1_1polynomial.html":[1,0,26,4],
-"structnonlin__polynomials_1_1polynomial.html#a04911a990f6ffcffe2fc48be44145f4f":[1,0,26,4,8],
-"structnonlin__polynomials_1_1polynomial.html#a3ced5fa8b1d410dcf53ff40224f82912":[1,0,26,4,5],
-"structnonlin__polynomials_1_1polynomial.html#a637144f7851d5e8030f8922f8cafa7ef":[1,0,26,4,3],
-"structnonlin__polynomials_1_1polynomial.html#a80a74956544433b7a45babcfb4443980":[1,0,26,4,1],
-"structnonlin__polynomials_1_1polynomial.html#aa08e7f997021e5fb2c5f51b70809e19a":[1,0,26,4,11]
+"structnonlin__optimize_1_1nelder__mead.html#af5d3d067795864bdd038f794a08231f2":[1,0,25,2,7]
 };

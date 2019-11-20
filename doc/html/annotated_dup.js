@@ -55,6 +55,8 @@ var annotated_dup =
     [ "signals", "namespacesignals.html", "namespacesignals" ],
     [ "strain", "namespacestrain.html", "namespacestrain" ],
     [ "strings", null, [
+      [ "split_string", "interfacestrings_1_1split__string.html", "interfacestrings_1_1split__string" ],
+      [ "split_string_delim", "interfacestrings_1_1split__string__delim.html", "interfacestrings_1_1split__string__delim" ],
       [ "string", "structstrings_1_1string.html", "structstrings_1_1string" ],
       [ "string_builder", "structstrings_1_1string__builder.html", "structstrings_1_1string__builder" ],
       [ "string_to_number", "interfacestrings_1_1string__to__number.html", "interfacestrings_1_1string__to__number" ],

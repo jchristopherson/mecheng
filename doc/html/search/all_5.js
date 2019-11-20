@@ -18,7 +18,7 @@ var searchData=
   ['fio_5funsupported_5fversion_5ferror',['fio_unsupported_version_error',['../namespacefortio__types.html#a23447730d7601211807bf7a067079836',1,'fortio_types']]],
   ['fir_5ffilter',['fir_filter',['../structsignals_1_1fir__filter.html',1,'signals']]],
   ['first_5fderivative',['first_derivative',['../structcurvefit__interp_1_1spline__interp.html#a0a8a8a6ed5018c4aafca49f1d9c8c898',1,'curvefit_interp::spline_interp']]],
-  ['fit',['fit',['../structvibrations_1_1frf__fitting__tool.html#a38dbeccfd346e433ba1fb3cbd3f01b55',1,'vibrations::frf_fitting_tool::fit()'],['../structnonlin__polynomials_1_1polynomial.html#ac92ea228d6b80f1936f103f94adcb1ee',1,'nonlin_polynomials::polynomial::fit()']]],
+  ['fit',['fit',['../structvibrations_1_1frf__fitting__tool.html#acb2b7c2752e5c461f73f98ddb53ff784',1,'vibrations::frf_fitting_tool::fit()'],['../structnonlin__polynomials_1_1polynomial.html#ac92ea228d6b80f1936f103f94adcb1ee',1,'nonlin_polynomials::polynomial::fit()']]],
   ['fit_5fthru_5fzero',['fit_thru_zero',['../structnonlin__polynomials_1_1polynomial.html#a3ced5fa8b1d410dcf53ff40224f82912',1,'nonlin_polynomials::polynomial']]],
   ['font_5fname',['font_name',['../structvibrations_1_1bode__settings.html#a9ee6b6cf12c4c8d8d38097410eb6a441',1,'vibrations::bode_settings::font_name()'],['../structvibrations_1_1pole__zero__settings.html#a4e87de40929ed48fc03b92d6a9fa1d98',1,'vibrations::pole_zero_settings::font_name()']]],
   ['font_5fsize',['font_size',['../structvibrations_1_1bode__settings.html#a13bffc5d28ead6c53bf54d1607397dcb',1,'vibrations::bode_settings::font_size()'],['../structvibrations_1_1pole__zero__settings.html#aafa03346c35c7b0f300e963e8f21bb85',1,'vibrations::pole_zero_settings::font_size()']]],
