@@ -15,9 +15,39 @@ module fortio_binary
     public :: binary_file_manager
     public :: binary_writer
     public :: binary_reader
+    public :: binary_formatter
 
 ! ******************************************************************************
 ! TYPES
+! ------------------------------------------------------------------------------
+    !> @brief Defines a type for formatting binary information.
+    type binary_formatter
+    private
+        !> @brief A buffer into which data may be serialized.
+        integer(int8), allocatable, dimension(:) :: m_buffer
+        !> @brief The actual number of items in the buffer.
+        integer(int32) :: m_count = 0
+    contains
+        !> @brief Initializes the binary_formatter object.
+        procedure, public :: initialize => bf_init
+        !> @brief Adjusts the capacity of bhe binary_formatter to the
+        !! requested amount.
+        procedure, public :: set_capacity => bf_resize_buffer
+        !> @brief Gets the capacity of the binary_formatter, in bytes.
+        procedure, public :: get_capacity => bf_get_capacity
+        !> @brief Gets the number of bytes stored within the binary_formatter.
+        procedure, public :: get_count => bf_get_count
+
+        ! TO DO:
+        ! - add items to buffer routines
+        !   - all real, complex, and integer types for
+        !       scalar, 1D, and 2D arrays
+        ! - retrieve the buffer
+        !   - all real, complex, and integer types for
+        !       scalar, 1D, and 2D arrays
+        ! - provide read-only access to the buffer???
+    end type
+
 ! ------------------------------------------------------------------------------
     !> @brief Defines a mechanism for managing binary file I/O.
     type binary_file_manager
@@ -339,6 +369,161 @@ contains
         jj(8) = ii(1)
         x = t
     end subroutine
+
+
+
+
+
+! ******************************************************************************
+! BINARY_FORMATTER MEMBERS
+! ------------------------------------------------------------------------------
+    !> @brief Initializes the binary_formatter object.
+    !!
+    !! @param[in,out] this The binary_formatter object.
+    !! @param[in,out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_OUT_OF_MEMORY_ERROR: Occurs if there is insufficient memory 
+    !!      available.
+    subroutine bf_init(this, err)
+        ! Arguments
+        class(binary_formatter), intent(inout) :: this
+        class(errors), intent(inout), optional, target :: err
+
+        ! Parameters
+        integer(int32), parameter :: buffer_size = 2048
+
+        ! Local Variables
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+        integer(int32) :: flag
+
+        ! Initialization
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+
+        ! Allocate buffer space
+        if (allocated(this%m_buffer)) deallocate(this%m_buffer)
+        this%m_count = 0
+        allocate(this%m_buffer(buffer_size), stat = flag)
+        if (flag /= 0) then
+            call errmgr%report_error("bf_init", &
+                "Insufficient memory available.", &
+                FIO_OUT_OF_MEMORY_ERROR)
+            return
+        end if
+    end subroutine
+
+! ------------------------------------------------------------------------------
+    !> @brief Adjusts the capacity of bhe binary_formatter to the
+    !! requested amount.
+    !!
+    !! @param[in,out] this The binary_formatter object.
+    !! @param[in] newsize The new size of the buffer, in bytes.
+    !! @param[in,out] err  An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_OUT_OF_MEMORY_ERROR: Occurs if there is insufficient memory 
+    !!      available.
+    !!  - FIO_INVALID_INPUT_ERROR: Occurs if @p newsize is negative.
+    subroutine bf_resize_buffer(this, newsize, err)
+        ! Arguments
+        class(binary_formatter), intent(inout) :: this
+        integer(int32), intent(in) :: newsize
+        class(errors), intent(inout), optional, target :: err
+
+        ! Local Variables
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+        integer(int8), allocatable, dimension(:) :: copy
+        integer(int32) :: flag, n
+        
+        ! Initialization
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+
+        ! Verify newsize is >= 0
+        if (newsize < 0) then
+            call errmgr%report_error("bf_resize_buffer", &
+                "A non-negative buffer size is required.", &
+                FIO_INVALID_INPUT_ERROR)
+            return
+        end if
+
+        ! If the buffer hasn't been allocated, simply allocate it
+        if (.not.allocated(this%m_buffer)) then
+            allocate(this%m_buffer(newsize), stat = flag)
+            if (flag /= 0) goto 100
+            this%m_count = 0
+            return
+        end if
+
+        ! Ensure that there's something to copy
+        if (this%m_count > 0) then
+            allocate(copy(this%m_count), stat = flag)
+            if (flag /= 0) goto 100
+            copy = this%m_buffer(1:this%m_count)
+        end if
+
+        ! Free the buffer, and then reallocate at the requested size
+        deallocate(this%m_buffer)
+        allocate(this%m_buffer(newsize), stat = flag)
+        if (flag /= 0) goto 100
+
+        ! Copy data back into the buffer
+        n = min(this%m_count, newsize)
+        this%m_buffer(1:n) = copy(1:n)
+        this%m_count = n
+
+        ! End
+        return
+
+        ! Out of memory error
+    100 continue
+        call errmgr%report_error("bf_resize_buffer", &
+            "Insufficient memory available.", &
+            FIO_OUT_OF_MEMORY_ERROR)
+        return
+    end subroutine
+
+! ------------------------------------------------------------------------------
+    !> @brief Gets the capacity of the binary_formatter, in bytes.
+    !!
+    !! @param[in] this The binary_formatter object.
+    !!
+    !! @return The capacity.
+    pure function bf_get_capacity(this) result(n)
+        class(binary_formatter), intent(in) :: this
+        integer(int32) :: n
+        n = 0
+        if (allocated(this%m_buffer)) n = size(this%m_buffer)
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Gets the number of bytes stored within the binary_formatter.
+    !!
+    !! @param[in] this The binary_formatter object.
+    !!
+    !! @return The number of bytes stored.
+    pure function bf_get_count(this) result(n)
+        class(binary_formatter), intent(in) :: this
+        integer(int32) :: n
+        n = this%m_count
+    end function
+
+! ------------------------------------------------------------------------------v
+
+! ------------------------------------------------------------------------------
 
 
 
