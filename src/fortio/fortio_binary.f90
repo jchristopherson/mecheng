@@ -20,6 +20,9 @@ module fortio_binary
 ! ******************************************************************************
 ! TYPES
 ! ------------------------------------------------------------------------------
+    !> @brief The default buffer size for the binary_formatter type.
+    integer(int32), parameter :: BINARY_FORMATTER_DEFAULT_SIZE = 2048
+
     !> @brief Defines a type for formatting binary information.
     type binary_formatter
     private
@@ -37,6 +40,10 @@ module fortio_binary
         procedure, public :: get_capacity => bf_get_capacity
         !> @brief Gets the number of bytes stored within the binary_formatter.
         procedure, public :: get_count => bf_get_count
+        !> @brief Appends an item onto the binary_formatter buffer.
+        generic, public :: add => bf_add_dbl, bf_add_dbl_array, &
+            bf_add_dbl_matrix, bf_add_sngl, bf_add_sngl_array, &
+            bf_add_sngl_matrix
 
         ! TO DO:
         ! - add items to buffer routines
@@ -46,6 +53,12 @@ module fortio_binary
         !   - all real, complex, and integer types for
         !       scalar, 1D, and 2D arrays
         ! - provide read-only access to the buffer???
+        procedure :: bf_add_dbl
+        procedure :: bf_add_dbl_array
+        procedure :: bf_add_dbl_matrix
+        procedure :: bf_add_sngl
+        procedure :: bf_add_sngl_array
+        procedure :: bf_add_sngl_matrix
     end type
 
 ! ------------------------------------------------------------------------------
@@ -392,9 +405,6 @@ contains
         class(binary_formatter), intent(inout) :: this
         class(errors), intent(inout), optional, target :: err
 
-        ! Parameters
-        integer(int32), parameter :: buffer_size = 2048
-
         ! Local Variables
         class(errors), pointer :: errmgr
         type(errors), target :: deferr
@@ -410,7 +420,7 @@ contains
         ! Allocate buffer space
         if (allocated(this%m_buffer)) deallocate(this%m_buffer)
         this%m_count = 0
-        allocate(this%m_buffer(buffer_size), stat = flag)
+        allocate(this%m_buffer(BINARY_FORMATTER_DEFAULT_SIZE), stat = flag)
         if (flag /= 0) then
             call errmgr%report_error("bf_init", &
                 "Insufficient memory available.", &
@@ -522,6 +532,290 @@ contains
     end function
 
 ! ------------------------------------------------------------------------------v
+    !> @brief Appends a 64-bit floating-point value to the buffer.
+    !!
+    !! @param[in,out] this The binary_formatter object.
+    !! @param[in] x The value to add.
+    !! @param[in,out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_OUT_OF_MEMORY_ERROR: Occurs if there is insufficient memory 
+    !!      available.
+    subroutine bf_add_dbl(this, x, err)
+        ! Arguments
+        class(binary_formatter), intent(inout) :: this
+        real(real64), intent(in) :: x
+        class(errors), intent(inout), optional, target :: err
+
+        ! Local Variables
+        integer(int32) :: sizeInBits, sizeInBytes, newSize, istart, iend
+
+        ! Determine the size of the item, in bytes
+        sizeInBits = storage_size(x)
+        sizeInBytes = sizeInBits / 8
+
+        ! Ensure there's enough remaining capacity for everything
+        if (sizeInBytes > (this%get_capacity() - this%get_count())) then
+            newSize = max(2 * this%get_capacity(), this%get_count() + newSize)
+            if (newSize == 0) newSize = BINARY_FORMATTER_DEFAULT_SIZE
+            call this%set_capacity(newSize, err)
+        end if
+
+        ! Append the item to the end of the buffer
+        istart = this%get_count() + 1
+        iend = istart + sizeInBytes - 1
+        this%m_buffer(istart:iend) = transfer(x, this%m_buffer(istart:iend))
+    end subroutine
+
+! --------------------
+    !> @brief Appends a 64-bit floating-point array to the buffer.
+    !!
+    !! @param[in,out] this The binary_formatter object.
+    !! @param[in] x The array to add.
+    !! @param[in,out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_OUT_OF_MEMORY_ERROR: Occurs if there is insufficient memory 
+    !!      available.
+    subroutine bf_add_dbl_array(this, x, err)
+        ! Arguments
+        class(binary_formatter), intent(inout) :: this
+        real(real64), intent(in), dimension(:) :: x
+        class(errors), intent(inout), optional, target :: err
+
+        ! Local Variables
+        integer(int32) :: n, sizeInBits, sizeInBytes, overallSize, &
+            newSize, istart, iend
+
+        ! Determine the size of the item, in bytes
+        n = size(x)
+        sizeInBits = storage_size(x(1))
+        sizeInBytes = n * sizeInBits / 8
+
+        ! Account for array size information
+        sizeInBits = storage_size(sizeInBits)
+        overallSize = sizeInBits / 8 + sizeInBytes
+
+        ! Ensure there's enough capacity remaining
+        if (overallSize > (this%get_capacity() - this%get_count())) then
+            newSize = max(2 * this%get_capacity(), &
+                this%get_count() + overallSize)
+            if (newSize == 0) &
+                newSize = max(BINARY_FORMATTER_DEFAULT_SIZE, overallSize)
+            call this%set_capacity(newSize, err)
+        end if
+
+        ! Append the array size, and then the array
+        istart = this%get_count() + 1
+        iend = istart + sizeInBits / 8 - 1
+        this%m_buffer(istart:iend) = transfer(n, this%m_buffer(istart:iend))
+
+        istart = iend + 1
+        iend = istart + sizeInBytes - 1
+        this%m_buffer(istart:iend) = transfer(x, this%m_buffer(istart:iend))
+    end subroutine
+
+! --------------------
+    !> @brief Appends a 64-bit floating-point matrix to the buffer.
+    !!
+    !! @param[in,out] this The binary_formatter object.
+    !! @param[in] x The matrix to add.
+    !! @param[in,out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_OUT_OF_MEMORY_ERROR: Occurs if there is insufficient memory 
+    !!      available.
+    subroutine bf_add_dbl_matrix(this, x, err)
+        ! Arguments
+        class(binary_formatter), intent(inout) :: this
+        real(real64), intent(in), dimension(:,:) :: x
+        class(errors), intent(inout), optional, target :: err
+
+        ! Local Variables
+        integer(int32) :: m, n, sizeInBits, sizeInBytes, overallSize, &
+            newSize, istart, iend
+
+        ! Determine the size of the item, in bytes
+        m = size(x, 1)
+        n = size(x, 2)
+        sizeInBits = storage_size(x(1,1))
+        sizeInBytes = m * n * sizeInBits / 8
+
+        ! Account for array size information
+        sizeInBits = storage_size(sizeInBits)
+        overallSize = 2 * sizeInBits / 8 + sizeInBytes
+
+        ! Ensure there's enough capacity remaining
+        if (overallSize > (this%get_capacity() - this%get_count())) then
+            newSize = max(2 * this%get_capacity(), &
+                this%get_count() + overallSize)
+            if (newSize == 0) &
+                newSize = max(BINARY_FORMATTER_DEFAULT_SIZE, overallSize)
+            call this%set_capacity(newSize, err)
+        end if
+
+        ! Append the array size, and then the matrix
+        istart = this%get_count() + 1
+        iend = istart + sizeInBits / 8 - 1
+        this%m_buffer(istart:iend) = transfer(m, this%m_buffer(istart:iend))
+
+        istart = iend + 1
+        iend = istart + sizeInBits / 8 - 1
+        this%m_buffer(istart:iend) = transfer(n, this%m_buffer(istart:iend))
+
+        istart = iend + 1
+        iend = istart + sizeInBytes - 1
+        this%m_buffer(istart:iend) = transfer(x, this%m_buffer(istart:iend))
+    end subroutine
+
+! ------------------------------------------------------------------------------v
+    !> @brief Appends a 32-bit floating-point value to the buffer.
+    !!
+    !! @param[in,out] this The binary_formatter object.
+    !! @param[in] x The value to add.
+    !! @param[in,out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_OUT_OF_MEMORY_ERROR: Occurs if there is insufficient memory 
+    !!      available.
+    subroutine bf_add_sngl(this, x, err)
+        ! Arguments
+        class(binary_formatter), intent(inout) :: this
+        real(real32), intent(in) :: x
+        class(errors), intent(inout), optional, target :: err
+
+        ! Local Variables
+        integer(int32) :: sizeInBits, sizeInBytes, newSize, istart, iend
+
+        ! Determine the size of the item, in bytes
+        sizeInBits = storage_size(x)
+        sizeInBytes = sizeInBits / 8
+
+        ! Ensure there's enough remaining capacity for everything
+        if (sizeInBytes > (this%get_capacity() - this%get_count())) then
+            newSize = max(2 * this%get_capacity(), this%get_count() + newSize)
+            if (newSize == 0) newSize = BINARY_FORMATTER_DEFAULT_SIZE
+            call this%set_capacity(newSize, err)
+        end if
+
+        ! Append the item to the end of the buffer
+        istart = this%get_count() + 1
+        iend = istart + sizeInBytes - 1
+        this%m_buffer(istart:iend) = transfer(x, this%m_buffer(istart:iend))
+    end subroutine
+
+! --------------------
+    !> @brief Appends a 32-bit floating-point array to the buffer.
+    !!
+    !! @param[in,out] this The binary_formatter object.
+    !! @param[in] x The array to add.
+    !! @param[in,out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_OUT_OF_MEMORY_ERROR: Occurs if there is insufficient memory 
+    !!      available.
+    subroutine bf_add_sngl_array(this, x, err)
+        ! Arguments
+        class(binary_formatter), intent(inout) :: this
+        real(real32), intent(in), dimension(:) :: x
+        class(errors), intent(inout), optional, target :: err
+
+        ! Local Variables
+        integer(int32) :: n, sizeInBits, sizeInBytes, overallSize, &
+            newSize, istart, iend
+
+        ! Determine the size of the item, in bytes
+        n = size(x)
+        sizeInBits = storage_size(x(1))
+        sizeInBytes = n * sizeInBits / 8
+
+        ! Account for array size information
+        sizeInBits = storage_size(sizeInBits)
+        overallSize = sizeInBits / 8 + sizeInBytes
+
+        ! Ensure there's enough capacity remaining
+        if (overallSize > (this%get_capacity() - this%get_count())) then
+            newSize = max(2 * this%get_capacity(), &
+                this%get_count() + overallSize)
+            if (newSize == 0) &
+                newSize = max(BINARY_FORMATTER_DEFAULT_SIZE, overallSize)
+            call this%set_capacity(newSize, err)
+        end if
+
+        ! Append the array size, and then the array
+        istart = this%get_count() + 1
+        iend = istart + sizeInBits / 8 - 1
+        this%m_buffer(istart:iend) = transfer(n, this%m_buffer(istart:iend))
+
+        istart = iend + 1
+        iend = istart + sizeInBytes - 1
+        this%m_buffer(istart:iend) = transfer(x, this%m_buffer(istart:iend))
+    end subroutine
+
+! --------------------
+    !> @brief Appends a 32-bit floating-point matrix to the buffer.
+    !!
+    !! @param[in,out] this The binary_formatter object.
+    !! @param[in] x The matrix to add.
+    !! @param[in,out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_OUT_OF_MEMORY_ERROR: Occurs if there is insufficient memory 
+    !!      available.
+    subroutine bf_add_sngl_matrix(this, x, err)
+        ! Arguments
+        class(binary_formatter), intent(inout) :: this
+        real(real32), intent(in), dimension(:,:) :: x
+        class(errors), intent(inout), optional, target :: err
+
+        ! Local Variables
+        integer(int32) :: m, n, sizeInBits, sizeInBytes, overallSize, &
+            newSize, istart, iend
+
+        ! Determine the size of the item, in bytes
+        m = size(x, 1)
+        n = size(x, 2)
+        sizeInBits = storage_size(x(1,1))
+        sizeInBytes = m * n * sizeInBits / 8
+
+        ! Account for array size information
+        sizeInBits = storage_size(sizeInBits)
+        overallSize = 2 * sizeInBits / 8 + sizeInBytes
+
+        ! Ensure there's enough capacity remaining
+        if (overallSize > (this%get_capacity() - this%get_count())) then
+            newSize = max(2 * this%get_capacity(), &
+                this%get_count() + overallSize)
+            if (newSize == 0) &
+                newSize = max(BINARY_FORMATTER_DEFAULT_SIZE, overallSize)
+            call this%set_capacity(newSize, err)
+        end if
+
+        ! Append the array size, and then the matrix
+        istart = this%get_count() + 1
+        iend = istart + sizeInBits / 8 - 1
+        this%m_buffer(istart:iend) = transfer(m, this%m_buffer(istart:iend))
+
+        istart = iend + 1
+        iend = istart + sizeInBits / 8 - 1
+        this%m_buffer(istart:iend) = transfer(n, this%m_buffer(istart:iend))
+
+        istart = iend + 1
+        iend = istart + sizeInBytes - 1
+        this%m_buffer(istart:iend) = transfer(x, this%m_buffer(istart:iend))
+    end subroutine
 
 ! ------------------------------------------------------------------------------
 
