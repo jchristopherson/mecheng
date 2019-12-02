@@ -49,6 +49,12 @@ module fortio_binary
         procedure, public :: get_capacity => bf_get_capacity
         !> @brief Gets the number of bytes stored within the binary_formatter.
         procedure, public :: get_count => bf_get_count
+        !> @brief Gets a copy of the internal buffer.
+        procedure, public :: get_buffer => bf_get_buffer
+        !> @brief Gets a byte-level value in the formatted buffer.
+        procedure, public :: get => bf_get_buffer_item
+        !> @brief Sets a byte-level value in the formatted buffer.
+        procedure, public :: set => bf_set_buffer_item
         !> @brief Appends an item onto the binary_formatter buffer.
         generic, public :: add => bf_add_dbl, bf_add_dbl_array, &
             bf_add_dbl_matrix, bf_add_sngl, bf_add_sngl_array, &
@@ -567,7 +573,48 @@ contains
         n = this%m_count
     end function
 
-! ------------------------------------------------------------------------------v
+! ------------------------------------------------------------------------------
+    !> @brief Gets a copy of the internal buffer.
+    !!
+    !! @param[in] this The binary_formatter object.
+    !!
+    !! @return The buffer copy.
+    pure function bf_get_buffer(this) result(x)
+        class(binary_formatter), intent(in) :: this
+        integer(int8), allocatable, dimension(:) :: x
+        integer(int32) :: n
+        n = this%get_count()
+        x = this%m_buffer(1:n)
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Gets byte-level access to the formatted buffer.
+    !!
+    !! @param[in] this The binary_formatter object.
+    !! @param[in] index The one-based index of the value to return.
+    !!
+    !! @return The buffer content at the requested location.
+    pure function bf_get_buffer_item(this, index) result(x)
+        class(binary_formatter), intent(in) :: this
+        integer(int32), intent(in) :: index
+        integer(int8) :: x
+        x = this%m_buffer(index)
+    end function
+
+! --------------------
+    !> @brief Sets a byte-level value in the formatted buffer.
+    !!
+    !! @param[in,out] this The binary_formatter object.
+    !! @param[in] index The one-based index of the value to return.
+    !! @param[in] x The value to place into the buffer.
+    subroutine bf_set_buffer_item(this, index, x)
+        class(binary_formatter), intent(inout) :: this
+        integer(int32), intent(in) :: index
+        integer(int8), intent(in) :: x
+        this%m_buffer(index) = x
+    end subroutine
+
+! ------------------------------------------------------------------------------
     !> @brief Appends a 64-bit floating-point value to the buffer.
     !!
     !! @param[in,out] this The binary_formatter object.
