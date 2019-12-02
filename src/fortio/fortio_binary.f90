@@ -58,7 +58,9 @@ module fortio_binary
         !> @brief Appends an item onto the binary_formatter buffer.
         generic, public :: add => bf_add_dbl, bf_add_dbl_array, &
             bf_add_dbl_matrix, bf_add_sngl, bf_add_sngl_array, &
-            bf_add_sngl_matrix
+            bf_add_sngl_matrix, bf_add_cmplx64, bf_add_cmplx64_array, &
+            bf_add_cmplx64_matrix, bf_add_cmplx32, bf_add_cmplx32_array, &
+            bf_add_cmplx32_matrix
 
         ! TO DO:
         ! - add items to buffer routines
@@ -74,6 +76,12 @@ module fortio_binary
         procedure :: bf_add_sngl
         procedure :: bf_add_sngl_array
         procedure :: bf_add_sngl_matrix
+        procedure :: bf_add_cmplx64
+        procedure :: bf_add_cmplx64_array
+        procedure :: bf_add_cmplx64_matrix
+        procedure :: bf_add_cmplx32
+        procedure :: bf_add_cmplx32_array
+        procedure :: bf_add_cmplx32_matrix
     end type
 
 ! ------------------------------------------------------------------------------
@@ -249,6 +257,8 @@ module fortio_binary
         module procedure :: swap_bytes_int16
         module procedure :: swap_bytes_int32
         module procedure :: swap_bytes_int64
+        module procedure :: swap_bytes_cmplx64
+        module procedure :: swap_bytes_cmplx32
     end interface
 
 
@@ -398,8 +408,45 @@ contains
         x = t
     end subroutine
 
+! ------------------------------------------------------------------------------
+    !> @brief Swaps the byte order for a 64-bit complex-value.
+    !!
+    !! @param[in,out] x On input, the value whose byte order is to be swapped.
+    !!  On output, the resulting byte-swapped value.
+    elemental subroutine swap_bytes_cmplx64(x)
+        ! Arguments
+        complex(real64), intent(inout) :: x
 
+        ! Local Variables
+        real(real64) :: re, im
 
+        ! Process
+        re = real(x)
+        im = aimag(x)
+        call swap_bytes(re)
+        call swap_bytes(im)
+        x = cmplx(re, im, real64)
+    end subroutine
+
+! ------------------------------------------------------------------------------
+    !> @brief Swaps the byte order for a 32-bit complex-value.
+    !!
+    !! @param[in,out] x On input, the value whose byte order is to be swapped.
+    !!  On output, the resulting byte-swapped value.
+    elemental subroutine swap_bytes_cmplx32(x)
+        ! Arguments
+        complex(real32), intent(inout) :: x
+
+        ! Local Variables
+        real(real32) :: re, im
+
+        ! Process
+        re = real(x)
+        im = aimag(x)
+        call swap_bytes(re)
+        call swap_bytes(im)
+        x = cmplx(re, im, real32)
+    end subroutine
 
 
 ! ******************************************************************************
@@ -1049,6 +1096,438 @@ contains
     end subroutine
 
 ! ------------------------------------------------------------------------------
+    !> @brief Appends a 64-bit complex-valued, floating-point value to the buffer.
+    !!
+    !! @param[in,out] this The binary_formatter object.
+    !! @param[in] x The value to add.
+    !! @param[in,out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_OUT_OF_MEMORY_ERROR: Occurs if there is insufficient memory 
+    !!      available.
+    subroutine bf_add_cmplx64(this, x, err)
+        ! Arguments
+        class(binary_formatter), intent(inout) :: this
+        complex(real64), intent(in) :: x
+        class(errors), intent(inout), optional, target :: err
+
+        ! Local Variables
+        integer(int32) :: sizeInBits, sizeInBytes, newSize, istart, iend
+        logical littleEndian, writeLittleEndian
+        complex(real64) :: y
+
+        ! Determine if the machine utilizes little endian or big endian
+        littleEndian = is_little_endian()
+
+        ! Determine how the user wishes to write the data
+        writeLittleEndian = this%get_use_little_endian()
+
+        ! Determine the size of the item, in bytes
+        sizeInBits = storage_size(x)
+        sizeInBytes = sizeInBits / 8
+
+        ! Ensure there's enough remaining capacity for everything
+        if (sizeInBytes > (this%get_capacity() - this%get_count())) then
+            newSize = max(2 * this%get_capacity(), this%get_count() + newSize)
+            if (newSize == 0) newSize = BINARY_FORMATTER_DEFAULT_SIZE
+            call this%set_capacity(newSize, err)
+        end if
+
+        ! Append the item to the end of the buffer
+        istart = this%get_count() + 1
+        iend = istart + sizeInBytes - 1
+        if (littleEndian) then
+            ! The machine is little endian
+            y = x
+            if (.not.writeLittleEndian) call swap_bytes(y)
+        else
+            ! The machine is big endian
+            y = x
+            if (writeLittleEndian) call swap_bytes(y)
+        end if
+        this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
+    end subroutine
+
+! --------------------
+    !> @brief Appends a 64-bit complex-valued, floating-point array to the buffer.
+    !!
+    !! @param[in,out] this The binary_formatter object.
+    !! @param[in] x The array to add.
+    !! @param[in,out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_OUT_OF_MEMORY_ERROR: Occurs if there is insufficient memory 
+    !!      available.
+    subroutine bf_add_cmplx64_array(this, x, err)
+        ! Arguments
+        class(binary_formatter), intent(inout) :: this
+        complex(real64), intent(in), dimension(:) :: x
+        class(errors), intent(inout), optional, target :: err
+
+        ! Local Variables
+        integer(int32) :: i, n, sizeInBits, sizeInBytes, overallSize, &
+            newSize, istart, iend, iy
+        logical littleEndian, writeLittleEndian
+        complex(real64) :: y
+
+        ! Determine if the machine utilizes little endian or big endian
+        littleEndian = is_little_endian()
+
+        ! Determine how the user wishes to write the data
+        writeLittleEndian = this%get_use_little_endian()
+
+        ! Determine the size of the item, in bytes
+        n = size(x)
+        sizeInBits = storage_size(x(1))
+        sizeInBytes = sizeInBits / 8
+
+        ! Account for array size information
+        sizeInBits = storage_size(sizeInBits)
+        overallSize = sizeInBits / 8 + n * sizeInBytes
+
+        ! Ensure there's enough capacity remaining
+        if (overallSize > (this%get_capacity() - this%get_count())) then
+            newSize = max(2 * this%get_capacity(), &
+                this%get_count() + overallSize)
+            if (newSize == 0) &
+                newSize = max(BINARY_FORMATTER_DEFAULT_SIZE, overallSize)
+            call this%set_capacity(newSize, err)
+        end if
+
+        ! Append the array size, and then the array
+        istart = this%get_count() + 1
+        iend = istart + sizeInBits / 8 - 1
+        if (littleEndian) then
+            iy = n
+            if (.not.writeLittleEndian) call swap_bytes(iy)
+        else
+            iy = n
+            if (writeLittleEndian) call swap_bytes(iy)
+        end if
+        this%m_buffer(istart:iend) = transfer(iy, this%m_buffer(istart:iend))
+
+        do i = 1, n
+            istart = iend + 1
+            iend = istart + sizeInBytes - 1
+            if (littleEndian) then
+                y = x(i)
+                if (.not.writeLittleEndian) call swap_bytes(y)
+            else
+                y = x(i)
+                if (writeLittleEndian) call swap_bytes(y)
+            end if
+            this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
+        end do
+    end subroutine
+
+! --------------------
+    !> @brief Appends a 64-bit complex-valued, floating-point matrix to the buffer.
+    !!
+    !! @param[in,out] this The binary_formatter object.
+    !! @param[in] x The matrix to add.
+    !! @param[in,out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_OUT_OF_MEMORY_ERROR: Occurs if there is insufficient memory 
+    !!      available.
+    subroutine bf_add_cmplx64_matrix(this, x, err)
+        ! Arguments
+        class(binary_formatter), intent(inout) :: this
+        complex(real64), intent(in), dimension(:,:) :: x
+        class(errors), intent(inout), optional, target :: err
+
+        ! Local Variables
+        integer(int32) :: i, j, m, n, sizeInBits, sizeInBytes, overallSize, &
+            newSize, istart, iend, iy
+        logical littleEndian, writeLittleEndian
+        complex(real64) :: y
+
+        ! Determine if the machine utilizes little endian or big endian
+        littleEndian = is_little_endian()
+
+        ! Determine how the user wishes to write the data
+        writeLittleEndian = this%get_use_little_endian()
+
+        ! Determine the size of the item, in bytes
+        m = size(x, 1)
+        n = size(x, 2)
+        sizeInBits = storage_size(x(1,1))
+        sizeInBytes = sizeInBits / 8
+
+        ! Account for array size information
+        sizeInBits = storage_size(sizeInBits)
+        overallSize = 2 * sizeInBits / 8 + m * n * sizeInBytes
+
+        ! Ensure there's enough capacity remaining
+        if (overallSize > (this%get_capacity() - this%get_count())) then
+            newSize = max(2 * this%get_capacity(), &
+                this%get_count() + overallSize)
+            if (newSize == 0) &
+                newSize = max(BINARY_FORMATTER_DEFAULT_SIZE, overallSize)
+            call this%set_capacity(newSize, err)
+        end if
+
+        ! Append the array size, and then the matrix
+        istart = this%get_count() + 1
+        iend = istart + sizeInBits / 8 - 1
+        if (littleEndian) then
+            iy = m
+            if (.not.writeLittleEndian) call swap_bytes(iy)
+        else
+            iy = m
+            if (writeLittleEndian) call swap_bytes(iy)
+        end if
+        this%m_buffer(istart:iend) = transfer(iy, this%m_buffer(istart:iend))
+
+        istart = iend + 1
+        iend = istart + sizeInBits / 8 - 1
+        if (littleEndian) then
+            iy = n
+            if (.not.writeLittleEndian) call swap_bytes(iy)
+        else
+            iy = n
+            if (writeLittleEndian) call swap_bytes(iy)
+        end if
+        this%m_buffer(istart:iend) = transfer(iy, this%m_buffer(istart:iend))
+
+        do j = 1, n
+            do i = 1, m
+                istart = iend + 1
+                iend = istart + sizeInBytes - 1
+                if (littleEndian) then
+                    y = x(i,j)
+                    if (.not.writeLittleEndian) call swap_bytes(y)
+                else
+                    y = x(i,j)
+                    if (writeLittleEndian) call swap_bytes(y)
+                end if
+                this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
+            end do
+        end do
+    end subroutine
+
+! ------------------------------------------------------------------------------
+    !> @brief Appends a 32-bit complex-valued, floating-point value to the buffer.
+    !!
+    !! @param[in,out] this The binary_formatter object.
+    !! @param[in] x The value to add.
+    !! @param[in,out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_OUT_OF_MEMORY_ERROR: Occurs if there is insufficient memory 
+    !!      available.
+    subroutine bf_add_cmplx32(this, x, err)
+        ! Arguments
+        class(binary_formatter), intent(inout) :: this
+        complex(real32), intent(in) :: x
+        class(errors), intent(inout), optional, target :: err
+
+        ! Local Variables
+        integer(int32) :: sizeInBits, sizeInBytes, newSize, istart, iend
+        logical littleEndian, writeLittleEndian
+        complex(real32) :: y
+
+        ! Determine if the machine utilizes little endian or big endian
+        littleEndian = is_little_endian()
+
+        ! Determine how the user wishes to write the data
+        writeLittleEndian = this%get_use_little_endian()
+
+        ! Determine the size of the item, in bytes
+        sizeInBits = storage_size(x)
+        sizeInBytes = sizeInBits / 8
+
+        ! Ensure there's enough remaining capacity for everything
+        if (sizeInBytes > (this%get_capacity() - this%get_count())) then
+            newSize = max(2 * this%get_capacity(), this%get_count() + newSize)
+            if (newSize == 0) newSize = BINARY_FORMATTER_DEFAULT_SIZE
+            call this%set_capacity(newSize, err)
+        end if
+
+        ! Append the item to the end of the buffer
+        istart = this%get_count() + 1
+        iend = istart + sizeInBytes - 1
+        if (littleEndian) then
+            ! The machine is little endian
+            y = x
+            if (.not.writeLittleEndian) call swap_bytes(y)
+        else
+            ! The machine is big endian
+            y = x
+            if (writeLittleEndian) call swap_bytes(y)
+        end if
+        this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
+    end subroutine
+
+! --------------------
+    !> @brief Appends a 32-bit complex-valued, floating-point array to the buffer.
+    !!
+    !! @param[in,out] this The binary_formatter object.
+    !! @param[in] x The array to add.
+    !! @param[in,out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_OUT_OF_MEMORY_ERROR: Occurs if there is insufficient memory 
+    !!      available.
+    subroutine bf_add_cmplx32_array(this, x, err)
+        ! Arguments
+        class(binary_formatter), intent(inout) :: this
+        complex(real32), intent(in), dimension(:) :: x
+        class(errors), intent(inout), optional, target :: err
+
+        ! Local Variables
+        integer(int32) :: i, n, sizeInBits, sizeInBytes, overallSize, &
+            newSize, istart, iend, iy
+        logical littleEndian, writeLittleEndian
+        complex(real32) :: y
+
+        ! Determine if the machine utilizes little endian or big endian
+        littleEndian = is_little_endian()
+
+        ! Determine how the user wishes to write the data
+        writeLittleEndian = this%get_use_little_endian()
+
+        ! Determine the size of the item, in bytes
+        n = size(x)
+        sizeInBits = storage_size(x(1))
+        sizeInBytes = sizeInBits / 8
+
+        ! Account for array size information
+        sizeInBits = storage_size(sizeInBits)
+        overallSize = sizeInBits / 8 + n * sizeInBytes
+
+        ! Ensure there's enough capacity remaining
+        if (overallSize > (this%get_capacity() - this%get_count())) then
+            newSize = max(2 * this%get_capacity(), &
+                this%get_count() + overallSize)
+            if (newSize == 0) &
+                newSize = max(BINARY_FORMATTER_DEFAULT_SIZE, overallSize)
+            call this%set_capacity(newSize, err)
+        end if
+
+        ! Append the array size, and then the array
+        istart = this%get_count() + 1
+        iend = istart + sizeInBits / 8 - 1
+        if (littleEndian) then
+            iy = n
+            if (.not.writeLittleEndian) call swap_bytes(iy)
+        else
+            iy = n
+            if (writeLittleEndian) call swap_bytes(iy)
+        end if
+        this%m_buffer(istart:iend) = transfer(iy, this%m_buffer(istart:iend))
+
+        do i = 1, n
+            istart = iend + 1
+            iend = istart + sizeInBytes - 1
+            if (littleEndian) then
+                y = x(i)
+                if (.not.writeLittleEndian) call swap_bytes(y)
+            else
+                y = x(i)
+                if (writeLittleEndian) call swap_bytes(y)
+            end if
+            this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
+        end do
+    end subroutine
+
+! --------------------
+    !> @brief Appends a 32-bit complex-valued, floating-point matrix to the buffer.
+    !!
+    !! @param[in,out] this The binary_formatter object.
+    !! @param[in] x The matrix to add.
+    !! @param[in,out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_OUT_OF_MEMORY_ERROR: Occurs if there is insufficient memory 
+    !!      available.
+    subroutine bf_add_cmplx32_matrix(this, x, err)
+        ! Arguments
+        class(binary_formatter), intent(inout) :: this
+        complex(real32), intent(in), dimension(:,:) :: x
+        class(errors), intent(inout), optional, target :: err
+
+        ! Local Variables
+        integer(int32) :: i, j, m, n, sizeInBits, sizeInBytes, overallSize, &
+            newSize, istart, iend, iy
+        logical littleEndian, writeLittleEndian
+        complex(real32) :: y
+
+        ! Determine if the machine utilizes little endian or big endian
+        littleEndian = is_little_endian()
+
+        ! Determine how the user wishes to write the data
+        writeLittleEndian = this%get_use_little_endian()
+
+        ! Determine the size of the item, in bytes
+        m = size(x, 1)
+        n = size(x, 2)
+        sizeInBits = storage_size(x(1,1))
+        sizeInBytes = sizeInBits / 8
+
+        ! Account for array size information
+        sizeInBits = storage_size(sizeInBits)
+        overallSize = 2 * sizeInBits / 8 + m * n * sizeInBytes
+
+        ! Ensure there's enough capacity remaining
+        if (overallSize > (this%get_capacity() - this%get_count())) then
+            newSize = max(2 * this%get_capacity(), &
+                this%get_count() + overallSize)
+            if (newSize == 0) &
+                newSize = max(BINARY_FORMATTER_DEFAULT_SIZE, overallSize)
+            call this%set_capacity(newSize, err)
+        end if
+
+        ! Append the array size, and then the matrix
+        istart = this%get_count() + 1
+        iend = istart + sizeInBits / 8 - 1
+        if (littleEndian) then
+            iy = m
+            if (.not.writeLittleEndian) call swap_bytes(iy)
+        else
+            iy = m
+            if (writeLittleEndian) call swap_bytes(iy)
+        end if
+        this%m_buffer(istart:iend) = transfer(iy, this%m_buffer(istart:iend))
+
+        istart = iend + 1
+        iend = istart + sizeInBits / 8 - 1
+        if (littleEndian) then
+            iy = n
+            if (.not.writeLittleEndian) call swap_bytes(iy)
+        else
+            iy = n
+            if (writeLittleEndian) call swap_bytes(iy)
+        end if
+        this%m_buffer(istart:iend) = transfer(iy, this%m_buffer(istart:iend))
+
+        do j = 1, n
+            do i = 1, m
+                istart = iend + 1
+                iend = istart + sizeInBytes - 1
+                if (littleEndian) then
+                    y = x(i,j)
+                    if (.not.writeLittleEndian) call swap_bytes(y)
+                else
+                    y = x(i,j)
+                    if (writeLittleEndian) call swap_bytes(y)
+                end if
+                this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
+            end do
+        end do
+    end subroutine
 
 
 
