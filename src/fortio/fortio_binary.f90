@@ -30,9 +30,18 @@ module fortio_binary
         integer(int8), allocatable, dimension(:) :: m_buffer
         !> @brief The actual number of items in the buffer.
         integer(int32) :: m_count = 0
+        !> @brief Determines if the buffer should be written using little or
+        !! big endian formatting.
+        logical :: m_littleEndian = .true.
     contains
         !> @brief Initializes the binary_formatter object.
         procedure, public :: initialize => bf_init
+        !> @brief Gets a logical value determining if the buffer should be filled in
+        !! little or big endian format.
+        procedure, public :: get_use_little_endian => bf_get_is_little_endian
+        !> @brief Sets a logical value determining if the buffer should be filled in
+        !! little or big endian format.
+        procedure, public :: set_use_little_endian => bf_set_is_little_endian
         !> @brief Adjusts the capacity of bhe binary_formatter to the
         !! requested amount.
         procedure, public :: set_capacity => bf_resize_buffer
@@ -430,6 +439,33 @@ contains
     end subroutine
 
 ! ------------------------------------------------------------------------------
+    !> @brief Gets a logical value determining if the buffer should be filled in
+    !! little or big endian format.
+    !!
+    !! @param[in] this The binary_formatter object.
+    !!
+    !! @return Returns true if little endian formatting is used; else,
+    !!  false for big endian formatting.
+    pure function bf_get_is_little_endian(this) result(x)
+        class(binary_formatter), intent(in) :: this
+        logical :: x
+        x = this%m_littleEndian
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Sets a logical value determining if the buffer should be filled in
+    !! little or big endian format.
+    !!
+    !! @param[in,out] this The binary_formatter object.
+    !! @param[in] x A logical value, that if true, enforces the little endian
+    !!  format; else, false for the big endian format.
+    subroutine bf_set_is_little_endian(this, x)
+        class(binary_formatter), intent(inout) :: this
+        logical, intent(in) :: x
+        this%m_littleEndian = x
+    end subroutine
+
+! ------------------------------------------------------------------------------
     !> @brief Adjusts the capacity of bhe binary_formatter to the
     !! requested amount.
     !!
@@ -551,6 +587,14 @@ contains
 
         ! Local Variables
         integer(int32) :: sizeInBits, sizeInBytes, newSize, istart, iend
+        logical littleEndian, writeLittleEndian
+        real(real64) :: y
+
+        ! Determine if the machine utilizes little endian or big endian
+        littleEndian = is_little_endian()
+
+        ! Determine how the user wishes to write the data
+        writeLittleEndian = this%get_use_little_endian()
 
         ! Determine the size of the item, in bytes
         sizeInBits = storage_size(x)
@@ -566,7 +610,16 @@ contains
         ! Append the item to the end of the buffer
         istart = this%get_count() + 1
         iend = istart + sizeInBytes - 1
-        this%m_buffer(istart:iend) = transfer(x, this%m_buffer(istart:iend))
+        if (littleEndian) then
+            ! The machine is little endian
+            y = x
+            if (.not.writeLittleEndian) call swap_bytes(y)
+        else
+            ! The machine is big endian
+            y = x
+            if (writeLittleEndian) call swap_bytes(y)
+        end if
+        this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
     end subroutine
 
 ! --------------------
@@ -588,17 +641,25 @@ contains
         class(errors), intent(inout), optional, target :: err
 
         ! Local Variables
-        integer(int32) :: n, sizeInBits, sizeInBytes, overallSize, &
-            newSize, istart, iend
+        integer(int32) :: i, n, sizeInBits, sizeInBytes, overallSize, &
+            newSize, istart, iend, iy
+        logical littleEndian, writeLittleEndian
+        real(real64) :: y
+
+        ! Determine if the machine utilizes little endian or big endian
+        littleEndian = is_little_endian()
+
+        ! Determine how the user wishes to write the data
+        writeLittleEndian = this%get_use_little_endian()
 
         ! Determine the size of the item, in bytes
         n = size(x)
         sizeInBits = storage_size(x(1))
-        sizeInBytes = n * sizeInBits / 8
+        sizeInBytes = sizeInBits / 8
 
         ! Account for array size information
         sizeInBits = storage_size(sizeInBits)
-        overallSize = sizeInBits / 8 + sizeInBytes
+        overallSize = sizeInBits / 8 + n * sizeInBytes
 
         ! Ensure there's enough capacity remaining
         if (overallSize > (this%get_capacity() - this%get_count())) then
@@ -612,11 +673,27 @@ contains
         ! Append the array size, and then the array
         istart = this%get_count() + 1
         iend = istart + sizeInBits / 8 - 1
-        this%m_buffer(istart:iend) = transfer(n, this%m_buffer(istart:iend))
+        if (littleEndian) then
+            iy = n
+            if (.not.writeLittleEndian) call swap_bytes(iy)
+        else
+            iy = n
+            if (writeLittleEndian) call swap_bytes(iy)
+        end if
+        this%m_buffer(istart:iend) = transfer(iy, this%m_buffer(istart:iend))
 
-        istart = iend + 1
-        iend = istart + sizeInBytes - 1
-        this%m_buffer(istart:iend) = transfer(x, this%m_buffer(istart:iend))
+        do i = 1, n
+            istart = iend + 1
+            iend = istart + sizeInBytes - 1
+            if (littleEndian) then
+                y = x(i)
+                if (.not.writeLittleEndian) call swap_bytes(y)
+            else
+                y = x(i)
+                if (writeLittleEndian) call swap_bytes(y)
+            end if
+            this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
+        end do
     end subroutine
 
 ! --------------------
@@ -638,18 +715,26 @@ contains
         class(errors), intent(inout), optional, target :: err
 
         ! Local Variables
-        integer(int32) :: m, n, sizeInBits, sizeInBytes, overallSize, &
-            newSize, istart, iend
+        integer(int32) :: i, j, m, n, sizeInBits, sizeInBytes, overallSize, &
+            newSize, istart, iend, iy
+        logical littleEndian, writeLittleEndian
+        real(real64) :: y
+
+        ! Determine if the machine utilizes little endian or big endian
+        littleEndian = is_little_endian()
+
+        ! Determine how the user wishes to write the data
+        writeLittleEndian = this%get_use_little_endian()
 
         ! Determine the size of the item, in bytes
         m = size(x, 1)
         n = size(x, 2)
         sizeInBits = storage_size(x(1,1))
-        sizeInBytes = m * n * sizeInBits / 8
+        sizeInBytes = sizeInBits / 8
 
         ! Account for array size information
         sizeInBits = storage_size(sizeInBits)
-        overallSize = 2 * sizeInBits / 8 + sizeInBytes
+        overallSize = 2 * sizeInBits / 8 + m * n * sizeInBytes
 
         ! Ensure there's enough capacity remaining
         if (overallSize > (this%get_capacity() - this%get_count())) then
@@ -663,15 +748,40 @@ contains
         ! Append the array size, and then the matrix
         istart = this%get_count() + 1
         iend = istart + sizeInBits / 8 - 1
-        this%m_buffer(istart:iend) = transfer(m, this%m_buffer(istart:iend))
+        if (littleEndian) then
+            iy = m
+            if (.not.writeLittleEndian) call swap_bytes(iy)
+        else
+            iy = m
+            if (writeLittleEndian) call swap_bytes(iy)
+        end if
+        this%m_buffer(istart:iend) = transfer(iy, this%m_buffer(istart:iend))
 
         istart = iend + 1
         iend = istart + sizeInBits / 8 - 1
-        this%m_buffer(istart:iend) = transfer(n, this%m_buffer(istart:iend))
+        if (littleEndian) then
+            iy = n
+            if (.not.writeLittleEndian) call swap_bytes(iy)
+        else
+            iy = n
+            if (writeLittleEndian) call swap_bytes(iy)
+        end if
+        this%m_buffer(istart:iend) = transfer(iy, this%m_buffer(istart:iend))
 
-        istart = iend + 1
-        iend = istart + sizeInBytes - 1
-        this%m_buffer(istart:iend) = transfer(x, this%m_buffer(istart:iend))
+        do j = 1, n
+            do i = 1, m
+                istart = iend + 1
+                iend = istart + sizeInBytes - 1
+                if (littleEndian) then
+                    y = x(i,j)
+                    if (.not.writeLittleEndian) call swap_bytes(y)
+                else
+                    y = x(i,j)
+                    if (writeLittleEndian) call swap_bytes(y)
+                end if
+                this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
+            end do
+        end do
     end subroutine
 
 ! ------------------------------------------------------------------------------v
@@ -694,6 +804,14 @@ contains
 
         ! Local Variables
         integer(int32) :: sizeInBits, sizeInBytes, newSize, istart, iend
+        logical littleEndian, writeLittleEndian
+        real(real32) :: y
+
+        ! Determine if the machine utilizes little endian or big endian
+        littleEndian = is_little_endian()
+
+        ! Determine how the user wishes to write the data
+        writeLittleEndian = this%get_use_little_endian()
 
         ! Determine the size of the item, in bytes
         sizeInBits = storage_size(x)
@@ -709,7 +827,16 @@ contains
         ! Append the item to the end of the buffer
         istart = this%get_count() + 1
         iend = istart + sizeInBytes - 1
-        this%m_buffer(istart:iend) = transfer(x, this%m_buffer(istart:iend))
+        if (littleEndian) then
+            ! The machine is little endian
+            y = x
+            if (.not.writeLittleEndian) call swap_bytes(y)
+        else
+            ! The machine is big endian
+            y = x
+            if (writeLittleEndian) call swap_bytes(y)
+        end if
+        this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
     end subroutine
 
 ! --------------------
@@ -731,17 +858,25 @@ contains
         class(errors), intent(inout), optional, target :: err
 
         ! Local Variables
-        integer(int32) :: n, sizeInBits, sizeInBytes, overallSize, &
-            newSize, istart, iend
+        integer(int32) :: i, n, sizeInBits, sizeInBytes, overallSize, &
+            newSize, istart, iend, iy
+        logical littleEndian, writeLittleEndian
+        real(real32) :: y
+
+        ! Determine if the machine utilizes little endian or big endian
+        littleEndian = is_little_endian()
+
+        ! Determine how the user wishes to write the data
+        writeLittleEndian = this%get_use_little_endian()
 
         ! Determine the size of the item, in bytes
         n = size(x)
         sizeInBits = storage_size(x(1))
-        sizeInBytes = n * sizeInBits / 8
+        sizeInBytes = sizeInBits / 8
 
         ! Account for array size information
         sizeInBits = storage_size(sizeInBits)
-        overallSize = sizeInBits / 8 + sizeInBytes
+        overallSize = sizeInBits / 8 + n * sizeInBytes
 
         ! Ensure there's enough capacity remaining
         if (overallSize > (this%get_capacity() - this%get_count())) then
@@ -755,11 +890,27 @@ contains
         ! Append the array size, and then the array
         istart = this%get_count() + 1
         iend = istart + sizeInBits / 8 - 1
-        this%m_buffer(istart:iend) = transfer(n, this%m_buffer(istart:iend))
+        if (littleEndian) then
+            iy = n
+            if (.not.writeLittleEndian) call swap_bytes(iy)
+        else
+            iy = n
+            if (writeLittleEndian) call swap_bytes(iy)
+        end if
+        this%m_buffer(istart:iend) = transfer(iy, this%m_buffer(istart:iend))
 
-        istart = iend + 1
-        iend = istart + sizeInBytes - 1
-        this%m_buffer(istart:iend) = transfer(x, this%m_buffer(istart:iend))
+        do i = 1, n
+            istart = iend + 1
+            iend = istart + sizeInBytes - 1
+            if (littleEndian) then
+                y = x(i)
+                if (.not.writeLittleEndian) call swap_bytes(y)
+            else
+                y = x(i)
+                if (writeLittleEndian) call swap_bytes(y)
+            end if
+            this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
+        end do
     end subroutine
 
 ! --------------------
@@ -781,18 +932,26 @@ contains
         class(errors), intent(inout), optional, target :: err
 
         ! Local Variables
-        integer(int32) :: m, n, sizeInBits, sizeInBytes, overallSize, &
-            newSize, istart, iend
+        integer(int32) :: i, j, m, n, sizeInBits, sizeInBytes, overallSize, &
+            newSize, istart, iend, iy
+        logical littleEndian, writeLittleEndian
+        real(real32) :: y
+
+        ! Determine if the machine utilizes little endian or big endian
+        littleEndian = is_little_endian()
+
+        ! Determine how the user wishes to write the data
+        writeLittleEndian = this%get_use_little_endian()
 
         ! Determine the size of the item, in bytes
         m = size(x, 1)
         n = size(x, 2)
         sizeInBits = storage_size(x(1,1))
-        sizeInBytes = m * n * sizeInBits / 8
+        sizeInBytes = sizeInBits / 8
 
         ! Account for array size information
         sizeInBits = storage_size(sizeInBits)
-        overallSize = 2 * sizeInBits / 8 + sizeInBytes
+        overallSize = 2 * sizeInBits / 8 + m * n * sizeInBytes
 
         ! Ensure there's enough capacity remaining
         if (overallSize > (this%get_capacity() - this%get_count())) then
@@ -806,15 +965,40 @@ contains
         ! Append the array size, and then the matrix
         istart = this%get_count() + 1
         iend = istart + sizeInBits / 8 - 1
-        this%m_buffer(istart:iend) = transfer(m, this%m_buffer(istart:iend))
+        if (littleEndian) then
+            iy = m
+            if (.not.writeLittleEndian) call swap_bytes(iy)
+        else
+            iy = m
+            if (writeLittleEndian) call swap_bytes(iy)
+        end if
+        this%m_buffer(istart:iend) = transfer(iy, this%m_buffer(istart:iend))
 
         istart = iend + 1
         iend = istart + sizeInBits / 8 - 1
-        this%m_buffer(istart:iend) = transfer(n, this%m_buffer(istart:iend))
+        if (littleEndian) then
+            iy = n
+            if (.not.writeLittleEndian) call swap_bytes(iy)
+        else
+            iy = n
+            if (writeLittleEndian) call swap_bytes(iy)
+        end if
+        this%m_buffer(istart:iend) = transfer(iy, this%m_buffer(istart:iend))
 
-        istart = iend + 1
-        iend = istart + sizeInBytes - 1
-        this%m_buffer(istart:iend) = transfer(x, this%m_buffer(istart:iend))
+        do j = 1, n
+            do i = 1, m
+                istart = iend + 1
+                iend = istart + sizeInBytes - 1
+                if (littleEndian) then
+                    y = x(i,j)
+                    if (.not.writeLittleEndian) call swap_bytes(y)
+                else
+                    y = x(i,j)
+                    if (writeLittleEndian) call swap_bytes(y)
+                end if
+                this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
+            end do
+        end do
     end subroutine
 
 ! ------------------------------------------------------------------------------
