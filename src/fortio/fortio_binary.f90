@@ -724,6 +724,7 @@ contains
             if (writeLittleEndian) call swap_bytes(y)
         end if
         this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
+        this%m_count = this%m_count + sizeInBytes
     end subroutine
 
 ! --------------------
@@ -798,6 +799,7 @@ contains
             end if
             this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
         end do
+        this%m_count = this%m_count + n * sizeInBytes
     end subroutine
 
 ! --------------------
@@ -886,6 +888,7 @@ contains
                 this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
             end do
         end do
+        this%m_count = this%m_count + m * n * sizeInBytes
     end subroutine
 
 ! ------------------------------------------------------------------------------v
@@ -941,6 +944,7 @@ contains
             if (writeLittleEndian) call swap_bytes(y)
         end if
         this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
+        this%m_count = this%m_count + sizeInBytes
     end subroutine
 
 ! --------------------
@@ -1015,6 +1019,7 @@ contains
             end if
             this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
         end do
+        this%m_count = this%m_count + n * sizeInBytes
     end subroutine
 
 ! --------------------
@@ -1103,6 +1108,7 @@ contains
                 this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
             end do
         end do
+        this%m_count = this%m_count + m * n * sizeInBytes
     end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -1158,6 +1164,7 @@ contains
             if (writeLittleEndian) call swap_bytes(y)
         end if
         this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
+        this%m_count = this%m_count + sizeInBytes
     end subroutine
 
 ! --------------------
@@ -1232,6 +1239,7 @@ contains
             end if
             this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
         end do
+        this%m_count = this%m_count + n * sizeInBytes
     end subroutine
 
 ! --------------------
@@ -1320,6 +1328,7 @@ contains
                 this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
             end do
         end do
+        this%m_count = this%m_count + m * n * sizeInBytes
     end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -1375,6 +1384,7 @@ contains
             if (writeLittleEndian) call swap_bytes(y)
         end if
         this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
+        this%m_count = this%m_count + sizeInBytes
     end subroutine
 
 ! --------------------
@@ -1449,6 +1459,7 @@ contains
             end if
             this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
         end do
+        this%m_count = this%m_count + n * sizeInBytes
     end subroutine
 
 ! --------------------
@@ -1537,6 +1548,7 @@ contains
                 this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
             end do
         end do
+        this%m_count = this%m_count + m * n * sizeInBytes
     end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -1592,6 +1604,7 @@ contains
             if (writeLittleEndian) call swap_bytes(y)
         end if
         this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
+        this%m_count = this%m_count + sizeInBytes
     end subroutine
 
 ! --------------------
@@ -1666,6 +1679,7 @@ contains
             end if
             this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
         end do
+        this%m_count = this%m_count + n * sizeInBytes
     end subroutine
 
 ! --------------------
@@ -1754,6 +1768,7 @@ contains
                 this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
             end do
         end do
+        this%m_count = this%m_count + m * n * sizeInBytes
     end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -1809,6 +1824,7 @@ contains
             if (writeLittleEndian) call swap_bytes(y)
         end if
         this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
+        this%m_count = this%m_count + sizeInBytes
     end subroutine
 
 ! --------------------
@@ -1883,6 +1899,7 @@ contains
             end if
             this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
         end do
+        this%m_count = this%m_count + n * sizeInBytes
     end subroutine
 
 ! --------------------
@@ -1971,6 +1988,7 @@ contains
                 this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
             end do
         end do
+        this%m_count = this%m_count + m * n * sizeInBytes
     end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -2026,6 +2044,7 @@ contains
             if (writeLittleEndian) call swap_bytes(y)
         end if
         this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
+        this%m_count = this%m_count + sizeInBytes
     end subroutine
 
 ! --------------------
@@ -2100,6 +2119,7 @@ contains
             end if
             this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
         end do
+        this%m_count = this%m_count + n * sizeInBytes
     end subroutine
 
 ! --------------------
@@ -2188,6 +2208,38 @@ contains
                 this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
             end do
         end do
+        this%m_count = this%m_count + m * n * sizeInBytes
+    end subroutine
+
+! ------------------------------------------------------------------------------
+    !> @brief Appends an 8-bit integer value to the buffer.
+    !!
+    !! @param[in,out] this The binary_formatter object.
+    !! @param[in] x The value to add.
+    !! @param[in,out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_OUT_OF_MEMORY_ERROR: Occurs if there is insufficient memory 
+    !!      available.
+    subroutine bf_add_int8(this, x, err)
+        ! Arguments
+        class(binary_formatter), intent(inout) :: this
+        integer(int8), intent(in) :: x
+        class(errors), intent(inout), optional, target :: err
+
+        ! Local Variables
+        integer(int32) :: newSize
+
+        ! Process
+        if (this%get_capacity() - this%get_count() == 0) then
+            newSize = max(2 * this%get_capacity(), &
+                BINARY_FORMATTER_DEFAULT_SIZE)
+            call this%set_capacity(newSize, err)
+        end if
+        this%m_count = this%m_count + 1
+        this%m_buffer(this%m_count) = x
     end subroutine
 
 ! ******************************************************************************
