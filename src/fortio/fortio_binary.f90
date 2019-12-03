@@ -97,6 +97,9 @@ module fortio_binary
         !> @brief Gets a single 64-bit complex, floating-point value from the 
         !! buffer, and updates the reader position.
         procedure, public :: get_complex32 => bf_get_cmplx32
+        !> @brief Gets an array of 32-bit complex, floating-point value from the
+        !! buffer, and updates the reader position.
+        procedure, public :: get_complex32_array => bf_get_cmplx32_array
 
         ! TO DO:
         ! - retrieve the buffer
@@ -3014,6 +3017,77 @@ contains
         else if (.not.littleEndian .and. readLittleEndian) then
             call swap_bytes(x)
         end if
+        call this%set_position(iend + 1)
+    end function
+
+! --------------------
+    !> @brief Gets an array of 32-bit complex, floating-point value from the
+    !! buffer, and updates the reader position.
+    !!
+    !! @param[in,out] this The binary_formatter object.
+    !! @param[in,out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_READER_POSITION_ERROR: Occurs if the reader position is invalid.
+    !!  - FIO_OUT_OF_MEMORY_ERROR: Occurs if insufficient memory is available.
+    !!
+    !! @return The requested array.
+    function bf_get_cmplx32_array(this, err) result(x)
+        ! Arguments
+        class(binary_formatter), intent(inout) :: this
+        class(errors), intent(inout), optional, target :: err
+        complex(real32), allocatable, dimension(:) :: x
+
+        ! Local Variables
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+        character(len = 256) :: errmsg
+        integer(int32) :: n, istart, iend, sizeInBits, sizeInBytes, overallSize, &
+            flag
+        logical :: littleEndian, readLittleEndian
+
+        ! Initialization
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+        littleEndian = is_little_endian()
+        readLittleEndian = this%get_use_little_endian()
+        sizeInBits = storage_size(x(1))
+        sizeInBytes = sizeInBits / 8
+        
+        ! Read in the integer describing the array size
+        n = this%get_int32(errmgr)
+        if (errmgr%has_error_occurred()) return
+
+        ! Determine the overall size, and check the reader position
+        overallSize = n * sizeInBytes
+        istart = this%get_position()
+        iend = istart + overallSize - 1
+        if (istart < 1 .or. iend > this%get_count()) then
+            write(errmsg, '(AI0AI0AI0A)') "The current reader position ", istart, &
+                " and variable size ", iend - istart, " results in an " // &
+                "out-of-bounds condition for the buffer, which contains ", &
+                this%get_count(), " elements."
+            call errmgr%report_error("bf_get_cmplx32_array", trim(errmsg), &
+                FIO_READER_POSITION_ERROR)
+            return
+        end if
+
+        ! Allocate space for the output, and then retrieve from the buffer
+        allocate(x(n), stat = flag)
+        if (flag /= 0) then
+            call errmgr%report_error("bf_get_cmplx32_array", &
+                "Insufficient memory available.", &
+                FIO_OUT_OF_MEMORY_ERROR)
+            return
+        end if
+        x = transfer(this%m_buffer(istart:iend), x)
+
+        ! Update the position
         call this%set_position(iend + 1)
     end function
 
