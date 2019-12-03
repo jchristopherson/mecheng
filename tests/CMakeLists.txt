@@ -98,3 +98,20 @@ add_custom_target(
     run_mecheng_signals_tests ALL
     DEPENDS mecheng_test_signals_cmd
 )
+
+# ------------------------------------------------------------------------------
+# BINARY I/O TESTS
+# ------------------------------------------------------------------------------
+set(test_binary_io_source test_binary_io.f90)
+add_executable(mecheng_test_binary_io ${test_binary_io_source})
+target_link_libraries(mecheng_test_binary_io mecheng)
+
+# Run the tests
+add_custom_command(OUTPUT mecheng_test_binary_io_cmd
+    DEPENDS ${test_binary_io_source}
+    COMMAND mecheng_test_binary_io
+)
+add_custom_target(
+    run_mecheng_binary_io_tests ALL
+    DEPENDS mecheng_test_binary_io_cmd
+)
