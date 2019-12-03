@@ -62,7 +62,8 @@ module fortio_binary
             bf_add_cmplx64_matrix, bf_add_cmplx32, bf_add_cmplx32_array, &
             bf_add_cmplx32_matrix, bf_add_int16, bf_add_int16_array, &
             bf_add_int16_matrix, bf_add_int64, bf_add_int64_array, &
-            bf_add_int64_matrix
+            bf_add_int64_matrix, bf_add_int8, bf_add_int8_array, &
+            bf_add_int8_matrix, bf_add_char_array
 
         ! TO DO:
         ! - add items to buffer routines
@@ -92,6 +93,10 @@ module fortio_binary
         procedure :: bf_add_int64
         procedure :: bf_add_int64_array
         procedure :: bf_add_int64_matrix
+        procedure :: bf_add_int8
+        procedure :: bf_add_int8_array
+        procedure :: bf_add_int8_matrix
+        procedure :: bf_add_char_array
     end type
 
 ! ------------------------------------------------------------------------------
@@ -799,7 +804,7 @@ contains
             end if
             this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
         end do
-        this%m_count = this%m_count + n * sizeInBytes
+        this%m_count = this%m_count + overallSize
     end subroutine
 
 ! --------------------
@@ -888,7 +893,7 @@ contains
                 this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
             end do
         end do
-        this%m_count = this%m_count + m * n * sizeInBytes
+        this%m_count = this%m_count + overallSize
     end subroutine
 
 ! ------------------------------------------------------------------------------v
@@ -1019,7 +1024,7 @@ contains
             end if
             this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
         end do
-        this%m_count = this%m_count + n * sizeInBytes
+        this%m_count = this%m_count + overallSize
     end subroutine
 
 ! --------------------
@@ -1108,7 +1113,7 @@ contains
                 this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
             end do
         end do
-        this%m_count = this%m_count + m * n * sizeInBytes
+        this%m_count = this%m_count + overallSize
     end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -1239,7 +1244,7 @@ contains
             end if
             this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
         end do
-        this%m_count = this%m_count + n * sizeInBytes
+        this%m_count = this%m_count + overallSize
     end subroutine
 
 ! --------------------
@@ -1328,7 +1333,7 @@ contains
                 this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
             end do
         end do
-        this%m_count = this%m_count + m * n * sizeInBytes
+        this%m_count = this%m_count + overallSize
     end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -1459,7 +1464,7 @@ contains
             end if
             this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
         end do
-        this%m_count = this%m_count + n * sizeInBytes
+        this%m_count = this%m_count + overallSize
     end subroutine
 
 ! --------------------
@@ -1548,7 +1553,7 @@ contains
                 this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
             end do
         end do
-        this%m_count = this%m_count + m * n * sizeInBytes
+        this%m_count = this%m_count + overallSize
     end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -1679,7 +1684,7 @@ contains
             end if
             this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
         end do
-        this%m_count = this%m_count + n * sizeInBytes
+        this%m_count = this%m_count + overallSize
     end subroutine
 
 ! --------------------
@@ -1768,7 +1773,7 @@ contains
                 this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
             end do
         end do
-        this%m_count = this%m_count + m * n * sizeInBytes
+        this%m_count = this%m_count + overallSize
     end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -1899,7 +1904,7 @@ contains
             end if
             this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
         end do
-        this%m_count = this%m_count + n * sizeInBytes
+        this%m_count = this%m_count + overallSize
     end subroutine
 
 ! --------------------
@@ -1988,7 +1993,7 @@ contains
                 this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
             end do
         end do
-        this%m_count = this%m_count + m * n * sizeInBytes
+        this%m_count = this%m_count + overallSize
     end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -2119,7 +2124,7 @@ contains
             end if
             this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
         end do
-        this%m_count = this%m_count + n * sizeInBytes
+        this%m_count = this%m_count + overallSize
     end subroutine
 
 ! --------------------
@@ -2208,7 +2213,7 @@ contains
                 this%m_buffer(istart:iend) = transfer(y, this%m_buffer(istart:iend))
             end do
         end do
-        this%m_count = this%m_count + m * n * sizeInBytes
+        this%m_count = this%m_count + overallSize
     end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -2240,6 +2245,206 @@ contains
         end if
         this%m_count = this%m_count + 1
         this%m_buffer(this%m_count) = x
+    end subroutine
+
+! --------------------
+    !> @brief Appends an 8-bit integer array to the buffer.
+    !!
+    !! @param[in,out] this The binary_formatter object.
+    !! @param[in] x The array to add.
+    !! @param[in,out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_OUT_OF_MEMORY_ERROR: Occurs if there is insufficient memory 
+    !!      available.
+    subroutine bf_add_int8_array(this, x, err)
+        ! Arguments
+        class(binary_formatter), intent(inout) :: this
+        integer(int8), intent(in), dimension(:) :: x
+        class(errors), intent(inout), optional, target :: err
+
+        ! Local Variables
+        integer(int32) :: n, newSize, sizeInBits, sizeInBytes, overallSize, &
+            istart, iend, iy
+        logical :: littleEndian, writeLittleEndian
+
+        ! Initialization
+        n = size(x)
+        sizeInBits = storage_size(n)
+        sizeInBytes = sizeInBits / 8
+        overallSize = n + sizeInBytes
+
+        ! Determine if the machine utilizes little endian or big endian
+        littleEndian = is_little_endian()
+
+        ! Determine how the user wishes to write the data
+        writeLittleEndian = this%get_use_little_endian()
+
+        ! Ensure there's enough capacity remaining
+        if (overallSize > (this%get_capacity() - this%get_count())) then
+            newSize = max(2 * this%get_capacity(), &
+                this%get_count() + overallSize)
+            if (newSize == 0) &
+                newSize = max(BINARY_FORMATTER_DEFAULT_SIZE, overallSize)
+            call this%set_capacity(newSize, err)
+        end if
+
+        ! Append the array size, and then the array
+        istart = this%get_count() + 1
+        iend = istart + sizeInBytes - 1
+        if (littleEndian) then
+            iy = n
+            if (.not.writeLittleEndian) call swap_bytes(iy)
+        else
+            iy = n
+            if (writeLittleEndian) call swap_bytes(iy)
+        end if
+        this%m_buffer(istart:iend) = transfer(iy, this%m_buffer(istart:iend))
+
+        istart = iend + 1
+        iend = istart + n - 1
+        this%m_buffer(istart:iend) = x
+        this%m_count = this%m_count + overallSize
+    end subroutine
+
+! --------------------
+    !> @brief Appends an 8-bit integer matrix to the buffer.
+    !!
+    !! @param[in,out] this The binary_formatter object.
+    !! @param[in] x The matrix to add.
+    !! @param[in,out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_OUT_OF_MEMORY_ERROR: Occurs if there is insufficient memory 
+    !!      available.
+    subroutine bf_add_int8_matrix(this, x, err)
+        ! Arguments
+        class(binary_formatter), intent(inout) :: this
+        integer(int8), intent(in), dimension(:,:) :: x
+        class(errors), intent(inout), optional, target :: err
+
+        ! Local Variables
+        integer(int32) :: j, m, n, newSize, sizeInBits, sizeInBytes, overallSize, &
+            istart, iend, iy
+        logical :: littleEndian, writeLittleEndian
+
+        ! Initialization
+        m = size(x, 1)
+        n = size(x, 2)
+        sizeInBits = storage_size(n)
+        sizeInBytes = sizeInBits / 8
+        overallSize = m * n + 2 * sizeInBytes
+
+        ! Determine if the machine utilizes little endian or big endian
+        littleEndian = is_little_endian()
+
+        ! Determine how the user wishes to write the data
+        writeLittleEndian = this%get_use_little_endian()
+
+        ! Ensure there's enough capacity remaining
+        if (overallSize > (this%get_capacity() - this%get_count())) then
+            newSize = max(2 * this%get_capacity(), &
+                this%get_count() + overallSize)
+            if (newSize == 0) &
+                newSize = max(BINARY_FORMATTER_DEFAULT_SIZE, overallSize)
+            call this%set_capacity(newSize, err)
+        end if
+
+        ! Append the array size, and then the array
+        istart = this%get_count() + 1
+        iend = istart + sizeInBytes - 1
+        if (littleEndian) then
+            iy = m
+            if (.not.writeLittleEndian) call swap_bytes(iy)
+        else
+            iy = m
+            if (writeLittleEndian) call swap_bytes(iy)
+        end if
+        this%m_buffer(istart:iend) = transfer(iy, this%m_buffer(istart:iend))
+
+        istart = iend + 1
+        iend = istart + sizeInBytes - 1
+        if (littleEndian) then
+            iy = n
+            if (.not.writeLittleEndian) call swap_bytes(iy)
+        else
+            iy = n
+            if (writeLittleEndian) call swap_bytes(iy)
+        end if
+        this%m_buffer(istart:iend) = transfer(iy, this%m_buffer(istart:iend))
+
+        do j = 1, n
+            istart = iend + 1
+            iend = istart + m - 1
+            this%m_buffer(istart:iend) = x(:,j)
+        end do
+        this%m_count = this%m_count + overallSize
+    end subroutine
+
+! ------------------------------------------------------------------------------
+    !> @brief Appends a character array to the buffer.
+    !!
+    !! @param[in,out] this The binary_formatter object.
+    !! @param[in] x The array to add.
+    !! @param[in,out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_OUT_OF_MEMORY_ERROR: Occurs if there is insufficient memory 
+    !!      available.
+    subroutine bf_add_char_array(this, x, err)
+        ! Arguments
+        class(binary_formatter), intent(inout) :: this
+        character(len = *), intent(in) :: x
+        class(errors), intent(inout), optional, target :: err
+
+        ! Local Variables
+        integer(int32) :: n, newSize, sizeInBits, sizeInBytes, overallSize, &
+            istart, iend, iy
+        logical :: littleEndian, writeLittleEndian
+
+        ! Initialization
+        n = len(x)
+        sizeInBits = storage_size(n)
+        sizeInBytes = sizeInBits / 8
+        overallSize = n + sizeInBytes
+
+        ! Determine if the machine utilizes little endian or big endian
+        littleEndian = is_little_endian()
+
+        ! Determine how the user wishes to write the data
+        writeLittleEndian = this%get_use_little_endian()
+
+        ! Ensure there's enough capacity remaining
+        if (overallSize > (this%get_capacity() - this%get_count())) then
+            newSize = max(2 * this%get_capacity(), &
+                this%get_count() + overallSize)
+            if (newSize == 0) &
+                newSize = max(BINARY_FORMATTER_DEFAULT_SIZE, overallSize)
+            call this%set_capacity(newSize, err)
+        end if
+
+        ! Append the array size, and then the array
+        istart = this%get_count() + 1
+        iend = istart + sizeInBytes - 1
+        if (littleEndian) then
+            iy = n
+            if (.not.writeLittleEndian) call swap_bytes(iy)
+        else
+            iy = n
+            if (writeLittleEndian) call swap_bytes(iy)
+        end if
+        this%m_buffer(istart:iend) = transfer(iy, this%m_buffer(istart:iend))
+
+        istart = iend + 1
+        iend = istart + n - 1
+        this%m_buffer(istart:iend) = transfer(x, this%m_buffer(istart:iend))
+        this%m_count = this%m_count + overallSize
     end subroutine
 
 ! ******************************************************************************
