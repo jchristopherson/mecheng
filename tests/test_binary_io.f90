@@ -11,6 +11,9 @@ program main
     rst = test_formatter()
     if (.not.rst) overall = .false.
 
+    rst = test_formatter_2()
+    if (.not.rst) overall = .false.
+
     print *, ""
     if (overall) then
         print '(A)', "BINARY I/O TESTS PASSED"
@@ -59,7 +62,51 @@ contains
     end function
 
 
-    ! Tests the binary_formatter object
+
+
+    ! Compares matrices
+    function test_complex_matrices(fcn, x, y) result(rst)
+        ! Arguments
+        character(len = *), intent(in) :: fcn
+        complex(real64), intent(in), dimension(:,:) :: x, y
+        logical :: rst
+
+        ! Local Variables
+        integer(int32) :: i, j, m, n
+
+        ! Initialization
+        m = size(x, 1)
+        n = size(x, 2)
+        rst = .true.
+        
+        ! Check size
+        if (size(y, 1) /= m .or. size(y, 2) /= n) then
+            rst = .false.
+            print '(AI0AI0AI0AI0A)', "TEST FAILED (" // fcn // &
+                ").  Expected a matrix of ", m, " x ", n, &
+                ", but found a matrix of ", size(y, 1), " x ", &
+                size(y, 2), "."
+            return
+        end if
+
+        ! Check each value
+        do j = 1, n
+            do i = 1, m
+                if (x(i,j) /= y(i,j)) then
+                    rst = .false.
+                    print '(AI0AI0AE11.3AE11.3A)', "TEST FAILED (" // fcn // &
+                        ").  At ", i, ", ", j, " expected: ", x(i,j), &
+                        ", but found: ", y(i,j), "."
+                    return
+                end if
+            end do
+        end do
+    end function
+
+
+
+
+    ! Tests the binary_formatter object with double-precision values
     function test_formatter() result(rst)
         ! Arguments
         logical :: rst
@@ -96,5 +143,56 @@ contains
         ! Deserialize, and check
         x = formatter%get_real64_matrix()
         rst = test_matrices("TEST_FORMATTER", ans, x)
+    end function
+
+
+
+
+    ! Tests the binary_formatter object with double-precision values
+    function test_formatter_2() result(rst)
+        ! Arguments
+        logical :: rst
+
+        ! Local Variables
+        integer(int32), parameter :: m = 200
+        integer(int32), parameter :: n = 200
+        integer(int32), parameter :: int32_size = 4
+        integer(int32), parameter :: complex_size = 16
+        complex(real64), allocatable, dimension(:,:) :: x
+        complex(real64) :: ans(m, n)
+        type(binary_formatter) :: formatter
+        integer(int32) :: i, j, expectedSize, actualSize
+        real(real64) :: temp(2)
+
+        ! Initialization
+        rst = .true.
+        do j = 1, n
+            do i = 1, m
+                call random_number(temp)
+                ans(i,j) = cmplx(temp(1), temp(2), real64)
+            end do
+        end do
+        call formatter%initialize()
+        expectedSize = 2 * int32_size + m * n * complex_size
+
+        ! Flip to big endian format
+        call formatter%set_use_little_endian(.false.)
+
+        ! Serialize the matrix ANS using the formatter
+        call formatter%add(ans)
+
+        ! Check the size of the formatter.  It should account for the entire
+        ! matrix + 2 integers defining the matrix size
+        actualSize = formatter%get_count()
+        if (actualSize /= expectedSize) then
+            print '(AI0AI0A)', "TEST FAILED (TEST_FORMATTER_2): Expected a size of ", &
+                expectedSize, " bytes, but found a size of ", actualSize, " bytes."
+            rst = .false.
+            return
+        end if
+
+        ! Deserialize, and check
+        x = formatter%get_complex64_matrix()
+        rst = test_complex_matrices("TEST_FORMATTER_2", ans, x)
     end function
 end program
