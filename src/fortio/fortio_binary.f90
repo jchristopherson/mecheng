@@ -61,6 +61,11 @@ module fortio_binary
         procedure, public :: get_position => bf_get_position
         !> @brief Sets the reader position within the buffer.
         procedure, public :: set_position => bf_set_position
+        !> @brief Clears the contents from the buffer.
+        procedure, public :: clear => bf_clear
+        !> @brief Fills the buffer with the specified data.  The buffer is first
+        !! cleared, and then filled appropriately.
+        procedure, public :: fill => bf_fill
         !> @brief Appends an item onto the end of the binary_formatter buffer.
         generic, public :: add => bf_add_dbl, bf_add_dbl_array, &
             bf_add_dbl_matrix, bf_add_sngl, bf_add_sngl_array, &
@@ -76,6 +81,12 @@ module fortio_binary
         !> @brief Gets a single 8-bit integer from the buffer, and updates the
         !! reader position.
         procedure, public :: get_int8 => bf_get_int8
+        !> @brief Gets an array of 8-bit integer values from the
+        !! buffer, and updates the reader position.
+        procedure, public :: get_int8_array => bf_get_int8_array
+        !> @brief Gets a matrix of 8-bit integer values from the
+        !! buffer, and updates the reader position.
+        procedure, public :: get_int8_matrix => bf_get_int8_matrix
         !> @brief Gets a single 16-bit integer from the buffer, and updates the
         !! reader position.
         procedure, public :: get_int16 => bf_get_int16
@@ -770,6 +781,58 @@ contains
         class(binary_formatter), intent(inout) :: this
         integer(int32), intent(in) :: x
         this%m_position = x
+    end subroutine
+
+! ------------------------------------------------------------------------------
+    !> @brief Clears the contents from the buffer.
+    !!
+    !! @param[in,out] this The binary_formatter object.
+    subroutine bf_clear(this)
+        class(binary_formatter), intent(inout) :: this
+        this%m_count = 0
+    end subroutine
+
+! ------------------------------------------------------------------------------
+    !> @brief Fills the buffer with the specified data.  The buffer is first
+    !! cleared, and then filled appropriately.
+    !!
+    !! @param[in,out] this The binary_formatter object.
+    !! @param[in] x The data array.
+    !! @param[in,out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_OUT_OF_MEMORY_ERROR: Occurs if there is insufficient memory 
+    !!      available.
+    subroutine bf_fill(this, x, err)
+        ! Arguments
+        class(binary_formatter), intent(inout) :: this
+        integer(int8), intent(in), dimension(:) :: x
+        class(errors), intent(inout), optional, target :: err
+
+        ! Local Variables
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+        integer(int32) :: n
+
+        ! Initialization
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+        n = size(x)
+
+        ! Ensure the buffer is large enough
+        if (n > this%get_capacity) then
+            call this%set_capacity(n, errmgr)
+            if (errmgr%has_error_occurred()) return
+        end if
+
+        ! Store the results
+        call this%clear()
+        this%m_buffer(1:n) = x
     end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -2544,7 +2607,7 @@ contains
     end subroutine
 
 ! ------------------------------------------------------------------------------
-    !> @brief Gets a single character from the buffer, and updates the
+    !> @brief Gets a character array from the buffer, and updates the
     !! reader position.
     !!
     !! @param[in,out] this The binary_formatter object.
@@ -2554,19 +2617,20 @@ contains
     !!  class is used internally to provide error handling.  Possible errors and
     !!  warning messages that may be encountered are as follows.
     !!  - FIO_READER_POSITION_ERROR: Occurs if the reader position is invalid.
+    !!  - FIO_OUT_OF_MEMORY_ERROR: Occurs if insufficient memory is available.
     !!
     !! @return The requested value.
     function bf_get_char(this, err) result(x)
         ! Arguments
         class(binary_formatter), intent(inout) :: this
         class(errors), intent(inout), optional, target :: err
-        character :: x
+        character(len = :), allocatable :: x
 
         ! Local Variables
         class(errors), pointer :: errmgr
         type(errors), target :: deferr
         character(len = 256) :: errmsg
-        integer(int32) :: pos
+        integer(int32) :: istart, iend, n, flag
 
         ! Initialization
         if (present(err)) then
@@ -2574,12 +2638,27 @@ contains
         else
             errmgr => deferr
         end if
-        pos = this%get_position()
 
-        ! Ensure the position is within the bounds of the buffer
-        if (pos < 1 .or. pos > this%get_count()) then
-            write(errmsg, '(AI0AI0A)') "The current reader position ", pos, &
-                " is outside the bounds of the buffer, which contains ", &
+        ! Get the length of the string
+        n = this%get_int32(errmgr)
+        if (errmgr%has_error_occurred()) return
+
+        ! Allocate memory for the output
+        allocate(character(len = n) :: x, stat = flag)
+        if (flag /= 0) then
+            call errmgr%report_error("bf_get_char", &
+                "Insufficient memory available.", &
+                FIO_OUT_OF_MEMORY_ERROR)
+            return
+        end if
+
+        ! Define the position, and ensure the contents are within the buffer
+        istart = this%get_position()
+        iend = istart + n - 1
+        if (istart < 1 .or. iend > this%get_count()) then
+            write(errmsg, '(AI0AI0AI0A)') "The current reader position ", istart, &
+                " and variable size ", iend - istart, " results in an " // &
+                "out-of-bounds condition for the buffer, which contains ", &
                 this%get_count(), " elements."
             call errmgr%report_error("bf_get_char", trim(errmsg), &
                 FIO_READER_POSITION_ERROR)
@@ -2587,8 +2666,8 @@ contains
         end if
 
         ! Read in the character, and update the reader position
-        x = transfer(this%m_buffer(pos), x)
-        call this%set_position(pos + 1)
+        x = transfer(this%m_buffer(istart:iend), x)
+        call this%set_position(iend + 1)
     end function
 
 ! ------------------------------------------------------------------------------
@@ -2637,6 +2716,141 @@ contains
         ! Read in the character, and update the reader position
         x = transfer(this%m_buffer(pos), x)
         call this%set_position(pos + 1)
+    end function
+
+! --------------------
+    !> @brief Gets an array of 8-bit integer values from the
+    !! buffer, and updates the reader position.
+    !!
+    !! @param[in,out] this The binary_formatter object.
+    !! @param[in,out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_READER_POSITION_ERROR: Occurs if the reader position is invalid.
+    !!  - FIO_OUT_OF_MEMORY_ERROR: Occurs if insufficient memory is available.
+    !!
+    !! @return The requested array.
+    function bf_get_int8_array(this, err) result(x)
+        ! Arguments
+        class(binary_formatter), intent(inout) :: this
+        class(errors), intent(inout), optional, target :: err
+        integer(int8), allocatable, dimension(:) :: x
+
+        ! Local Variables
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+        character(len = 256) :: errmsg
+        integer(int32) :: n, istart, iend, flag
+
+        ! Initialization
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+        
+        ! Read in the integer describing the array size
+        n = this%get_int32(errmgr)
+        if (errmgr%has_error_occurred()) return
+
+        ! Determine the overall size, and check the reader position
+        istart = this%get_position()
+        iend = istart + n - 1
+        if (istart < 1 .or. iend > this%get_count()) then
+            write(errmsg, '(AI0AI0AI0A)') "The current reader position ", istart, &
+                " and variable size ", iend - istart, " results in an " // &
+                "out-of-bounds condition for the buffer, which contains ", &
+                this%get_count(), " elements."
+            call errmgr%report_error("bf_get_int8_array", trim(errmsg), &
+                FIO_READER_POSITION_ERROR)
+            return
+        end if
+
+        ! Allocate space for the output, and then retrieve from the buffer
+        allocate(x(n), stat = flag)
+        if (flag /= 0) then
+            call errmgr%report_error("bf_get_int8_array", &
+                "Insufficient memory available.", &
+                FIO_OUT_OF_MEMORY_ERROR)
+            return
+        end if
+        x = this%m_buffer(istart:iend)
+
+        ! Update the position
+        call this%set_position(iend + 1)
+    end function
+
+! --------------------
+    !> @brief Gets a matrix of 8-bit integer values from the
+    !! buffer, and updates the reader position.
+    !!
+    !! @param[in,out] this The binary_formatter object.
+    !! @param[in,out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - FIO_READER_POSITION_ERROR: Occurs if the reader position is invalid.
+    !!  - FIO_OUT_OF_MEMORY_ERROR: Occurs if insufficient memory is available.
+    !!
+    !! @return The requested matrix.
+    function bf_get_int8_matrix(this, err) result(x)
+        ! Arguments
+        class(binary_formatter), intent(inout) :: this
+        class(errors), intent(inout), optional, target :: err
+        integer(int8), allocatable, dimension(:,:) :: x
+
+        ! Local Variables
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+        character(len = 256) :: errmsg
+        integer(int32) :: j, m, n, istart, iend, flag
+
+        ! Initialization
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+        
+        ! Read in the integers describing the matrix size
+        m = this%get_int32(errmgr)
+        if (errmgr%has_error_occurred()) return
+
+        n = this%get_int32(errmgr)
+        if (errmgr%has_error_occurred()) return
+
+        ! Determine the overall size, and check the reader position
+        istart = this%get_position()
+        iend = istart + m * n - 1
+        if (istart < 1 .or. iend > this%get_count()) then
+            write(errmsg, '(AI0AI0AI0A)') "The current reader position ", istart, &
+                " and variable size ", iend - istart, " results in an " // &
+                "out-of-bounds condition for the buffer, which contains ", &
+                this%get_count(), " elements."
+            call errmgr%report_error("bf_get_int8_matrix", trim(errmsg), &
+                FIO_READER_POSITION_ERROR)
+            return
+        end if
+
+        ! Allocate space for the output, and then retrieve from the buffer
+        allocate(x(m, n), stat = flag)
+        if (flag /= 0) then
+            call errmgr%report_error("bf_get_int8_matrix", &
+                "Insufficient memory available.", &
+                FIO_OUT_OF_MEMORY_ERROR)
+            return
+        end if
+        do j = 1, n
+            iend = istart + m - 1
+            x(:,j) = this%m_buffer(istart:iend)
+            istart = iend + 1
+        end do
+
+        ! Update the position
+        call this%set_position(iend + 1)
     end function
 
 ! ------------------------------------------------------------------------------
