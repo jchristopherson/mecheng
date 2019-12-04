@@ -11,6 +11,7 @@ module measurements
     public :: ssq_part
     public :: ssq_operator
     public :: ssq_part_operator
+    public :: ssq_repeat
 
     ! REF:
     ! https://www.muelaner.com/quality-assurance/gage-r-and-r-excel/
@@ -232,7 +233,25 @@ contains
     end function
 
 ! ------------------------------------------------------------------------------
+    ! REF: https://www.muelaner.com/quality-assurance/gage-r-and-r-excel/
+    pure function gage_r_r(x) result(rst)
+        ! Arguments
+        real(real64), intent(in), dimension(:,:,:) :: x
+        type(grr_results) :: rst
 
+        ! Local Variables
+        real(real64) :: xmean, ss_part, ss_op, ss_partop, ss_rep, ss_total
+
+        ! Compute the overall mean
+        xmean = mean(pack(x, .true.))
+
+        ! Compute the sum of the square terms
+        ss_part = ssq_part(x, xmean)
+        ss_op = ssq_operator(x, xmean)
+        ss_partop = ssq_part_operator(x, xmean)
+        ss_rep = ssq_repeat(x)
+        ss_total = ss_part + ss_op + ss_partop + ss_rep
+    end function
 ! ------------------------------------------------------------------------------
 
 ! ------------------------------------------------------------------------------
