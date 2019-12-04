@@ -512,7 +512,7 @@ set(controls_sources
 
 set(general_sources
     general/arrays.f90
-    measurements.f90
+    general/measurements.f90
 )
 
 # Define the MECHENG source files

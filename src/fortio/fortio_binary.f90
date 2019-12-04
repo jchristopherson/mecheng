@@ -821,7 +821,7 @@ contains
         n = size(x)
 
         ! Ensure the buffer is large enough
-        if (n > this%get_capacity) then
+        if (n > this%get_capacity()) then
             call this%set_capacity(n, errmgr)
             if (errmgr%has_error_occurred()) return
         end if
