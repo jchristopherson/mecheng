@@ -151,10 +151,6 @@ module fortio_binary
         !! buffer, and updates the reader position.
         procedure, public :: get_complex32_matrix => bf_get_cmplx32_matrix
 
-        ! TO DO:
-        ! - retrieve the buffer
-        !   - all real, complex, and integer types for
-        !       scalar, 1D, and 2D arrays
         procedure :: bf_add_dbl
         procedure :: bf_add_dbl_array
         procedure :: bf_add_dbl_matrix
