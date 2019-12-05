@@ -1,5 +1,6 @@
 var NAVTREEINDEX1 =
 {
+"interfacecurvefit__interp_1_1interp__xy.html":[1,0,8,1],
 "interfacecurvefit__interp_1_1interp__xy.html#afd0987af32bbbd289d0cec183b693485":[1,0,8,1,0],
 "interfacecurvefit__regression_1_1linear__least__squares.html":[1,0,9,0],
 "interfacecurvefit__regression_1_1linear__least__squares.html#a1c7a3f939afadb318debec45843f12a2":[1,0,9,0,1],
@@ -34,12 +35,14 @@ var NAVTREEINDEX1 =
 "interfacecurvefit__statistics_1_1z__value.html#a5fae20877ed7f1babe028f1aa375dee6":[1,0,10,10,0],
 "interfaceferror_1_1error__callback.html":[1,0,11,0],
 "interfaceferror_1_1error__callback.html#a48c2431723c21278911ec3962a8b4cd2":[1,0,11,0,0],
-"interfacefortio__binary_1_1swap__bytes.html":[1,0,12,3],
-"interfacefortio__binary_1_1swap__bytes.html#a6f9aaa065d376aba40a63b89518177fb":[1,0,12,3,1],
-"interfacefortio__binary_1_1swap__bytes.html#a75b1d84eb8089b9d9b33b05097fd96fa":[1,0,12,3,0],
-"interfacefortio__binary_1_1swap__bytes.html#ab4de44efa7f0f59a0afa13391809bd3a":[1,0,12,3,2],
-"interfacefortio__binary_1_1swap__bytes.html#ae18f9bfe5db93a985e27f98b3cbdb14b":[1,0,12,3,3],
-"interfacefortio__binary_1_1swap__bytes.html#af174430874d6ec5f3733acca04660a20":[1,0,12,3,4],
+"interfacefortio__binary_1_1swap__bytes.html":[1,0,12,4],
+"interfacefortio__binary_1_1swap__bytes.html#a6f9aaa065d376aba40a63b89518177fb":[1,0,12,4,3],
+"interfacefortio__binary_1_1swap__bytes.html#a75b1d84eb8089b9d9b33b05097fd96fa":[1,0,12,4,2],
+"interfacefortio__binary_1_1swap__bytes.html#ab4de44efa7f0f59a0afa13391809bd3a":[1,0,12,4,4],
+"interfacefortio__binary_1_1swap__bytes.html#abbf170d9384defd3563b22f37c9d0b8d":[1,0,12,4,1],
+"interfacefortio__binary_1_1swap__bytes.html#ae18f9bfe5db93a985e27f98b3cbdb14b":[1,0,12,4,5],
+"interfacefortio__binary_1_1swap__bytes.html#ae94d6c76c988228cd7cf5d70ae7ecf04":[1,0,12,4,0],
+"interfacefortio__binary_1_1swap__bytes.html#af174430874d6ec5f3733acca04660a20":[1,0,12,4,6],
 "interfacefplot__core_1_1cm__get__string__result.html":[1,0,15,0],
 "interfacefplot__core_1_1cm__get__string__result.html#ae613c1290455b36ebdb49422b2af612c":[1,0,15,0,0],
 "interfacefplot__core_1_1get__string__result.html":[1,0,15,4],
@@ -246,8 +249,5 @@ var NAVTREEINDEX1 =
 "interfacelinalg__immutable_1_1mat__solve__lower__tri.html#a4e1d7b1aaa7aa8eeff2c09a481cbb9fa":[1,0,21,8,2],
 "interfacelinalg__immutable_1_1mat__solve__lower__tri.html#a9b40869b879ddc2e960a7ec46d17c09a":[1,0,21,8,0],
 "interfacelinalg__immutable_1_1mat__solve__lower__tri.html#aa0c0c7078ffd02046021c6bd25375a58":[1,0,21,8,1],
-"interfacelinalg__immutable_1_1mat__solve__upper__tri.html":[1,0,21,9],
-"interfacelinalg__immutable_1_1mat__solve__upper__tri.html#a59e1f0aed5b9fd5b952542d8e669fdbd":[1,0,21,9,1],
-"interfacelinalg__immutable_1_1mat__solve__upper__tri.html#a8085ffccaa724ae8f60c897fa38691f7":[1,0,21,9,2],
-"interfacelinalg__immutable_1_1mat__solve__upper__tri.html#a93e3f2a1097e88c8da32d6e13eb0472f":[1,0,21,9,3]
+"interfacelinalg__immutable_1_1mat__solve__upper__tri.html":[1,0,21,9]
 };

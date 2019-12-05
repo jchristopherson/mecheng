@@ -1,18 +1,17 @@
 /*
-@ @licstart  The following is the entire license notice for the
+@licstart  The following is the entire license notice for the
 JavaScript code in this file.
 
-Copyright (C) 1997-2017 by Dimitri van Heesch
+Copyright (C) 1997-2019 by Dimitri van Heesch
 
 This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
+it under the terms of version 2 of the GNU General Public License as published by
+the Free Software Foundation
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
@@ -51,13 +50,13 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"interfacecurvefit__interp_1_1interp__xy.html#afd0987af32bbbd289d0cec183b693485",
-"interfacelinalg__immutable_1_1mat__solve__upper__tri.html#a97f528aee778d8ddfdcb52058d048de7",
-"strain_8f90_source.html",
-"structfortio__binary_1_1binary__reader.html#a9b5e3bfc0d780a9b4472238f43518bdb",
-"structfplot__core_1_1plot__data__2d.html#a1aaf946fdcbe59c3e9f6749f377066a4",
-"structintegral__core_1_1nonadaptive__integrator.html#af11385657d8704d06d0dd0fb84ab6f2c",
-"structnonlin__polynomials_1_1polynomial.html"
+"interfacecurvefit__interp_1_1interp__xy.html",
+"interfacelinalg__immutable_1_1mat__solve__upper__tri.html#a59e1f0aed5b9fd5b952542d8e669fdbd",
+"signals__fourier_8f90_source.html",
+"structfortio__binary_1_1binary__formatter.html#a50ec054d0e1eb248684f59094aecc8e2",
+"structfplot__core_1_1plot.html#a95cb39f01fc6f2438ef408d2c41a2f85",
+"structfplot__core_1_1terminal.html#a644c7a28fbb7d0f151d6a823848fbce2",
+"structnonlin__core_1_1fcn1var__helper.html#a798d9b180392537c564ac69cc1b81952"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

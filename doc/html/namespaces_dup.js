@@ -25,6 +25,7 @@ var namespaces_dup =
     [ "linalg_constants", "namespacelinalg__constants.html", null ],
     [ "linalg_core", "namespacelinalg__core.html", null ],
     [ "linalg_immutable", "namespacelinalg__immutable.html", null ],
+    [ "measurements", "namespacemeasurements.html", null ],
     [ "mechanics_constants", "namespacemechanics__constants.html", null ],
     [ "nonlin_constants", "namespacenonlin__constants.html", null ],
     [ "nonlin_core", "namespacenonlin__core.html", null ],
