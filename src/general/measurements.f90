@@ -5,35 +5,51 @@
 module measurements
     use iso_fortran_env
     use curvefit_statistics
+    use ferror
     implicit none
     private
+    public :: MS_INVALID_INPUT_ERROR
+    public :: MS_INVALID_DATA_SET_ERROR
     public :: grr_results
     public :: ssq_part
     public :: ssq_operator
     public :: ssq_part_operator
     public :: ssq_repeat
+    public :: gage_r_r
 
-    ! REF:
-    ! https://www.muelaner.com/quality-assurance/gage-r-and-r-excel/
-    ! https://www.engineering.com/AdvancedManufacturing/ArticleID/16201/Gage-Studies-and-Gage-RR.aspx
+    !> @brief Defines an invalid input error condition.
+    integer(int32), parameter :: MS_INVALID_INPUT_ERROR = 100001
+    !> @brief Defines an invalid data set error condition.
+    integer(int32), parameter :: MS_INVALID_DATA_SET_ERROR = 100002
 
     !> @brief Provides a container for GR&R results.
     type grr_results
         !> @brief The part-induced variation.
         real(real64) :: part_variation
+        !> @brief The operator-induced variation.
+        real(real64) :: operator_variation
         !> @brief The reproducibility variation.
         real(real64) :: reproducibility
         !> @brief The repeatability variation.
         real(real64) :: repeatability
-        !> @brief The total process variation.
-        real(real64) :: total_variation
         !> @brief The part by operator variation.
         real(real64) :: part_by_operator_variation
+        !> @brief The total gage variation.
+        real(real64) :: gage_variation
+        !> @brief The total process variation.
+        real(real64) :: total_variation
         !> @brief The value of the F-statistic.
         real(real64) :: f_statistic
         !> @brief The value of the cummulative F-distribution as computed
         !! at the F-statistic.
         real(real64) :: f_test
+        !> @brief The tolerance range.
+        real(real64) :: tolerance
+        !> @brief The sigma multiplier (k).
+        real(real64) :: scale
+        !> @brief The precision to tolerance ratio (P/T ratio).  This is
+        !! computed as: k * sqrt(gage variation) / tolerance.
+        real(real64) :: pt_ratio
     end type
 
 contains
@@ -238,22 +254,99 @@ contains
     end function
 
 ! ------------------------------------------------------------------------------
-    ! REF: https://www.muelaner.com/quality-assurance/gage-r-and-r-excel/
-    function gage_r_r(x, alpha) result(rst)
+    !> @brief Computes a Gage R&R ANOVA crossed study of an experimental data
+    !! set obtained using multipler parts, repeated tests, and multiple
+    !! test operators.
+    !!
+    !! @param[in] x A M-by-N-by-P array containing the data where M is the
+    !!  number of parts, N is the number of tests, and P is the number of
+    !!  operators.
+    !! @param[in] alpha A parameter that lies on the set (0, 1) that is used
+    !!  to determine the significance of part-by-operator influence.  The
+    !!  default value is 0.05.
+    !! @param[in] tol An optional input used to specify tolerance information
+    !!  allowing for calculation of the precision-to-tolerance ratio.  If
+    !!  not supplied, the precision-to-tolerance ratio is not computed.
+    !! @param[in] k An optional input used to specify the number of 
+    !!  standard deviations used in computation of the precision-to-tolerance
+    !!  ratio.  The default value is 6.
+    !! @param[in,out] err An optional errors-based object that if provided can be
+    !!  used to retrieve information relating to any errors encountered during
+    !!  execution.  If not provided, a default implementation of the errors
+    !!  class is used internally to provide error handling.  Possible errors and
+    !!  warning messages that may be encountered are as follows.
+    !!  - MS_INVALID_DATA_SET_ERROR: Occurs if there aren't at least 2 parts, 
+    !!      2 tests, and 2 operators defined in the data set in @p x.
+    !!  - MS_INVALID_INPUT_ERROR: Occurs if alpha is outside the range (0, 1).
+    !!
+    !! @return A grr_results object containing the calculation results.
+    !!
+    !! @par References:
+    !! - https://www.muelaner.com/quality-assurance/gage-r-and-r-excel/
+    !! - https://www.engineering.com/AdvancedManufacturing/ArticleID/16201/Gage-Studies-and-Gage-RR.aspx
+    function gage_r_r(x, alpha, tol, k, err) result(rst)
         ! Arguments
         real(real64), intent(in), dimension(:,:,:) :: x
-        real(real64), intent(in) :: alpha
+        real(real64), intent(in), optional :: alpha, tol, k
+        class(errors), intent(inout), optional, target :: err
         type(grr_results) :: rst
 
         ! Local Variables
+        class(errors), pointer :: errmgr
+        type(errors), target :: deferr
+        character(len = 256) :: errmsg
         integer(int32) :: npart, nrep, nop
         real(real64) :: xmean, ss_part, ss_op, ss_partop, ss_rep, ss_total, &
-            ms_part, ms_op, ms_partop, ms_rep, d1, d2
+            ms_part, ms_op, ms_partop, ms_rep, d1, d2, a, kf
 
         ! Initialization
+        if (present(err)) then
+            errmgr => err
+        else
+            errmgr => deferr
+        end if
+        a = 5.0d-2
+        if (present(alpha)) a = alpha
+        kf = 6.0d0
+        if (present(k)) kf = k
         npart = size(x, 1)
         nrep = size(x, 2)
         nop = size(x, 3)
+        rst%scale = kf
+
+        ! Input Check
+        if (npart < 2) then
+            write (errmsg, '(AI0A)') &
+                "Expected to find at least 2 parts, but only found ", &
+                npart, "."
+            call errmgr%report_error("gage_r_r", trim(errmsg), &
+                MS_INVALID_DATA_SET_ERROR)
+            return
+        end if
+        if (nrep < 2) then
+            write (errmsg, '(AI0A)') &
+                "Expected to find at least 2 tests, but only found ", &
+                nrep, "."
+            call errmgr%report_error("gage_r_r", trim(errmsg), &
+                MS_INVALID_DATA_SET_ERROR)
+            return
+        end if
+        if (nop < 2) then
+            write (errmsg, '(AI0A)') &
+                "Expected to find at least 2 operators, but only found ", &
+                nop, "."
+            call errmgr%report_error("gage_r_r", trim(errmsg), &
+                MS_INVALID_DATA_SET_ERROR)
+            return
+        end if
+        if (a <= 0.0d0 .or. a >= 1.0d0) then
+            write (errmsg, '(AE11.3A)') &
+                "The alpha parameter must lie between 0 and 1, " // &
+                "but was found to be ", a, "."
+            call errmgr%report_error("gage_r_r", trim(errmsg), &
+                MS_INVALID_INPUT_ERROR)
+            return
+        end if
 
         ! Compute the overall mean
         xmean = mean(pack(x, .true.))
@@ -277,12 +370,33 @@ contains
         rst%f_statistic = ms_partop / ms_rep
 
         ! Compute the F-test for signficance
-        rst%f_test = f_distribution(rst%f_statistic, d1, d2)
+        rst%f_test = 1.0d0 - f_distribution(rst%f_statistic, d1, d2)
 
         ! Compare with alpha to determine which method to use in computing
         ! the variance terms
-        if (rst%f_test < alpha) then
+        if (rst%f_test < a) then
+            ss_rep = ss_total - ss_part - ss_op
+            ms_rep = ss_rep / d2
+            rst%part_variation = max(0.0d0, (ms_part - ms_rep) / (nop * nrep))
+            rst%operator_variation = max(0.0d0, (ms_op - ms_rep) / (npart * nrep))
+            rst%part_by_operator_variation = 0.0d0
         else
+            rst%part_variation = max(0.0d0, (ms_part - ms_rep) / (nop * nrep))
+            rst%operator_variation = max(0.0d0, (ms_op - ms_rep) / (npart * nrep))
+            rst%part_by_operator_variation = max(0.0d0, (ms_partop - ms_rep) / nrep)
+        end if
+        rst%repeatability = ms_rep
+        rst%reproducibility = rst%operator_variation + rst%part_by_operator_variation
+        rst%gage_variation = rst%repeatability + rst%reproducibility
+        rst%total_variation = rst%gage_variation + rst%part_variation
+
+        ! Compute tolerance related information
+        if (present(tol)) then
+            rst%tolerance = tol
+            rst%pt_ratio = kf * sqrt(rst%gage_variation) / tol
+        else
+            rst%tolerance = 0.0d0
+            rst%pt_ratio = 0.0d0
         end if
     end function
 ! ------------------------------------------------------------------------------
