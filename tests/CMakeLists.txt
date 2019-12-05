@@ -54,15 +54,15 @@ set(test_vibrations_source test_vibrations.f90)
 add_executable(mecheng_test_vibrations ${test_vibrations_source})
 target_link_libraries(mecheng_test_vibrations mecheng)
 
-# Run the tests
-add_custom_command(OUTPUT mecheng_test_vibrations_cmd
-    DEPENDS ${test_vibrations_source}
-    COMMAND mecheng_test_vibrations
-)
-add_custom_target(
-    run_mecheng_vibrations_tests ALL
-    DEPENDS mecheng_test_vibrations_cmd
-)
+# # Run the tests
+# add_custom_command(OUTPUT mecheng_test_vibrations_cmd
+#     DEPENDS ${test_vibrations_source}
+#     COMMAND mecheng_test_vibrations
+# )
+# add_custom_target(
+#     run_mecheng_vibrations_tests ALL
+#     DEPENDS mecheng_test_vibrations_cmd
+# )
 
 
 # ------------------------------------------------------------------------------
@@ -89,15 +89,15 @@ set(test_signals_source test_signals.f90)
 add_executable(mecheng_test_signals ${test_signals_source})
 target_link_libraries(mecheng_test_signals mecheng)
 
-# Run the tests
-add_custom_command(OUTPUT mecheng_test_signals_cmd
-    DEPENDS ${test_signals_source}
-    COMMAND mecheng_test_signals
-)
-add_custom_target(
-    run_mecheng_signals_tests ALL
-    DEPENDS mecheng_test_signals_cmd
-)
+# # Run the tests
+# add_custom_command(OUTPUT mecheng_test_signals_cmd
+#     DEPENDS ${test_signals_source}
+#     COMMAND mecheng_test_signals
+# )
+# add_custom_target(
+#     run_mecheng_signals_tests ALL
+#     DEPENDS mecheng_test_signals_cmd
+# )
 
 # ------------------------------------------------------------------------------
 # BINARY I/O TESTS
@@ -114,4 +114,21 @@ add_custom_command(OUTPUT mecheng_test_binary_io_cmd
 add_custom_target(
     run_mecheng_binary_io_tests ALL
     DEPENDS mecheng_test_binary_io_cmd
+)
+
+# ------------------------------------------------------------------------------
+# GAGE R&R TESTS
+# ------------------------------------------------------------------------------
+set(test_grr_source test_grr.f90)
+add_executable(mecheng_test_grr ${test_grr_source})
+target_link_libraries(mecheng_test_grr mecheng)
+
+# Run the tests
+add_custom_command(OUTPUT mecheng_test_grr_cmd
+    DEPENDS ${test_grr_source}
+    COMMAND mecheng_test_grr
+)
+add_custom_target(
+    run_mecheng_grr_tests ALL
+    DEPENDS mecheng_test_grr_cmd
 )
