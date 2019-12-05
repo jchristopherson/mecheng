@@ -13,7 +13,6 @@ module measurements
     public :: grr_results
     public :: ssq_part
     public :: ssq_operator
-    public :: ssq_part_operator
     public :: ssq_repeat
     public :: gage_r_r
 
@@ -166,51 +165,6 @@ contains
     end function
 
 ! ------------------------------------------------------------------------------
-    !> @brief Computes the sum of the squares of the difference between the
-    !! each observation and the overall mean.
-    !!
-    !! @param[in] x A M-by-N-by-P array containing the data where M is the
-    !!  number of parts, N is the number of tests, and P is the number of
-    !!  operators.
-    !! @param[in] xmean The overall (grand) mean of @p x.
-    !!
-    !! @return The result of the operation.
-    !!
-    !! @par Remarks
-    !! The sum of the squares of the difference between each observation 
-    !! (\f$ x_{ijk} \f$) and the overall mean (\f$ \overline{x} \f$)
-    !! is computed as follows.
-    !! @par
-    !! \f$ s_{part*op} = n_{op} n_{rep} \sum (x_{ijk} - \overline{x})^{2} \f$
-    pure function ssq_part_operator(x, xmean) result(ssq)
-        ! Arguments
-        real(real64), intent(in), dimension(:,:,:) :: x
-        real(real64), intent(in) :: xmean
-        real(real64) :: ssq
-
-        ! Local Variables
-        integer(int32) :: i, j, k, nop, npart, nrep
-        
-        ! Initialization
-        npart = size(x, 1)
-        nrep = size(x, 2)
-        nop = size(x, 3)
-        
-        ! Process
-        ssq = 0.0d0
-        do k = 1, nop
-            do j = 1, nrep
-                do i = 1, npart
-                    ssq = ssq + (x(i,j,k) - xmean)**2
-                end do
-            end do
-        end do
-
-        ! Output
-        ssq = nop * nrep * ssq
-    end function
-
-! ------------------------------------------------------------------------------
     !> @brief Computes the sum of the squares of the difference between each
     !! observation and the factor level mean.
     !!
@@ -254,6 +208,33 @@ contains
     end function
 
 ! ------------------------------------------------------------------------------
+    !
+    pure function ssq_total(x, xmean) result(ssq)
+        ! Arguments
+        real(real64), intent(in), dimension(:,:,:) :: x
+        real(real64), intent(in) :: xmean
+        real(real64) :: ssq
+
+        ! Local Variables
+        integer(int32) :: i, j, k, nop, npart, nrep
+        
+        ! Initialization
+        npart = size(x, 1)
+        nrep = size(x, 2)
+        nop = size(x, 3)
+
+        ! Cycle over each part, and compute the results
+        ssq = 0.0d0
+        do k = 1, nop
+            do j = 1, nrep
+                do i = 1, npart
+                    ssq = ssq + (x(i,j,k) - xmean)**2
+                end do
+            end do
+        end do
+    end function
+
+! ------------------------------------------------------------------------------
     !> @brief Computes a Gage R&R ANOVA crossed study of an experimental data
     !! set obtained using multipler parts, repeated tests, and multiple
     !! test operators.
@@ -284,6 +265,7 @@ contains
     !! @par References:
     !! - https://www.muelaner.com/quality-assurance/gage-r-and-r-excel/
     !! - https://www.engineering.com/AdvancedManufacturing/ArticleID/16201/Gage-Studies-and-Gage-RR.aspx
+    !! - https://en.wikipedia.org/wiki/ANOVA_gauge_R%26R
     function gage_r_r(x, alpha, tol, k, err) result(rst)
         ! Arguments
         real(real64), intent(in), dimension(:,:,:) :: x
@@ -354,16 +336,16 @@ contains
         ! Compute the sum of the square terms
         ss_part = ssq_part(x, xmean)
         ss_op = ssq_operator(x, xmean)
-        ss_partop = ssq_part_operator(x, xmean)
         ss_rep = ssq_repeat(x)
-        ss_total = ss_part + ss_op + ss_partop + ss_rep
+        ss_total = ssq_total(x, xmean)
+        ss_partop = ss_total - ss_part - ss_op - ss_rep
 
         ! Compute the mean of the squared differences
         d1 = (npart - 1.0d0) * (nop - 1.0d0)
         d2 =  nrep - 1.0d0
         ms_part = ss_part / (npart - 1.0d0)
         ms_op = ss_op / (nop - 1.0d0)
-        ms_rep = ss_rep / d2
+        ms_rep = ss_rep / (npart * nop * d2)
         ms_partop = ss_partop / d1
 
         ! Compute the F-Test for signficance
