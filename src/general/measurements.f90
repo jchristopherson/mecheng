@@ -29,6 +29,11 @@ module measurements
         real(real64) :: total_variation
         !> @brief The part by operator variation.
         real(real64) :: part_by_operator_variation
+        !> @brief The value of the F-statistic.
+        real(real64) :: f_statistic
+        !> @brief The value of the cummulative F-distribution as computed
+        !! at the F-statistic.
+        real(real64) :: f_test
     end type
 
 contains
@@ -234,13 +239,21 @@ contains
 
 ! ------------------------------------------------------------------------------
     ! REF: https://www.muelaner.com/quality-assurance/gage-r-and-r-excel/
-    pure function gage_r_r(x) result(rst)
+    function gage_r_r(x, alpha) result(rst)
         ! Arguments
         real(real64), intent(in), dimension(:,:,:) :: x
+        real(real64), intent(in) :: alpha
         type(grr_results) :: rst
 
         ! Local Variables
-        real(real64) :: xmean, ss_part, ss_op, ss_partop, ss_rep, ss_total
+        integer(int32) :: npart, nrep, nop
+        real(real64) :: xmean, ss_part, ss_op, ss_partop, ss_rep, ss_total, &
+            ms_part, ms_op, ms_partop, ms_rep, d1, d2
+
+        ! Initialization
+        npart = size(x, 1)
+        nrep = size(x, 2)
+        nop = size(x, 3)
 
         ! Compute the overall mean
         xmean = mean(pack(x, .true.))
@@ -251,8 +264,47 @@ contains
         ss_partop = ssq_part_operator(x, xmean)
         ss_rep = ssq_repeat(x)
         ss_total = ss_part + ss_op + ss_partop + ss_rep
+
+        ! Compute the mean of the squared differences
+        d1 = (npart - 1.0d0) * (nop - 1.0d0)
+        d2 =  nrep - 1.0d0
+        ms_part = ss_part / (npart - 1.0d0)
+        ms_op = ss_op / (nop - 1.0d0)
+        ms_rep = ss_rep / d2
+        ms_partop = ss_partop / d1
+
+        ! Compute the F-Test for signficance
+        rst%f_statistic = ms_partop / ms_rep
+
+        ! Compute the F-test for signficance
+        rst%f_test = f_distribution(rst%f_statistic, d1, d2)
+
+        ! Compare with alpha to determine which method to use in computing
+        ! the variance terms
+        if (rst%f_test < alpha) then
+        else
+        end if
     end function
 ! ------------------------------------------------------------------------------
+    !> @brief Computes the cummulative F-distribution.
+    !!
+    !! @param[in] x The value at which to evaluate the distribution function.
+    !! @param[in] d1 
+    !! @param[in] d2
+    !!
+    !! @return The value of the F-distribution at @p x.
+    function f_distribution(x, d1, d2) result(f)
+        ! Arguments
+        real(real64), intent(in) :: x, d1, d2
+        real(real64) :: f
+
+        ! Local Variables
+        real(real64) :: xf
+
+        ! Compute the incomplete beta function
+        xf = d1 * x / (d1 * x + d2)
+        f = incomplete_beta(d1, d2, xf)
+    end function
 
 ! ------------------------------------------------------------------------------
 
