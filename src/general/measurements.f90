@@ -342,10 +342,10 @@ contains
 
         ! Compute the mean of the squared differences
         d1 = (npart - 1.0d0) * (nop - 1.0d0)
-        d2 =  nrep - 1.0d0
+        d2 =  npart * nop * (nrep - 1.0d0)
         ms_part = ss_part / (npart - 1.0d0)
         ms_op = ss_op / (nop - 1.0d0)
-        ms_rep = ss_rep / (npart * nop * d2)
+        ms_rep = ss_rep / d2
         ms_partop = ss_partop / d1
 
         ! Compute the F-Test for signficance
@@ -356,7 +356,7 @@ contains
 
         ! Compare with alpha to determine which method to use in computing
         ! the variance terms
-        if (rst%f_test < a) then
+        if (rst%f_test > a) then
             ss_rep = ss_total - ss_part - ss_op
             ms_rep = ss_rep / d2
             rst%part_variation = max(0.0d0, (ms_part - ms_rep) / (nop * nrep))
