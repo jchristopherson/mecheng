@@ -10,19 +10,21 @@ module measurements
     private
     public :: MS_INVALID_INPUT_ERROR
     public :: MS_INVALID_DATA_SET_ERROR
-    public :: grr_results
+    public :: ems_grr_results
     public :: ssq_part
     public :: ssq_operator
     public :: ssq_repeat
-    public :: gage_r_r
+    public :: ems_gage_r_r
+    public :: discrimination_ratio
 
     !> @brief Defines an invalid input error condition.
     integer(int32), parameter :: MS_INVALID_INPUT_ERROR = 100001
     !> @brief Defines an invalid data set error condition.
     integer(int32), parameter :: MS_INVALID_DATA_SET_ERROR = 100002
 
-    !> @brief Provides a container for GR&R results.
-    type grr_results
+    !> @brief Provides a container for expected mean squares (EMS) type
+    !! GR&R results.
+    type ems_grr_results
         !> @brief The overall mean of the data set.
         real(real64) :: overall_mean
         !> @brief The sum of the squares of the difference between the
@@ -93,8 +95,13 @@ module measurements
         !> @brief The sigma multiplier (k).
         real(real64) :: scale
         !> @brief The precision to tolerance ratio (P/T ratio).  This is
-        !! computed as: k * sqrt(gage variation) / tolerance.
+        !! computed as: \f$ k * \sigma_{gage} / tolerance \f$
         real(real64) :: pt_ratio
+        !> @brief The precision to process total variation.  This is
+        !! computed as: \f$ \frac{\sigma_{meas}}{\sigma_{total}} \f$.
+        !! This is basically a measure of what percent of the total 
+        !! variation is due to measurement error.
+        real(real64) :: ptv_ratio
     end type
 
 contains
@@ -298,7 +305,10 @@ contains
 ! ------------------------------------------------------------------------------
     !> @brief Computes a Gage R&R ANOVA crossed study of an experimental data
     !! set obtained using multipler parts, repeated tests, and multiple
-    !! test operators.
+    !! test operators.  The expected mean squares (EMS) method is utilized.  If
+    !! negative components are found (they are reported as zero values), it
+    !! is recommended to utilize a Byesian or restricted maximum likelihood (REML)
+    !! approach instead.
     !!
     !! @param[in] x A M-by-N-by-P array containing the data where M is the
     !!  number of parts, N is the number of tests, and P is the number of
@@ -327,12 +337,12 @@ contains
     !! - https://www.muelaner.com/quality-assurance/gage-r-and-r-excel/
     !! - https://www.engineering.com/AdvancedManufacturing/ArticleID/16201/Gage-Studies-and-Gage-RR.aspx
     !! - https://en.wikipedia.org/wiki/ANOVA_gauge_R%26R
-    function gage_r_r(x, alpha, tol, k, err) result(rst)
+    function ems_gage_r_r(x, alpha, tol, k, err) result(rst)
         ! Arguments
         real(real64), intent(in), dimension(:,:,:) :: x
         real(real64), intent(in), optional :: alpha, tol, k
         class(errors), intent(inout), optional, target :: err
-        type(grr_results) :: rst
+        type(ems_grr_results) :: rst
 
         ! Local Variables
         class(errors), pointer :: errmgr
@@ -415,13 +425,6 @@ contains
         rst%mean_square_repeatability = rst%sum_squares_within / rst%repeatability_dof
         rst%mean_square_total = rst%sum_squares_total / rst%total_dof
 
-        ! d1 = (npart - 1.0d0) * (nop - 1.0d0)
-        ! d2 =  npart * nop * (nrep - 1.0d0)
-        ! ms_part = ss_part / (npart - 1.0d0)
-        ! ms_op = ss_op / (nop - 1.0d0)
-        ! ms_rep = ss_rep / d2
-        ! ms_partop = ss_partop / d1
-
         ! Compute the F-Test for signficance
         rst%part_f_ratio = rst%mean_square_part / rst%mean_square_part_by_operator
         rst%operator_f_ratio = rst%mean_square_operator / rst%mean_square_part_by_operator
@@ -470,6 +473,9 @@ contains
             rst%tolerance = 0.0d0
             rst%pt_ratio = 0.0d0
         end if
+
+        ! Compute the P/TV information
+        rst%ptv_ratio = rst%gage_variation / rst%total_variation
     end function
 ! ------------------------------------------------------------------------------
     !> @brief Computes the cummulative F-distribution.
@@ -496,6 +502,28 @@ contains
     end function
 
 ! ------------------------------------------------------------------------------
+    !> @brief Computes the discrimination ratio.
+    !!
+    !! @param[in] tv The total variance.
+    !! @param[in] mv The measurement system variance.
+    !!
+    !! @return The results of the operation.
+    !!
+    !! @par 
+    !! The discrimination ratio is computed as follows.
+    !! @par
+    !! /f$ DR = \sqrt{\frac{2 \sigma_{total}^2}{\sigma_{meas}^2} - 1} /f$
+    !! @par
+    !! An alternate means of computing this parameter (as used in JMP)
+    !! is as follows.
+    !! @par
+    !! /f$ DR = 1.41 \frac{\sigma_{parts}}{\sigma_{meas}} /f$
+    pure function discrimination_ratio(tv, mv) result(x)
+        ! Arguments
+        real(real64), intent(in) :: tv, mv
+        real(real64) :: x
+        x = sqrt(2.0d0 * (tv / mv) - 1.0d0)
+    end function
 
 ! ------------------------------------------------------------------------------
 end module
