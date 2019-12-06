@@ -23,6 +23,43 @@ module measurements
 
     !> @brief Provides a container for GR&R results.
     type grr_results
+        !> @brief The overall mean of the data set.
+        real(real64) :: overall_mean
+        !> @brief The sum of the squares of the difference between the
+        !! mean for each part and the overall mean.
+        real(real64) :: sum_squares_part
+        !> @brief The sum of the squares of the difference between the
+        !! mean from each operator and the overall mean.
+        real(real64) :: sum_squares_operator
+        !> @brief The sum of the squares of the difference between each
+        !! observation and the factor level m ean.
+        real(real64) :: sum_squares_within
+        !> @brief The sum of the squares of the difference between each
+        !! observation and the overall mean.
+        real(real64) :: sum_squares_total
+        !> @brief The sum of the squares of the part-by-operator results
+        !! compared with the overall mean.
+        real(real64) :: sum_squares_part_by_operator
+        !> @brief The number of operator degrees-of-freedom.
+        integer(int32) :: operator_dof
+        !> @brief The number of part degrees-of-freedom.
+        integer(int32) :: part_dof
+        !> @brief The number of part-by-operator degrees-of-freedom.
+        integer(int32) :: part_by_operator_dof
+        !> @brief The number of repeatability degrees-of-freedom.
+        integer(int32) :: repeatability_dof
+        !> @brief The total number of degrees-of-freedom.
+        integer(int32) :: total_dof
+        !> @brief The mean-square part variance.
+        real(real64) :: mean_square_part
+        !> @brief The mean-square operator variance.
+        real(real64) :: mean_square_operator
+        !> @brief The mean-square part-by-operator variance.
+        real(real64) :: mean_square_part_by_operator
+        !> @brief The mean-square repeatability variance.
+        real(real64) :: mean_square_repeatability
+        !> @brief The mean-square total variance.
+        real(real64) :: mean_square_total
         !> @brief The part-induced variation.
         real(real64) :: part_variation
         !> @brief The operator-induced variation.
@@ -37,11 +74,20 @@ module measurements
         real(real64) :: gage_variation
         !> @brief The total process variation.
         real(real64) :: total_variation
-        !> @brief The value of the F-statistic.
-        real(real64) :: f_statistic
-        !> @brief The value of the cummulative F-distribution as computed
-        !! at the F-statistic.
-        real(real64) :: f_test
+        !> @brief The value of the F-statistic for the part variance term.
+        real(real64) :: part_f_ratio
+        !> @brief The value of the F-statistic for the operator variance term.
+        real(real64) :: operator_f_ratio
+        !> @brief The value of the F-statistic for the part-by-operator 
+        !! variance term.
+        real(real64) :: part_by_operator_f_ratio
+        !> @brief The probability of the part variance being a significant contributor.
+        real(real64) :: part_probability
+        !> @brief The probability of the operator variance being a significant contributor.
+        real(real64) :: operator_probability
+        !> @brief The probability of the part-by-operator variation
+        !! being a signficant contributor.
+        real(real64) :: part_by_operator_probability
         !> @brief The tolerance range.
         real(real64) :: tolerance
         !> @brief The sigma multiplier (k).
@@ -110,7 +156,7 @@ contains
 
 ! ------------------------------------------------------------------------------
     !> @brief Computes the sum of the squares of the difference between the
-    !! mean for each part, and the overall mean.
+    !! mean for each operator, and the overall mean.
     !!
     !! @param[in] x A M-by-N-by-P array containing the data where M is the
     !!  number of parts, N is the number of tests, and P is the number of
@@ -208,7 +254,22 @@ contains
     end function
 
 ! ------------------------------------------------------------------------------
-    !
+    !> @brief Computes the sum of the squares of the difference between each
+    !! observation and the overall mean.
+    !!
+    !! @param[in] x A M-by-N-by-P array containing the data where M is the
+    !!  number of parts, N is the number of tests, and P is the number of
+    !!  operators.
+    !! @param[in] xmean The overall (grand) mean of @p x.
+    !!
+    !! @return The result of the operation.
+    !!
+    !! @par Remarks
+    !! The sum of the squares of the difference between each observation
+    !! (\f$ x_{ijk} \f$) and the overall mean (\f$ \overline{x} \f$)
+    !! is computed as follows.
+    !! @par
+    !! \f$ s_{part} = n_{op} n_{rep} \sum (x_{ijk} - \overline{x})^{2} \f$
     pure function ssq_total(x, xmean) result(ssq)
         ! Arguments
         real(real64), intent(in), dimension(:,:,:) :: x
@@ -278,8 +339,7 @@ contains
         type(errors), target :: deferr
         character(len = 256) :: errmsg
         integer(int32) :: npart, nrep, nop
-        real(real64) :: xmean, ss_part, ss_op, ss_partop, ss_rep, ss_total, &
-            ms_part, ms_op, ms_partop, ms_rep, d1, d2, a, kf
+        real(real64) :: a
 
         ! Initialization
         if (present(err)) then
@@ -289,12 +349,11 @@ contains
         end if
         a = 5.0d-2
         if (present(alpha)) a = alpha
-        kf = 6.0d0
-        if (present(k)) kf = k
+        rst%scale = 6.0d0
+        if (present(k)) rst%scale = k
         npart = size(x, 1)
         nrep = size(x, 2)
         nop = size(x, 3)
-        rst%scale = kf
 
         ! Input Check
         if (npart < 2) then
@@ -331,51 +390,82 @@ contains
         end if
 
         ! Compute the overall mean
-        xmean = mean(pack(x, .true.))
+        rst%overall_mean = mean(pack(x, .true.))
 
         ! Compute the sum of the square terms
-        ss_part = ssq_part(x, xmean)
-        ss_op = ssq_operator(x, xmean)
-        ss_rep = ssq_repeat(x)
-        ss_total = ssq_total(x, xmean)
-        ss_partop = ss_total - ss_part - ss_op - ss_rep
+        rst%sum_squares_part = ssq_part(x, rst%overall_mean)
+        rst%sum_squares_operator = ssq_operator(x, rst%overall_mean)
+        rst%sum_squares_within = ssq_repeat(x)
+        rst%sum_squares_total = ssq_total(x, rst%overall_mean)
+        rst%sum_squares_part_by_operator = rst%sum_squares_total - &
+            rst%sum_squares_part - rst%sum_squares_operator - rst%sum_squares_within
+
+        ! Compute the DOF terms
+        rst%part_dof = npart - 1
+        rst%operator_dof = nop - 1
+        rst%part_by_operator_dof = rst%part_dof * rst%operator_dof
+        rst%repeatability_dof = npart * nop * (nrep - 1)
+        rst%total_dof = npart * nop * nrep - 1
 
         ! Compute the mean of the squared differences
-        d1 = (npart - 1.0d0) * (nop - 1.0d0)
-        d2 =  npart * nop * (nrep - 1.0d0)
-        ms_part = ss_part / (npart - 1.0d0)
-        ms_op = ss_op / (nop - 1.0d0)
-        ms_rep = ss_rep / d2
-        ms_partop = ss_partop / d1
+        rst%mean_square_part = rst%sum_squares_part / rst%part_dof
+        rst%mean_square_operator = rst%sum_squares_operator / rst%operator_dof
+        rst%mean_square_part_by_operator = rst%sum_squares_part_by_operator / &
+            rst%part_by_operator_dof
+        rst%mean_square_repeatability = rst%sum_squares_within / rst%repeatability_dof
+        rst%mean_square_total = rst%sum_squares_total / rst%total_dof
+
+        ! d1 = (npart - 1.0d0) * (nop - 1.0d0)
+        ! d2 =  npart * nop * (nrep - 1.0d0)
+        ! ms_part = ss_part / (npart - 1.0d0)
+        ! ms_op = ss_op / (nop - 1.0d0)
+        ! ms_rep = ss_rep / d2
+        ! ms_partop = ss_partop / d1
 
         ! Compute the F-Test for signficance
-        rst%f_statistic = ms_partop / ms_rep
+        rst%part_f_ratio = rst%mean_square_part / rst%mean_square_part_by_operator
+        rst%operator_f_ratio = rst%mean_square_operator / rst%mean_square_part_by_operator
+        rst%part_by_operator_f_ratio = rst%mean_square_part_by_operator / &
+            rst%mean_square_repeatability
 
-        ! Compute the F-test for signficance
-        rst%f_test = 1.0d0 - f_distribution(rst%f_statistic, d1, d2)
+        ! Compute the probability terms
+        rst%part_probability = 1.0d0 - &
+            f_distribution(rst%part_f_ratio, rst%part_dof, &
+            rst%repeatability_dof)
+        rst%operator_probability = 1.0d0 - &
+            f_distribution(rst%operator_f_ratio, rst%operator_dof, &
+            rst%repeatability_dof)
+        rst%part_by_operator_probability = 1.0d0 - &
+            f_distribution(rst%part_by_operator_f_ratio, &
+            rst%part_by_operator_dof, rst%repeatability_dof)
 
-        ! Compare with alpha to determine which method to use in computing
-        ! the variance terms
-        if (rst%f_test > a) then
-            ss_rep = ss_total - ss_part - ss_op
-            ms_rep = ss_rep / d2
-            rst%part_variation = max(0.0d0, (ms_part - ms_rep) / (nop * nrep))
-            rst%operator_variation = max(0.0d0, (ms_op - ms_rep) / (npart * nrep))
-            rst%part_by_operator_variation = 0.0d0
+        ! Compute the variance terms
+        if (rst%part_by_operator_probability > a) then
+            rst%part_variation = max(0.0d0, &
+                (rst%mean_square_part - &
+                rst%mean_square_part_by_operator) / (nop * nrep))
+            rst%operator_variation = max(0.0d0, &
+                (rst%mean_square_operator - &
+                rst%mean_square_part_by_operator) / (npart * nrep))
         else
-            rst%part_variation = max(0.0d0, (ms_part - ms_rep) / (nop * nrep))
-            rst%operator_variation = max(0.0d0, (ms_op - ms_rep) / (npart * nrep))
-            rst%part_by_operator_variation = max(0.0d0, (ms_partop - ms_rep) / nrep)
+            rst%part_variation = max(0.0d0, &
+                (rst%mean_square_part - &
+                rst%mean_square_repeatability) / (nop * nrep))
+            rst%operator_variation = max(0.0d0, &
+                (rst%mean_square_operator - &
+                rst%mean_square_repeatability) / (npart * nrep))
         end if
-        rst%repeatability = ms_rep
+        rst%part_by_operator_variation = max(0.0d0, &
+            (rst%mean_square_part_by_operator - rst%mean_square_repeatability) / nrep)
+        rst%repeatability = rst%mean_square_repeatability
         rst%reproducibility = rst%operator_variation + rst%part_by_operator_variation
         rst%gage_variation = rst%repeatability + rst%reproducibility
         rst%total_variation = rst%gage_variation + rst%part_variation
 
-        ! Compute tolerance related information
+        ! Compute the P/T information
         if (present(tol)) then
             rst%tolerance = tol
-            rst%pt_ratio = kf * sqrt(rst%gage_variation) / tol
+            rst%pt_ratio = rst%scale * sqrt(rst%gage_variation) / tol
         else
             rst%tolerance = 0.0d0
             rst%pt_ratio = 0.0d0
@@ -389,15 +479,18 @@ contains
     !! @param[in] d2
     !!
     !! @return The value of the F-distribution at @p x.
-    function f_distribution(x, d1, d2) result(f)
+    function f_distribution(x, dof1, dof2) result(f)
         ! Arguments
-        real(real64), intent(in) :: x, d1, d2
+        real(real64), intent(in) :: x
+        integer(int32), intent(in) :: dof1, dof2
         real(real64) :: f
 
         ! Local Variables
-        real(real64) :: xf
+        real(real64) :: xf, d1, d2
 
         ! Compute the incomplete beta function
+        d1 = real(dof1, real64)
+        d2 = real(dof2, real64)
         xf = d1 * x / (d1 * x + d2)
         f = incomplete_beta(d1, d2, xf)
     end function
