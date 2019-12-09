@@ -73,7 +73,7 @@ contains
         real(real64), parameter :: part2part = 238266.67d0
         real(real64), parameter :: repeatability = 9993.48d0
         real(real64), parameter :: reproducibility = 1273.68d0
-        real(real64), parameter :: gage = 11267.16d0
+        real(real64), parameter :: gauge = 11267.16d0
         real(real64), parameter :: pt = 0.63688d0
 
         ! Local Variables
@@ -88,7 +88,7 @@ contains
         x = format_data()
 
         ! Compute the GR&R
-        rst = ems_gage_r_r(x, tol = 1.0d3, alpha = 0.05d0)
+        rst = ems_gauge_r_r(x, tol = 1.0d3, alpha = 0.05d0)
 
         ! Compare some critical results
         if (abs(part2part - rst%part_variation) > tol) then
@@ -109,10 +109,10 @@ contains
                 reproducibility, ", but found: ", rst%reproducibility
         end if
 
-        if (abs(gage - rst%gage_variation) > tol) then
+        if (abs(gauge - rst%gauge_variation) > tol) then
             check = .false.
-            print '(AE10.3AE10.3)', "TEST_GRR - 1: Gage Variation - Expected: ", &
-                gage, ", but found: ", rst%gage_variation
+            print '(AE10.3AE10.3)', "TEST_GRR - 1: Gauge Variation - Expected: ", &
+                gauge, ", but found: ", rst%gauge_variation
         end if
 
         if (abs(pt - rst%pt_ratio) > tol) then
@@ -165,7 +165,7 @@ contains
     !     real(real64), parameter :: part2part = 5.839465d0
     !     real(real64), parameter :: repeatability = 54.853534d0
     !     real(real64), parameter :: reproducibility = 12.520450d0
-    !     real(real64), parameter :: gage = 49.248994d0
+    !     real(real64), parameter :: gauge = 49.248994d0
     !     real(real64), parameter :: pt = 2.46245d0
 
     !     ! Local Variables
@@ -180,7 +180,7 @@ contains
     !     x = format_data_2()
 
     !     ! Compute the GR&R
-    !     rst = gage_r_r(x, tol = 1.0d3, alpha = 0.05d0)
+    !     rst = ems_gauge_r_r(x, tol = 1.0d3, alpha = 0.05d0)
 
     !     ! Compare some critical results
     !     if (abs(part2part - rst%part_variation) > tol) then
@@ -201,10 +201,10 @@ contains
     !             reproducibility, ", but found: ", rst%reproducibility
     !     end if
 
-    !     if (abs(gage - rst%gage_variation) > tol) then
+    !     if (abs(gauge - rst%gauge_variation) > tol) then
     !         check = .false.
-    !         print '(AE10.3AE10.3)', "TEST_GRR - 2: Gage Variation - Expected: ", &
-    !             gage, ", but found: ", rst%gage_variation
+    !         print '(AE10.3AE10.3)', "TEST_GRR - 2: Gauge Variation - Expected: ", &
+    !             gauge, ", but found: ", rst%gauge_variation
     !     end if
 
     !     if (abs(pt - rst%pt_ratio) > tol) then
