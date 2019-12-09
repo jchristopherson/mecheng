@@ -514,6 +514,7 @@ set(general_sources
     general/arrays.f90
     general/measurements.f90
     general/measurements_ems.f90
+    general/measurements_emp.f90
 )
 
 # Define the MECHENG source files

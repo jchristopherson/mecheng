@@ -169,7 +169,7 @@ module function ems_gauge_r_r(x, alpha, tol, k, err) result(rst)
         write (errmsg, '(AI0A)') &
             "Expected to find at least 2 parts, but only found ", &
             npart, "."
-        call errmgr%report_error("gauge_r_r", trim(errmsg), &
+        call errmgr%report_error("ems_gauge_r_r", trim(errmsg), &
             MS_INVALID_DATA_SET_ERROR)
         return
     end if
@@ -177,7 +177,7 @@ module function ems_gauge_r_r(x, alpha, tol, k, err) result(rst)
         write (errmsg, '(AI0A)') &
             "Expected to find at least 2 tests, but only found ", &
             nrep, "."
-        call errmgr%report_error("gauge_r_r", trim(errmsg), &
+        call errmgr%report_error("ems_gauge_r_r", trim(errmsg), &
             MS_INVALID_DATA_SET_ERROR)
         return
     end if
@@ -185,7 +185,7 @@ module function ems_gauge_r_r(x, alpha, tol, k, err) result(rst)
         write (errmsg, '(AI0A)') &
             "Expected to find at least 2 operators, but only found ", &
             nop, "."
-        call errmgr%report_error("gauge_r_r", trim(errmsg), &
+        call errmgr%report_error("ems_gauge_r_r", trim(errmsg), &
             MS_INVALID_DATA_SET_ERROR)
         return
     end if
@@ -193,7 +193,7 @@ module function ems_gauge_r_r(x, alpha, tol, k, err) result(rst)
         write (errmsg, '(AE11.3A)') &
             "The alpha parameter must lie between 0 and 1, " // &
             "but was found to be ", a, "."
-        call errmgr%report_error("gauge_r_r", trim(errmsg), &
+        call errmgr%report_error("ems_gauge_r_r", trim(errmsg), &
             MS_INVALID_INPUT_ERROR)
         return
     end if

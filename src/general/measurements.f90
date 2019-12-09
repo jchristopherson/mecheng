@@ -11,16 +11,20 @@ module measurements
     public :: MS_INVALID_INPUT_ERROR
     public :: MS_INVALID_DATA_SET_ERROR
     public :: ems_grr_results
+    public :: emp_grr_results
     public :: ssq_part
     public :: ssq_operator
     public :: ssq_repeat
     public :: ems_gauge_r_r
+    public :: emp_gauge_r_r
     public :: discrimination_ratio
 
     !> @brief Defines an invalid input error condition.
     integer(int32), parameter :: MS_INVALID_INPUT_ERROR = 100001
     !> @brief Defines an invalid data set error condition.
     integer(int32), parameter :: MS_INVALID_DATA_SET_ERROR = 100002
+    !> @brief Defines an out-of-memory error condition.
+    integer(int32), parameter :: MS_OUT_OF_MEMORY_ERROR = 100003
 
     !> @brief Provides a container for expected mean squares (EMS) type
     !! GR&R results.
@@ -90,6 +94,46 @@ module measurements
         !> @brief The probability of the part-by-operator variation
         !! being a signficant contributor.
         real(real64) :: part_by_operator_probability
+        !> @brief The tolerance range.
+        real(real64) :: tolerance
+        !> @brief The sigma multiplier (k).
+        real(real64) :: scale
+        !> @brief The precision to tolerance ratio (P/T ratio).  This is
+        !! computed as: \f$ k * \sigma_{gauge} / tolerance \f$
+        real(real64) :: pt_ratio
+        !> @brief The precision to process total variation.  This is
+        !! computed as: \f$ \frac{\sigma_{meas}}{\sigma_{total}} \f$.
+        !! This is basically a measure of what percent of the total 
+        !! variation is due to measurement error.
+        real(real64) :: ptv_ratio
+    end type
+
+    
+    !> @brief Provides a container for the "Evaluating the Measurement
+    !! Process" (EMP) type GR&R results.
+    type emp_grr_results
+        !> @brief The mean of each operator.
+        real(real64), allocatable, dimension(:) :: operator_means
+        !> @brief The mean of each part.
+        real(real64), allocatable, dimension(:) :: part_means
+        !> @brief The mean of each test sequence.
+        real(real64), allocatable, dimension(:) :: repeat_means
+        !> @brief The range of the average of the each operator-part combination.
+        real(real64) :: average_range
+        !> @brief The range of operator averages.
+        real(real64) :: operator_range
+        !> @brief The range of part averages.
+        real(real64) :: part_range
+        !> @brief The repeatability variation.
+        real(real64) :: repeatability
+        !> @brief The reproducibility variation.
+        real(real64) :: reproducibility
+        !> @brief The part-part variation.
+        real(real64) :: part_variation
+        !> @brief The gauge variation.
+        real(real64) :: gauge_variation
+        !> @brief The total variation.
+        real(real64) :: total_variation
         !> @brief The tolerance range.
         real(real64) :: tolerance
         !> @brief The sigma multiplier (k).
@@ -196,8 +240,7 @@ module measurements
         !! set obtained using multipler parts, repeated tests, and multiple
         !! test operators.  The expected mean squares (EMS) method is utilized.  If
         !! negative components are found (they are reported as zero values), it
-        !! is recommended to utilize a Byesian or restricted maximum likelihood (REML)
-        !! approach instead.
+        !! is recommended to utilize an alternative approach.
         !!
         !! @param[in] x A M-by-N-by-P array containing the data where M is the
         !!  number of parts, N is the number of tests, and P is the number of
@@ -220,7 +263,7 @@ module measurements
         !!      2 tests, and 2 operators defined in the data set in @p x.
         !!  - MS_INVALID_INPUT_ERROR: Occurs if alpha is outside the range (0, 1).
         !!
-        !! @return A grr_results object containing the calculation results.
+        !! @return An ems_grr_results object containing the calculation results.
         !!
         !! @par References:
         !! - https://www.muelaner.com/quality-assurance/gauge-r-and-r-excel/
@@ -231,6 +274,43 @@ module measurements
             real(real64), intent(in), optional :: alpha, tol, k
             class(errors), intent(inout), optional, target :: err
             type(ems_grr_results) :: rst
+        end function
+    end interface
+
+    interface
+        !> @brief Computes a Gauge R&R crossed study of an experimental data
+        !! set obtained using multipler parts, repeated tests, and multiple
+        !! test operators.  The "Evaluating the Measurement Process" (EMP) 
+        !! method is utilized.
+        !!
+        !! @param[in] x A M-by-N-by-P array containing the data where M is the
+        !!  number of parts, N is the number of tests, and P is the number of
+        !!  operators.
+        !! @param[in] tol An optional input used to specify tolerance information
+        !!  allowing for calculation of the precision-to-tolerance ratio.  If
+        !!  not supplied, the precision-to-tolerance ratio is not computed.
+        !! @param[in] k An optional input used to specify the number of 
+        !!  standard deviations used in computation of the precision-to-tolerance
+        !!  ratio.  The default value is 6.
+        !! @param[in,out] err An optional errors-based object that if provided can be
+        !!  used to retrieve information relating to any errors encountered during
+        !!  execution.  If not provided, a default implementation of the errors
+        !!  class is used internally to provide error handling.  Possible errors and
+        !!  warning messages that may be encountered are as follows.
+        !!  - MS_INVALID_DATA_SET_ERROR: Occurs if there aren't at least 2 parts, 
+        !!      2 tests, and 2 operators defined in the data set in @p x.
+        !!  - MS_OUT_OF_MEMORY_ERROR: Occurs if there is insufficient memory available.
+        !!
+        !! @return An emp_grr_results object containing the calculation results.
+        !!
+        !! @par References:
+        !! - https://www.spcforexcel.com/knowledge/measurement-systems-analysis/three-methods-analyze-gage-rr-studies
+        !! - https://www.qualitydigest.com/inside/twitter-ed/problems-gauge-rr-studies.html
+        module function emp_gauge_r_r(x, tol, kf, err) result(rst)
+            real(real64), intent(in), dimension(:,:,:) :: x
+            real(real64), intent(in), optional :: tol, kf
+            class(errors), intent(inout), optional, target :: err
+            type(emp_grr_results) :: rst
         end function
     end interface
 
