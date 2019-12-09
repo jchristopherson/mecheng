@@ -109,3 +109,7 @@ target_link_libraries(signal_conv_example_1 mecheng)
 # STRINGS EXAMPLE 1
 add_executable(strings_example strings_example.f90)
 target_link_libraries(strings_example mecheng)
+
+# GAUGE R&R EXAMPLE
+add_executable(grr_example grr_example.f90)
+target_link_libraries(grr_example mecheng)
