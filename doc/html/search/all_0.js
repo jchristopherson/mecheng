@@ -9,5 +9,6 @@ var searchData=
   ['apply_5ffilter_5farray_6',['apply_filter_array',['../interfacesignals_1_1apply__filter__array.html',1,'signals']]],
   ['apply_5fscalar_7',['apply_scalar',['../structsignals_1_1realtime__filter.html#a0c8175bacfc97ca0e18c343ce81bcdf9',1,'signals::realtime_filter']]],
   ['arrays_8',['arrays',['../namespacearrays.html',1,'']]],
-  ['assignment_28_3d_29_9',['assignment(=)',['../interfacenonlin__polynomials_1_1assignment_07_0a_08.html',1,'nonlin_polynomials']]]
+  ['assignment_28_3d_29_9',['assignment(=)',['../interfacenonlin__polynomials_1_1assignment_07_0a_08.html',1,'nonlin_polynomials']]],
+  ['average_5frange_10',['average_range',['../structmeasurements_1_1emp__grr__results.html#a3a017e73f2c90a6f307a2ba7564dc7b7',1,'measurements::emp_grr_results']]]
 ];

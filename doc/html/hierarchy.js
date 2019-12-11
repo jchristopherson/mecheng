@@ -29,6 +29,8 @@ var hierarchy =
     [ "collection_containers::dll_node", "structcollection__containers_1_1dll__node.html", null ],
     [ "linalg_core::eigen", "interfacelinalg__core_1_1eigen.html", null ],
     [ "linalg_immutable::eigen_results", "structlinalg__immutable_1_1eigen__results.html", null ],
+    [ "measurements::emp_grr_results", "structmeasurements_1_1emp__grr__results.html", null ],
+    [ "measurements::ems_grr_results", "structmeasurements_1_1ems__grr__results.html", null ],
     [ "nonlin_core::equation_optimizer", "structnonlin__core_1_1equation__optimizer.html", [
       [ "nonlin_optimize::line_search_optimizer", "structnonlin__optimize_1_1line__search__optimizer.html", [
         [ "nonlin_optimize::bfgs", "structnonlin__optimize_1_1bfgs.html", null ]
@@ -64,7 +66,6 @@ var hierarchy =
     [ "vibrations::frf_fitting_tool", "structvibrations_1_1frf__fitting__tool.html", null ],
     [ "fplot_core::get_string_result", "interfacefplot__core_1_1get__string__result.html", null ],
     [ "nonlin_core::gradientfcn", "interfacenonlin__core_1_1gradientfcn.html", null ],
-    [ "measurements::grr_results", "structmeasurements_1_1grr__results.html", null ],
     [ "vibrations::harmonic_ode_fcn", "interfacevibrations_1_1harmonic__ode__fcn.html", null ],
     [ "fortio_hbm::hbm_data_channel", "structfortio__hbm_1_1hbm__data__channel.html", null ],
     [ "fortio_hbm::hbm_data_file", "structfortio__hbm_1_1hbm__data__file.html", null ],

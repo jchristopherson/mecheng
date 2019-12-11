@@ -115,6 +115,8 @@ var NAVTREEINDEX2 =
 "linalg__solve_8f90_source.html":[2,0,0,10,14],
 "linalg__sorting_8f90_source.html":[2,0,0,10,15],
 "measurements_8f90_source.html":[2,0,0,6,1],
+"measurements__emp_8f90_source.html":[2,0,0,6,2],
+"measurements__ems_8f90_source.html":[2,0,0,6,3],
 "mechanics__constants_8f90_source.html":[2,0,0,11,2],
 "namespacearrays.html":[1,0,0],
 "namespacearrays.html":[0,0,0],
@@ -220,8 +222,8 @@ var NAVTREEINDEX2 =
 "namespacesections.html":[0,0,34],
 "namespacesignals.html":[0,0,35],
 "namespacesignals.html":[1,0,29],
-"namespacestrain.html":[1,0,30],
 "namespacestrain.html":[0,0,36],
+"namespacestrain.html":[1,0,30],
 "neural__network_8f90_source.html":[2,0,0,12,0],
 "nonlin__constants_8f90_source.html":[2,0,0,13,0],
 "nonlin__core_8f90_source.html":[2,0,0,13,1],
@@ -247,7 +249,5 @@ var NAVTREEINDEX2 =
 "pages.html":[],
 "sections_8f90_source.html":[2,0,0,11,3],
 "signals_8f90_source.html":[2,0,0,14,0],
-"signals__convolution_8f90_source.html":[2,0,0,14,1],
-"signals__diff_8f90_source.html":[2,0,0,14,2],
-"signals__filter_8f90_source.html":[2,0,0,14,3]
+"signals__convolution_8f90_source.html":[2,0,0,14,1]
 };

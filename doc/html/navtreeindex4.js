@@ -1,5 +1,7 @@
 var NAVTREEINDEX4 =
 {
+"structfortio__binary_1_1binary__formatter.html#a492f938576fb4de4f558e2e3ab2639da":[1,0,12,1,61],
+"structfortio__binary_1_1binary__formatter.html#a4c285a7b8d99a7c867eac148b8882896":[1,0,12,1,57],
 "structfortio__binary_1_1binary__formatter.html#a50ec054d0e1eb248684f59094aecc8e2":[1,0,12,1,53],
 "structfortio__binary_1_1binary__formatter.html#a5535a81b800d28707c16636b2ce7ec87":[1,0,12,1,43],
 "structfortio__binary_1_1binary__formatter.html#a55cc56da9a0bd1f77c6f5c0a06252807":[1,0,12,1,22],
@@ -247,7 +249,5 @@ var NAVTREEINDEX4 =
 "structfplot__core_1_1plot.html#a749f5e716823b818c276e26d301a43da":[1,0,15,11,35],
 "structfplot__core_1_1plot.html#a7a65fb3d700676defd82a392ea8be160":[1,0,15,11,11],
 "structfplot__core_1_1plot.html#a89f704e48794d3805d2f13c96082096c":[1,0,15,11,21],
-"structfplot__core_1_1plot.html#a8ee01b37ca833b399067f4be3faea378":[1,0,15,11,23],
-"structfplot__core_1_1plot.html#a945ff02d37879c256fbc56315782011d":[1,0,15,11,16],
-"structfplot__core_1_1plot.html#a955e9ed1d0626325807467f18928f7af":[1,0,15,11,32]
+"structfplot__core_1_1plot.html#a8ee01b37ca833b399067f4be3faea378":[1,0,15,11,23]
 };
