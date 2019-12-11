@@ -72,7 +72,8 @@ module fortio_binary
             bf_add_sngl_matrix, bf_add_cmplx64, bf_add_cmplx64_array, &
             bf_add_cmplx64_matrix, bf_add_cmplx32, bf_add_cmplx32_array, &
             bf_add_cmplx32_matrix, bf_add_int16, bf_add_int16_array, &
-            bf_add_int16_matrix, bf_add_int64, bf_add_int64_array, &
+            bf_add_int16_matrix, bf_add_int32, bf_add_int32_array, &
+            bf_add_int32_matrix, bf_add_int64, bf_add_int64_array, &
             bf_add_int64_matrix, bf_add_int8, bf_add_int8_array, &
             bf_add_int8_matrix, bf_add_char_array
         !> @brief Gets a single character from the buffer, and updates the
