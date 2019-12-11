@@ -22,4 +22,8 @@ module fortio_types
     integer(int32), parameter :: FIO_OUT_OF_MEMORY_ERROR = 1003
     !> @brief Denotes an unsupported file version.
     integer(int32), parameter :: FIO_UNSUPPORTED_VERSION_ERROR = 1004
+    !> @brief Denotes an invalid input argument.
+    integer(int32), parameter :: FIO_INVALID_INPUT_ERROR = 1005
+    !> @brief Denotes a reader position error.
+    integer(int32), parameter :: FIO_READER_POSITION_ERROR = 1006
 end module

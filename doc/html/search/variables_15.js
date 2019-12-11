@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['x',['x',['../structkinematics_1_1quaternion.html#a9c8df1c8e5c0fd2c1e10a695af3cf881',1,'kinematics::quaternion']]],
-  ['x1',['x1',['../structnonlin__core_1_1value__pair.html#a6b406e6ee33f4237122141224f1d3c87',1,'nonlin_core::value_pair']]],
-  ['x2',['x2',['../structnonlin__core_1_1value__pair.html#a18a904854840a01001ceafaf8b438c73',1,'nonlin_core::value_pair']]]
+  ['w_3075',['w',['../structkinematics_1_1quaternion.html#aad1e786bf924292601eafb32014851cc',1,'kinematics::quaternion']]],
+  ['window_5fheight_3076',['window_height',['../structvibrations_1_1bode__settings.html#ad0e842390a24662747ae93dfb59611a2',1,'vibrations::bode_settings']]],
+  ['window_5fwidth_3077',['window_width',['../structvibrations_1_1bode__settings.html#a138b28627acf4f135d9bba9a380bbb93',1,'vibrations::bode_settings']]]
 ];

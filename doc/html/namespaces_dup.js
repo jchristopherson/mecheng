@@ -1,5 +1,6 @@
 var namespaces_dup =
 [
+    [ "arrays", "namespacearrays.html", null ],
     [ "collection_containers", "namespacecollection__containers.html", null ],
     [ "collection_errors", "namespacecollection__errors.html", null ],
     [ "collection_linked_list", "namespacecollection__linked__list.html", null ],
@@ -18,11 +19,13 @@ var namespaces_dup =
     [ "fortio_types", "namespacefortio__types.html", null ],
     [ "fplot_core", "namespacefplot__core.html", null ],
     [ "fplot_errors", "namespacefplot__errors.html", null ],
+    [ "friction", "namespacefriction.html", null ],
     [ "geometry", "namespacegeometry.html", null ],
     [ "integral_core", "namespaceintegral__core.html", null ],
     [ "linalg_constants", "namespacelinalg__constants.html", null ],
     [ "linalg_core", "namespacelinalg__core.html", null ],
     [ "linalg_immutable", "namespacelinalg__immutable.html", null ],
+    [ "measurements", "namespacemeasurements.html", null ],
     [ "mechanics_constants", "namespacemechanics__constants.html", null ],
     [ "nonlin_constants", "namespacenonlin__constants.html", null ],
     [ "nonlin_core", "namespacenonlin__core.html", null ],

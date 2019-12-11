@@ -1,6 +1,7 @@
 var dir_5784360009d1ef95205a0048ad26d28c =
 [
     [ "signals.f90", "signals_8f90_source.html", null ],
+    [ "signals_convolution.f90", "signals__convolution_8f90_source.html", null ],
     [ "signals_diff.f90", "signals__diff_8f90_source.html", null ],
     [ "signals_filter.f90", "signals__filter_8f90_source.html", null ],
     [ "signals_fourier.f90", "signals__fourier_8f90_source.html", null ],

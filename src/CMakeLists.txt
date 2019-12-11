@@ -389,6 +389,45 @@ set(lapack_sources
     external/lapack/SRC/zlaswp.f
     external/lapack/SRC/zgetrf2.f
     external/lapack/SRC/zgetrs.f
+
+    external/lapack/SRC/zgeev.f
+    external/lapack/SRC/zgebak.f
+    external/lapack/SRC/zgebal.f
+    external/lapack/SRC/zgehrd.f
+    external/lapack/SRC/zhseqr.f
+    external/lapack/SRC/zlacpy.f
+    external/lapack/SRC/zlascl.f
+    external/lapack/SRC/ztrevc3.f
+    external/lapack/SRC/zunghr.f
+    external/lapack/SRC/zlange.f
+    external/lapack/SRC/zlarfb.f
+    external/lapack/SRC/zlahr2.f
+    external/lapack/SRC/zgehd2.f
+    external/lapack/SRC/zlaqr0.f
+    external/lapack/SRC/zlaset.f
+    external/lapack/SRC/zlatrs.f
+    external/lapack/SRC/zungqr.f
+    external/lapack/SRC/zung2r.f
+    external/lapack/SRC/zlarft.f
+    external/lapack/SRC/zladiv.f
+    external/lapack/SRC/zlahqr.f
+    external/lapack/SRC/zlaqr2.f
+    external/lapack/SRC/zlaqr3.f
+    external/lapack/SRC/zlaqr4.f
+    external/lapack/SRC/zlaqr5.f
+    external/lapack/SRC/zlacgv.f
+    external/lapack/SRC/zlarfg.f
+    external/lapack/SRC/zlarf.f
+    external/lapack/SRC/zunmhr.f
+    external/lapack/SRC/ztrexc.f
+    external/lapack/SRC/zlassq.f
+    external/lapack/SRC/zlaqr1.f
+    external/lapack/SRC/ilazlc.f
+    external/lapack/SRC/ilazlr.f
+    external/lapack/SRC/zunmqr.f
+    external/lapack/SRC/zlartg.f
+    external/lapack/SRC/zrot.f
+    external/lapack/SRC/zunm2r.f
 )
 
 # Define the QRUPDATE source files
@@ -409,7 +448,14 @@ set(mechanics_sources
     mechanics/sections.f90
     mechanics/strain.f90
     mechanics/vibrations.f90
+    mechanics/vibrations_poincare.f90
+    mechanics/vibrations_modal.f90
+    mechanics/vibrations_lti.f90
+    mechanics/vibrations_ss.f90
+    mechanics/vibrations_sweep.f90
+    mechanics/vibrations_fit.f90
     mechanics/mechanics_constants.f90
+    mechanics/friction.f90
 )
 
 set(nonlin_sources
@@ -446,10 +492,12 @@ set(signals_sources
     signals/signals_diff.f90
     signals/signals_integrate.f90
     signals/signals_realtime.f90
+    signals/signals_convolution.f90
 )
 
 set(strings_sources
     strings/strings.f90
+    strings/string_helper.cpp
 )
 
 set(geometry_sources
@@ -462,6 +510,12 @@ set(controls_sources
     controls/controls_pid.f90
 )
 
+set(general_sources
+    general/arrays.f90
+    general/measurements.f90
+    general/measurements_ems.f90
+    general/measurements_emp.f90
+)
 
 # Define the MECHENG source files
 set(mecheng_sources
@@ -486,6 +540,7 @@ set(mecheng_sources
     ${strings_sources}
     ${geometry_sources}
     ${controls_sources}
+    ${general_sources}
 )
 
 # Build the library

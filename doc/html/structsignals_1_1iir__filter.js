@@ -1,6 +1,7 @@
 var structsignals_1_1iir__filter =
 [
-    [ "apply", "structsignals_1_1iir__filter.html#a6f3de79cf04fe21fa9e767e0fc0ab4a3", null ],
+    [ "apply_array", "structsignals_1_1iir__filter.html#a5488dd9a7d413d086bab9117fff72bf7", null ],
+    [ "apply_scalar", "structsignals_1_1iir__filter.html#a01673716f9706b906efe81211ee36dea", null ],
     [ "get_denominator", "structsignals_1_1iir__filter.html#a5e2fb614b5ea51bf7bf6916bc7625c4f", null ],
     [ "get_numerator", "structsignals_1_1iir__filter.html#a5f34033ccf7e21914808a0430630d154", null ],
     [ "get_tap_count", "structsignals_1_1iir__filter.html#a3489a6a0aed8f65edb2c8a91d626ca5b", null ],

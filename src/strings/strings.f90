@@ -18,6 +18,11 @@ module strings
     public :: fstr_2_cstr
 
 ! ******************************************************************************
+! PARAMETERS
+! ------------------------------------------------------------------------------
+    integer(int32), parameter :: STRING_BUFFER_SIZE = 2048
+
+! ******************************************************************************
 ! TYPES
 ! ------------------------------------------------------------------------------
     !> @brief Defines a string type.
@@ -48,6 +53,13 @@ module strings
 ! ******************************************************************************
 ! INTERFACES
 ! ------------------------------------------------------------------------------
+    !> @brief Splits a string by a delimiter character.
+    interface split_string
+        module procedure :: split_string_pure
+        module procedure :: split_string_by_char
+    end interface
+
+! ------------------------------------------------------------------------------
     !> @brief Converts a string to a numeric value.
     interface string_to_number
         module procedure :: string_to_double
@@ -74,6 +86,22 @@ module strings
         module procedure :: to_string_cmplx_64_fmt
     end interface
 
+! ------------------------------------------------------------------------------
+! C INTERFACE
+! ------------------------------------------------------------------------------
+    interface
+        subroutine split_string_delim(src, delim, buffer, numBuffers, &
+                bufferSize, n, counts) &
+                bind(C, name = "split_string_delim")
+            use iso_c_binding
+            character(kind = c_char), intent(in) :: src(*)
+            character(kind = c_char), intent(in), value :: delim
+            integer(c_size_t), intent(in), value :: numBuffers, bufferSize
+            type(c_ptr), intent(out) :: buffer(numBuffers)
+            integer(c_size_t), intent(out) :: n, counts(numBuffers)
+        end subroutine
+    end interface
+
 contains
 ! ******************************************************************************
 ! STRING_BUILDER MEMBERS
@@ -88,7 +116,7 @@ contains
         ! Initialization
         this%m_length = 0
         if (.not.allocated(this%m_buffer)) &
-            allocate(character(len = 128) :: this%m_buffer)
+            allocate(character(len = STRING_BUFFER_SIZE) :: this%m_buffer)
     end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -112,7 +140,7 @@ contains
         if (space < n) then
             ! Reallocate a larger buffer
             nb = len(this%m_buffer)
-            allocate(character(len = nb + max(n, 128)) :: temp)
+            allocate(character(len = nb + max(n, STRING_BUFFER_SIZE)) :: temp)
             temp(1:nb) = this%m_buffer
             this%m_buffer = temp
         end if
@@ -155,7 +183,7 @@ contains
     !!
     !! @return A collection of strings.  The delimiter character is not
     !!  returned.
-    pure function split_string(txt, delim) result(rst)
+    pure function split_string_pure(txt, delim) result(rst)
         ! Arguments
         character(len = *), intent(in) :: txt
         character, intent(in), optional :: delim
@@ -184,9 +212,16 @@ contains
                 buffer(j:j) = txt(i:i)
             else
                 ! Reached a delimiter character
-                if (j == 0) cycle
+                ! if (j == 0) cycle
+                ! k = k + 1
+                ! stbuffer(k)%str = buffer(1:j)
+                ! j = 0
                 k = k + 1
-                stbuffer(k)%str = buffer(1:j)
+                if (j == 0) then
+                    allocate(character(len = 0) :: stbuffer(k)%str)
+                else
+                    stbuffer(k)%str = buffer(1:j)
+                end if
                 j = 0
             end if
         end do
@@ -199,6 +234,124 @@ contains
 
         ! End
         rst = stbuffer(1:k)
+    end function
+
+! ------------------------------------------------------------------------------
+    !> @brief Splits a string by a delimiter character.
+    !!
+    !! @param[in] txt The string to split.
+    !! @param[in] delim The delimiter character.
+    !! @param[out] buffer A string buffer used as a container for each string.
+    !!  Each string in the collection will be allocated to a default size 
+    !!  defined by @p def if not already that size.  It is recommended to use
+    !!  trim or len_trim when using each string.
+    !! @param[in] def An optional parameter specifying the size of each
+    !!  string within @p buffer.  The default, if not supplied, is 1024.
+    !! @param[out] iwork An optional workspace array of same size as @p buffer.
+    !!
+    !! @return The actual number of strings written to @p buffer.
+    !!
+    !! @par Example
+    !! @code{.f90}
+    !! program example
+    !!     use iso_fortran_env
+    !!     use strings
+    !!     implicit none
+    !!
+    !!     ! Create a string to split
+    !!     character(len = *), parameter :: str = "This,is,a,test,,string,with,repeating,,,delimiters"
+    !!
+    !!     ! Local Variables
+    !!     type(string) :: buffer(50)  ! Arbitrarily chosen buffer size
+    !!     integer(int32) :: i, n
+    !!
+    !!     ! Split the string
+    !!     n = split_string(str, ",", buffer)
+    !!
+    !!     ! Print the results
+    !!     print '(A)', "Split: " // str
+    !!     print '(AI0A)', "  ", n, " strings created:"
+    !!     do i = 1, n
+    !!         print '(AI0A)', achar(9), i, ". " // trim(buffer(i)%str)
+    !!     end do
+    !! end program
+    !! @endcode
+    !! The above code produces the following output.
+    !! @code{.txt}
+    !! Split: This,is,a,test,,string,with,repeating,,,delimiters
+    !!   11 strings created:
+    !!         1. This
+    !!         2. is
+    !!         3. a
+    !!         4. test
+    !!         5.
+    !!         6. string
+    !!         7. with
+    !!         8. repeating
+    !!         9.
+    !!         10.
+    !!         11. delimiters
+    !! @endcode
+    function split_string_by_char(txt, delim, buffer, def, iwork) result(n)
+        ! Arguments
+        character(len = *), intent(in) :: txt
+        character, intent(in) :: delim
+        type(string), intent(out), dimension(:), target :: buffer
+        integer(int32), intent(in), optional :: def
+        integer(c_size_t), intent(out), optional, dimension(:), target :: iwork
+        integer(int32) :: n
+
+        ! Parameters
+        integer(c_size_t), parameter :: def_size = 1024
+
+        ! Local Variables
+        type(c_ptr) :: bfr(size(buffer))
+        integer(c_size_t) :: i, nbuffers, bufferSize, nstr
+        character(kind = c_char) :: splitter
+        integer(c_size_t), allocatable, target, dimension(:) :: iw
+        integer(c_size_t), pointer, dimension(:) :: wptr
+
+        ! Initialization
+        nbuffers = int(size(buffer), c_size_t)
+        if (present(def)) then
+            bufferSize = int(def, c_size_t)
+        else
+            bufferSize = def_size
+        end if
+        do i = 1, nbuffers
+            if (allocated(buffer(i)%str)) then
+                if (len(buffer(i)%str) /= bufferSize) deallocate(buffer(i)%str)
+                allocate(character(len = bufferSize) :: buffer(i)%str)
+            else
+                allocate(character(len = bufferSize) :: buffer(i)%str)
+            end if
+            bfr(i) = c_loc(buffer(i)%str)
+        end do
+        splitter = delim
+
+        ! Establish the workspace array
+        if (present(iwork)) then
+            if (size(iwork) >= nbuffers) then
+                wptr => iwork(1:nbuffers)
+            else
+                allocate(iw(nbuffers))
+                wptr => iw
+            end if
+        else
+            allocate(iw(nbuffers))
+            wptr => iw
+        end if
+
+        ! Split the string
+        call split_string_delim(txt // c_null_char, splitter, bfr, nbuffers, &
+            bufferSize, nstr, iw)
+        n = int(nstr, int32)
+
+        ! Remove the c_null_char from the end of each string
+        do i = 1, nstr
+            nstr = wptr(i)
+            buffer(i)%str(nstr+1:bufferSize) = ""
+        end do
     end function
 
 ! ******************************************************************************

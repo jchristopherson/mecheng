@@ -2,6 +2,13 @@
 
 ! TO DO:
 ! - PSD
+! - Correlation
+!   - http://www.cgd.ucar.edu/cas/software/SUBR_UNBIASED_CORRELATION.html
+! - Cross-Spectral Density
+! - Convolution & Deconvolution
+!   - REF: http://terpconnect.umd.edu/~toh/spectrum/Deconvolution.html
+!   - Deconvolution: ydc=ifft(fft(yc)./fft([c zeros(1,2000)])).*sum(c);
+! - Transfer Function (Requires Cross-Spectral Density)
 ! - Trapezoidal Integration
 ! - Figure out how to get doxygen to encompass all of the documentation
 
@@ -187,10 +194,15 @@ module signals
     public :: fir_filter
     public :: iir_filter
     public :: apply_filter
+    public :: conv
+    public :: deconv
     public :: SIG_INVALID_INPUT_ERROR
     public :: SIG_OUT_OF_MEMORY_ERROR
     public :: SIG_INDEX_OUT_OF_RANGE_ERROR
     public :: SIG_UNITIALIZED_ERROR
+    public :: SIG_FULL_CONVOLUTION
+    public :: SIG_VALID_CONVOLUTION
+    public :: SIG_SAME_CONVOLUTION
 
 ! ******************************************************************************
 ! CONSTANTS
@@ -205,6 +217,15 @@ module signals
     integer(int32), parameter :: SIG_UNITIALIZED_ERROR = 5004
     !> Defines an array size mismatch error.
     integer(int32), parameter :: SIG_ARRAY_SIZE_ERROR = 5005
+
+    ! ----------
+    !> Defines a full convolution.
+    integer(int32), parameter :: SIG_FULL_CONVOLUTION = 10001
+    !> Defines only the valid portion of the convolution solution.
+    integer(int32), parameter :: SIG_VALID_CONVOLUTION = 10002
+    !> Defines the segment of the convolution solution that matches
+    !! the dimension of the input signal.
+    integer(int32), parameter :: SIG_SAME_CONVOLUTION = 10003
 
 ! ******************************************************************************
 ! GENERAL INTERFACES
@@ -1478,7 +1499,9 @@ end interface
     type, abstract :: realtime_filter
     contains
         !> @brief Applies a real-time digital filter.
-        procedure(apply_filter), deferred, public :: apply
+        procedure(apply_filter), deferred :: apply_scalar
+        procedure(apply_filter_array), deferred :: apply_array
+        generic, public :: apply => apply_scalar, apply_array
     end type
 
     interface
@@ -1486,13 +1509,26 @@ end interface
         !!
         !! @param[in,out] this The realtime_filter object.
         !! @param[in] x The value to filter.
-        !! @return y The filtered value.
+        !! @return The filtered value.
         function apply_filter(this, x) result(y)
             use iso_fortran_env
             import realtime_filter
             class(realtime_filter), intent(inout) :: this
             real(real64), intent(in) :: x
             real(real64) :: y
+        end function
+
+        !> @brief Applies a real-time digital filter.
+        !!
+        !! @param[in,out] this The realtime_filter object.
+        !! @param[in] x An N-element array of values to filter.
+        !! @return An N-element array containing the filtered values.
+        function apply_filter_array(this, x) result(y)
+            use iso_fortran_env
+            import realtime_filter
+            class(realtime_filter), intent(inout) :: this
+            real(real64), intent(in), dimension(:) :: x
+            real(real64), dimension(size(x)) :: y
         end function
     end interface
 
@@ -1512,7 +1548,8 @@ end interface
         procedure, public :: get_tap_count => fir_get_tap_count
         procedure, public :: get_coefficient => fir_get_coeff
         procedure, public :: set_coefficient => fir_set_coeff
-        procedure, public :: apply => fir_apply_filter
+        procedure :: apply_scalar => fir_apply_filter
+        procedure :: apply_array => fir_apply_filter_array
     end type
 
     !> @brief Defines an IIR digital filter.
@@ -1533,7 +1570,8 @@ end interface
         procedure, public :: set_numerator => iir_set_numerator_coeff
         procedure, public :: get_denominator => iir_get_denominator_coeff
         procedure, public :: set_denominator => iir_set_denominator_coeff
-        procedure, public :: apply => iir_apply_filter
+        procedure :: apply_scalar => iir_apply_filter
+        procedure :: apply_array => iir_apply_filter_array
     end type
 
     interface
@@ -1620,11 +1658,22 @@ end interface
         !!
         !! @param[in,out] this The fir_filter object.
         !! @param[in] x The value to filter.
-        !! @return y The filtered value.
+        !! @return The filtered value.
         module function fir_apply_filter(this, x) result(y)
             class(fir_filter), intent(inout) :: this
             real(real64), intent(in) :: x
             real(real64) :: y
+        end function
+
+        !> @brief Applies an FIR filter.
+        !!
+        !! @param[in,out] this The iir_filter object.
+        !! @param[in] x An N-element array of values to filter.
+        !! @return An N-element array containing the filtered values.
+        module function fir_apply_filter_array(this, x) result(y)
+            class(fir_filter), intent(inout) :: this
+            real(real64), intent(in), dimension(:) :: x
+            real(real64), dimension(size(x)) :: y
         end function
 
 ! --------------------
@@ -1754,12 +1803,219 @@ end interface
         !!
         !! @param[in,out] this The iir_filter object.
         !! @param[in] x The value to filter.
-        !! @return y The filtered value.
+        !! @return The filtered value.
         module function iir_apply_filter(this, x) result(y)
             class(iir_filter), intent(inout) :: this
             real(real64), intent(in) :: x
             real(real64) :: y
         end function
 
+        !> @brief Applies an IIR filter.
+        !!
+        !! @param[in,out] this The iir_filter object.
+        !! @param[in] x An N-element array of values to filter.
+        !! @return An N-element array containing the filtered values.
+        module function iir_apply_filter_array(this, x) result(y)
+            class(iir_filter), intent(inout) :: this
+            real(real64), intent(in), dimension(:) :: x
+            real(real64), dimension(size(x)) :: y
+        end function
+
     end interface
+
+! ******************************************************************************
+! SIGNALS_WINDOWS ROUTINES
+! ------------------------------------------------------------------------------
+    interface
+        !> @brief Computes the convolution of an array with another.
+        !!
+        !! @param[in] u An N-element input array.
+        !! @param[in] v An M-element intput array.
+        !! @param[in] sol An optional input specifying how to return the
+        !!  solution.  The following values are valid.
+        !!  - SIG_FULL_CONVOLUTION: This is the default setting, and defines
+        !!      that the entire convolution is returned.
+        !!  - SIG_VALID_CONVOLUTION: Only returns the parts of the 
+        !!      convolution that are computed without the zero-padded edges.
+        !!  - SIG_SAME_CONVOLUTION: Returns the central N-element portion of
+        !!      the convolution (same size as @p u).
+        !! @param[in,out] err An optional errors-based object that if provided 
+        !!  can be used to retrieve information relating to any errors 
+        !!  encountered during execution.  If not provided, a default 
+        !!  implementation of the errors class is used internally to provide 
+        !!  error handling.  Possible errors and warning messages that may be 
+        !!  encountered are as follows.
+        !!  - SIG_OUT_OF_MEMORY_ERROR: Occurs if there is insufficient memory
+        !!      available.
+        !! @return An N-element array containing the unpolluted portion of
+        !! the convolution.
+        !! 
+        !! @par Example
+        !! The following example illustrates the convolution and
+        !! deconvolution of a dataset.  The example is based upon the example
+        !! at http://terpconnect.umd.edu/~toh/spectrum/Deconvolution.html.
+        !! @code{.f90}
+        !! program example
+        !!     use iso_fortran_env
+        !!     use signals
+        !!     use fplot_core
+        !!     use constants
+        !!     implicit none
+        !!
+        !!     ! Parameters
+        !!     integer(int32), parameter :: ns = 2000
+        !!     real(real64), parameter :: sampleRate = 1024.0d0
+        !!     real(real64), parameter :: max_time = 1.0d0
+        !!
+        !!     ! Local Variables
+        !!     real(real64) :: t(ns), xs(ns), xr(ns), r(ns)
+        !!     real(real64), allocatable, dimension(:) :: c, xsc
+        !!     type(multiplot) :: plt
+        !!     type(plot_2d) :: plt1, plt2, plt3, plt4
+        !!     type(plot_data_2d) :: d1, d2, d3, d4
+        !!
+        !!     ! Create the signal
+        !!     t = linspace(0.0d0, max_time, ns)
+        !!     call random_number(r)
+        !!     xs = 0.0d0
+        !!     xs(900:1100) = 1.0d0
+        !!     r = 1.0d-2 * r
+        !!     xs = xs + r
+        !!     xr = exp(-2.5d1 * t)
+        !!
+        !!     ! Create a convolution of the signals
+        !!     c = conv(xs, xr)
+        !!
+        !!     ! Now, deconvolve the signals
+        !!     xsc = deconv(c, xr)
+        !!
+        !!     ! Create plots of the signal and its deconvolution
+        !!     call plt%initialize(2, 2)
+        !!     call plt1%initialize()
+        !!     call plt2%initialize()
+        !!     call plt3%initialize()
+        !!     call plt4%initialize()
+        !!     call plt%set(1, 1, plt1)
+        !!     call plt%set(1, 2, plt2)
+        !!     call plt%set(2, 1, plt3)
+        !!     call plt%set(2, 2, plt4)
+        !!
+        !!     call d1%define_data(t, xs)
+        !!     call plt1%push(d1)
+        !!     call plt1%set_title("Signal 1")
+        !!
+        !!     call d2%define_data(t, xr)
+        !!     call plt2%push(d2)
+        !!     call plt2%set_title("Signal 2")
+        !!
+        !!     call d3%define_data(t, c(1:ns))
+        !!     call plt3%push(d3)
+        !!     call plt3%set_title("Convolved")
+        !!
+        !!     call d4%define_data(t, xsc)
+        !!     call plt4%push(d4)
+        !!     call plt4%set_title("Recovered")
+        !!
+        !!     call plt%draw()
+        !! end program
+        !! @endcode
+        !! @image html convolution_plot_1.png
+        module function conv(u, v, sol, err) result(r)
+            real(real64), intent(in), dimension(:) :: u, v
+            integer(int32), intent(in), optional :: sol
+            class(errors), intent(inout), optional, target :: err
+            real(real64), allocatable, dimension(:) :: r
+        end function
+
+        !> @brief Computes the deconvolution of an array with another.
+        !!
+        !! @param[in] u An N-element input array.
+        !! @param[in] v An M-element intput array.
+        !! @param[in,out] err An optional errors-based object that if provided 
+        !!  can be used to retrieve information relating to any errors 
+        !!  encountered during execution.  If not provided, a default 
+        !!  implementation of the errors class is used internally to provide 
+        !!  error handling.  Possible errors and warning messages that may be 
+        !!  encountered are as follows.
+        !!  - SIG_OUT_OF_MEMORY_ERROR: Occurs if there is insufficient memory
+        !!      available.
+        !! @return An N-element array containing the deconvolved signal.
+        !! 
+        !! @par Example
+        !! The following example illustrates the convolution and
+        !! deconvolution of a dataset.  The example is based upon the example
+        !! at http://terpconnect.umd.edu/~toh/spectrum/Deconvolution.html.
+        !! @code{.f90}
+        !! program example
+        !!     use iso_fortran_env
+        !!     use signals
+        !!     use fplot_core
+        !!     use constants
+        !!     implicit none
+        !!
+        !!     ! Parameters
+        !!     integer(int32), parameter :: ns = 2000
+        !!     real(real64), parameter :: sampleRate = 1024.0d0
+        !!     real(real64), parameter :: max_time = 1.0d0
+        !!
+        !!     ! Local Variables
+        !!     real(real64) :: t(ns), xs(ns), xr(ns), r(ns)
+        !!     real(real64), allocatable, dimension(:) :: c, xsc
+        !!     type(multiplot) :: plt
+        !!     type(plot_2d) :: plt1, plt2, plt3, plt4
+        !!     type(plot_data_2d) :: d1, d2, d3, d4
+        !!
+        !!     ! Create the signal
+        !!     t = linspace(0.0d0, max_time, ns)
+        !!     call random_number(r)
+        !!     xs = 0.0d0
+        !!     xs(900:1100) = 1.0d0
+        !!     r = 1.0d-2 * r
+        !!     xs = xs + r
+        !!     xr = exp(-2.5d1 * t)
+        !!
+        !!     ! Create a convolution of the signals
+        !!     c = conv(xs, xr)
+        !!
+        !!     ! Now, deconvolve the signals
+        !!     xsc = deconv(c, xr)
+        !!
+        !!     ! Create plots of the signal and its deconvolution
+        !!     call plt%initialize(2, 2)
+        !!     call plt1%initialize()
+        !!     call plt2%initialize()
+        !!     call plt3%initialize()
+        !!     call plt4%initialize()
+        !!     call plt%set(1, 1, plt1)
+        !!     call plt%set(1, 2, plt2)
+        !!     call plt%set(2, 1, plt3)
+        !!     call plt%set(2, 2, plt4)
+        !!
+        !!     call d1%define_data(t, xs)
+        !!     call plt1%push(d1)
+        !!     call plt1%set_title("Signal 1")
+        !!
+        !!     call d2%define_data(t, xr)
+        !!     call plt2%push(d2)
+        !!     call plt2%set_title("Signal 2")
+        !!
+        !!     call d3%define_data(t, c(1:ns))
+        !!     call plt3%push(d3)
+        !!     call plt3%set_title("Convolved")
+        !!
+        !!     call d4%define_data(t, xsc)
+        !!     call plt4%push(d4)
+        !!     call plt4%set_title("Recovered")
+        !!
+        !!     call plt%draw()
+        !! end program
+        !! @endcode
+        !! @image html convolution_plot_1.png
+        module function deconv(u, v, err) result(r)
+            real(real64), intent(in), dimension(:) :: u, v
+            class(errors), intent(inout), optional, target :: err
+            real(real64), allocatable, dimension(:) :: r
+        end function
+    end interface
+
 end module

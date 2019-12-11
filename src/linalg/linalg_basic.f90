@@ -1099,7 +1099,7 @@ contains
             temp = a(i,i) * temp
             if (temp == zero) then
                 x = zero
-                exit
+                return
             end if
 
             do while (abs(temp) < one)

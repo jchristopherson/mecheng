@@ -36,6 +36,7 @@ module integral_core
     public :: ode_fcn
     public :: ode_jacobian
     public :: ode_constraint
+    public :: ode_callback
     public :: integration_behavior
     public :: integrator_base
     public :: finite_interval_integrator
@@ -152,6 +153,19 @@ module integral_core
             real(real64), intent(in) :: x
             real(real64), intent(in), dimension(:) :: y
             real(real64), intent(out), dimension(:) :: f
+        end subroutine
+
+        !> @brief Defines a routine for the integrator to use as
+        !! a callback routine upon successful completion of an
+        !! integration step.
+        !!
+        !! @param[in] x The value of the independent variable.
+        !! @param[in] y An N-element array containing the values
+        !!  of the dependent variables at @p x.
+        subroutine ode_callback(x, y)
+            use, intrinsic :: iso_fortran_env, only : real64
+            real(real64), intent(in) :: x
+            real(real64), intent(in), dimension(:) :: y
         end subroutine
     end interface
 
@@ -635,6 +649,9 @@ module integral_core
         integer(int32) :: m_count = 0
         !> @brief The number of constraint equations.
         integer(int32) :: m_constraints = 0
+        !> @brief A pointer to a routine that to be used as a callback
+        !! upon successful completion of an integration step.
+        procedure(ode_callback), pointer, nopass :: m_callback => null()
     contains
         !> @brief Defines the system of ODEs to solve.
         !!
@@ -963,6 +980,29 @@ module integral_core
         !! @param[out] f An M-element array where the values of the M
         !!  constraint equations are to be written.
         procedure, public :: evaluate_constraints => oh_eval_constraints
+        !> @brief Determines if a callback routine has been defined.
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! pure logical function get_callback_defined(class(ode_helper) this)
+        !! @endcode
+        !!
+        !! @param[in] this The ode_helper object.
+        !! @return True if a callback routine is defined; else, false.
+        procedure, public :: get_callback_defined => oh_get_callback_defined
+        !> @brief Evaluates the callback routine.
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! subroutine evaluate_callback(class(ode_helper) this, real(real64) x, real(real64) y(:))
+        !! @endcode
+        !!
+        !! @param[in,out] this The ode_helper object.
+        !! @param[in] x The value of the independent variable.
+        !! @param[in] y An N-element array containing the values of the
+        !!  dependent variables.
+        procedure, public :: evaluate_callback => oh_eval_callback
+        procedure, public :: define_callback => oh_define_callback
     end type
 
     interface
@@ -1023,6 +1063,22 @@ module integral_core
             real(real64), intent(in) :: x
             real(real64), intent(in), dimension(:) :: y
             real(real64), intent(out), dimension(:) :: f
+        end subroutine
+
+        pure module function oh_get_callback_defined(this) result(x)
+            class(ode_helper), intent(in) :: this
+            logical :: x
+        end function
+
+        module subroutine oh_eval_callback(this, x, y)
+            class(ode_helper), intent(inout) :: this
+            real(real64), intent(in) :: x
+            real(real64), intent(in), dimension(:) :: y
+        end subroutine
+
+        module subroutine oh_define_callback(this, fcn)
+            class(ode_helper), intent(inout) :: this
+            procedure(ode_callback), intent(in), pointer :: fcn
         end subroutine
     end interface
 

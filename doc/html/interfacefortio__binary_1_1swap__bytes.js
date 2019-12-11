@@ -1,5 +1,7 @@
 var interfacefortio__binary_1_1swap__bytes =
 [
+    [ "swap_bytes_cmplx32", "interfacefortio__binary_1_1swap__bytes.html#ae94d6c76c988228cd7cf5d70ae7ecf04", null ],
+    [ "swap_bytes_cmplx64", "interfacefortio__binary_1_1swap__bytes.html#abbf170d9384defd3563b22f37c9d0b8d", null ],
     [ "swap_bytes_double", "interfacefortio__binary_1_1swap__bytes.html#a75b1d84eb8089b9d9b33b05097fd96fa", null ],
     [ "swap_bytes_int16", "interfacefortio__binary_1_1swap__bytes.html#a6f9aaa065d376aba40a63b89518177fb", null ],
     [ "swap_bytes_int32", "interfacefortio__binary_1_1swap__bytes.html#ab4de44efa7f0f59a0afa13391809bd3a", null ],

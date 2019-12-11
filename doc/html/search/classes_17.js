@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['z_5faxis',['z_axis',['../structfplot__core_1_1z__axis.html',1,'fplot_core']]],
-  ['z_5fvalue',['z_value',['../interfacecurvefit__statistics_1_1z__value.html',1,'curvefit_statistics']]]
+  ['y2_5faxis_1780',['y2_axis',['../structfplot__core_1_1y2__axis.html',1,'fplot_core']]],
+  ['y_5faxis_1781',['y_axis',['../structfplot__core_1_1y__axis.html',1,'fplot_core']]]
 ];

@@ -19,7 +19,7 @@ contains
         class(errors), pointer :: errmgr
         type(errors), target :: deferr
         character(len = 256) :: errmsg
-        logical :: brk, ascending
+        logical :: brk, ascending, callback
 
         ! Initialization
         if (present(err)) then
@@ -41,6 +41,7 @@ contains
                 "Insufficient memory available.", INT_OUT_OF_MEMORY_ERROR)
             return
         end if
+        callback = fcnobj%get_callback_defined()
 
         ! Quick Return
         if (neqn <= 0) return
@@ -141,6 +142,13 @@ contains
             if (.not.this%get_provide_all_output()) xout = x(i)
             brk = this%step(fcnobj, xi, ytemp, xout, this%m_rtol, this%m_atol, &
                 errmgr)
+
+            ! Utilize the callback, if defined
+            if (callback) then
+                call fcnobj%evaluate_callback(xi, ytemp)
+            end if
+
+            ! See if the integrator requested a stop condition
             if (brk) then
                 ! Store the output, and then exit
                 buffer(i,1) = xi

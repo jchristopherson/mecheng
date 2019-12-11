@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['u',['u',['../structlinalg__immutable_1_1lu__results.html#ab1af96c7808037f63563e1bf912c4dad',1,'linalg_immutable::lu_results::u()'],['../structlinalg__immutable_1_1lu__results__cmplx.html#a7488afe2004b11c8fed4c517400fde98',1,'linalg_immutable::lu_results_cmplx::u()'],['../structlinalg__immutable_1_1svd__results.html#a582822c9765048fcb8632d72a6ed506a',1,'linalg_immutable::svd_results::u()']]],
-  ['unit',['unit',['../structfortio__hbm_1_1hbm__data__channel.html#a17c01c7070e6efdb3b310d633124324c',1,'fortio_hbm::hbm_data_channel']]],
-  ['user_5fscale',['user_scale',['../structfortio__hbm_1_1hbm__data__channel.html#aeb58e31e551bb681bcb873165974be34',1,'fortio_hbm::hbm_data_channel']]],
-  ['user_5fscale_5fpoints',['user_scale_points',['../structfortio__hbm_1_1hbm__data__channel.html#af1da46b5ac96879d17b47f2dbd0ce275',1,'fortio_hbm::hbm_data_channel']]]
+  ['tolerance_3063',['tolerance',['../structmeasurements_1_1ems__grr__results.html#af7bf2ec93da10e37f2aaa8c4cc7a566b',1,'measurements::ems_grr_results::tolerance()'],['../structmeasurements_1_1emp__grr__results.html#a50147bcac95b81042de8aa98437c2a52',1,'measurements::emp_grr_results::tolerance()']]],
+  ['total_5fdof_3064',['total_dof',['../structmeasurements_1_1ems__grr__results.html#ac144eb63b519b02a46aa78ea80131de8',1,'measurements::ems_grr_results']]],
+  ['total_5fvariation_3065',['total_variation',['../structmeasurements_1_1ems__grr__results.html#ab026efc119fd89e5e332d502a53e8e3e',1,'measurements::ems_grr_results::total_variation()'],['../structmeasurements_1_1emp__grr__results.html#ad2d7d70276b573f10200136093327cda',1,'measurements::emp_grr_results::total_variation()']]]
 ];

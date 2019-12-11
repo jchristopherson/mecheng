@@ -1,18 +1,17 @@
 /*
-@ @licstart  The following is the entire license notice for the
+@licstart  The following is the entire license notice for the
 JavaScript code in this file.
 
-Copyright (C) 1997-2017 by Dimitri van Heesch
+Copyright (C) 1997-2019 by Dimitri van Heesch
 
 This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
+it under the terms of version 2 of the GNU General Public License as published by
+the Free Software Foundation
 
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License along
 with this program; if not, write to the Free Software Foundation, Inc.,
@@ -51,13 +50,14 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"interfacefplot__core_1_1pd__get__string__result.html",
-"interfacesignals_1_1trapz__integrate.html#a6431f20b94136b0776525e4144109a77",
-"structcontrols_1_1pid.html#a7c167c9a31a63d747d917020a6df0d39",
-"structfortio__text_1_1text__file__manager.html#a8469433e9bb1c063ef1ed1efa3fa052e",
-"structfplot__core_1_1plot__label.html#a9156c3e3b66556190ed17e850134578c",
-"structintegral__core_1_1ode__integrator.html#adc71c097e606811693bd4a60d99481ca",
-"structstrings_1_1string__builder.html#a8d4992a64af1cca3aea9a4665b5f9528"
+"interfacecurvefit__interp_1_1interp__xy.html",
+"interfacelinalg__immutable_1_1mat__solve__upper__tri.html#a59e1f0aed5b9fd5b952542d8e669fdbd",
+"signals__diff_8f90_source.html",
+"structfortio__binary_1_1binary__formatter.html#a492f938576fb4de4f558e2e3ab2639da",
+"structfplot__core_1_1plot.html#a945ff02d37879c256fbc56315782011d",
+"structfplot__core_1_1terminal.html#a3a008d4ce638c31b5fca9866912e7637",
+"structnonlin__core_1_1equation__optimizer.html#a418a8ea0832d48a51bb1ab6bb984bb50",
+"structvibrations_1_1state__space.html#a7fce57fae4e6a43b279096beb4624f41"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

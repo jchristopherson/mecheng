@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.7)
 project(mecheng C CXX Fortran)
 
 # Define version information
-set(MECHENG_MAJOR_VERSION 1)
+set(MECHENG_MAJOR_VERSION 2)
 set(MECHENG_MINOR_VERSION 0)
 set(MECHENG_PATCH_VERSION 0)
 set(MECHENG_VERSION ${MECHENG_MAJOR_VERSION}.${MECHENG_MINOR_VERSION}.${MECHENG_PATCH_VERSION})
@@ -69,19 +69,22 @@ get_filename_component (Fortran_COMPILER_NAME ${CMAKE_Fortran_COMPILER} NAME)
 
 if (Fortran_COMPILER_NAME MATCHES "gfortran.*")
   # gfortran
-  set(CMAKE_Fortran_FLAGS_RELEASE "-funroll-all-loops -fno-f2c -O3")
-  set(CMAKE_Fortran_FLAGS_DEBUG   "-fno-f2c -O0 -g -Wall -Wno-surprising")
+  set(CMAKE_Fortran_FLAGS_RELEASE "-funroll-all-loops -fno-f2c -O3 -Wl,--allow-multiple-definition")
+  set(CMAKE_Fortran_FLAGS_DEBUG   "-fno-f2c -O0 -g -Wall -Wno-surprising -Wl,--allow-multiple-definition")
 elseif (Fortran_COMPILER_NAME MATCHES "ifort.*")
   # ifort (untested)
-  set(CMAKE_Fortran_FLAGS_RELEASE "-f77rtl -O3")
-  set(CMAKE_Fortran_FLAGS_DEBUG   "-f77rtl -O0 -g")
+  set(CMAKE_Fortran_FLAGS_RELEASE "-f77rtl -O3 -Wl,--allow-multiple-definition")
+  set(CMAKE_Fortran_FLAGS_DEBUG   "-f77rtl -O0 -g -Wl,--allow-multiple-definition")
 else (Fortran_COMPILER_NAME MATCHES "gfortran.*")
   message(STATUS "CMAKE_Fortran_COMPILER full path: " ${CMAKE_Fortran_COMPILER})
   message(STATUS "Fortran compiler: " ${Fortran_COMPILER_NAME})
   message(STATUS "No optimized Fortran compiler flags are known, we just try -O2...")
-  set(CMAKE_Fortran_FLAGS_RELEASE "-O2")
-  set(CMAKE_Fortran_FLAGS_DEBUG   "-O0 -g -Wall")
+  set(CMAKE_Fortran_FLAGS_RELEASE "-O2 -Wl,--allow-multiple-definition")
+  set(CMAKE_Fortran_FLAGS_DEBUG   "-O0 -g -Wall -Wl,--allow-multiple-definition")
 endif (Fortran_COMPILER_NAME MATCHES "gfortran.*")
+
+# Locate C/C++ Headers
+include_directories(${PROJECT_SOURCE_DIR}/include)
 
 # Build the library
 add_subdirectory(src)

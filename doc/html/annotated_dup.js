@@ -1,5 +1,6 @@
 var annotated_dup =
 [
+    [ "arrays", "namespacearrays.html", "namespacearrays" ],
     [ "collection_containers", "namespacecollection__containers.html", "namespacecollection__containers" ],
     [ "collection_linked_list", "namespacecollection__linked__list.html", "namespacecollection__linked__list" ],
     [ "collection_list", "namespacecollection__list.html", "namespacecollection__list" ],
@@ -45,6 +46,7 @@ var annotated_dup =
     ] ],
     [ "linalg_core", "namespacelinalg__core.html", "namespacelinalg__core" ],
     [ "linalg_immutable", "namespacelinalg__immutable.html", "namespacelinalg__immutable" ],
+    [ "measurements", "namespacemeasurements.html", "namespacemeasurements" ],
     [ "nonlin_core", "namespacenonlin__core.html", "namespacenonlin__core" ],
     [ "nonlin_least_squares", "namespacenonlin__least__squares.html", "namespacenonlin__least__squares" ],
     [ "nonlin_linesearch", "namespacenonlin__linesearch.html", "namespacenonlin__linesearch" ],
@@ -54,13 +56,22 @@ var annotated_dup =
     [ "signals", "namespacesignals.html", "namespacesignals" ],
     [ "strain", "namespacestrain.html", "namespacestrain" ],
     [ "strings", null, [
+      [ "split_string", "interfacestrings_1_1split__string.html", "interfacestrings_1_1split__string" ],
+      [ "split_string_delim", "interfacestrings_1_1split__string__delim.html", "interfacestrings_1_1split__string__delim" ],
       [ "string", "structstrings_1_1string.html", "structstrings_1_1string" ],
       [ "string_builder", "structstrings_1_1string__builder.html", "structstrings_1_1string__builder" ],
       [ "string_to_number", "interfacestrings_1_1string__to__number.html", "interfacestrings_1_1string__to__number" ],
       [ "to_string", "interfacestrings_1_1to__string.html", "interfacestrings_1_1to__string" ]
     ] ],
     [ "vibrations", null, [
+      [ "bode_settings", "structvibrations_1_1bode__settings.html", "structvibrations_1_1bode__settings" ],
       [ "compute_frequency_response", "interfacevibrations_1_1compute__frequency__response.html", "interfacevibrations_1_1compute__frequency__response" ],
-      [ "modal_information", "structvibrations_1_1modal__information.html", "structvibrations_1_1modal__information" ]
+      [ "frequency_sweep_options", "structvibrations_1_1frequency__sweep__options.html", "structvibrations_1_1frequency__sweep__options" ],
+      [ "frf_fitting_tool", "structvibrations_1_1frf__fitting__tool.html", "structvibrations_1_1frf__fitting__tool" ],
+      [ "harmonic_ode_fcn", "interfacevibrations_1_1harmonic__ode__fcn.html", "interfacevibrations_1_1harmonic__ode__fcn" ],
+      [ "lti", "structvibrations_1_1lti.html", "structvibrations_1_1lti" ],
+      [ "modal_information", "structvibrations_1_1modal__information.html", "structvibrations_1_1modal__information" ],
+      [ "pole_zero_settings", "structvibrations_1_1pole__zero__settings.html", "structvibrations_1_1pole__zero__settings" ],
+      [ "state_space", "structvibrations_1_1state__space.html", "structvibrations_1_1state__space" ]
     ] ]
 ];

@@ -87,4 +87,26 @@ contains
     end subroutine
 
 ! ------------------------------------------------------------------------------
+    pure module function oh_get_callback_defined(this) result(x)
+        class(ode_helper), intent(in) :: this
+        logical :: x
+        x = associated(this%m_callback)
+    end function
+
+! ------------------------------------------------------------------------------
+    module subroutine oh_eval_callback(this, x, y)
+        class(ode_helper), intent(inout) :: this
+        real(real64), intent(in) :: x
+        real(real64), intent(in), dimension(:) :: y
+        call this%m_callback(x, y)
+    end subroutine
+
+! ------------------------------------------------------------------------------
+    module subroutine oh_define_callback(this, fcn)
+        class(ode_helper), intent(inout) :: this
+        procedure(ode_callback), intent(in), pointer :: fcn
+        this%m_callback => fcn
+    end subroutine
+
+! ------------------------------------------------------------------------------
 end submodule

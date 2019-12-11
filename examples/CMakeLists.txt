@@ -65,3 +65,51 @@ target_link_libraries(realtime_example_2 mecheng)
 # REALTIME EXAMPLE 3
 add_executable(realtime_example_3 realtime_example_3.f90)
 target_link_libraries(realtime_example_3 mecheng)
+
+# COULOMB FRICTION EXAMPLE
+add_executable(coulomb_friction_example coulomb_friction_example.f90)
+target_link_libraries(coulomb_friction_example mecheng)
+
+# LU GRE FRICTION EXAMPLE
+add_executable(lu_gre_friction_example lu_gre_friction_example.f90)
+target_link_libraries(lu_gre_friction_example mecheng)
+
+# LTI EXAMPLE 1
+add_executable(lti_example_1 lti_example_1.f90)
+target_link_libraries(lti_example_1 mecheng)
+
+# LTI EXAMPLE 2
+add_executable(lti_example_2 lti_example_2.f90)
+target_link_libraries(lti_example_2 mecheng)
+
+# LTI EXAMPLE 3
+add_executable(lti_example_3 lti_example_3.f90)
+target_link_libraries(lti_example_3 mecheng)
+
+# LTI EXAMPLE 4
+add_executable(lti_example_4 lti_example_4.f90)
+target_link_libraries(lti_example_4 mecheng)
+
+# LTI EXAMPLE 5
+add_executable(lti_example_5 lti_example_5.f90)
+target_link_libraries(lti_example_5 mecheng)
+
+# FREQUENCY SWEEP EXAMPLE 1
+add_executable(frequency_sweep_example_1 frequency_sweep_example_1.f90)
+target_link_libraries(frequency_sweep_example_1 mecheng)
+
+# FRF FITTING EXAMPLE 1
+add_executable(frf_fit_example_1 frf_fit_example.f90)
+target_link_libraries(frf_fit_example_1 mecheng)
+
+# CONVOLUTION EXAMPLE 1
+add_executable(signal_conv_example_1 signal_conv_example_1.f90)
+target_link_libraries(signal_conv_example_1 mecheng)
+
+# STRINGS EXAMPLE 1
+add_executable(strings_example strings_example.f90)
+target_link_libraries(strings_example mecheng)
+
+# GAUGE R&R EXAMPLE
+add_executable(grr_example grr_example.f90)
+target_link_libraries(grr_example mecheng)
