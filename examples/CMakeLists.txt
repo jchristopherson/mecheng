@@ -113,3 +113,7 @@ target_link_libraries(strings_example mecheng)
 # GAUGE R&R EXAMPLE
 add_executable(grr_example grr_example.f90)
 target_link_libraries(grr_example mecheng)
+
+# GENANN EXAMPLE 1
+add_executable(genann_example_1 genann_example_1.f90)
+target_link_libraries(genann_example_1 mecheng)
