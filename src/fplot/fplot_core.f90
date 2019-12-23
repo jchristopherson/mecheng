@@ -2433,7 +2433,8 @@ module fplot_core
         !> The GNUPLOT terminal object to target.
         class(terminal), pointer :: m_terminal => null()
         !> A collection of plot_data items to plot.
-        type(list) :: m_data
+        ! type(list) :: m_data  ! Switched to a persistent_list on 12/23/2019 - JAC
+        type(persistent_list) :: m_data
         !> The legend.
         type(legend), pointer :: m_legend => null()
         !> Show grid lines?
