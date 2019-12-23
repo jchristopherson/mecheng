@@ -63,7 +63,7 @@ module genann_core
         !! @return A C-pointer to a new genann object.
         function genann_init(inputs, hidden_layers, hidden, outputs) result(ann) bind(C, name = "genann_init")
             use iso_c_binding
-            integer(c_int), intent(in) :: inputs, hidden_layers, hidden, outputs
+            integer(c_int), intent(in), value :: inputs, hidden_layers, hidden, outputs
             type(c_ptr) :: ann
         end function
 
