@@ -521,7 +521,7 @@ set(general_sources
 include_directories(${PROJECT_SOURCE_DIR}/src/external/genann)
 set(genann_sources
     external/genann/genann.c
-    external/genann.f90
+    genann/genann.f90
 )
 
 # Define the MECHENG source files
