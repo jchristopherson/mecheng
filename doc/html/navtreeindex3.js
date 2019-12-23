@@ -246,8 +246,8 @@ var NAVTREEINDEX3 =
 "structfortio__binary_1_1binary__formatter.html#a3729b7795bca56f404da9285ba6e6716":[1,0,12,1,40],
 "structfortio__binary_1_1binary__formatter.html#a37421738a85b6eaa1b8cffeae62b6687":[1,0,12,1,55],
 "structfortio__binary_1_1binary__formatter.html#a41c56f4a74cd4beee7954af0ff420ee3":[1,0,12,1,29],
-"structfortio__binary_1_1binary__formatter.html#a439de3c5f4d77b69834482d400a7f6f0":[1,0,12,1,0],
 "structfortio__binary_1_1binary__formatter.html#a43b13eadff95192c5e1d1ea4bbd5f3e1":[1,0,12,1,62],
 "structfortio__binary_1_1binary__formatter.html#a440e0422dc9429610e41e55d05e60dc7":[1,0,12,1,64],
-"structfortio__binary_1_1binary__formatter.html#a461e9d4bba69ab31201b39e1a7e460ff":[1,0,12,1,31]
+"structfortio__binary_1_1binary__formatter.html#a461e9d4bba69ab31201b39e1a7e460ff":[1,0,12,1,31],
+"structfortio__binary_1_1binary__formatter.html#a492f938576fb4de4f558e2e3ab2639da":[1,0,12,1,61]
 };

@@ -36,7 +36,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">mecheng
-   &#160;<span id="projectnumber">2.0.0</span>
+   &#160;<span id="projectnumber">2.1.0</span>
    </div>
    <div id="projectbrief">A library providing common mechanical engineering related calculations.</div>
   </td>
@@ -120,6 +120,9 @@ Functions/Subroutines</h2></td></tr>
 <tr class="memitem:a59489d16e7cdbe029501fa19b8e66449"><td class="memItemLeft" align="right" valign="top">pure real(real64) function, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacemeasurements.html#a59489d16e7cdbe029501fa19b8e66449">discrimination_ratio</a> (tv, mv)</td></tr>
 <tr class="memdesc:a59489d16e7cdbe029501fa19b8e66449"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the sum of the squares of the difference between the mean for each part, and the overall mean.  <a href="namespacemeasurements.html#a59489d16e7cdbe029501fa19b8e66449">More...</a><br /></td></tr>
 <tr class="separator:a59489d16e7cdbe029501fa19b8e66449"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a183cbeecccf70e96ba5a9078ce8d8bc8"><td class="memItemLeft" align="right" valign="top">subroutine, public&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacemeasurements.html#a183cbeecccf70e96ba5a9078ce8d8bc8">plot_grr</a> (x, plt, err)</td></tr>
+<tr class="memdesc:a183cbeecccf70e96ba5a9078ce8d8bc8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a GR&amp;R plot.  <a href="namespacemeasurements.html#a183cbeecccf70e96ba5a9078ce8d8bc8">More...</a><br /></td></tr>
+<tr class="separator:a183cbeecccf70e96ba5a9078ce8d8bc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
@@ -265,12 +268,195 @@ integer(int32), parameter&#160;</td><td class="memItemRight" valign="bottom"><a 
 <dl class="section user"><dt></dt><dd>An alternate means of computing this parameter (as used in JMP) is as follows. </dd></dl>
 <dl class="section user"><dt></dt><dd>/f$ DR = 1.41 \frac{\sigma_{parts}}{\sigma_{meas}} /f$ </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="measurements_8f90_source.html#l00562">562</a> of file <a class="el" href="measurements_8f90_source.html">measurements.f90</a>.</p>
+<p class="definition">Definition at line <a class="el" href="measurements_8f90_source.html#l00564">564</a> of file <a class="el" href="measurements_8f90_source.html">measurements.f90</a>.</p>
+
+</div>
+</div>
+<a id="a183cbeecccf70e96ba5a9078ce8d8bc8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a183cbeecccf70e96ba5a9078ce8d8bc8">&#9670;&nbsp;</a></span>plot_grr()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">subroutine, public measurements::plot_grr </td>
+          <td>(</td>
+          <td class="paramtype">real(real64), dimension(:,:,:), intent(in)&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">class(<a class="el" href="structfplot__core_1_1plot.html">plot</a>), intent(inout)&#160;</td>
+          <td class="paramname"><em>plt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">class(<a class="el" href="structferror_1_1errors.html">errors</a>), intent(inout), optional, target&#160;</td>
+          <td class="paramname"><em>err</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Creates a GR&amp;R plot. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">x</td><td>The M-by-N-by-P GR&amp;R data matrix where M is the number of parts, N is the number of tests, and P is the number of operators. </td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">plt</td><td>The plot object to which the data will be added. </td></tr>
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">err</td><td>An optional errors-based object that if provided can be used to retrieve information relating to any errors encountered during execution. If not provided, a default implementation of the errors class is used internally to provide error handling. Possible errors and warning messages that may be encountered are as follows.<ul>
+<li>MS_OUT_OF_MEMORY_ERROR: Occurs if there is insufficient memory available.</li>
+</ul>
+</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section user"><dt>Example</dt><dd><div class="fragment"><div class="line"><span class="keyword">program</span> example</div>
+<div class="line">    <span class="keywordtype">use </span>iso_fortran_env</div>
+<div class="line">    <span class="keywordtype">use </span><a class="code" href="namespacemeasurements.html">measurements</a></div>
+<div class="line">    <span class="keywordtype">use </span><a class="code" href="namespacefplot__core.html">fplot_core</a></div>
+<div class="line">    <span class="keywordtype">implicit none</span></div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">! Parameters</span></div>
+<div class="line"><span class="keywordtype">    real</span>(real64), <span class="keywordtype">parameter</span> :: tol = 1.0d3</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">! Variables</span></div>
+<div class="line"><span class="keywordtype">    real</span>(real64), <span class="keywordtype">allocatable</span>, <span class="keywordtype">dimension(:,:,:)</span> :: x</div>
+<div class="line">    <span class="keywordtype">type</span>(ems_grr_results) :: ems</div>
+<div class="line">    <span class="keywordtype">type</span>(emp_grr_results) :: emp</div>
+<div class="line">    <span class="keywordtype">type</span>(plot_2d) :: plt</div>
+<div class="line">    <span class="keywordtype">class</span>(plot_axis), <span class="keywordtype">pointer</span> :: xAxis, yAxis</div>
+<div class="line">    <span class="keywordtype">class</span>(legend), <span class="keywordtype">pointer</span> :: lgnd</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">! Populate the data set</span></div>
+<div class="line">    x = format_data()</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">! Compute the GR&amp;R using the EMS approach</span></div>
+<div class="line">    ems = ems_gauge_r_r(x, tol = tol)</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">! Compute the GR&amp;R using the EMP approach</span></div>
+<div class="line">    emp = emp_gauge_r_r(x, tol = tol)</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">! Compare results</span></div>
+<div class="line">    print <span class="stringliteral">&#39;(A)&#39;</span>, <span class="stringliteral">&quot;EMS Method&quot;</span></div>
+<div class="line">    print <span class="stringliteral">&#39;(AE10.3AF5.2A)&#39;</span>, <span class="stringliteral">&quot;Repeatability: &quot;</span>, ems%repeatability, &amp;</div>
+<div class="line">        <span class="stringliteral">&quot; (&quot;</span>, 1.0d2 * ems%repeatability / ems%total_variation, <span class="stringliteral">&quot;%)&quot;</span></div>
+<div class="line">    print <span class="stringliteral">&#39;(AE10.3AF5.2A)&#39;</span>, <span class="stringliteral">&quot;Reproducibility: &quot;</span>, ems%reproducibility, &amp;</div>
+<div class="line">        <span class="stringliteral">&quot; (&quot;</span>, 1.0d2 * ems%reproducibility / ems%total_variation, <span class="stringliteral">&quot;%)&quot;</span></div>
+<div class="line">    print <span class="stringliteral">&#39;(AE10.3AF5.2A)&#39;</span>, <span class="stringliteral">&quot;Gauge Variance: &quot;</span>, ems%gauge_variation, &amp;</div>
+<div class="line">        <span class="stringliteral">&quot; (&quot;</span>, 1.0d2 * ems%gauge_variation / ems%total_variation, <span class="stringliteral">&quot;%)&quot;</span></div>
+<div class="line">    print <span class="stringliteral">&#39;(AE10.3AF5.2A)&#39;</span>, <span class="stringliteral">&quot;Part-Part Variance: &quot;</span>, ems%part_variation, &amp;</div>
+<div class="line">        <span class="stringliteral">&quot; (&quot;</span>, 1.0d2 * ems%part_variation / ems%total_variation, <span class="stringliteral">&quot;%)&quot;</span></div>
+<div class="line">    print <span class="stringliteral">&#39;(AE10.3)&#39;</span>, <span class="stringliteral">&quot;Total Variance: &quot;</span>, ems%total_variation</div>
+<div class="line">    print <span class="stringliteral">&#39;(AF5.3)&#39;</span>, <span class="stringliteral">&quot;P/T Ratio: &quot;</span>, ems%pt_ratio</div>
+<div class="line">    print <span class="stringliteral">&#39;(AF5.3)&#39;</span>, <span class="stringliteral">&quot;P/TV Ratio: &quot;</span>, ems%ptv_ratio</div>
+<div class="line"> </div>
+<div class="line">    print <span class="stringliteral">&#39;(A)&#39;</span>, new_line(<span class="stringliteral">&#39;a&#39;</span>) // <span class="stringliteral">&quot;EMP Method&quot;</span></div>
+<div class="line">    print <span class="stringliteral">&#39;(AE10.3AF5.2A)&#39;</span>, <span class="stringliteral">&quot;Repeatability: &quot;</span>, emp%repeatability, &amp;</div>
+<div class="line">        <span class="stringliteral">&quot; (&quot;</span>, 1.0d2 * emp%repeatability / emp%total_variation, <span class="stringliteral">&quot;%)&quot;</span></div>
+<div class="line">    print <span class="stringliteral">&#39;(AE10.3AF5.2A)&#39;</span>, <span class="stringliteral">&quot;Reproducibility: &quot;</span>, emp%reproducibility, &amp;</div>
+<div class="line">        <span class="stringliteral">&quot; (&quot;</span>, 1.0d2 * emp%reproducibility / emp%total_variation, <span class="stringliteral">&quot;%)&quot;</span></div>
+<div class="line">    print <span class="stringliteral">&#39;(AE10.3AF5.2A)&#39;</span>, <span class="stringliteral">&quot;Gauge Variance: &quot;</span>, emp%gauge_variation, &amp;</div>
+<div class="line">        <span class="stringliteral">&quot; (&quot;</span>, 1.0d2 * emp%gauge_variation / emp%total_variation, <span class="stringliteral">&quot;%)&quot;</span></div>
+<div class="line">    print <span class="stringliteral">&#39;(AE10.3AF5.2A)&#39;</span>, <span class="stringliteral">&quot;Part-Part Variance: &quot;</span>, emp%part_variation, &amp;</div>
+<div class="line">        <span class="stringliteral">&quot; (&quot;</span>, 1.0d2 * emp%part_variation / emp%total_variation, <span class="stringliteral">&quot;%)&quot;</span></div>
+<div class="line">    print <span class="stringliteral">&#39;(AE10.3)&#39;</span>, <span class="stringliteral">&quot;Total Variance: &quot;</span>, emp%total_variation</div>
+<div class="line">    print <span class="stringliteral">&#39;(AF5.3)&#39;</span>, <span class="stringliteral">&quot;P/T Ratio: &quot;</span>, emp%pt_ratio</div>
+<div class="line">    print <span class="stringliteral">&#39;(AF5.3)&#39;</span>, <span class="stringliteral">&quot;P/TV Ratio: &quot;</span>, emp%ptv_ratio</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">! Create a plot of the data</span></div>
+<div class="line">    <span class="keyword">call </span>plt%initialize()</div>
+<div class="line">    <span class="keyword">call </span>plt%set_font_size(14)</div>
+<div class="line">    <span class="keyword">call </span>plt%set_show_gridlines(.false.)</div>
+<div class="line"> </div>
+<div class="line">    xaxis =&gt; plt%get_x_axis()</div>
+<div class="line">    yaxis =&gt; plt%get_y_axis()</div>
+<div class="line"> </div>
+<div class="line">    <span class="keyword">call </span>xaxis%set_title(<span class="stringliteral">&quot;Part No.&quot;</span>)</div>
+<div class="line">    <span class="keyword">call </span>yaxis%set_title(<span class="stringliteral">&quot;Measured&quot;</span>)</div>
+<div class="line"> </div>
+<div class="line">    lgnd =&gt; plt%get_legend()</div>
+<div class="line">    <span class="keyword">call </span>lgnd%set_is_visible(.true.)</div>
+<div class="line"> </div>
+<div class="line">    <span class="keyword">call </span>plot_grr(x, plt)</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">! Show the plot</span></div>
+<div class="line">    <span class="keyword">call </span>plt%draw()</div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">contains</span></div>
+<div class="line">    <span class="comment">! The data set is # of parts -by- # of tests -by- # of operators</span></div>
+<div class="line">    <span class="keyword">function </span>format_data() <span class="keyword">result</span>(x)</div>
+<div class="line">        <span class="comment">! Arguments</span></div>
+<div class="line"><span class="keywordtype">        real</span>(real64), <span class="keywordtype">allocatable</span>, <span class="keywordtype">dimension(:,:,:)</span> :: x</div>
+<div class="line"> </div>
+<div class="line">        <span class="comment">! Parameters</span></div>
+<div class="line">        <span class="keywordtype">integer(int32)</span>, <span class="keywordtype">parameter</span> :: nparts = 9</div>
+<div class="line">        <span class="keywordtype">integer(int32)</span>, <span class="keywordtype">parameter</span> :: nops = 2</div>
+<div class="line">        <span class="keywordtype">integer(int32)</span>, <span class="keywordtype">parameter</span> :: ntests = 3</div>
+<div class="line"> </div>
+<div class="line">        <span class="comment">! Local Variables</span></div>
+<div class="line"><span class="keywordtype">        real</span>(real64), <span class="keywordtype">allocatable</span>, <span class="keywordtype">dimension(:)</span> :: op</div>
+<div class="line"> </div>
+<div class="line">        <span class="comment">! Allocate space for the output</span></div>
+<div class="line">        <span class="keyword">allocate</span>(x(nparts, ntests, nops))</div>
+<div class="line">        <span class="keyword">allocate</span>(op(nparts * ntests))</div>
+<div class="line"> </div>
+<div class="line">        <span class="comment">! Fill in the data for operator 1</span></div>
+<div class="line">        op = [39736.0d0, 40088.0d0, 39952.0d0, 39840.0d0, &amp;</div>
+<div class="line">            39792.0d0, 39968.0d0, 39384.0d0, 39648.0d0, &amp;</div>
+<div class="line">            39704.0d0, 39152.0d0, 39240.0d0, 39312.0d0, &amp;</div>
+<div class="line">            38832.0d0, 38688.0d0, 38704.0d0, 38936.0d0, &amp;</div>
+<div class="line">            38872.0d0, 38928.0d0, 39040.0d0, 38952.0d0, &amp;</div>
+<div class="line">            38968.0d0, 39128.0d0, 38928.0d0, 38928.0d0, &amp;</div>
+<div class="line">            38712.0d0, 38688.0d0, 38624.0d0]</div>
+<div class="line">        x(:,:,1) = transpose(reshape(op, [ntests, nparts]))</div>
+<div class="line"> </div>
+<div class="line">        <span class="comment">! Fill in the data for operator 2</span></div>
+<div class="line">        op = [40256.0d0, 39864.0d0, 39792.0d0, 39816.0d0, &amp;</div>
+<div class="line">            39888.0d0, 39784.0d0, 39760.0d0, 39944.0d0, &amp;</div>
+<div class="line">            39832.0d0, 39272.0d0, 39288.0d0, 39296.0d0, &amp;</div>
+<div class="line">            38728.0d0, 38768.0d0, 38704.0d0, 38896.0d0, &amp;</div>
+<div class="line">            38952.0d0, 38968.0d0, 39032.0d0, 38968.0d0, &amp;</div>
+<div class="line">            38992.0d0, 39032.0d0, 39008.0d0, 38968.0d0, &amp;</div>
+<div class="line">            38592.0d0, 38640.0d0, 38584.0d0]</div>
+<div class="line">        x(:,:,2) = transpose(reshape(op, [ntests, nparts]))</div>
+<div class="line">    <span class="keyword">end function</span></div>
+<div class="line"><span class="keyword">end program</span></div>
+</div><!-- fragment --> The above code produces the following output. <div class="fragment"><div class="line">EMS Method</div>
+<div class="line">Repeatability:  0.999E+04 ( 4.00%)</div>
+<div class="line">Reproducibility:  0.127E+04 ( 0.51%)</div>
+<div class="line">Gauge Variance:  0.113E+05 ( 4.52%)</div>
+<div class="line">Part-Part Variance:  0.238E+06 (95.48%)</div>
+<div class="line">Total Variance:  0.250E+06</div>
+<div class="line">P/T Ratio: 0.637</div>
+<div class="line">P/TV Ratio: 0.045</div>
+<div class="line"> </div>
+<div class="line">EMP Method</div>
+<div class="line">Repeatability:  0.778E+04 ( 3.84%)</div>
+<div class="line">Reproducibility:  0.835E+03 ( 0.41%)</div>
+<div class="line">Gauge Variance:  0.862E+04 ( 4.25%)</div>
+<div class="line">Part-Part Variance:  0.194E+06 (95.75%)</div>
+<div class="line">Total Variance:  0.203E+06</div>
+<div class="line">P/T Ratio: 0.557</div>
+<div class="line">P/TV Ratio: 0.043</div>
+</div><!-- fragment --> <div class="image">
+<img src="grr_plot_example.png" alt=""/>
+</div>
+ </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="measurements_8f90_source.html#l00719">719</a> of file <a class="el" href="measurements_8f90_source.html">measurements.f90</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 </div><!-- doc-content -->
+<div class="ttc" id="anamespacefplot__core_html"><div class="ttname"><a href="namespacefplot__core.html">fplot_core</a></div><div class="ttdoc">fplot_core</div><div class="ttdef"><b>Definition:</b> <a href="fplot__core_8f90_source.html#l00014">fplot_core.f90:14</a></div></div>
+<div class="ttc" id="anamespacemeasurements_html"><div class="ttname"><a href="namespacemeasurements.html">measurements</a></div><div class="ttdoc">Provides a collection of routines for operating on experimental measurement data.</div><div class="ttdef"><b>Definition:</b> <a href="measurements_8f90_source.html#l00005">measurements.f90:5</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>

@@ -36,7 +36,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">mecheng
-   &#160;<span id="projectnumber">2.0.0</span>
+   &#160;<span id="projectnumber">2.1.0</span>
    </div>
    <div id="projectbrief">A library providing common mechanical engineering related calculations.</div>
   </td>
@@ -103,140 +103,214 @@ $(document).ready(function(){initNavTree('measurements_8f90_source.html','');});
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;    <span class="keywordtype">use </span>iso_fortran_env</div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;    <span class="keywordtype">use </span><a class="code" href="namespacecurvefit__statistics.html">curvefit_statistics</a></div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;    <span class="keywordtype">use </span><a class="code" href="namespaceferror.html">ferror</a></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;    <span class="keywordtype">implicit none</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;    <span class="keywordtype">private</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    <span class="keywordtype">public</span> :: ms_invalid_input_error</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;    <span class="keywordtype">public</span> :: ms_invalid_data_set_error</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    <span class="keywordtype">public</span> :: <a class="code" href="structmeasurements_1_1ems__grr__results.html">ems_grr_results</a></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    <span class="keywordtype">public</span> :: <a class="code" href="structmeasurements_1_1emp__grr__results.html">emp_grr_results</a></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    <span class="keywordtype">public</span> :: ssq_part</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <span class="keywordtype">public</span> :: ssq_operator</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="keywordtype">public</span> :: ssq_repeat</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="keywordtype">public</span> :: ems_gauge_r_r</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keywordtype">public</span> :: emp_gauge_r_r</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <span class="keywordtype">public</span> :: discrimination_ratio</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
-<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="namespacemeasurements.html#ab6ff223e0cd99f0f11238d19912d9241">   23</a></span>&#160;    <span class="keywordtype">integer(int32)</span>, <span class="keywordtype">parameter</span> :: ms_invalid_input_error = 100001</div>
-<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="namespacemeasurements.html#a03c62c2497cbb199c18a3fb3fefc8b05">   25</a></span>&#160;    <span class="keywordtype">integer(int32)</span>, <span class="keywordtype">parameter</span> :: ms_invalid_data_set_error = 100002</div>
-<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="namespacemeasurements.html#a4e127e926b5dcb030d16b8f2b6f10684">   27</a></span>&#160;    <span class="keywordtype">integer(int32)</span>, <span class="keywordtype">parameter</span> :: ms_out_of_memory_error = 100003</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
-<div class="line"><a name="l00144"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html">  144</a></span>&#160;    <span class="keyword">type</span> <a class="code" href="structmeasurements_1_1ems__grr__results.html">ems_grr_results</a></div>
-<div class="line"><a name="l00146"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#a41ec5caa166ec8a12845a0925c35b4df">  146</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: overall_mean</div>
-<div class="line"><a name="l00149"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#aa1f9779bdbe258368d89be4347818188">  149</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: sum_squares_part</div>
-<div class="line"><a name="l00152"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#a7cb050d96ebbc409d005eb91daf51a65">  152</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: sum_squares_operator</div>
-<div class="line"><a name="l00155"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#a64d1ff04b42d1c848bb9ef82253115d1">  155</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: sum_squares_within</div>
-<div class="line"><a name="l00158"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#a94a62a3d5a224b9165b58d97ec7b0903">  158</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: sum_squares_total</div>
-<div class="line"><a name="l00161"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#aab88b31d6f1cf14ce0efe54d6501bd04">  161</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: sum_squares_part_by_operator</div>
-<div class="line"><a name="l00163"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#aa24013ce772cca60cc82ce92a041b65c">  163</a></span>&#160;        <span class="keywordtype">integer(int32)</span> :: operator_dof</div>
-<div class="line"><a name="l00165"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#aad5a3a004d0a43ae9c69a5e89feb3317">  165</a></span>&#160;        <span class="keywordtype">integer(int32)</span> :: part_dof</div>
-<div class="line"><a name="l00167"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#ad0c5327729e840d16531a0b5751e0050">  167</a></span>&#160;        <span class="keywordtype">integer(int32)</span> :: part_by_operator_dof</div>
-<div class="line"><a name="l00169"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#abde47b4896f4ffec52fbf563f7a17e67">  169</a></span>&#160;        <span class="keywordtype">integer(int32)</span> :: repeatability_dof</div>
-<div class="line"><a name="l00171"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#ac144eb63b519b02a46aa78ea80131de8">  171</a></span>&#160;        <span class="keywordtype">integer(int32)</span> :: total_dof</div>
-<div class="line"><a name="l00173"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#a6f9b40fa1bf694523c2541793976c236">  173</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: mean_square_part</div>
-<div class="line"><a name="l00175"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#acf8d03c612cf4d5a5f313c05c088a718">  175</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: mean_square_operator</div>
-<div class="line"><a name="l00177"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#a9b5485c668dcfe8e91a7b887ec0a44b5">  177</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: mean_square_part_by_operator</div>
-<div class="line"><a name="l00179"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#a89f2790a63e30cf7c8e4b1ba91a8faee">  179</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: mean_square_repeatability</div>
-<div class="line"><a name="l00181"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#a1e2988897a4173dbe0a48ea34fc3e4d9">  181</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: mean_square_total</div>
-<div class="line"><a name="l00183"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#a7180c2970c159fd2329e299490019e24">  183</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: part_variation</div>
-<div class="line"><a name="l00185"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#a69601ffc36a8c6dcd7e69df08f205e8a">  185</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: operator_variation</div>
-<div class="line"><a name="l00187"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#abc91317a5d392b487e820ae53e757bab">  187</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: reproducibility</div>
-<div class="line"><a name="l00189"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#a6579ac7bf265a12b72b4cd7c5ed10691">  189</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: repeatability</div>
-<div class="line"><a name="l00191"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#a4b822fb374eedd2c9474d9624349295d">  191</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: part_by_operator_variation</div>
-<div class="line"><a name="l00193"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#a7435cb98a4697e8c32428f1593740250">  193</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: gauge_variation</div>
-<div class="line"><a name="l00195"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#ab026efc119fd89e5e332d502a53e8e3e">  195</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: total_variation</div>
-<div class="line"><a name="l00197"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#a3ada2b2b900affc58d3db8fb6db00d11">  197</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: part_f_ratio</div>
-<div class="line"><a name="l00199"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#ac028f7b18d58d7761f2849c867bbac93">  199</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: operator_f_ratio</div>
-<div class="line"><a name="l00202"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#a7a23edff5f2375779a40370198f4f59d">  202</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: part_by_operator_f_ratio</div>
-<div class="line"><a name="l00204"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#a9baee0ba8ec5261e4a1d7c689edfed1b">  204</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: part_probability</div>
-<div class="line"><a name="l00206"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#a97bbc5f9cfe2601fdec6734541d934ce">  206</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: operator_probability</div>
-<div class="line"><a name="l00209"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#a464744b2c72e906d06a80df06807064e">  209</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: part_by_operator_probability</div>
-<div class="line"><a name="l00211"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#af7bf2ec93da10e37f2aaa8c4cc7a566b">  211</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: tolerance</div>
-<div class="line"><a name="l00213"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#a9dc126d74e8abfaec1b39625d8c152ec">  213</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: scale</div>
-<div class="line"><a name="l00216"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#a59e375131a51b05f2fac28082097b56e">  216</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: pt_ratio</div>
-<div class="line"><a name="l00221"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#ab98f642f691cc99cd962ec08fcf2bce1">  221</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: ptv_ratio</div>
-<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;    <span class="keyword">end type</span></div>
-<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160; </div>
-<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;    </div>
-<div class="line"><a name="l00340"></a><span class="lineno"><a class="line" href="structmeasurements_1_1emp__grr__results.html">  340</a></span>&#160;    <span class="keyword">type</span> <a class="code" href="structmeasurements_1_1emp__grr__results.html">emp_grr_results</a></div>
-<div class="line"><a name="l00342"></a><span class="lineno"><a class="line" href="structmeasurements_1_1emp__grr__results.html#ac3b7a31fc9194bf9570b9394a09b746e">  342</a></span>&#160;<span class="keywordtype">        real</span>(real64), <span class="keywordtype">allocatable</span>, <span class="keywordtype">dimension(:)</span> :: operator_means</div>
-<div class="line"><a name="l00344"></a><span class="lineno"><a class="line" href="structmeasurements_1_1emp__grr__results.html#a1ae5f43cd5abbc8936a85d6b20b710f4">  344</a></span>&#160;<span class="keywordtype">        real</span>(real64), <span class="keywordtype">allocatable</span>, <span class="keywordtype">dimension(:)</span> :: part_means</div>
-<div class="line"><a name="l00346"></a><span class="lineno"><a class="line" href="structmeasurements_1_1emp__grr__results.html#ae7f87fd8a3e9265c360f77f287bda700">  346</a></span>&#160;<span class="keywordtype">        real</span>(real64), <span class="keywordtype">allocatable</span>, <span class="keywordtype">dimension(:)</span> :: repeat_means</div>
-<div class="line"><a name="l00348"></a><span class="lineno"><a class="line" href="structmeasurements_1_1emp__grr__results.html#a3a017e73f2c90a6f307a2ba7564dc7b7">  348</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: average_range</div>
-<div class="line"><a name="l00350"></a><span class="lineno"><a class="line" href="structmeasurements_1_1emp__grr__results.html#aa0b3b258a2f4266f054fa1211a3959df">  350</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: operator_range</div>
-<div class="line"><a name="l00352"></a><span class="lineno"><a class="line" href="structmeasurements_1_1emp__grr__results.html#aef6937e9d696d657754004c39371badc">  352</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: part_range</div>
-<div class="line"><a name="l00354"></a><span class="lineno"><a class="line" href="structmeasurements_1_1emp__grr__results.html#a44d8d85ee8ec3a8887d1be1781b5058b">  354</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: repeatability</div>
-<div class="line"><a name="l00356"></a><span class="lineno"><a class="line" href="structmeasurements_1_1emp__grr__results.html#aef034395b8c01ec3e7dfece671db0294">  356</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: reproducibility</div>
-<div class="line"><a name="l00358"></a><span class="lineno"><a class="line" href="structmeasurements_1_1emp__grr__results.html#aad2fb110c0290dd06e67b0af50c68f8f">  358</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: part_variation</div>
-<div class="line"><a name="l00360"></a><span class="lineno"><a class="line" href="structmeasurements_1_1emp__grr__results.html#a1f6719d1a6acbbc4b87862a1bbe970d5">  360</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: gauge_variation</div>
-<div class="line"><a name="l00362"></a><span class="lineno"><a class="line" href="structmeasurements_1_1emp__grr__results.html#ad2d7d70276b573f10200136093327cda">  362</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: total_variation</div>
-<div class="line"><a name="l00364"></a><span class="lineno"><a class="line" href="structmeasurements_1_1emp__grr__results.html#a50147bcac95b81042de8aa98437c2a52">  364</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: tolerance</div>
-<div class="line"><a name="l00366"></a><span class="lineno"><a class="line" href="structmeasurements_1_1emp__grr__results.html#ab7935abe0866d5b47ed3c55dde4d4787">  366</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: scale</div>
-<div class="line"><a name="l00369"></a><span class="lineno"><a class="line" href="structmeasurements_1_1emp__grr__results.html#ab25dcacc9c19b63569e8a19e5138dc76">  369</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: pt_ratio</div>
-<div class="line"><a name="l00374"></a><span class="lineno"><a class="line" href="structmeasurements_1_1emp__grr__results.html#a38ef76cef2025b4e9799ca362497b30e">  374</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: ptv_ratio</div>
-<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;    <span class="keyword">end type</span></div>
-<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160; </div>
-<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;    <span class="keyword">interface</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;    <span class="keywordtype">use </span><a class="code" href="namespacefplot__core.html">fplot_core</a></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;    <span class="keywordtype">implicit none</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    <span class="keywordtype">private</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;    <span class="keywordtype">public</span> :: ms_invalid_input_error</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    <span class="keywordtype">public</span> :: ms_invalid_data_set_error</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    <span class="keywordtype">public</span> :: <a class="code" href="structmeasurements_1_1ems__grr__results.html">ems_grr_results</a></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    <span class="keywordtype">public</span> :: <a class="code" href="structmeasurements_1_1emp__grr__results.html">emp_grr_results</a></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <span class="keywordtype">public</span> :: ssq_part</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    <span class="keywordtype">public</span> :: ssq_operator</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="keywordtype">public</span> :: ssq_repeat</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keywordtype">public</span> :: ems_gauge_r_r</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <span class="keywordtype">public</span> :: emp_gauge_r_r</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <span class="keywordtype">public</span> :: discrimination_ratio</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keywordtype">public</span> :: plot_grr</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="namespacemeasurements.html#ab6ff223e0cd99f0f11238d19912d9241">   25</a></span>&#160;    <span class="keywordtype">integer(int32)</span>, <span class="keywordtype">parameter</span> :: ms_invalid_input_error = 100001</div>
+<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="namespacemeasurements.html#a03c62c2497cbb199c18a3fb3fefc8b05">   27</a></span>&#160;    <span class="keywordtype">integer(int32)</span>, <span class="keywordtype">parameter</span> :: ms_invalid_data_set_error = 100002</div>
+<div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="namespacemeasurements.html#a4e127e926b5dcb030d16b8f2b6f10684">   29</a></span>&#160;    <span class="keywordtype">integer(int32)</span>, <span class="keywordtype">parameter</span> :: ms_out_of_memory_error = 100003</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
+<div class="line"><a name="l00146"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html">  146</a></span>&#160;    <span class="keyword">type</span> <a class="code" href="structmeasurements_1_1ems__grr__results.html">ems_grr_results</a></div>
+<div class="line"><a name="l00148"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#a41ec5caa166ec8a12845a0925c35b4df">  148</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: overall_mean</div>
+<div class="line"><a name="l00151"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#aa1f9779bdbe258368d89be4347818188">  151</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: sum_squares_part</div>
+<div class="line"><a name="l00154"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#a7cb050d96ebbc409d005eb91daf51a65">  154</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: sum_squares_operator</div>
+<div class="line"><a name="l00157"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#a64d1ff04b42d1c848bb9ef82253115d1">  157</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: sum_squares_within</div>
+<div class="line"><a name="l00160"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#a94a62a3d5a224b9165b58d97ec7b0903">  160</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: sum_squares_total</div>
+<div class="line"><a name="l00163"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#aab88b31d6f1cf14ce0efe54d6501bd04">  163</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: sum_squares_part_by_operator</div>
+<div class="line"><a name="l00165"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#aa24013ce772cca60cc82ce92a041b65c">  165</a></span>&#160;        <span class="keywordtype">integer(int32)</span> :: operator_dof</div>
+<div class="line"><a name="l00167"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#aad5a3a004d0a43ae9c69a5e89feb3317">  167</a></span>&#160;        <span class="keywordtype">integer(int32)</span> :: part_dof</div>
+<div class="line"><a name="l00169"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#ad0c5327729e840d16531a0b5751e0050">  169</a></span>&#160;        <span class="keywordtype">integer(int32)</span> :: part_by_operator_dof</div>
+<div class="line"><a name="l00171"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#abde47b4896f4ffec52fbf563f7a17e67">  171</a></span>&#160;        <span class="keywordtype">integer(int32)</span> :: repeatability_dof</div>
+<div class="line"><a name="l00173"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#ac144eb63b519b02a46aa78ea80131de8">  173</a></span>&#160;        <span class="keywordtype">integer(int32)</span> :: total_dof</div>
+<div class="line"><a name="l00175"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#a6f9b40fa1bf694523c2541793976c236">  175</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: mean_square_part</div>
+<div class="line"><a name="l00177"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#acf8d03c612cf4d5a5f313c05c088a718">  177</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: mean_square_operator</div>
+<div class="line"><a name="l00179"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#a9b5485c668dcfe8e91a7b887ec0a44b5">  179</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: mean_square_part_by_operator</div>
+<div class="line"><a name="l00181"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#a89f2790a63e30cf7c8e4b1ba91a8faee">  181</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: mean_square_repeatability</div>
+<div class="line"><a name="l00183"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#a1e2988897a4173dbe0a48ea34fc3e4d9">  183</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: mean_square_total</div>
+<div class="line"><a name="l00185"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#a7180c2970c159fd2329e299490019e24">  185</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: part_variation</div>
+<div class="line"><a name="l00187"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#a69601ffc36a8c6dcd7e69df08f205e8a">  187</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: operator_variation</div>
+<div class="line"><a name="l00189"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#abc91317a5d392b487e820ae53e757bab">  189</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: reproducibility</div>
+<div class="line"><a name="l00191"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#a6579ac7bf265a12b72b4cd7c5ed10691">  191</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: repeatability</div>
+<div class="line"><a name="l00193"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#a4b822fb374eedd2c9474d9624349295d">  193</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: part_by_operator_variation</div>
+<div class="line"><a name="l00195"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#a7435cb98a4697e8c32428f1593740250">  195</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: gauge_variation</div>
+<div class="line"><a name="l00197"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#ab026efc119fd89e5e332d502a53e8e3e">  197</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: total_variation</div>
+<div class="line"><a name="l00199"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#a3ada2b2b900affc58d3db8fb6db00d11">  199</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: part_f_ratio</div>
+<div class="line"><a name="l00201"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#ac028f7b18d58d7761f2849c867bbac93">  201</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: operator_f_ratio</div>
+<div class="line"><a name="l00204"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#a7a23edff5f2375779a40370198f4f59d">  204</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: part_by_operator_f_ratio</div>
+<div class="line"><a name="l00206"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#a9baee0ba8ec5261e4a1d7c689edfed1b">  206</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: part_probability</div>
+<div class="line"><a name="l00208"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#a97bbc5f9cfe2601fdec6734541d934ce">  208</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: operator_probability</div>
+<div class="line"><a name="l00211"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#a464744b2c72e906d06a80df06807064e">  211</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: part_by_operator_probability</div>
+<div class="line"><a name="l00213"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#af7bf2ec93da10e37f2aaa8c4cc7a566b">  213</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: tolerance</div>
+<div class="line"><a name="l00215"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#a9dc126d74e8abfaec1b39625d8c152ec">  215</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: scale</div>
+<div class="line"><a name="l00218"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#a59e375131a51b05f2fac28082097b56e">  218</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: pt_ratio</div>
+<div class="line"><a name="l00223"></a><span class="lineno"><a class="line" href="structmeasurements_1_1ems__grr__results.html#ab98f642f691cc99cd962ec08fcf2bce1">  223</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: ptv_ratio</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;    <span class="keyword">end type</span></div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160; </div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;    </div>
+<div class="line"><a name="l00342"></a><span class="lineno"><a class="line" href="structmeasurements_1_1emp__grr__results.html">  342</a></span>&#160;    <span class="keyword">type</span> <a class="code" href="structmeasurements_1_1emp__grr__results.html">emp_grr_results</a></div>
+<div class="line"><a name="l00344"></a><span class="lineno"><a class="line" href="structmeasurements_1_1emp__grr__results.html#ac3b7a31fc9194bf9570b9394a09b746e">  344</a></span>&#160;<span class="keywordtype">        real</span>(real64), <span class="keywordtype">allocatable</span>, <span class="keywordtype">dimension(:)</span> :: operator_means</div>
+<div class="line"><a name="l00346"></a><span class="lineno"><a class="line" href="structmeasurements_1_1emp__grr__results.html#a1ae5f43cd5abbc8936a85d6b20b710f4">  346</a></span>&#160;<span class="keywordtype">        real</span>(real64), <span class="keywordtype">allocatable</span>, <span class="keywordtype">dimension(:)</span> :: part_means</div>
+<div class="line"><a name="l00348"></a><span class="lineno"><a class="line" href="structmeasurements_1_1emp__grr__results.html#ae7f87fd8a3e9265c360f77f287bda700">  348</a></span>&#160;<span class="keywordtype">        real</span>(real64), <span class="keywordtype">allocatable</span>, <span class="keywordtype">dimension(:)</span> :: repeat_means</div>
+<div class="line"><a name="l00350"></a><span class="lineno"><a class="line" href="structmeasurements_1_1emp__grr__results.html#a3a017e73f2c90a6f307a2ba7564dc7b7">  350</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: average_range</div>
+<div class="line"><a name="l00352"></a><span class="lineno"><a class="line" href="structmeasurements_1_1emp__grr__results.html#aa0b3b258a2f4266f054fa1211a3959df">  352</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: operator_range</div>
+<div class="line"><a name="l00354"></a><span class="lineno"><a class="line" href="structmeasurements_1_1emp__grr__results.html#aef6937e9d696d657754004c39371badc">  354</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: part_range</div>
+<div class="line"><a name="l00356"></a><span class="lineno"><a class="line" href="structmeasurements_1_1emp__grr__results.html#a44d8d85ee8ec3a8887d1be1781b5058b">  356</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: repeatability</div>
+<div class="line"><a name="l00358"></a><span class="lineno"><a class="line" href="structmeasurements_1_1emp__grr__results.html#aef034395b8c01ec3e7dfece671db0294">  358</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: reproducibility</div>
+<div class="line"><a name="l00360"></a><span class="lineno"><a class="line" href="structmeasurements_1_1emp__grr__results.html#aad2fb110c0290dd06e67b0af50c68f8f">  360</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: part_variation</div>
+<div class="line"><a name="l00362"></a><span class="lineno"><a class="line" href="structmeasurements_1_1emp__grr__results.html#a1f6719d1a6acbbc4b87862a1bbe970d5">  362</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: gauge_variation</div>
+<div class="line"><a name="l00364"></a><span class="lineno"><a class="line" href="structmeasurements_1_1emp__grr__results.html#ad2d7d70276b573f10200136093327cda">  364</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: total_variation</div>
+<div class="line"><a name="l00366"></a><span class="lineno"><a class="line" href="structmeasurements_1_1emp__grr__results.html#a50147bcac95b81042de8aa98437c2a52">  366</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: tolerance</div>
+<div class="line"><a name="l00368"></a><span class="lineno"><a class="line" href="structmeasurements_1_1emp__grr__results.html#ab7935abe0866d5b47ed3c55dde4d4787">  368</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: scale</div>
+<div class="line"><a name="l00371"></a><span class="lineno"><a class="line" href="structmeasurements_1_1emp__grr__results.html#ab25dcacc9c19b63569e8a19e5138dc76">  371</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: pt_ratio</div>
+<div class="line"><a name="l00376"></a><span class="lineno"><a class="line" href="structmeasurements_1_1emp__grr__results.html#a38ef76cef2025b4e9799ca362497b30e">  376</a></span>&#160;<span class="keywordtype">        real</span>(real64) :: ptv_ratio</div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;    <span class="keyword">end type</span></div>
 <div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160; </div>
-<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;        <span class="keywordtype">pure</span> <span class="keyword">module</span> function ssq_part(x, xmean) result(ssq)</div>
-<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;<span class="keywordtype">            real</span>(real64), <span class="keywordtype">intent(in)</span>, <span class="keywordtype">dimension(:,:,:)</span> :: x</div>
-<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;<span class="keywordtype">            real</span>(real64), <span class="keywordtype">intent(in)</span> :: xmean</div>
-<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;<span class="keywordtype">            real</span>(real64) :: ssq</div>
-<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;        <span class="keyword">end function</span></div>
-<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160; </div>
-<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;        <span class="keywordtype">pure</span> <span class="keyword">module</span> function ssq_operator(x, xmean) result(ssq)</div>
-<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;<span class="keywordtype">            real</span>(real64), <span class="keywordtype">intent(in)</span>, <span class="keywordtype">dimension(:,:,:)</span> :: x</div>
-<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;<span class="keywordtype">            real</span>(real64), <span class="keywordtype">intent(in)</span> :: xmean</div>
-<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;<span class="keywordtype">            real</span>(real64) :: ssq</div>
-<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;        <span class="keyword">end function</span></div>
-<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160; </div>
-<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;        <span class="keywordtype">pure</span> <span class="keyword">module</span> function ssq_repeat(x) result(ssq)</div>
-<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;<span class="keywordtype">            real</span>(real64), <span class="keywordtype">intent(in)</span>, <span class="keywordtype">dimension(:,:,:)</span> :: x</div>
-<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;<span class="keywordtype">            real</span>(real64) :: ssq</div>
-<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;        <span class="keyword">end function</span></div>
-<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160; </div>
-<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;        <span class="keywordtype">pure</span> <span class="keyword">module</span> function ssq_total(x, xmean) result(ssq)</div>
-<div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;<span class="keywordtype">            real</span>(real64), <span class="keywordtype">intent(in)</span>, <span class="keywordtype">dimension(:,:,:)</span> :: x</div>
-<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;<span class="keywordtype">            real</span>(real64), <span class="keywordtype">intent(in)</span> :: xmean</div>
-<div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160;<span class="keywordtype">            real</span>(real64) :: ssq</div>
-<div class="line"><a name="l00463"></a><span class="lineno">  463</span>&#160;        <span class="keyword">end function</span></div>
-<div class="line"><a name="l00464"></a><span class="lineno">  464</span>&#160; </div>
-<div class="line"><a name="l00498"></a><span class="lineno">  498</span>&#160;        <span class="keyword">module</span> function ems_gauge_r_r(x, alpha, tol, k, err) result(rst)</div>
-<div class="line"><a name="l00499"></a><span class="lineno">  499</span>&#160;<span class="keywordtype">            real</span>(real64), <span class="keywordtype">intent(in)</span>, <span class="keywordtype">dimension(:,:,:)</span> :: x</div>
-<div class="line"><a name="l00500"></a><span class="lineno">  500</span>&#160;<span class="keywordtype">            real</span>(real64), <span class="keywordtype">intent(in)</span>, <span class="keywordtype">optional</span> :: alpha, tol, k</div>
-<div class="line"><a name="l00501"></a><span class="lineno">  501</span>&#160;            <span class="keywordtype">class</span>(<a class="code" href="structferror_1_1errors.html">errors</a>), <span class="keywordtype">intent(inout)</span>, <span class="keywordtype">optional</span>, <span class="keywordtype">target</span> :: err</div>
-<div class="line"><a name="l00502"></a><span class="lineno">  502</span>&#160;            <span class="keywordtype">type</span>(ems_grr_results) :: rst</div>
-<div class="line"><a name="l00503"></a><span class="lineno">  503</span>&#160;        <span class="keyword">end function</span></div>
-<div class="line"><a name="l00504"></a><span class="lineno">  504</span>&#160;    <span class="keyword">end interface</span></div>
-<div class="line"><a name="l00505"></a><span class="lineno">  505</span>&#160; </div>
-<div class="line"><a name="l00506"></a><span class="lineno">  506</span>&#160;    <span class="keyword">interface</span></div>
+<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;    <span class="keyword">interface</span></div>
+<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160; </div>
+<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;        <span class="keywordtype">pure</span> <span class="keyword">module</span> function ssq_part(x, xmean) result(ssq)</div>
+<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;<span class="keywordtype">            real</span>(real64), <span class="keywordtype">intent(in)</span>, <span class="keywordtype">dimension(:,:,:)</span> :: x</div>
+<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;<span class="keywordtype">            real</span>(real64), <span class="keywordtype">intent(in)</span> :: xmean</div>
+<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;<span class="keywordtype">            real</span>(real64) :: ssq</div>
+<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;        <span class="keyword">end function</span></div>
+<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160; </div>
+<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;        <span class="keywordtype">pure</span> <span class="keyword">module</span> function ssq_operator(x, xmean) result(ssq)</div>
+<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;<span class="keywordtype">            real</span>(real64), <span class="keywordtype">intent(in)</span>, <span class="keywordtype">dimension(:,:,:)</span> :: x</div>
+<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;<span class="keywordtype">            real</span>(real64), <span class="keywordtype">intent(in)</span> :: xmean</div>
+<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;<span class="keywordtype">            real</span>(real64) :: ssq</div>
+<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;        <span class="keyword">end function</span></div>
+<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160; </div>
+<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;        <span class="keywordtype">pure</span> <span class="keyword">module</span> function ssq_repeat(x) result(ssq)</div>
+<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;<span class="keywordtype">            real</span>(real64), <span class="keywordtype">intent(in)</span>, <span class="keywordtype">dimension(:,:,:)</span> :: x</div>
+<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;<span class="keywordtype">            real</span>(real64) :: ssq</div>
+<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;        <span class="keyword">end function</span></div>
+<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160; </div>
+<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;        <span class="keywordtype">pure</span> <span class="keyword">module</span> function ssq_total(x, xmean) result(ssq)</div>
+<div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160;<span class="keywordtype">            real</span>(real64), <span class="keywordtype">intent(in)</span>, <span class="keywordtype">dimension(:,:,:)</span> :: x</div>
+<div class="line"><a name="l00463"></a><span class="lineno">  463</span>&#160;<span class="keywordtype">            real</span>(real64), <span class="keywordtype">intent(in)</span> :: xmean</div>
+<div class="line"><a name="l00464"></a><span class="lineno">  464</span>&#160;<span class="keywordtype">            real</span>(real64) :: ssq</div>
+<div class="line"><a name="l00465"></a><span class="lineno">  465</span>&#160;        <span class="keyword">end function</span></div>
+<div class="line"><a name="l00466"></a><span class="lineno">  466</span>&#160; </div>
+<div class="line"><a name="l00500"></a><span class="lineno">  500</span>&#160;        <span class="keyword">module</span> function ems_gauge_r_r(x, alpha, tol, k, err) result(rst)</div>
+<div class="line"><a name="l00501"></a><span class="lineno">  501</span>&#160;<span class="keywordtype">            real</span>(real64), <span class="keywordtype">intent(in)</span>, <span class="keywordtype">dimension(:,:,:)</span> :: x</div>
+<div class="line"><a name="l00502"></a><span class="lineno">  502</span>&#160;<span class="keywordtype">            real</span>(real64), <span class="keywordtype">intent(in)</span>, <span class="keywordtype">optional</span> :: alpha, tol, k</div>
+<div class="line"><a name="l00503"></a><span class="lineno">  503</span>&#160;            <span class="keywordtype">class</span>(<a class="code" href="structferror_1_1errors.html">errors</a>), <span class="keywordtype">intent(inout)</span>, <span class="keywordtype">optional</span>, <span class="keywordtype">target</span> :: err</div>
+<div class="line"><a name="l00504"></a><span class="lineno">  504</span>&#160;            <span class="keywordtype">type</span>(ems_grr_results) :: rst</div>
+<div class="line"><a name="l00505"></a><span class="lineno">  505</span>&#160;        <span class="keyword">end function</span></div>
+<div class="line"><a name="l00506"></a><span class="lineno">  506</span>&#160;    <span class="keyword">end interface</span></div>
 <div class="line"><a name="l00507"></a><span class="lineno">  507</span>&#160; </div>
-<div class="line"><a name="l00535"></a><span class="lineno">  535</span>&#160;        <span class="keyword">module</span> function emp_gauge_r_r(x, tol, kf, err) result(rst)</div>
-<div class="line"><a name="l00536"></a><span class="lineno">  536</span>&#160;<span class="keywordtype">            real</span>(real64), <span class="keywordtype">intent(in)</span>, <span class="keywordtype">dimension(:,:,:)</span> :: x</div>
-<div class="line"><a name="l00537"></a><span class="lineno">  537</span>&#160;<span class="keywordtype">            real</span>(real64), <span class="keywordtype">intent(in)</span>, <span class="keywordtype">optional</span> :: tol, kf</div>
-<div class="line"><a name="l00538"></a><span class="lineno">  538</span>&#160;            <span class="keywordtype">class</span>(<a class="code" href="structferror_1_1errors.html">errors</a>), <span class="keywordtype">intent(inout)</span>, <span class="keywordtype">optional</span>, <span class="keywordtype">target</span> :: err</div>
-<div class="line"><a name="l00539"></a><span class="lineno">  539</span>&#160;            <span class="keywordtype">type</span>(emp_grr_results) :: rst</div>
-<div class="line"><a name="l00540"></a><span class="lineno">  540</span>&#160;        <span class="keyword">end function</span></div>
-<div class="line"><a name="l00541"></a><span class="lineno">  541</span>&#160;    <span class="keyword">end interface</span></div>
-<div class="line"><a name="l00542"></a><span class="lineno">  542</span>&#160; </div>
-<div class="line"><a name="l00543"></a><span class="lineno">  543</span>&#160;<span class="keyword">contains</span></div>
-<div class="line"><a name="l00544"></a><span class="lineno">  544</span>&#160;<span class="comment">! ------------------------------------------------------------------------------</span></div>
-<div class="line"><a name="l00561"></a><span class="lineno">  561</span>&#160;    <span class="keywordtype">pure</span> <span class="keyword">function </span>discrimination_ratio(tv, mv) <span class="keyword">result</span>(x)</div>
-<div class="line"><a name="l00562"></a><span class="lineno"><a class="line" href="namespacemeasurements.html#a59489d16e7cdbe029501fa19b8e66449">  562</a></span>&#160;        <span class="comment">! Arguments</span></div>
-<div class="line"><a name="l00563"></a><span class="lineno">  563</span>&#160;<span class="keywordtype">        real</span>(real64), <span class="keywordtype">intent(in)</span> :: tv, mv</div>
-<div class="line"><a name="l00564"></a><span class="lineno">  564</span>&#160;<span class="keywordtype">        real</span>(real64) :: x</div>
-<div class="line"><a name="l00565"></a><span class="lineno">  565</span>&#160;        x = sqrt(2.0d0 * (tv / mv) - 1.0d0)</div>
-<div class="line"><a name="l00566"></a><span class="lineno">  566</span>&#160;    <span class="keyword">end function</span></div>
-<div class="line"><a name="l00567"></a><span class="lineno">  567</span>&#160; </div>
-<div class="line"><a name="l00568"></a><span class="lineno">  568</span>&#160;<span class="comment">! ------------------------------------------------------------------------------</span></div>
-<div class="line"><a name="l00569"></a><span class="lineno">  569</span>&#160;<span class="keyword">end module</span></div>
+<div class="line"><a name="l00508"></a><span class="lineno">  508</span>&#160;    <span class="keyword">interface</span></div>
+<div class="line"><a name="l00509"></a><span class="lineno">  509</span>&#160; </div>
+<div class="line"><a name="l00537"></a><span class="lineno">  537</span>&#160;        <span class="keyword">module</span> function emp_gauge_r_r(x, tol, kf, err) result(rst)</div>
+<div class="line"><a name="l00538"></a><span class="lineno">  538</span>&#160;<span class="keywordtype">            real</span>(real64), <span class="keywordtype">intent(in)</span>, <span class="keywordtype">dimension(:,:,:)</span> :: x</div>
+<div class="line"><a name="l00539"></a><span class="lineno">  539</span>&#160;<span class="keywordtype">            real</span>(real64), <span class="keywordtype">intent(in)</span>, <span class="keywordtype">optional</span> :: tol, kf</div>
+<div class="line"><a name="l00540"></a><span class="lineno">  540</span>&#160;            <span class="keywordtype">class</span>(<a class="code" href="structferror_1_1errors.html">errors</a>), <span class="keywordtype">intent(inout)</span>, <span class="keywordtype">optional</span>, <span class="keywordtype">target</span> :: err</div>
+<div class="line"><a name="l00541"></a><span class="lineno">  541</span>&#160;            <span class="keywordtype">type</span>(emp_grr_results) :: rst</div>
+<div class="line"><a name="l00542"></a><span class="lineno">  542</span>&#160;        <span class="keyword">end function</span></div>
+<div class="line"><a name="l00543"></a><span class="lineno">  543</span>&#160;    <span class="keyword">end interface</span></div>
+<div class="line"><a name="l00544"></a><span class="lineno">  544</span>&#160; </div>
+<div class="line"><a name="l00545"></a><span class="lineno">  545</span>&#160;<span class="keyword">contains</span></div>
+<div class="line"><a name="l00546"></a><span class="lineno">  546</span>&#160;<span class="comment">! ------------------------------------------------------------------------------</span></div>
+<div class="line"><a name="l00563"></a><span class="lineno">  563</span>&#160;    <span class="keywordtype">pure</span> <span class="keyword">function </span>discrimination_ratio(tv, mv) <span class="keyword">result</span>(x)</div>
+<div class="line"><a name="l00564"></a><span class="lineno"><a class="line" href="namespacemeasurements.html#a59489d16e7cdbe029501fa19b8e66449">  564</a></span>&#160;        <span class="comment">! Arguments</span></div>
+<div class="line"><a name="l00565"></a><span class="lineno">  565</span>&#160;<span class="keywordtype">        real</span>(real64), <span class="keywordtype">intent(in)</span> :: tv, mv</div>
+<div class="line"><a name="l00566"></a><span class="lineno">  566</span>&#160;<span class="keywordtype">        real</span>(real64) :: x</div>
+<div class="line"><a name="l00567"></a><span class="lineno">  567</span>&#160;        x = sqrt(2.0d0 * (tv / mv) - 1.0d0)</div>
+<div class="line"><a name="l00568"></a><span class="lineno">  568</span>&#160;    <span class="keyword">end function</span></div>
+<div class="line"><a name="l00569"></a><span class="lineno">  569</span>&#160; </div>
+<div class="line"><a name="l00570"></a><span class="lineno">  570</span>&#160;<span class="comment">! ------------------------------------------------------------------------------</span></div>
+<div class="line"><a name="l00718"></a><span class="lineno">  718</span>&#160;    <span class="keyword">subroutine </span>plot_grr(x, plt, err)</div>
+<div class="line"><a name="l00719"></a><span class="lineno"><a class="line" href="namespacemeasurements.html#a183cbeecccf70e96ba5a9078ce8d8bc8">  719</a></span>&#160;        <span class="keywordtype">use </span><a class="code" href="namespacecurvefit__statistics.html">curvefit_statistics</a></div>
+<div class="line"><a name="l00720"></a><span class="lineno">  720</span>&#160;        <span class="keywordtype">use </span>strings</div>
+<div class="line"><a name="l00721"></a><span class="lineno">  721</span>&#160; </div>
+<div class="line"><a name="l00722"></a><span class="lineno">  722</span>&#160;        <span class="comment">! Arguments</span></div>
+<div class="line"><a name="l00723"></a><span class="lineno">  723</span>&#160;<span class="keywordtype">        real</span>(real64), <span class="keywordtype">intent(in)</span>, <span class="keywordtype">dimension(:,:,:)</span> :: x</div>
+<div class="line"><a name="l00724"></a><span class="lineno">  724</span>&#160;        <span class="keywordtype">class</span>(<a class="code" href="structfplot__core_1_1plot.html">plot</a>), <span class="keywordtype">intent(inout)</span> :: plt</div>
+<div class="line"><a name="l00725"></a><span class="lineno">  725</span>&#160;        <span class="keywordtype">class</span>(<a class="code" href="structferror_1_1errors.html">errors</a>), <span class="keywordtype">intent(inout)</span>, <span class="keywordtype">optional</span>, <span class="keywordtype">target</span> :: err</div>
+<div class="line"><a name="l00726"></a><span class="lineno">  726</span>&#160; </div>
+<div class="line"><a name="l00727"></a><span class="lineno">  727</span>&#160;        <span class="comment">! Local Variables</span></div>
+<div class="line"><a name="l00728"></a><span class="lineno">  728</span>&#160;        <span class="keywordtype">class</span>(<a class="code" href="structferror_1_1errors.html">errors</a>), <span class="keywordtype">pointer</span> :: errmgr</div>
+<div class="line"><a name="l00729"></a><span class="lineno">  729</span>&#160;        <span class="keywordtype">type</span>(<a class="code" href="structferror_1_1errors.html">errors</a>), <span class="keywordtype">target</span> :: deferr</div>
+<div class="line"><a name="l00730"></a><span class="lineno">  730</span>&#160;        <span class="keywordtype">type</span>(<a class="code" href="structfplot__core_1_1plot__data__2d.html">plot_data_2d</a>) :: pdata</div>
+<div class="line"><a name="l00731"></a><span class="lineno">  731</span>&#160;        <span class="keywordtype">type</span>(<a class="code" href="structfplot__core_1_1plot__data__error__bars.html">plot_data_error_bars</a>) :: edata</div>
+<div class="line"><a name="l00732"></a><span class="lineno">  732</span>&#160;        <span class="keywordtype">integer(int32)</span> :: i, k, nparts, nops, flag</div>
+<div class="line"><a name="l00733"></a><span class="lineno">  733</span>&#160;<span class="keywordtype">        real</span>(real64), <span class="keywordtype">allocatable</span>, <span class="keywordtype">dimension(:)</span> :: xd, y, yerr</div>
+<div class="line"><a name="l00734"></a><span class="lineno">  734</span>&#160;        <span class="keywordtype">type</span>(<a class="code" href="structfplot__core_1_1color.html">color</a>) :: clr</div>
+<div class="line"><a name="l00735"></a><span class="lineno">  735</span>&#160;        </div>
+<div class="line"><a name="l00736"></a><span class="lineno">  736</span>&#160;        <span class="comment">! Initialization</span></div>
+<div class="line"><a name="l00737"></a><span class="lineno">  737</span>&#160;        <span class="keywordflow">if</span> (<span class="keyword">present</span>(err)) <span class="keywordflow">then</span></div>
+<div class="line"><a name="l00738"></a><span class="lineno">  738</span>&#160;            errmgr =&gt; err</div>
+<div class="line"><a name="l00739"></a><span class="lineno">  739</span>&#160;        <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00740"></a><span class="lineno">  740</span>&#160;            errmgr =&gt; deferr</div>
+<div class="line"><a name="l00741"></a><span class="lineno">  741</span>&#160;<span class="keywordflow">        end if</span></div>
+<div class="line"><a name="l00742"></a><span class="lineno">  742</span>&#160;        nparts = <span class="keyword">size</span>(x, 1)</div>
+<div class="line"><a name="l00743"></a><span class="lineno">  743</span>&#160;        nops = <span class="keyword">size</span>(x, 3)</div>
+<div class="line"><a name="l00744"></a><span class="lineno">  744</span>&#160;        <span class="keyword">allocate</span>(xd(nparts), stat = flag)</div>
+<div class="line"><a name="l00745"></a><span class="lineno">  745</span>&#160;        <span class="keywordflow">if</span> (flag == 0) <span class="keyword">allocate</span>(y(nparts), stat = flag)</div>
+<div class="line"><a name="l00746"></a><span class="lineno">  746</span>&#160;        <span class="keywordflow">if</span> (flag == 0) <span class="keyword">allocate</span>(yerr(nparts), stat = flag)</div>
+<div class="line"><a name="l00747"></a><span class="lineno">  747</span>&#160;        <span class="keywordflow">if</span> (flag /= 0) <span class="keywordflow">then</span></div>
+<div class="line"><a name="l00748"></a><span class="lineno">  748</span>&#160;            <span class="keyword">call </span>errmgr%report_error(<span class="stringliteral">&quot;plot_grr&quot;</span>, &amp;</div>
+<div class="line"><a name="l00749"></a><span class="lineno">  749</span>&#160;                <span class="stringliteral">&quot;Insufficient memory available.&quot;</span>, ms_out_of_memory_error)</div>
+<div class="line"><a name="l00750"></a><span class="lineno">  750</span>&#160;            <span class="keywordflow">return</span></div>
+<div class="line"><a name="l00751"></a><span class="lineno">  751</span>&#160;<span class="keywordflow">        end if</span></div>
+<div class="line"><a name="l00752"></a><span class="lineno">  752</span>&#160; </div>
+<div class="line"><a name="l00753"></a><span class="lineno">  753</span>&#160;        <span class="comment">! Establish an x-axis</span></div>
+<div class="line"><a name="l00754"></a><span class="lineno">  754</span>&#160;        <span class="keywordflow">do</span> i = 1, nparts</div>
+<div class="line"><a name="l00755"></a><span class="lineno">  755</span>&#160;            xd(i) = real(i)</div>
+<div class="line"><a name="l00756"></a><span class="lineno">  756</span>&#160;<span class="keywordflow">        end do</span></div>
+<div class="line"><a name="l00757"></a><span class="lineno">  757</span>&#160; </div>
+<div class="line"><a name="l00758"></a><span class="lineno">  758</span>&#160;        <span class="comment">! Cycle over each operator, and generate the plot data</span></div>
+<div class="line"><a name="l00759"></a><span class="lineno">  759</span>&#160;        <span class="keywordflow">do</span> k = 1, nops</div>
+<div class="line"><a name="l00760"></a><span class="lineno">  760</span>&#160;            <span class="comment">! Compute the mean of each parts set, and determine the range</span></div>
+<div class="line"><a name="l00761"></a><span class="lineno">  761</span>&#160;            <span class="keywordflow">do</span> i = 1, nparts</div>
+<div class="line"><a name="l00762"></a><span class="lineno">  762</span>&#160;                y(i) = <a class="code" href="interfacecurvefit__statistics_1_1mean.html">mean</a>(x(i,:,k))</div>
+<div class="line"><a name="l00763"></a><span class="lineno">  763</span>&#160;                yerr(i) = maxval(x(i,:,k)) - minval(x(i,:,k))</div>
+<div class="line"><a name="l00764"></a><span class="lineno">  764</span>&#160;<span class="keywordflow">            end do</span></div>
+<div class="line"><a name="l00765"></a><span class="lineno">  765</span>&#160; </div>
+<div class="line"><a name="l00766"></a><span class="lineno">  766</span>&#160;            <span class="comment">! Define the plot data</span></div>
+<div class="line"><a name="l00767"></a><span class="lineno">  767</span>&#160;            <span class="keyword">call </span>pdata%define_data(xd, y)</div>
+<div class="line"><a name="l00768"></a><span class="lineno">  768</span>&#160;            <span class="keyword">call </span>pdata%set_line_style(line_dotted)</div>
+<div class="line"><a name="l00769"></a><span class="lineno">  769</span>&#160;            <span class="keyword">call </span>plt%push(pdata)</div>
+<div class="line"><a name="l00770"></a><span class="lineno">  770</span>&#160;            clr = pdata%get_line_color()</div>
+<div class="line"><a name="l00771"></a><span class="lineno">  771</span>&#160; </div>
+<div class="line"><a name="l00772"></a><span class="lineno">  772</span>&#160;            <span class="keyword">call </span>edata%define_y_error_data(xd, y, yerr)</div>
+<div class="line"><a name="l00773"></a><span class="lineno">  773</span>&#160;            <span class="keyword">call </span>edata%set_name(<span class="stringliteral">&quot;Operator &quot;</span> // <a class="code" href="interfacestrings_1_1to__string.html">to_string</a>(k))</div>
+<div class="line"><a name="l00774"></a><span class="lineno">  774</span>&#160;            <span class="keyword">call </span>edata%set_line_color(clr)</div>
+<div class="line"><a name="l00775"></a><span class="lineno">  775</span>&#160;            <span class="keyword">call </span>plt%push(edata)</div>
+<div class="line"><a name="l00776"></a><span class="lineno">  776</span>&#160; </div>
+<div class="line"><a name="l00777"></a><span class="lineno">  777</span>&#160;            <span class="comment">!  Notice, the above code works as a copy of each data object is</span></div>
+<div class="line"><a name="l00778"></a><span class="lineno">  778</span>&#160;            <span class="comment">! stored and managed by the plot</span></div>
+<div class="line"><a name="l00779"></a><span class="lineno">  779</span>&#160;<span class="keywordflow">        end do</span></div>
+<div class="line"><a name="l00780"></a><span class="lineno">  780</span>&#160;    <span class="keyword">end subroutine</span></div>
+<div class="line"><a name="l00781"></a><span class="lineno">  781</span>&#160; </div>
+<div class="line"><a name="l00782"></a><span class="lineno">  782</span>&#160;<span class="comment">! ------------------------------------------------------------------------------</span></div>
+<div class="line"><a name="l00783"></a><span class="lineno">  783</span>&#160;<span class="keyword">end module</span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <div class="ttc" id="astructferror_1_1errors_html"><div class="ttname"><a href="structferror_1_1errors.html">ferror::errors</a></div><div class="ttdoc">Defines a type for managing errors and warnings.</div><div class="ttdef"><b>Definition:</b> <a href="ferror_8f90_source.html#l00145">ferror.f90:145</a></div></div>
+<div class="ttc" id="astructfplot__core_1_1plot__data__2d_html"><div class="ttname"><a href="structfplot__core_1_1plot__data__2d.html">fplot_core::plot_data_2d</a></div><div class="ttdoc">Defines a two-dimensional plot data set.</div><div class="ttdef"><b>Definition:</b> <a href="fplot__core_8f90_source.html#l04400">fplot_core.f90:4400</a></div></div>
+<div class="ttc" id="anamespacefplot__core_html"><div class="ttname"><a href="namespacefplot__core.html">fplot_core</a></div><div class="ttdoc">fplot_core</div><div class="ttdef"><b>Definition:</b> <a href="fplot__core_8f90_source.html#l00014">fplot_core.f90:14</a></div></div>
+<div class="ttc" id="astructfplot__core_1_1plot__data__error__bars_html"><div class="ttname"><a href="structfplot__core_1_1plot__data__error__bars.html">fplot_core::plot_data_error_bars</a></div><div class="ttdoc">Defines a 2D error bar based data set.</div><div class="ttdef"><b>Definition:</b> <a href="fplot__core_8f90_source.html#l08495">fplot_core.f90:8495</a></div></div>
+<div class="ttc" id="ainterfacestrings_1_1to__string_html"><div class="ttname"><a href="interfacestrings_1_1to__string.html">strings::to_string</a></div><div class="ttdoc">Converts an item to a string.</div><div class="ttdef"><b>Definition:</b> <a href="strings_8f90_source.html#l00074">strings.f90:74</a></div></div>
 <div class="ttc" id="anamespacecurvefit__statistics_html"><div class="ttname"><a href="namespacecurvefit__statistics.html">curvefit_statistics</a></div><div class="ttdoc">curvefit_statistics</div><div class="ttdef"><b>Definition:</b> <a href="curvefit__statistics_8f90_source.html#l00048">curvefit_statistics.f90:48</a></div></div>
 <div class="ttc" id="anamespaceferror_html"><div class="ttname"><a href="namespaceferror.html">ferror</a></div><div class="ttdoc">ferror</div><div class="ttdef"><b>Definition:</b> <a href="ferror_8f90_source.html#l00136">ferror.f90:136</a></div></div>
-<div class="ttc" id="astructmeasurements_1_1emp__grr__results_html"><div class="ttname"><a href="structmeasurements_1_1emp__grr__results.html">measurements::emp_grr_results</a></div><div class="ttdoc">Provides a container for the &quot;Evaluating the Measurement  Process&quot; (EMP) type GR&amp;R results.</div><div class="ttdef"><b>Definition:</b> <a href="measurements_8f90_source.html#l00340">measurements.f90:340</a></div></div>
+<div class="ttc" id="ainterfacecurvefit__statistics_1_1mean_html"><div class="ttname"><a href="interfacecurvefit__statistics_1_1mean.html">curvefit_statistics::mean</a></div><div class="ttdoc">Computes the mean of a data set.</div><div class="ttdef"><b>Definition:</b> <a href="curvefit__statistics_8f90_source.html#l00072">curvefit_statistics.f90:72</a></div></div>
+<div class="ttc" id="astructmeasurements_1_1emp__grr__results_html"><div class="ttname"><a href="structmeasurements_1_1emp__grr__results.html">measurements::emp_grr_results</a></div><div class="ttdoc">Provides a container for the &quot;Evaluating the Measurement  Process&quot; (EMP) type GR&amp;R results.</div><div class="ttdef"><b>Definition:</b> <a href="measurements_8f90_source.html#l00342">measurements.f90:342</a></div></div>
 <div class="ttc" id="anamespacemeasurements_html"><div class="ttname"><a href="namespacemeasurements.html">measurements</a></div><div class="ttdoc">Provides a collection of routines for operating on experimental measurement data.</div><div class="ttdef"><b>Definition:</b> <a href="measurements_8f90_source.html#l00005">measurements.f90:5</a></div></div>
-<div class="ttc" id="astructmeasurements_1_1ems__grr__results_html"><div class="ttname"><a href="structmeasurements_1_1ems__grr__results.html">measurements::ems_grr_results</a></div><div class="ttdoc">Provides a container for expected mean squares (EMS) type GR&amp;R results.</div><div class="ttdef"><b>Definition:</b> <a href="measurements_8f90_source.html#l00144">measurements.f90:144</a></div></div>
+<div class="ttc" id="astructmeasurements_1_1ems__grr__results_html"><div class="ttname"><a href="structmeasurements_1_1ems__grr__results.html">measurements::ems_grr_results</a></div><div class="ttdoc">Provides a container for expected mean squares (EMS) type GR&amp;R results.</div><div class="ttdef"><b>Definition:</b> <a href="measurements_8f90_source.html#l00146">measurements.f90:146</a></div></div>
+<div class="ttc" id="astructfplot__core_1_1plot_html"><div class="ttname"><a href="structfplot__core_1_1plot.html">fplot_core::plot</a></div><div class="ttdoc">Defines the basic GNUPLOT plot.</div><div class="ttdef"><b>Definition:</b> <a href="fplot__core_8f90_source.html#l02427">fplot_core.f90:2427</a></div></div>
+<div class="ttc" id="astructfplot__core_1_1color_html"><div class="ttname"><a href="structfplot__core_1_1color.html">fplot_core::color</a></div><div class="ttdoc">Constructs a linearly spaced array.</div><div class="ttdef"><b>Definition:</b> <a href="fplot__core_8f90_source.html#l00249">fplot_core.f90:249</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>

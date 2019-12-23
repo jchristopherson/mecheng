@@ -1,8 +1,8 @@
 var NAVTREEINDEX4 =
 {
-"structfortio__binary_1_1binary__formatter.html#a492f938576fb4de4f558e2e3ab2639da":[1,0,12,1,61],
 "structfortio__binary_1_1binary__formatter.html#a4c285a7b8d99a7c867eac148b8882896":[1,0,12,1,57],
 "structfortio__binary_1_1binary__formatter.html#a50ec054d0e1eb248684f59094aecc8e2":[1,0,12,1,53],
+"structfortio__binary_1_1binary__formatter.html#a54c49c00739ac21c75850d5c2a723ff9":[1,0,12,1,0],
 "structfortio__binary_1_1binary__formatter.html#a5535a81b800d28707c16636b2ce7ec87":[1,0,12,1,43],
 "structfortio__binary_1_1binary__formatter.html#a55cc56da9a0bd1f77c6f5c0a06252807":[1,0,12,1,22],
 "structfortio__binary_1_1binary__formatter.html#a5cf88fd9b728f69945aecd77629046b2":[1,0,12,1,50],
@@ -225,6 +225,7 @@ var NAVTREEINDEX4 =
 "structfplot__core_1_1multiplot.html#ae7b5636092a710de62e0d2ba4eef9752":[1,0,15,8,23],
 "structfplot__core_1_1multiplot.html#af9b41a50d6394721ff548622aa61725d":[1,0,15,8,20],
 "structfplot__core_1_1plot.html":[1,0,15,11],
+"structfplot__core_1_1plot.html#a03e0543f0cc42d764fd5e5e42b9aa918":[1,0,15,11,32],
 "structfplot__core_1_1plot.html#a0cc70568df72a20b732e1ef8434860aa":[1,0,15,11,0],
 "structfplot__core_1_1plot.html#a1174c0dae88544081f212f1b28e6f39d":[1,0,15,11,15],
 "structfplot__core_1_1plot.html#a132bcac346e1cc2fd85c0685ccf7718b":[1,0,15,11,38],
@@ -248,6 +249,5 @@ var NAVTREEINDEX4 =
 "structfplot__core_1_1plot.html#a73710e0f9cd0cf4e0eaee9b1e54777ff":[1,0,15,11,22],
 "structfplot__core_1_1plot.html#a749f5e716823b818c276e26d301a43da":[1,0,15,11,35],
 "structfplot__core_1_1plot.html#a7a65fb3d700676defd82a392ea8be160":[1,0,15,11,11],
-"structfplot__core_1_1plot.html#a89f704e48794d3805d2f13c96082096c":[1,0,15,11,21],
-"structfplot__core_1_1plot.html#a8ee01b37ca833b399067f4be3faea378":[1,0,15,11,23]
+"structfplot__core_1_1plot.html#a89f704e48794d3805d2f13c96082096c":[1,0,15,11,21]
 };

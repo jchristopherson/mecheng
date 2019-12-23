@@ -1,6 +1,6 @@
 var structfortio__binary_1_1binary__formatter =
 [
-    [ "add", "structfortio__binary_1_1binary__formatter.html#a439de3c5f4d77b69834482d400a7f6f0", null ],
+    [ "add", "structfortio__binary_1_1binary__formatter.html#a54c49c00739ac21c75850d5c2a723ff9", null ],
     [ "bf_add_char_array", "structfortio__binary_1_1binary__formatter.html#ab6d09f831ccaa3fd27345674af2160b2", null ],
     [ "bf_add_cmplx32", "structfortio__binary_1_1binary__formatter.html#abe32bd5c6385b57d5a13488e4ad9753c", null ],
     [ "bf_add_cmplx32_array", "structfortio__binary_1_1binary__formatter.html#aaedfd563a3e0cc2353d3e214037c8ca5", null ],
