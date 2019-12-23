@@ -3,6 +3,7 @@
 program example
     use iso_fortran_env
     use measurements
+    use fplot_core
     implicit none
 
     ! Parameters
@@ -12,6 +13,9 @@ program example
     real(real64), allocatable, dimension(:,:,:) :: x
     type(ems_grr_results) :: ems
     type(emp_grr_results) :: emp
+    type(plot_2d) :: plt
+    class(plot_axis), pointer :: xAxis, yAxis
+    class(legend), pointer :: lgnd
 
     ! Populate the data set
     x = format_data()
@@ -49,7 +53,26 @@ program example
     print '(AF5.3)', "P/T Ratio: ", emp%pt_ratio
     print '(AF5.3)', "P/TV Ratio: ", emp%ptv_ratio
 
-    contains
+    ! Create a plot of the data
+    call plt%initialize()
+    call plt%set_font_size(14)
+    call plt%set_show_gridlines(.false.)
+    
+    xAxis => plt%get_x_axis()
+    yAxis => plt%get_y_axis()
+
+    call xAxis%set_title("Part No.")
+    call yAxis%set_title("Measured")
+
+    lgnd => plt%get_legend()
+    call lgnd%set_is_visible(.true.)
+
+    call plot_grr(x, plt)
+
+    ! Show the plot
+    call plt%draw()
+
+contains
     ! The data set is # of parts -by- # of tests -by- # of operators
     function format_data() result(x)
         ! Arguments
