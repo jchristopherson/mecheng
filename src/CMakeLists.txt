@@ -517,6 +517,13 @@ set(general_sources
     general/measurements_emp.f90
 )
 
+# Define the GENANN source files
+include_directories(${PROJECT_SOURCE_DIR}/src/external/genann)
+set(genann_sources
+    external/genann/genann.c
+    external/genann.f90
+)
+
 # Define the MECHENG source files
 set(mecheng_sources
     constants.f90
@@ -541,6 +548,7 @@ set(mecheng_sources
     ${geometry_sources}
     ${controls_sources}
     ${general_sources}
+    ${genann_sources}
 )
 
 # Build the library
