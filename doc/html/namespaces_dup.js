@@ -20,6 +20,7 @@ var namespaces_dup =
     [ "fplot_core", "namespacefplot__core.html", null ],
     [ "fplot_errors", "namespacefplot__errors.html", null ],
     [ "friction", "namespacefriction.html", null ],
+    [ "genann_core", "namespacegenann__core.html", null ],
     [ "geometry", "namespacegeometry.html", null ],
     [ "integral_core", "namespaceintegral__core.html", null ],
     [ "linalg_constants", "namespacelinalg__constants.html", null ],

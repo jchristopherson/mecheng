@@ -26,6 +26,7 @@ var annotated_dup =
     [ "fplot_simplify", null, [
       [ "simplify_polyline", "interfacefplot__simplify_1_1simplify__polyline.html", "interfacefplot__simplify_1_1simplify__polyline" ]
     ] ],
+    [ "genann_core", "namespacegenann__core.html", "namespacegenann__core" ],
     [ "geometry", "namespacegeometry.html", "namespacegeometry" ],
     [ "integral_core", "namespaceintegral__core.html", "namespaceintegral__core" ],
     [ "kinematics", null, [

@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['geometry_1805',['geometry',['../namespacegeometry.html',1,'']]]
+  ['genann_5fcore_1844',['genann_core',['../namespacegenann__core.html',1,'']]],
+  ['geometry_1845',['geometry',['../namespacegeometry.html',1,'']]]
 ];

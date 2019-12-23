@@ -50,14 +50,14 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"interfacecurvefit__interp_1_1interp__xy.html",
-"interfacelinalg__immutable_1_1mat__solve__upper__tri.html#a59e1f0aed5b9fd5b952542d8e669fdbd",
-"signals__diff_8f90_source.html",
-"structfortio__binary_1_1binary__formatter.html#a4c285a7b8d99a7c867eac148b8882896",
-"structfplot__core_1_1plot.html#a8ee01b37ca833b399067f4be3faea378",
-"structfplot__core_1_1terminal.html#a3a008d4ce638c31b5fca9866912e7637",
-"structnonlin__core_1_1equation__optimizer.html#a418a8ea0832d48a51bb1ab6bb984bb50",
-"structvibrations_1_1state__space.html#a7fce57fae4e6a43b279096beb4624f41"
+"interfacecurvefit__core_1_1reg__fcn.html",
+"interfacelinalg__immutable_1_1mat__eigen.html#a30c4db4bc943963757cc91e6b01e591b",
+"namespacesignals.html",
+"structfortio__binary_1_1binary__file__manager.html#a53ab8988eaa7ce1bc7227ff0d7ad0045",
+"structfplot__core_1_1multiplot.html#add2e20e53499aa007d9ceb2a7917589f",
+"structfplot__core_1_1surface__plot.html#aec8302d17a46422414bad3ba5e0cd57f",
+"structmeasurements_1_1emp__grr__results.html#ac3b7a31fc9194bf9570b9394a09b746e",
+"structvibrations_1_1bode__settings.html#ad0e842390a24662747ae93dfb59611a2"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
