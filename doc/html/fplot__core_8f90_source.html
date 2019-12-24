@@ -2118,76 +2118,113 @@ $(document).ready(function(){initNavTree('fplot__core_8f90_source.html','');});
 <div class="line"><a name="l08499"></a><span class="lineno"><a class="line" href="structfplot__core_1_1plot__data__error__bars.html#a372aea519cb462cc9e0e31cb5ef1aac9"> 8499</a></span>&#160;        <span class="keywordtype">logical</span> :: m_ybars = .false.</div>
 <div class="line"><a name="l08503"></a><span class="lineno"><a class="line" href="structfplot__core_1_1plot__data__error__bars.html#a3082871ea6a5b153a9f9a1dc36ef42f9"> 8503</a></span>&#160;<span class="keywordtype">        real</span>(real64), <span class="keywordtype">allocatable</span>, <span class="keywordtype">dimension(:,:)</span> :: m_data</div>
 <div class="line"><a name="l08505"></a><span class="lineno"><a class="line" href="structfplot__core_1_1plot__data__error__bars.html#a0e904bfb3fe7d81b6776040af4461f8e"> 8505</a></span>&#160;        <span class="keywordtype">logical</span> :: m_box = .false.</div>
-<div class="line"><a name="l08506"></a><span class="lineno"> 8506</span>&#160;    <span class="keyword">contains</span></div>
-<div class="line"><a name="l08507"></a><span class="lineno"> 8507</span>&#160;        <span class="keywordtype">procedure</span>, <span class="keywordtype">public</span> :: get_command_string =&gt; pde_get_cmd</div>
-<div class="line"><a name="l08508"></a><span class="lineno"> 8508</span>&#160;        <span class="keywordtype">procedure</span>, <span class="keywordtype">public</span> :: get_data_string =&gt; pde_get_data_cmd</div>
-<div class="line"><a name="l08571"></a><span class="lineno"><a class="line" href="structfplot__core_1_1plot__data__error__bars.html#a2e4934edcda1cb853c9d2f7f23a1187f"> 8571</a></span>&#160;        <span class="keywordtype">procedure</span>, <span class="keywordtype">public</span> :: define_x_error_data =&gt; pde_define_x_err</div>
-<div class="line"><a name="l08634"></a><span class="lineno"><a class="line" href="structfplot__core_1_1plot__data__error__bars.html#afcf586efb74cc652eca0c940e1a57415"> 8634</a></span>&#160;        <span class="keywordtype">procedure</span>, <span class="keywordtype">public</span> :: define_y_error_data =&gt; pde_define_y_err</div>
-<div class="line"><a name="l08701"></a><span class="lineno"><a class="line" href="structfplot__core_1_1plot__data__error__bars.html#a8b44a6a017691bab07aeea70c01c2f5c"> 8701</a></span>&#160;        <span class="keywordtype">procedure</span>, <span class="keywordtype">public</span> :: define_xy_error_data =&gt; pde_define_xy_err</div>
-<div class="line"><a name="l08726"></a><span class="lineno"><a class="line" href="structfplot__core_1_1plot__data__error__bars.html#aee3cafe4ca9868d52883c792d70eeccf"> 8726</a></span>&#160;        <span class="keywordtype">procedure</span>, <span class="keywordtype">public</span> :: get_plot_x_error_bars =&gt; pde_get_plot_x_err</div>
-<div class="line"><a name="l08751"></a><span class="lineno"><a class="line" href="structfplot__core_1_1plot__data__error__bars.html#a38eccd256a9875c841c34cef3a67b0c0"> 8751</a></span>&#160;        <span class="keywordtype">procedure</span>, <span class="keywordtype">public</span> :: get_plot_y_error_bars =&gt; pde_get_plot_y_err</div>
-<div class="line"><a name="l08770"></a><span class="lineno"><a class="line" href="structfplot__core_1_1plot__data__error__bars.html#a6e0af49c57dd1240c85fcd5e38f34a30"> 8770</a></span>&#160;        <span class="keywordtype">procedure</span>, <span class="keywordtype">public</span> :: get_count =&gt; pde_get_count</div>
-<div class="line"><a name="l08798"></a><span class="lineno"><a class="line" href="structfplot__core_1_1plot__data__error__bars.html#a556fec0042994a5aaad2e928825d4735"> 8798</a></span>&#160;        <span class="keywordtype">procedure</span>, <span class="keywordtype">public</span> :: get_use_error_box =&gt; pde_get_box</div>
-<div class="line"><a name="l08856"></a><span class="lineno"><a class="line" href="structfplot__core_1_1plot__data__error__bars.html#a3999d8dff0a7c0dd1b0d750d215da12a"> 8856</a></span>&#160;        <span class="keywordtype">procedure</span>, <span class="keywordtype">public</span> :: set_use_error_box =&gt; pde_set_box</div>
-<div class="line"><a name="l08857"></a><span class="lineno"> 8857</span>&#160;    <span class="keyword">end type</span></div>
-<div class="line"><a name="l08858"></a><span class="lineno"> 8858</span>&#160; </div>
-<div class="line"><a name="l08859"></a><span class="lineno"> 8859</span>&#160;<span class="comment">! ------------------------------------------------------------------------------</span></div>
-<div class="line"><a name="l08860"></a><span class="lineno"> 8860</span>&#160;    <span class="keyword">interface</span></div>
-<div class="line"><a name="l08861"></a><span class="lineno"> 8861</span>&#160;        <span class="keyword">module</span> function pde_get_cmd(this) result(cmd)</div>
-<div class="line"><a name="l08862"></a><span class="lineno"> 8862</span>&#160;            <span class="keywordtype">class</span>(plot_data_error_bars), <span class="keywordtype">intent(in)</span> :: this</div>
-<div class="line"><a name="l08863"></a><span class="lineno"> 8863</span>&#160;            <span class="keywordtype">character(len = :)</span>, <span class="keywordtype">allocatable</span> :: cmd</div>
-<div class="line"><a name="l08864"></a><span class="lineno"> 8864</span>&#160;        <span class="keyword">end function</span></div>
-<div class="line"><a name="l08865"></a><span class="lineno"> 8865</span>&#160; </div>
-<div class="line"><a name="l08866"></a><span class="lineno"> 8866</span>&#160;        <span class="keyword">module</span> function pde_get_data_cmd(this) result(cmd)</div>
-<div class="line"><a name="l08867"></a><span class="lineno"> 8867</span>&#160;            <span class="keywordtype">class</span>(plot_data_error_bars), <span class="keywordtype">intent(in)</span> :: this</div>
-<div class="line"><a name="l08868"></a><span class="lineno"> 8868</span>&#160;            <span class="keywordtype">character(len = :)</span>, <span class="keywordtype">allocatable</span> :: cmd</div>
-<div class="line"><a name="l08869"></a><span class="lineno"> 8869</span>&#160;        <span class="keyword">end function</span></div>
-<div class="line"><a name="l08870"></a><span class="lineno"> 8870</span>&#160; </div>
-<div class="line"><a name="l08871"></a><span class="lineno"> 8871</span>&#160;        <span class="keyword">module</span> subroutine pde_define_x_err(this, x, y, xerr, err)</div>
-<div class="line"><a name="l08872"></a><span class="lineno"> 8872</span>&#160;            <span class="keywordtype">class</span>(plot_data_error_bars), <span class="keywordtype">intent(inout)</span> :: this</div>
-<div class="line"><a name="l08873"></a><span class="lineno"> 8873</span>&#160;<span class="keywordtype">            real</span>(real64), <span class="keywordtype">intent(in)</span>, <span class="keywordtype">dimension(:)</span> :: x, y, xerr</div>
-<div class="line"><a name="l08874"></a><span class="lineno"> 8874</span>&#160;            <span class="keywordtype">class</span>(<a class="code" href="structferror_1_1errors.html">errors</a>), <span class="keywordtype">intent(inout)</span>, <span class="keywordtype">optional</span>, <span class="keywordtype">target</span> :: err</div>
-<div class="line"><a name="l08875"></a><span class="lineno"> 8875</span>&#160;        <span class="keyword">end subroutine</span></div>
-<div class="line"><a name="l08876"></a><span class="lineno"> 8876</span>&#160; </div>
-<div class="line"><a name="l08877"></a><span class="lineno"> 8877</span>&#160;        <span class="keyword">module</span> subroutine pde_define_y_err(this, x, y, yerr, err)</div>
-<div class="line"><a name="l08878"></a><span class="lineno"> 8878</span>&#160;            <span class="keywordtype">class</span>(plot_data_error_bars), <span class="keywordtype">intent(inout)</span> :: this</div>
-<div class="line"><a name="l08879"></a><span class="lineno"> 8879</span>&#160;<span class="keywordtype">            real</span>(real64), <span class="keywordtype">intent(in)</span>, <span class="keywordtype">dimension(:)</span> :: x, y, yerr</div>
-<div class="line"><a name="l08880"></a><span class="lineno"> 8880</span>&#160;            <span class="keywordtype">class</span>(<a class="code" href="structferror_1_1errors.html">errors</a>), <span class="keywordtype">intent(inout)</span>, <span class="keywordtype">optional</span>, <span class="keywordtype">target</span> :: err</div>
-<div class="line"><a name="l08881"></a><span class="lineno"> 8881</span>&#160;        <span class="keyword">end subroutine</span></div>
-<div class="line"><a name="l08882"></a><span class="lineno"> 8882</span>&#160; </div>
-<div class="line"><a name="l08883"></a><span class="lineno"> 8883</span>&#160;        <span class="keyword">module</span> subroutine pde_define_xy_err(this, x, y, xerr, yerr, err)</div>
-<div class="line"><a name="l08884"></a><span class="lineno"> 8884</span>&#160;            <span class="keywordtype">class</span>(plot_data_error_bars), <span class="keywordtype">intent(inout)</span> :: this</div>
-<div class="line"><a name="l08885"></a><span class="lineno"> 8885</span>&#160;<span class="keywordtype">            real</span>(real64), <span class="keywordtype">intent(in)</span>, <span class="keywordtype">dimension(:)</span> :: x, y, xerr, yerr</div>
-<div class="line"><a name="l08886"></a><span class="lineno"> 8886</span>&#160;            <span class="keywordtype">class</span>(<a class="code" href="structferror_1_1errors.html">errors</a>), <span class="keywordtype">intent(inout)</span>, <span class="keywordtype">optional</span>, <span class="keywordtype">target</span> :: err</div>
-<div class="line"><a name="l08887"></a><span class="lineno"> 8887</span>&#160;        <span class="keyword">end subroutine</span></div>
-<div class="line"><a name="l08888"></a><span class="lineno"> 8888</span>&#160; </div>
-<div class="line"><a name="l08889"></a><span class="lineno"> 8889</span>&#160;        <span class="keywordtype">pure</span> <span class="keyword">module</span> function pde_get_plot_x_err(this) result(x)</div>
-<div class="line"><a name="l08890"></a><span class="lineno"> 8890</span>&#160;            <span class="keywordtype">class</span>(plot_data_error_bars), <span class="keywordtype">intent(in)</span> :: this</div>
-<div class="line"><a name="l08891"></a><span class="lineno"> 8891</span>&#160;            <span class="keywordtype">logical</span> :: x</div>
-<div class="line"><a name="l08892"></a><span class="lineno"> 8892</span>&#160;        <span class="keyword">end function</span></div>
-<div class="line"><a name="l08893"></a><span class="lineno"> 8893</span>&#160; </div>
-<div class="line"><a name="l08894"></a><span class="lineno"> 8894</span>&#160;        <span class="keywordtype">pure</span> <span class="keyword">module</span> function pde_get_plot_y_err(this) result(x)</div>
-<div class="line"><a name="l08895"></a><span class="lineno"> 8895</span>&#160;            <span class="keywordtype">class</span>(plot_data_error_bars), <span class="keywordtype">intent(in)</span> :: this</div>
-<div class="line"><a name="l08896"></a><span class="lineno"> 8896</span>&#160;            <span class="keywordtype">logical</span> :: x</div>
-<div class="line"><a name="l08897"></a><span class="lineno"> 8897</span>&#160;        <span class="keyword">end function</span></div>
-<div class="line"><a name="l08898"></a><span class="lineno"> 8898</span>&#160; </div>
-<div class="line"><a name="l08899"></a><span class="lineno"> 8899</span>&#160;        <span class="keywordtype">pure</span> <span class="keyword">module</span> function pde_get_count(this) result(x)</div>
-<div class="line"><a name="l08900"></a><span class="lineno"> 8900</span>&#160;            <span class="keywordtype">class</span>(plot_data_error_bars), <span class="keywordtype">intent(in)</span> :: this</div>
-<div class="line"><a name="l08901"></a><span class="lineno"> 8901</span>&#160;            <span class="keywordtype">integer(int32)</span> :: x</div>
-<div class="line"><a name="l08902"></a><span class="lineno"> 8902</span>&#160;        <span class="keyword">end function</span></div>
-<div class="line"><a name="l08903"></a><span class="lineno"> 8903</span>&#160; </div>
-<div class="line"><a name="l08904"></a><span class="lineno"> 8904</span>&#160;        <span class="keywordtype">pure</span> <span class="keyword">module</span> function pde_get_box(this) result(x)</div>
-<div class="line"><a name="l08905"></a><span class="lineno"> 8905</span>&#160;            <span class="keywordtype">class</span>(plot_data_error_bars), <span class="keywordtype">intent(in)</span> :: this</div>
-<div class="line"><a name="l08906"></a><span class="lineno"> 8906</span>&#160;            <span class="keywordtype">logical</span> :: x</div>
-<div class="line"><a name="l08907"></a><span class="lineno"> 8907</span>&#160;        <span class="keyword">end function</span></div>
-<div class="line"><a name="l08908"></a><span class="lineno"> 8908</span>&#160; </div>
-<div class="line"><a name="l08909"></a><span class="lineno"> 8909</span>&#160;        <span class="keyword">module</span> subroutine pde_set_box(this, x)</div>
-<div class="line"><a name="l08910"></a><span class="lineno"> 8910</span>&#160;            <span class="keywordtype">class</span>(plot_data_error_bars), <span class="keywordtype">intent(inout)</span> :: this</div>
-<div class="line"><a name="l08911"></a><span class="lineno"> 8911</span>&#160;            <span class="keywordtype">logical</span>, <span class="keywordtype">intent(in)</span> :: x</div>
-<div class="line"><a name="l08912"></a><span class="lineno"> 8912</span>&#160;        <span class="keyword">end subroutine</span></div>
-<div class="line"><a name="l08913"></a><span class="lineno"> 8913</span>&#160;    <span class="keyword">end interface</span></div>
-<div class="line"><a name="l08914"></a><span class="lineno"> 8914</span>&#160; </div>
-<div class="line"><a name="l08915"></a><span class="lineno"> 8915</span>&#160;<span class="keyword">end module</span></div>
+<div class="line"><a name="l08507"></a><span class="lineno"><a class="line" href="structfplot__core_1_1plot__data__error__bars.html#afa0a49c315b65a212f8b3c5dc3ee448d"> 8507</a></span>&#160;        <span class="keywordtype">logical</span> :: m_range = .false.</div>
+<div class="line"><a name="l08508"></a><span class="lineno"> 8508</span>&#160;    <span class="keyword">contains</span></div>
+<div class="line"><a name="l08509"></a><span class="lineno"> 8509</span>&#160;        <span class="keywordtype">procedure</span>, <span class="keywordtype">public</span> :: get_command_string =&gt; pde_get_cmd</div>
+<div class="line"><a name="l08510"></a><span class="lineno"> 8510</span>&#160;        <span class="keywordtype">procedure</span>, <span class="keywordtype">public</span> :: get_data_string =&gt; pde_get_data_cmd</div>
+<div class="line"><a name="l08581"></a><span class="lineno"><a class="line" href="structfplot__core_1_1plot__data__error__bars.html#a156280e6f02027d056cf0ae3336b14c3"> 8581</a></span>&#160;        generic, <span class="keywordtype">public</span> :: define_x_error_data =&gt; pde_define_x_err, &amp;</div>
+<div class="line"><a name="l08582"></a><span class="lineno"> 8582</span>&#160;            pde_define_x_err_lim</div>
+<div class="line"><a name="l08653"></a><span class="lineno"><a class="line" href="structfplot__core_1_1plot__data__error__bars.html#a95afde4a842ff5b2630f0edd81d72deb"> 8653</a></span>&#160;        generic, <span class="keywordtype">public</span> :: define_y_error_data =&gt; pde_define_y_err, &amp;</div>
+<div class="line"><a name="l08654"></a><span class="lineno"> 8654</span>&#160;            pde_define_y_err_lim</div>
+<div class="line"><a name="l08733"></a><span class="lineno"><a class="line" href="structfplot__core_1_1plot__data__error__bars.html#a97e76d71d68780c975252ecc8076edbd"> 8733</a></span>&#160;        generic, <span class="keywordtype">public</span> :: define_xy_error_data =&gt; pde_define_xy_err, &amp;</div>
+<div class="line"><a name="l08734"></a><span class="lineno"> 8734</span>&#160;            pde_define_xy_err_lim</div>
+<div class="line"><a name="l08759"></a><span class="lineno"><a class="line" href="structfplot__core_1_1plot__data__error__bars.html#aee3cafe4ca9868d52883c792d70eeccf"> 8759</a></span>&#160;        <span class="keywordtype">procedure</span>, <span class="keywordtype">public</span> :: get_plot_x_error_bars =&gt; pde_get_plot_x_err</div>
+<div class="line"><a name="l08784"></a><span class="lineno"><a class="line" href="structfplot__core_1_1plot__data__error__bars.html#a38eccd256a9875c841c34cef3a67b0c0"> 8784</a></span>&#160;        <span class="keywordtype">procedure</span>, <span class="keywordtype">public</span> :: get_plot_y_error_bars =&gt; pde_get_plot_y_err</div>
+<div class="line"><a name="l08803"></a><span class="lineno"><a class="line" href="structfplot__core_1_1plot__data__error__bars.html#a6e0af49c57dd1240c85fcd5e38f34a30"> 8803</a></span>&#160;        <span class="keywordtype">procedure</span>, <span class="keywordtype">public</span> :: get_count =&gt; pde_get_count</div>
+<div class="line"><a name="l08831"></a><span class="lineno"><a class="line" href="structfplot__core_1_1plot__data__error__bars.html#a556fec0042994a5aaad2e928825d4735"> 8831</a></span>&#160;        <span class="keywordtype">procedure</span>, <span class="keywordtype">public</span> :: get_use_error_box =&gt; pde_get_box</div>
+<div class="line"><a name="l08889"></a><span class="lineno"><a class="line" href="structfplot__core_1_1plot__data__error__bars.html#a3999d8dff0a7c0dd1b0d750d215da12a"> 8889</a></span>&#160;        <span class="keywordtype">procedure</span>, <span class="keywordtype">public</span> :: set_use_error_box =&gt; pde_set_box</div>
+<div class="line"><a name="l08900"></a><span class="lineno"><a class="line" href="structfplot__core_1_1plot__data__error__bars.html#af13e85568eea0316e41d5f8f664083eb"> 8900</a></span>&#160;        <span class="keywordtype">procedure</span>, <span class="keywordtype">public</span> :: get_use_range =&gt; pde_get_use_range</div>
+<div class="line"><a name="l08901"></a><span class="lineno"> 8901</span>&#160; </div>
+<div class="line"><a name="l08902"></a><span class="lineno"> 8902</span>&#160;        <span class="keywordtype">procedure</span> :: pde_define_x_err</div>
+<div class="line"><a name="l08903"></a><span class="lineno"> 8903</span>&#160;        <span class="keywordtype">procedure</span> :: pde_define_y_err</div>
+<div class="line"><a name="l08904"></a><span class="lineno"> 8904</span>&#160;        <span class="keywordtype">procedure</span> :: pde_define_xy_err</div>
+<div class="line"><a name="l08905"></a><span class="lineno"> 8905</span>&#160;        <span class="keywordtype">procedure</span> :: pde_define_x_err_lim</div>
+<div class="line"><a name="l08906"></a><span class="lineno"> 8906</span>&#160;        <span class="keywordtype">procedure</span> :: pde_define_y_err_lim</div>
+<div class="line"><a name="l08907"></a><span class="lineno"> 8907</span>&#160;        <span class="keywordtype">procedure</span> :: pde_define_xy_err_lim</div>
+<div class="line"><a name="l08908"></a><span class="lineno"> 8908</span>&#160;    <span class="keyword">end type</span></div>
+<div class="line"><a name="l08909"></a><span class="lineno"> 8909</span>&#160; </div>
+<div class="line"><a name="l08910"></a><span class="lineno"> 8910</span>&#160;<span class="comment">! ------------------------------------------------------------------------------</span></div>
+<div class="line"><a name="l08911"></a><span class="lineno"> 8911</span>&#160;    <span class="keyword">interface</span></div>
+<div class="line"><a name="l08912"></a><span class="lineno"> 8912</span>&#160;        <span class="keyword">module</span> function pde_get_cmd(this) result(cmd)</div>
+<div class="line"><a name="l08913"></a><span class="lineno"> 8913</span>&#160;            <span class="keywordtype">class</span>(plot_data_error_bars), <span class="keywordtype">intent(in)</span> :: this</div>
+<div class="line"><a name="l08914"></a><span class="lineno"> 8914</span>&#160;            <span class="keywordtype">character(len = :)</span>, <span class="keywordtype">allocatable</span> :: cmd</div>
+<div class="line"><a name="l08915"></a><span class="lineno"> 8915</span>&#160;        <span class="keyword">end function</span></div>
+<div class="line"><a name="l08916"></a><span class="lineno"> 8916</span>&#160; </div>
+<div class="line"><a name="l08917"></a><span class="lineno"> 8917</span>&#160;        <span class="keyword">module</span> function pde_get_data_cmd(this) result(cmd)</div>
+<div class="line"><a name="l08918"></a><span class="lineno"> 8918</span>&#160;            <span class="keywordtype">class</span>(plot_data_error_bars), <span class="keywordtype">intent(in)</span> :: this</div>
+<div class="line"><a name="l08919"></a><span class="lineno"> 8919</span>&#160;            <span class="keywordtype">character(len = :)</span>, <span class="keywordtype">allocatable</span> :: cmd</div>
+<div class="line"><a name="l08920"></a><span class="lineno"> 8920</span>&#160;        <span class="keyword">end function</span></div>
+<div class="line"><a name="l08921"></a><span class="lineno"> 8921</span>&#160; </div>
+<div class="line"><a name="l08922"></a><span class="lineno"> 8922</span>&#160;        <span class="keyword">module</span> subroutine pde_define_x_err(this, x, y, xerr, err)</div>
+<div class="line"><a name="l08923"></a><span class="lineno"> 8923</span>&#160;            <span class="keywordtype">class</span>(plot_data_error_bars), <span class="keywordtype">intent(inout)</span> :: this</div>
+<div class="line"><a name="l08924"></a><span class="lineno"> 8924</span>&#160;<span class="keywordtype">            real</span>(real64), <span class="keywordtype">intent(in)</span>, <span class="keywordtype">dimension(:)</span> :: x, y, xerr</div>
+<div class="line"><a name="l08925"></a><span class="lineno"> 8925</span>&#160;            <span class="keywordtype">class</span>(<a class="code" href="structferror_1_1errors.html">errors</a>), <span class="keywordtype">intent(inout)</span>, <span class="keywordtype">optional</span>, <span class="keywordtype">target</span> :: err</div>
+<div class="line"><a name="l08926"></a><span class="lineno"> 8926</span>&#160;        <span class="keyword">end subroutine</span></div>
+<div class="line"><a name="l08927"></a><span class="lineno"> 8927</span>&#160; </div>
+<div class="line"><a name="l08928"></a><span class="lineno"> 8928</span>&#160;        <span class="keyword">module</span> subroutine pde_define_y_err(this, x, y, yerr, err)</div>
+<div class="line"><a name="l08929"></a><span class="lineno"> 8929</span>&#160;            <span class="keywordtype">class</span>(plot_data_error_bars), <span class="keywordtype">intent(inout)</span> :: this</div>
+<div class="line"><a name="l08930"></a><span class="lineno"> 8930</span>&#160;<span class="keywordtype">            real</span>(real64), <span class="keywordtype">intent(in)</span>, <span class="keywordtype">dimension(:)</span> :: x, y, yerr</div>
+<div class="line"><a name="l08931"></a><span class="lineno"> 8931</span>&#160;            <span class="keywordtype">class</span>(<a class="code" href="structferror_1_1errors.html">errors</a>), <span class="keywordtype">intent(inout)</span>, <span class="keywordtype">optional</span>, <span class="keywordtype">target</span> :: err</div>
+<div class="line"><a name="l08932"></a><span class="lineno"> 8932</span>&#160;        <span class="keyword">end subroutine</span></div>
+<div class="line"><a name="l08933"></a><span class="lineno"> 8933</span>&#160; </div>
+<div class="line"><a name="l08934"></a><span class="lineno"> 8934</span>&#160;        <span class="keyword">module</span> subroutine pde_define_xy_err(this, x, y, xerr, yerr, err)</div>
+<div class="line"><a name="l08935"></a><span class="lineno"> 8935</span>&#160;            <span class="keywordtype">class</span>(plot_data_error_bars), <span class="keywordtype">intent(inout)</span> :: this</div>
+<div class="line"><a name="l08936"></a><span class="lineno"> 8936</span>&#160;<span class="keywordtype">            real</span>(real64), <span class="keywordtype">intent(in)</span>, <span class="keywordtype">dimension(:)</span> :: x, y, xerr, yerr</div>
+<div class="line"><a name="l08937"></a><span class="lineno"> 8937</span>&#160;            <span class="keywordtype">class</span>(<a class="code" href="structferror_1_1errors.html">errors</a>), <span class="keywordtype">intent(inout)</span>, <span class="keywordtype">optional</span>, <span class="keywordtype">target</span> :: err</div>
+<div class="line"><a name="l08938"></a><span class="lineno"> 8938</span>&#160;        <span class="keyword">end subroutine</span></div>
+<div class="line"><a name="l08939"></a><span class="lineno"> 8939</span>&#160; </div>
+<div class="line"><a name="l08940"></a><span class="lineno"> 8940</span>&#160;        <span class="keywordtype">pure</span> <span class="keyword">module</span> function pde_get_plot_x_err(this) result(x)</div>
+<div class="line"><a name="l08941"></a><span class="lineno"> 8941</span>&#160;            <span class="keywordtype">class</span>(plot_data_error_bars), <span class="keywordtype">intent(in)</span> :: this</div>
+<div class="line"><a name="l08942"></a><span class="lineno"> 8942</span>&#160;            <span class="keywordtype">logical</span> :: x</div>
+<div class="line"><a name="l08943"></a><span class="lineno"> 8943</span>&#160;        <span class="keyword">end function</span></div>
+<div class="line"><a name="l08944"></a><span class="lineno"> 8944</span>&#160; </div>
+<div class="line"><a name="l08945"></a><span class="lineno"> 8945</span>&#160;        <span class="keywordtype">pure</span> <span class="keyword">module</span> function pde_get_plot_y_err(this) result(x)</div>
+<div class="line"><a name="l08946"></a><span class="lineno"> 8946</span>&#160;            <span class="keywordtype">class</span>(plot_data_error_bars), <span class="keywordtype">intent(in)</span> :: this</div>
+<div class="line"><a name="l08947"></a><span class="lineno"> 8947</span>&#160;            <span class="keywordtype">logical</span> :: x</div>
+<div class="line"><a name="l08948"></a><span class="lineno"> 8948</span>&#160;        <span class="keyword">end function</span></div>
+<div class="line"><a name="l08949"></a><span class="lineno"> 8949</span>&#160; </div>
+<div class="line"><a name="l08950"></a><span class="lineno"> 8950</span>&#160;        <span class="keywordtype">pure</span> <span class="keyword">module</span> function pde_get_count(this) result(x)</div>
+<div class="line"><a name="l08951"></a><span class="lineno"> 8951</span>&#160;            <span class="keywordtype">class</span>(plot_data_error_bars), <span class="keywordtype">intent(in)</span> :: this</div>
+<div class="line"><a name="l08952"></a><span class="lineno"> 8952</span>&#160;            <span class="keywordtype">integer(int32)</span> :: x</div>
+<div class="line"><a name="l08953"></a><span class="lineno"> 8953</span>&#160;        <span class="keyword">end function</span></div>
+<div class="line"><a name="l08954"></a><span class="lineno"> 8954</span>&#160; </div>
+<div class="line"><a name="l08955"></a><span class="lineno"> 8955</span>&#160;        <span class="keywordtype">pure</span> <span class="keyword">module</span> function pde_get_box(this) result(x)</div>
+<div class="line"><a name="l08956"></a><span class="lineno"> 8956</span>&#160;            <span class="keywordtype">class</span>(plot_data_error_bars), <span class="keywordtype">intent(in)</span> :: this</div>
+<div class="line"><a name="l08957"></a><span class="lineno"> 8957</span>&#160;            <span class="keywordtype">logical</span> :: x</div>
+<div class="line"><a name="l08958"></a><span class="lineno"> 8958</span>&#160;        <span class="keyword">end function</span></div>
+<div class="line"><a name="l08959"></a><span class="lineno"> 8959</span>&#160; </div>
+<div class="line"><a name="l08960"></a><span class="lineno"> 8960</span>&#160;        <span class="keyword">module</span> subroutine pde_set_box(this, x)</div>
+<div class="line"><a name="l08961"></a><span class="lineno"> 8961</span>&#160;            <span class="keywordtype">class</span>(plot_data_error_bars), <span class="keywordtype">intent(inout)</span> :: this</div>
+<div class="line"><a name="l08962"></a><span class="lineno"> 8962</span>&#160;            <span class="keywordtype">logical</span>, <span class="keywordtype">intent(in)</span> :: x</div>
+<div class="line"><a name="l08963"></a><span class="lineno"> 8963</span>&#160;        <span class="keyword">end subroutine</span></div>
+<div class="line"><a name="l08964"></a><span class="lineno"> 8964</span>&#160; </div>
+<div class="line"><a name="l08965"></a><span class="lineno"> 8965</span>&#160;        <span class="keywordtype">pure</span> <span class="keyword">module</span> function pde_get_use_range(this) result(x)</div>
+<div class="line"><a name="l08966"></a><span class="lineno"> 8966</span>&#160;            <span class="keywordtype">class</span>(plot_data_error_bars), <span class="keywordtype">intent(in)</span> :: this</div>
+<div class="line"><a name="l08967"></a><span class="lineno"> 8967</span>&#160;            <span class="keywordtype">logical</span> :: x</div>
+<div class="line"><a name="l08968"></a><span class="lineno"> 8968</span>&#160;        <span class="keyword">end function</span></div>
+<div class="line"><a name="l08969"></a><span class="lineno"> 8969</span>&#160; </div>
+<div class="line"><a name="l08970"></a><span class="lineno"> 8970</span>&#160;        <span class="keyword">module</span> subroutine pde_define_x_err_lim(this, x, y, xmin, xmax, err)</div>
+<div class="line"><a name="l08971"></a><span class="lineno"> 8971</span>&#160;            <span class="keywordtype">class</span>(plot_data_error_bars), <span class="keywordtype">intent(inout)</span> :: this</div>
+<div class="line"><a name="l08972"></a><span class="lineno"> 8972</span>&#160;<span class="keywordtype">            real</span>(real64), <span class="keywordtype">intent(in)</span>, <span class="keywordtype">dimension(:)</span> :: x, y, xmin, xmax</div>
+<div class="line"><a name="l08973"></a><span class="lineno"> 8973</span>&#160;            <span class="keywordtype">class</span>(<a class="code" href="structferror_1_1errors.html">errors</a>), <span class="keywordtype">intent(inout)</span>, <span class="keywordtype">optional</span>, <span class="keywordtype">target</span> :: err</div>
+<div class="line"><a name="l08974"></a><span class="lineno"> 8974</span>&#160;        <span class="keyword">end subroutine</span></div>
+<div class="line"><a name="l08975"></a><span class="lineno"> 8975</span>&#160; </div>
+<div class="line"><a name="l08976"></a><span class="lineno"> 8976</span>&#160;        <span class="keyword">module</span> subroutine pde_define_y_err_lim(this, x, y, ymin, ymax, err)</div>
+<div class="line"><a name="l08977"></a><span class="lineno"> 8977</span>&#160;            <span class="keywordtype">class</span>(plot_data_error_bars), <span class="keywordtype">intent(inout)</span> :: this</div>
+<div class="line"><a name="l08978"></a><span class="lineno"> 8978</span>&#160;<span class="keywordtype">            real</span>(real64), <span class="keywordtype">intent(in)</span>, <span class="keywordtype">dimension(:)</span> :: x, y, ymin, ymax</div>
+<div class="line"><a name="l08979"></a><span class="lineno"> 8979</span>&#160;            <span class="keywordtype">class</span>(<a class="code" href="structferror_1_1errors.html">errors</a>), <span class="keywordtype">intent(inout)</span>, <span class="keywordtype">optional</span>, <span class="keywordtype">target</span> :: err</div>
+<div class="line"><a name="l08980"></a><span class="lineno"> 8980</span>&#160;        <span class="keyword">end subroutine</span></div>
+<div class="line"><a name="l08981"></a><span class="lineno"> 8981</span>&#160; </div>
+<div class="line"><a name="l08982"></a><span class="lineno"> 8982</span>&#160;        <span class="keyword">module</span> subroutine pde_define_xy_err_lim(this, x, y, xmin, xmax, ymin, &amp;</div>
+<div class="line"><a name="l08983"></a><span class="lineno"> 8983</span>&#160;                ymax, err)</div>
+<div class="line"><a name="l08984"></a><span class="lineno"> 8984</span>&#160;            <span class="keywordtype">class</span>(plot_data_error_bars), <span class="keywordtype">intent(inout)</span> :: this</div>
+<div class="line"><a name="l08985"></a><span class="lineno"> 8985</span>&#160;<span class="keywordtype">            real</span>(real64), <span class="keywordtype">intent(in)</span>, <span class="keywordtype">dimension(:)</span> :: x, y, xmin, xmax, &amp;</div>
+<div class="line"><a name="l08986"></a><span class="lineno"> 8986</span>&#160;                ymin, ymax</div>
+<div class="line"><a name="l08987"></a><span class="lineno"> 8987</span>&#160;            <span class="keywordtype">class</span>(<a class="code" href="structferror_1_1errors.html">errors</a>), <span class="keywordtype">intent(inout)</span>, <span class="keywordtype">optional</span>, <span class="keywordtype">target</span> :: err</div>
+<div class="line"><a name="l08988"></a><span class="lineno"> 8988</span>&#160;        <span class="keyword">end subroutine</span></div>
+<div class="line"><a name="l08989"></a><span class="lineno"> 8989</span>&#160;    <span class="keyword">end interface</span></div>
+<div class="line"><a name="l08990"></a><span class="lineno"> 8990</span>&#160; </div>
+<div class="line"><a name="l08991"></a><span class="lineno"> 8991</span>&#160;<span class="keyword">end module</span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <div class="ttc" id="astructfplot__core_1_1plot__data__colored_html"><div class="ttname"><a href="structfplot__core_1_1plot__data__colored.html">fplot_core::plot_data_colored</a></div><div class="ttdoc">Defines a plot_data based object best represented by a color.</div><div class="ttdef"><b>Definition:</b> <a href="fplot__core_8f90_source.html#l01507">fplot_core.f90:1507</a></div></div>

@@ -245,7 +245,7 @@ $(document).ready(function(){initNavTree('measurements_8f90_source.html','');});
 <div class="line"><a name="l00730"></a><span class="lineno">  730</span>&#160;        <span class="keywordtype">type</span>(<a class="code" href="structfplot__core_1_1plot__data__2d.html">plot_data_2d</a>) :: pdata</div>
 <div class="line"><a name="l00731"></a><span class="lineno">  731</span>&#160;        <span class="keywordtype">type</span>(<a class="code" href="structfplot__core_1_1plot__data__error__bars.html">plot_data_error_bars</a>) :: edata</div>
 <div class="line"><a name="l00732"></a><span class="lineno">  732</span>&#160;        <span class="keywordtype">integer(int32)</span> :: i, k, nparts, nops, flag</div>
-<div class="line"><a name="l00733"></a><span class="lineno">  733</span>&#160;<span class="keywordtype">        real</span>(real64), <span class="keywordtype">allocatable</span>, <span class="keywordtype">dimension(:)</span> :: xd, y, yerr</div>
+<div class="line"><a name="l00733"></a><span class="lineno">  733</span>&#160;<span class="keywordtype">        real</span>(real64), <span class="keywordtype">allocatable</span>, <span class="keywordtype">dimension(:)</span> :: xd, y, ymin, ymax</div>
 <div class="line"><a name="l00734"></a><span class="lineno">  734</span>&#160;        <span class="keywordtype">type</span>(<a class="code" href="structfplot__core_1_1color.html">color</a>) :: clr</div>
 <div class="line"><a name="l00735"></a><span class="lineno">  735</span>&#160;        </div>
 <div class="line"><a name="l00736"></a><span class="lineno">  736</span>&#160;        <span class="comment">! Initialization</span></div>
@@ -258,44 +258,47 @@ $(document).ready(function(){initNavTree('measurements_8f90_source.html','');});
 <div class="line"><a name="l00743"></a><span class="lineno">  743</span>&#160;        nops = <span class="keyword">size</span>(x, 3)</div>
 <div class="line"><a name="l00744"></a><span class="lineno">  744</span>&#160;        <span class="keyword">allocate</span>(xd(nparts), stat = flag)</div>
 <div class="line"><a name="l00745"></a><span class="lineno">  745</span>&#160;        <span class="keywordflow">if</span> (flag == 0) <span class="keyword">allocate</span>(y(nparts), stat = flag)</div>
-<div class="line"><a name="l00746"></a><span class="lineno">  746</span>&#160;        <span class="keywordflow">if</span> (flag == 0) <span class="keyword">allocate</span>(yerr(nparts), stat = flag)</div>
-<div class="line"><a name="l00747"></a><span class="lineno">  747</span>&#160;        <span class="keywordflow">if</span> (flag /= 0) <span class="keywordflow">then</span></div>
-<div class="line"><a name="l00748"></a><span class="lineno">  748</span>&#160;            <span class="keyword">call </span>errmgr%report_error(<span class="stringliteral">&quot;plot_grr&quot;</span>, &amp;</div>
-<div class="line"><a name="l00749"></a><span class="lineno">  749</span>&#160;                <span class="stringliteral">&quot;Insufficient memory available.&quot;</span>, ms_out_of_memory_error)</div>
-<div class="line"><a name="l00750"></a><span class="lineno">  750</span>&#160;            <span class="keywordflow">return</span></div>
-<div class="line"><a name="l00751"></a><span class="lineno">  751</span>&#160;<span class="keywordflow">        end if</span></div>
-<div class="line"><a name="l00752"></a><span class="lineno">  752</span>&#160; </div>
-<div class="line"><a name="l00753"></a><span class="lineno">  753</span>&#160;        <span class="comment">! Establish an x-axis</span></div>
-<div class="line"><a name="l00754"></a><span class="lineno">  754</span>&#160;        <span class="keywordflow">do</span> i = 1, nparts</div>
-<div class="line"><a name="l00755"></a><span class="lineno">  755</span>&#160;            xd(i) = real(i)</div>
-<div class="line"><a name="l00756"></a><span class="lineno">  756</span>&#160;<span class="keywordflow">        end do</span></div>
-<div class="line"><a name="l00757"></a><span class="lineno">  757</span>&#160; </div>
-<div class="line"><a name="l00758"></a><span class="lineno">  758</span>&#160;        <span class="comment">! Cycle over each operator, and generate the plot data</span></div>
-<div class="line"><a name="l00759"></a><span class="lineno">  759</span>&#160;        <span class="keywordflow">do</span> k = 1, nops</div>
-<div class="line"><a name="l00760"></a><span class="lineno">  760</span>&#160;            <span class="comment">! Compute the mean of each parts set, and determine the range</span></div>
-<div class="line"><a name="l00761"></a><span class="lineno">  761</span>&#160;            <span class="keywordflow">do</span> i = 1, nparts</div>
-<div class="line"><a name="l00762"></a><span class="lineno">  762</span>&#160;                y(i) = <a class="code" href="interfacecurvefit__statistics_1_1mean.html">mean</a>(x(i,:,k))</div>
-<div class="line"><a name="l00763"></a><span class="lineno">  763</span>&#160;                yerr(i) = maxval(x(i,:,k)) - minval(x(i,:,k))</div>
-<div class="line"><a name="l00764"></a><span class="lineno">  764</span>&#160;<span class="keywordflow">            end do</span></div>
-<div class="line"><a name="l00765"></a><span class="lineno">  765</span>&#160; </div>
-<div class="line"><a name="l00766"></a><span class="lineno">  766</span>&#160;            <span class="comment">! Define the plot data</span></div>
-<div class="line"><a name="l00767"></a><span class="lineno">  767</span>&#160;            <span class="keyword">call </span>pdata%define_data(xd, y)</div>
-<div class="line"><a name="l00768"></a><span class="lineno">  768</span>&#160;            <span class="keyword">call </span>pdata%set_line_style(line_dotted)</div>
-<div class="line"><a name="l00769"></a><span class="lineno">  769</span>&#160;            <span class="keyword">call </span>plt%push(pdata)</div>
-<div class="line"><a name="l00770"></a><span class="lineno">  770</span>&#160;            clr = pdata%get_line_color()</div>
-<div class="line"><a name="l00771"></a><span class="lineno">  771</span>&#160; </div>
-<div class="line"><a name="l00772"></a><span class="lineno">  772</span>&#160;            <span class="keyword">call </span>edata%define_y_error_data(xd, y, yerr)</div>
-<div class="line"><a name="l00773"></a><span class="lineno">  773</span>&#160;            <span class="keyword">call </span>edata%set_name(<span class="stringliteral">&quot;Operator &quot;</span> // <a class="code" href="interfacestrings_1_1to__string.html">to_string</a>(k))</div>
-<div class="line"><a name="l00774"></a><span class="lineno">  774</span>&#160;            <span class="keyword">call </span>edata%set_line_color(clr)</div>
-<div class="line"><a name="l00775"></a><span class="lineno">  775</span>&#160;            <span class="keyword">call </span>plt%push(edata)</div>
-<div class="line"><a name="l00776"></a><span class="lineno">  776</span>&#160; </div>
-<div class="line"><a name="l00777"></a><span class="lineno">  777</span>&#160;            <span class="comment">!  Notice, the above code works as a copy of each data object is</span></div>
-<div class="line"><a name="l00778"></a><span class="lineno">  778</span>&#160;            <span class="comment">! stored and managed by the plot</span></div>
-<div class="line"><a name="l00779"></a><span class="lineno">  779</span>&#160;<span class="keywordflow">        end do</span></div>
-<div class="line"><a name="l00780"></a><span class="lineno">  780</span>&#160;    <span class="keyword">end subroutine</span></div>
-<div class="line"><a name="l00781"></a><span class="lineno">  781</span>&#160; </div>
-<div class="line"><a name="l00782"></a><span class="lineno">  782</span>&#160;<span class="comment">! ------------------------------------------------------------------------------</span></div>
-<div class="line"><a name="l00783"></a><span class="lineno">  783</span>&#160;<span class="keyword">end module</span></div>
+<div class="line"><a name="l00746"></a><span class="lineno">  746</span>&#160;        <span class="keywordflow">if</span> (flag == 0) <span class="keyword">allocate</span>(ymin(nparts), stat = flag)</div>
+<div class="line"><a name="l00747"></a><span class="lineno">  747</span>&#160;        <span class="keywordflow">if</span> (flag == 0) <span class="keyword">allocate</span>(ymax(nparts), stat = flag)</div>
+<div class="line"><a name="l00748"></a><span class="lineno">  748</span>&#160;        <span class="keywordflow">if</span> (flag /= 0) <span class="keywordflow">then</span></div>
+<div class="line"><a name="l00749"></a><span class="lineno">  749</span>&#160;            <span class="keyword">call </span>errmgr%report_error(<span class="stringliteral">&quot;plot_grr&quot;</span>, &amp;</div>
+<div class="line"><a name="l00750"></a><span class="lineno">  750</span>&#160;                <span class="stringliteral">&quot;Insufficient memory available.&quot;</span>, ms_out_of_memory_error)</div>
+<div class="line"><a name="l00751"></a><span class="lineno">  751</span>&#160;            <span class="keywordflow">return</span></div>
+<div class="line"><a name="l00752"></a><span class="lineno">  752</span>&#160;<span class="keywordflow">        end if</span></div>
+<div class="line"><a name="l00753"></a><span class="lineno">  753</span>&#160; </div>
+<div class="line"><a name="l00754"></a><span class="lineno">  754</span>&#160;        <span class="comment">! Establish an x-axis</span></div>
+<div class="line"><a name="l00755"></a><span class="lineno">  755</span>&#160;        <span class="keywordflow">do</span> i = 1, nparts</div>
+<div class="line"><a name="l00756"></a><span class="lineno">  756</span>&#160;            xd(i) = real(i)</div>
+<div class="line"><a name="l00757"></a><span class="lineno">  757</span>&#160;<span class="keywordflow">        end do</span></div>
+<div class="line"><a name="l00758"></a><span class="lineno">  758</span>&#160; </div>
+<div class="line"><a name="l00759"></a><span class="lineno">  759</span>&#160;        <span class="comment">! Cycle over each operator, and generate the plot data</span></div>
+<div class="line"><a name="l00760"></a><span class="lineno">  760</span>&#160;        <span class="keywordflow">do</span> k = 1, nops</div>
+<div class="line"><a name="l00761"></a><span class="lineno">  761</span>&#160;            <span class="comment">! Compute the mean of each parts set, and determine the range</span></div>
+<div class="line"><a name="l00762"></a><span class="lineno">  762</span>&#160;            <span class="keywordflow">do</span> i = 1, nparts</div>
+<div class="line"><a name="l00763"></a><span class="lineno">  763</span>&#160;                y(i) = <a class="code" href="interfacecurvefit__statistics_1_1mean.html">mean</a>(x(i,:,k))</div>
+<div class="line"><a name="l00764"></a><span class="lineno">  764</span>&#160;                <span class="comment">! yerr(i) = 0.5d0 * (maxval(x(i,:,k)) - minval(x(i,:,k)))</span></div>
+<div class="line"><a name="l00765"></a><span class="lineno">  765</span>&#160;                ymin(i) = minval(x(i,:,k))</div>
+<div class="line"><a name="l00766"></a><span class="lineno">  766</span>&#160;                ymax(i) = maxval(x(i,:,k))</div>
+<div class="line"><a name="l00767"></a><span class="lineno">  767</span>&#160;<span class="keywordflow">            end do</span></div>
+<div class="line"><a name="l00768"></a><span class="lineno">  768</span>&#160; </div>
+<div class="line"><a name="l00769"></a><span class="lineno">  769</span>&#160;            <span class="comment">! Define the plot data</span></div>
+<div class="line"><a name="l00770"></a><span class="lineno">  770</span>&#160;            <span class="keyword">call </span>pdata%define_data(xd, y)</div>
+<div class="line"><a name="l00771"></a><span class="lineno">  771</span>&#160;            <span class="keyword">call </span>pdata%set_line_style(line_dotted)</div>
+<div class="line"><a name="l00772"></a><span class="lineno">  772</span>&#160;            <span class="keyword">call </span>plt%push(pdata)</div>
+<div class="line"><a name="l00773"></a><span class="lineno">  773</span>&#160;            clr = pdata%get_line_color()</div>
+<div class="line"><a name="l00774"></a><span class="lineno">  774</span>&#160; </div>
+<div class="line"><a name="l00775"></a><span class="lineno">  775</span>&#160;            <span class="keyword">call </span>edata%define_y_error_data(xd, y, ymin, ymax)</div>
+<div class="line"><a name="l00776"></a><span class="lineno">  776</span>&#160;            <span class="keyword">call </span>edata%set_name(<span class="stringliteral">&quot;Operator &quot;</span> // <a class="code" href="interfacestrings_1_1to__string.html">to_string</a>(k))</div>
+<div class="line"><a name="l00777"></a><span class="lineno">  777</span>&#160;            <span class="keyword">call </span>edata%set_line_color(clr)</div>
+<div class="line"><a name="l00778"></a><span class="lineno">  778</span>&#160;            <span class="keyword">call </span>plt%push(edata)</div>
+<div class="line"><a name="l00779"></a><span class="lineno">  779</span>&#160; </div>
+<div class="line"><a name="l00780"></a><span class="lineno">  780</span>&#160;            <span class="comment">!  Notice, the above code works as a copy of each data object is</span></div>
+<div class="line"><a name="l00781"></a><span class="lineno">  781</span>&#160;            <span class="comment">! stored and managed by the plot</span></div>
+<div class="line"><a name="l00782"></a><span class="lineno">  782</span>&#160;<span class="keywordflow">        end do</span></div>
+<div class="line"><a name="l00783"></a><span class="lineno">  783</span>&#160;    <span class="keyword">end subroutine</span></div>
+<div class="line"><a name="l00784"></a><span class="lineno">  784</span>&#160; </div>
+<div class="line"><a name="l00785"></a><span class="lineno">  785</span>&#160;<span class="comment">! ------------------------------------------------------------------------------</span></div>
+<div class="line"><a name="l00786"></a><span class="lineno">  786</span>&#160;<span class="keyword">end module</span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <div class="ttc" id="astructferror_1_1errors_html"><div class="ttname"><a href="structferror_1_1errors.html">ferror::errors</a></div><div class="ttdoc">Defines a type for managing errors and warnings.</div><div class="ttdef"><b>Definition:</b> <a href="ferror_8f90_source.html#l00145">ferror.f90:145</a></div></div>

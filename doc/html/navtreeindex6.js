@@ -1,5 +1,13 @@
 var NAVTREEINDEX6 =
 {
+"structfplot__core_1_1surface__plot.html#ac0eaa568dfb58df38348ecc534d44e8c":[1,0,15,30,11],
+"structfplot__core_1_1surface__plot.html#ac54f0f8105db3eb118eb8a05b7ca7857":[1,0,15,30,26],
+"structfplot__core_1_1surface__plot.html#ac881849ed85ad0b25e59c00204aa0960":[1,0,15,30,25],
+"structfplot__core_1_1surface__plot.html#acf55e49e1212536b0bca656c8d5f302d":[1,0,15,30,28],
+"structfplot__core_1_1surface__plot.html#ad25c21f74ffc0f3b18bce8207621ba70":[1,0,15,30,29],
+"structfplot__core_1_1surface__plot.html#ade7581582432846ff3428f7e81c58bda":[1,0,15,30,9],
+"structfplot__core_1_1surface__plot.html#ae34fa3cbc672b43575cd68f48f25098a":[1,0,15,30,7],
+"structfplot__core_1_1surface__plot.html#ae449da228b62d103860df52de42d97a4":[1,0,15,30,15],
 "structfplot__core_1_1surface__plot.html#aec8302d17a46422414bad3ba5e0cd57f":[1,0,15,30,12],
 "structfplot__core_1_1surface__plot.html#aeef99673df7159bd8bff00b7d95cdb05":[1,0,15,30,17],
 "structfplot__core_1_1surface__plot.html#af5a50d73ae72ee8cac08b4051ac0c39a":[1,0,15,30,0],
@@ -241,13 +249,5 @@ var NAVTREEINDEX6 =
 "structlinalg__immutable_1_1svd__results.html#af5c35f3392431179a5cb15d1cddf7cb1":[1,0,22,11,2],
 "structmeasurements_1_1emp__grr__results.html":[1,0,23,0],
 "structmeasurements_1_1emp__grr__results.html#a1ae5f43cd5abbc8936a85d6b20b710f4":[1,0,23,0,4],
-"structmeasurements_1_1emp__grr__results.html#a1f6719d1a6acbbc4b87862a1bbe970d5":[1,0,23,0,1],
-"structmeasurements_1_1emp__grr__results.html#a38ef76cef2025b4e9799ca362497b30e":[1,0,23,0,8],
-"structmeasurements_1_1emp__grr__results.html#a3a017e73f2c90a6f307a2ba7564dc7b7":[1,0,23,0,0],
-"structmeasurements_1_1emp__grr__results.html#a44d8d85ee8ec3a8887d1be1781b5058b":[1,0,23,0,10],
-"structmeasurements_1_1emp__grr__results.html#a50147bcac95b81042de8aa98437c2a52":[1,0,23,0,13],
-"structmeasurements_1_1emp__grr__results.html#aa0b3b258a2f4266f054fa1211a3959df":[1,0,23,0,3],
-"structmeasurements_1_1emp__grr__results.html#aad2fb110c0290dd06e67b0af50c68f8f":[1,0,23,0,6],
-"structmeasurements_1_1emp__grr__results.html#ab25dcacc9c19b63569e8a19e5138dc76":[1,0,23,0,7],
-"structmeasurements_1_1emp__grr__results.html#ab7935abe0866d5b47ed3c55dde4d4787":[1,0,23,0,12]
+"structmeasurements_1_1emp__grr__results.html#a1f6719d1a6acbbc4b87862a1bbe970d5":[1,0,23,0,1]
 };

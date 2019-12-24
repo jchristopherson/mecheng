@@ -55,9 +55,9 @@ var NAVTREEINDEX =
 "namespacesignals.html",
 "structfortio__binary_1_1binary__file__manager.html#a53ab8988eaa7ce1bc7227ff0d7ad0045",
 "structfplot__core_1_1multiplot.html#add2e20e53499aa007d9ceb2a7917589f",
-"structfplot__core_1_1surface__plot.html#aec8302d17a46422414bad3ba5e0cd57f",
-"structmeasurements_1_1emp__grr__results.html#ac3b7a31fc9194bf9570b9394a09b746e",
-"structvibrations_1_1bode__settings.html#ad0e842390a24662747ae93dfb59611a2"
+"structfplot__core_1_1surface__plot.html#ac0eaa568dfb58df38348ecc534d44e8c",
+"structmeasurements_1_1emp__grr__results.html#a38ef76cef2025b4e9799ca362497b30e",
+"structstrings_1_1string__builder.html#aae37a629101a752ef3da95fce13cfca5"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
