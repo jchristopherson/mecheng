@@ -730,7 +730,7 @@ contains
         type(plot_data_2d) :: pdata
         type(plot_data_error_bars) :: edata
         integer(int32) :: i, k, nparts, nops, flag
-        real(real64), allocatable, dimension(:) :: xd, y, yerr
+        real(real64), allocatable, dimension(:) :: xd, y, ymin, ymax
         type(color) :: clr
         
         ! Initialization
@@ -743,7 +743,8 @@ contains
         nops = size(x, 3)
         allocate(xd(nparts), stat = flag)
         if (flag == 0) allocate(y(nparts), stat = flag)
-        if (flag == 0) allocate(yerr(nparts), stat = flag)
+        if (flag == 0) allocate(ymin(nparts), stat = flag)
+        if (flag == 0) allocate(ymax(nparts), stat = flag)
         if (flag /= 0) then
             call errmgr%report_error("plot_grr", &
                 "Insufficient memory available.", MS_OUT_OF_MEMORY_ERROR)
@@ -760,7 +761,9 @@ contains
             ! Compute the mean of each parts set, and determine the range
             do i = 1, nparts
                 y(i) = mean(x(i,:,k))
-                yerr(i) = maxval(x(i,:,k)) - minval(x(i,:,k))
+                ! yerr(i) = 0.5d0 * (maxval(x(i,:,k)) - minval(x(i,:,k)))
+                ymin(i) = minval(x(i,:,k))
+                ymax(i) = maxval(x(i,:,k))
             end do
 
             ! Define the plot data
@@ -769,7 +772,7 @@ contains
             call plt%push(pdata)
             clr = pdata%get_line_color()
 
-            call edata%define_y_error_data(xd, y, yerr)
+            call edata%define_y_error_data(xd, y, ymin, ymax)
             call edata%set_name("Operator " // to_string(k))
             call edata%set_line_color(clr)
             call plt%push(edata)
