@@ -8503,6 +8503,8 @@ module fplot_core
         real(real64), allocatable, dimension(:,:) :: m_data
         !> Display an error box for the case where x and y errors are defined.
         logical :: m_box = .false.
+        !> Plot error bars using a defined range vs. a +/- value.
+        logical :: m_range = .false.
     contains
         procedure, public :: get_command_string => pde_get_cmd
         procedure, public :: get_data_string => pde_get_data_cmd
@@ -8512,6 +8514,10 @@ module fplot_core
         !! @code{.f90}
         !! subroutine define_x_error_data(class(plot_data_error_bars) this, real(real64) x(:), real(real64) y(:), real(real64) xerr(:), optional class(errors) err)
         !! @endcode
+        !! @par Alternative Syntax
+        !! @code{.f90}
+        !! subroutine define_x_error_data(class(plot_data_error_bars) this, real(real64) x(:), real(real64) y(:), real(real64) xmin(:), real(real64) xmax(:), optional class(errors) err)
+        !! @endcode
         !!
         !! @param[in,out] this The plot_data_error_bars object.
         !! @param[in] x An N-element array containing the x coordinates of the 
@@ -8520,6 +8526,10 @@ module fplot_core
         !!  data.
         !! @param[in] xerr An N-element array containing the x errors at each
         !!  data point.
+        !! @param[in] xmin = An N-element array containing the minimum x values
+        !!  at each data point.
+        !! @param[in] xmax = An N-element array containing the maximum x values
+        !!  at each data point.
         !! @param[in,out] err An optional errors-based object that if provided can be
         !!  used to retrieve information relating to any errors encountered during
         !!  execution.  If not provided, a default implementation of the errors
@@ -8568,12 +8578,17 @@ module fplot_core
         !! end program
         !! @endcode
         !! @image html example_x_errorbars_1.png
-        procedure, public :: define_x_error_data => pde_define_x_err
+        generic, public :: define_x_error_data => pde_define_x_err, &
+            pde_define_x_err_lim
         !> @brief Defines the y error data.
         !!
         !! @par Syntax
         !! @code{.f90}
         !! subroutine define_y_error_data(class(plot_data_error_bars) this, real(real64) x(:), real(real64) y(:), real(real64) yerr(:), optional class(errors) err)
+        !! @endcode
+        !! @par Alternative Syntax
+        !! @code{.f90}
+        !! subroutine define_y_error_data(class(plot_data_error_bars) this, real(real64) x(:), real(real64) y(:), real(real64) ymin(:), real(real64) ymax(:), optional class(errors) err)
         !! @endcode
         !!
         !! @param[in,out] this The plot_data_error_bars object.
@@ -8583,6 +8598,10 @@ module fplot_core
         !!  data.
         !! @param[in] yerr An N-element array containing the y errors at each
         !!  data point.
+        !! @param[in] ymin = An N-element array containing the minimum y values
+        !!  at each data point.
+        !! @param[in] ymax = An N-element array containing the maximum y values
+        !!  at each data point.
         !! @param[in,out] err An optional errors-based object that if provided can be
         !!  used to retrieve information relating to any errors encountered during
         !!  execution.  If not provided, a default implementation of the errors
@@ -8631,12 +8650,17 @@ module fplot_core
         !! end program
         !! @endcode
         !! @image html example_y_errorbars_1.png
-        procedure, public :: define_y_error_data => pde_define_y_err
+        generic, public :: define_y_error_data => pde_define_y_err, &
+            pde_define_y_err_lim
         !> @brief Defines the x and y error data.
         !!
         !! @par Syntax
         !! @code{.f90}
         !! subroutine define_xy_error_data(class(plot_data_error_bars) this, real(real64) x(:), real(real64) y(:), real(real64) xerr(:), real(real64) yerr(:), optional class(errors) err)
+        !! @endcode
+        !! @par Alternative Syntax
+        !! @code{.f90}
+        !! subroutine define_xy_error_data(class(plot_data_error_bars) this, real(real64) x(:), real(real64) y(:), real(real64) xmin(:), real(real64) xmax(:), real(real64) ymin(:), real(real64) ymax(:), optional class(errors) err)
         !! @endcode
         !!
         !! @param[in,out] this The plot_data_error_bars object.
@@ -8648,6 +8672,14 @@ module fplot_core
         !!  data point.
         !! @param[in] yerr An N-element array containing the y errors at each
         !!  data point.
+        !! @param[in] xmin = An N-element array containing the minimum x values
+        !!  at each data point.
+        !! @param[in] xmax = An N-element array containing the maximum x values
+        !!  at each data point.
+        !! @param[in] ymin = An N-element array containing the minimum y values
+        !!  at each data point.
+        !! @param[in] ymax = An N-element array containing the maximum y values
+        !!  at each data point.
         !! @param[in,out] err An optional errors-based object that if provided can be
         !!  used to retrieve information relating to any errors encountered during
         !!  execution.  If not provided, a default implementation of the errors
@@ -8698,7 +8730,8 @@ module fplot_core
         !! end program
         !! @endcode
         !! @image html example_xy_errorbars_1.png
-        procedure, public :: define_xy_error_data => pde_define_xy_err
+        generic, public :: define_xy_error_data => pde_define_xy_err, &
+            pde_define_xy_err_lim
         !> @brief Tests to see if the x error bar data has been defined, and as
         !!  a result, if the x error data is to be plotted.
         !!
@@ -8854,6 +8887,24 @@ module fplot_core
         !! @endcode
         !! @image html example_xy_errorbox_1.png
         procedure, public :: set_use_error_box => pde_set_box
+        !> @brief Gets a value determining if a defined range is being used
+        !! to define the error bar extremes.
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! pure logical function get_use_range(class(plot_data_error_bars) this)
+        !! @endcode
+        !!
+        !! @param[in] this The plot_data_error_bars object.
+        !! @return True if a defined range is being used; else, false.
+        procedure, public :: get_use_range => pde_get_use_range
+
+        procedure :: pde_define_x_err
+        procedure :: pde_define_y_err
+        procedure :: pde_define_xy_err
+        procedure :: pde_define_x_err_lim
+        procedure :: pde_define_y_err_lim
+        procedure :: pde_define_xy_err_lim
     end type
 
 ! ------------------------------------------------------------------------------
@@ -8909,6 +8960,31 @@ module fplot_core
         module subroutine pde_set_box(this, x)
             class(plot_data_error_bars), intent(inout) :: this
             logical, intent(in) :: x
+        end subroutine
+
+        pure module function pde_get_use_range(this) result(x)
+            class(plot_data_error_bars), intent(in) :: this
+            logical :: x
+        end function
+
+        module subroutine pde_define_x_err_lim(this, x, y, xmin, xmax, err)
+            class(plot_data_error_bars), intent(inout) :: this
+            real(real64), intent(in), dimension(:) :: x, y, xmin, xmax
+            class(errors), intent(inout), optional, target :: err
+        end subroutine
+
+        module subroutine pde_define_y_err_lim(this, x, y, ymin, ymax, err)
+            class(plot_data_error_bars), intent(inout) :: this
+            real(real64), intent(in), dimension(:) :: x, y, ymin, ymax
+            class(errors), intent(inout), optional, target :: err
+        end subroutine
+
+        module subroutine pde_define_xy_err_lim(this, x, y, xmin, xmax, ymin, &
+                ymax, err)
+            class(plot_data_error_bars), intent(inout) :: this
+            real(real64), intent(in), dimension(:) :: x, y, xmin, xmax, &
+                ymin, ymax
+            class(errors), intent(inout), optional, target :: err
         end subroutine
     end interface
 
