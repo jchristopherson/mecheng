@@ -428,6 +428,8 @@ set(lapack_sources
     external/lapack/SRC/zlartg.f
     external/lapack/SRC/zrot.f
     external/lapack/SRC/zunm2r.f
+
+    external/lapack/SRC/dcombssq.f
 )
 
 # Define the QRUPDATE source files
