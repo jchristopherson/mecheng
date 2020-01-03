@@ -1730,6 +1730,7 @@ module vibrations
     !! response function.
     interface frf_peak_detect
         module procedure :: frf_peak_detect_1
+        module procedure :: frf_peak_detect_2
     end interface
 
     interface
@@ -1752,7 +1753,7 @@ module vibrations
         !!      size.
         !! - MECH_NONMONOTONIC_ERROR: Occurs if @p freq is not monotonically increasing.
         !!
-        !! @return The resulting peak and trough locations.
+        !! @return The resulting peak and trough locations for each supplied range.
         module function frf_peak_detect_1(freq, amp, ranges, err) result(rst)
             real(real64), intent(in), dimension(:) :: freq, amp
             class(frf_search_info), intent(in), dimension(:) :: ranges
@@ -1760,6 +1761,26 @@ module vibrations
             type(peak_info), allocatable, dimension(:) :: rst
         end function
 
+        !> @brief Attempts to find the peaks and troughs in the supplied frequency
+        !! response function.
+        !!
+        !! @param[in] freq An N-element array containing frequency values.  This
+        !!  array must be monotonically increasing.
+        !! @param[in] amp An N-element array containing the corresponding amplitude
+        !!  values.
+        !! @param[in] thrsh A threshold value for determining the presence of a
+        !!  a peak or trough.
+        !! @param[in,out] err An optional errors-based object that if provided can be
+        !!  used to retrieve information relating to any errors encountered during
+        !!  execution.  If not provided, a default implementation of the errors
+        !!  class is used internally to provide error handling.  Possible errors and
+        !!  warning messages that may be encountered are as follows.
+        !!  - MECH_OUT_OF_MEMORY_ERROR: Occurs if insufficient memory is available.
+        !!  - MECH_ARRAY_SIZE_ERROR: Occurs if @p freq and @p amp are not the same
+        !!      size.
+        !! - MECH_NONMONOTONIC_ERROR: Occurs if @p freq is not monotonically increasing.
+        !!
+        !! @return The resulting peak and trough locations.
         module function frf_peak_detect_2(freq, amp, thrsh, err) result(rst)
             real(real64), intent(in), dimension(:) :: freq, amp
             real(real64) :: thrsh

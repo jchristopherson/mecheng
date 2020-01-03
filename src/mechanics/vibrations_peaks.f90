@@ -87,6 +87,19 @@ module function frf_peak_detect_2(freq, amp, thrsh, err) result(rst)
     real(real64) :: thrsh
     class(errors), intent(inout), optional, target :: err
     type(peak_info) :: rst
+
+    ! Local Variables
+    type(frf_search_info) :: ranges(1)
+    type(peak_info) :: rsts(1)
+
+    ! Initialization
+    ranges(1)%min_frequency = freq(1)
+    ranges(1)%max_frequency = freq(size(freq))
+    ranges(1)%amplitude_threshold = thrsh
+
+    ! Process
+    rsts = frf_peak_detect(freq, amp, ranges, err)
+    rst = rsts(1)
 end function
 
 ! ------------------------------------------------------------------------------
