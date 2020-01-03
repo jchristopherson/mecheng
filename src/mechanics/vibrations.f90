@@ -9,6 +9,7 @@ module vibrations
     use constants
     use nonlin_polynomials
     use integral_core
+    use signals, only : peak_info, peak_detect
     implicit none
     private
     public :: modal_information
@@ -24,6 +25,8 @@ module vibrations
     public :: frequency_sweep_options
     public :: compute_frequency_sweep
     public :: frf_fitting_tool
+    public :: frf_search_info
+    public :: frf_peak_detect
 
     !> @brief Contains modal information such as frequency and mode shape.
     type modal_information
@@ -1709,5 +1712,59 @@ module vibrations
         end subroutine
     end interface
 
+! ******************************************************************************
+! VIBRATIONS_PEAKS
 ! ------------------------------------------------------------------------------
+    !> @brief Defines FRF peak detection search criteria.
+    type frf_search_info
+        !> @brief Defines the minimum frequency of the search region.
+        real(real64) :: min_frequency
+        !> @brief Defines the maximum frequency of the search region.
+        real(real64) :: max_frequency
+        !> @brief Defines the threshold for determining the presence of a
+        !! a peak or trough.
+        real(real64) :: amplitude_threshold
+    end type
+    
+    !> @brief Attempts to find the peaks and troughs in the supplied frequency
+    !! response function.
+    interface frf_peak_detect
+        module procedure :: frf_peak_detect_1
+    end interface
+
+    interface
+        !> @brief Attempts to find the peaks and troughs in the supplied frequency
+        !! response function.
+        !!
+        !! @param[in] freq An N-element array containing frequency values.  This
+        !!  array must be monotonically increasing.
+        !! @param[in] amp An N-element array containing the corresponding amplitude
+        !!  values.
+        !! @param[in] ranges An M-element array containing the information regarding
+        !!  the frequency ranges of interest.
+        !! @param[in,out] err An optional errors-based object that if provided can be
+        !!  used to retrieve information relating to any errors encountered during
+        !!  execution.  If not provided, a default implementation of the errors
+        !!  class is used internally to provide error handling.  Possible errors and
+        !!  warning messages that may be encountered are as follows.
+        !!  - MECH_OUT_OF_MEMORY_ERROR: Occurs if insufficient memory is available.
+        !!  - MECH_ARRAY_SIZE_ERROR: Occurs if @p freq and @p amp are not the same
+        !!      size.
+        !! - MECH_NONMONOTONIC_ERROR: Occurs if @p freq is not monotonically increasing.
+        !!
+        !! @return The resulting peak and trough locations.
+        module function frf_peak_detect_1(freq, amp, ranges, err) result(rst)
+            real(real64), intent(in), dimension(:) :: freq, amp
+            class(frf_search_info), intent(in), dimension(:) :: ranges
+            class(errors), intent(inout), optional, target :: err
+            type(peak_info), allocatable, dimension(:) :: rst
+        end function
+
+        module function frf_peak_detect_2(freq, amp, thrsh, err) result(rst)
+            real(real64), intent(in), dimension(:) :: freq, amp
+            real(real64) :: thrsh
+            class(errors), intent(inout), optional, target :: err
+            type(peak_info) :: rst
+        end function
+    end interface
 end module

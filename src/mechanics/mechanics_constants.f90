@@ -22,4 +22,7 @@ module mechanics_constants
 
     !> An error code indicating a null reference error.
     integer(int32), parameter :: MECH_NULL_REFERENCE_ERROR = 5004
+
+    !> An error code indicating a nonmonotonic array error.
+    integer(int32), parameter :: MECH_NONMONOTONIC_ERROR = 5005
 end module
