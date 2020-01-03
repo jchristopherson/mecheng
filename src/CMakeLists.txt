@@ -495,6 +495,7 @@ set(signals_sources
     signals/signals_integrate.f90
     signals/signals_realtime.f90
     signals/signals_convolution.f90
+    signals/signals_peaks.f90
 )
 
 set(strings_sources
