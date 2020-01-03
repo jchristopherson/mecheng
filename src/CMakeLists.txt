@@ -456,6 +456,7 @@ set(mechanics_sources
     mechanics/vibrations_ss.f90
     mechanics/vibrations_sweep.f90
     mechanics/vibrations_fit.f90
+    mechanics/vibrations_peaks.f90
     mechanics/mechanics_constants.f90
     mechanics/friction.f90
 )
