@@ -531,7 +531,7 @@ set(genann_sources
 # Define the calibrate source files
 set(calibrate_sources
     calibrate/calibrate.f90
-    calibrateion/calibrate_calibration.f90
+    calibrate/calibrate_calibration.f90
 )
 
 # Define the MECHENG source files
