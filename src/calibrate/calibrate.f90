@@ -6,6 +6,11 @@ module calibrate
     use ferror
     use nonlin_polynomials
     implicit none
+    private
+    public :: CAL_OUT_OF_MEMORY_ERROR
+    public :: CAL_INVALID_INPUT_ERROR
+    public :: environment
+    public :: calibration
 
     !> @brief Defines an out-of-memory error condition.
     integer(int32), parameter :: CAL_OUT_OF_MEMORY_ERROR = 20000
@@ -43,9 +48,6 @@ module calibrate
         integer(int32), public :: zero_index
 
     contains
-        ! evaluate polynomial
-        ! compute calibration errors
-        ! get polynomial coefficients
         procedure, public :: initialize => cal_init
         procedure, public :: get_capacity => cal_get_capacity
         procedure, public :: set_capacity => cal_set_capacity
@@ -55,6 +57,10 @@ module calibrate
         generic, public :: append => cal_add_data_point, cal_add_data_point_args
         procedure, public :: remove_last => cal_remove_last_point
         procedure, public :: fit_polynomial => cal_fit_poly
+        procedure, public :: evaluate_polynomial => cal_eval_poly
+        procedure, public :: evaluate_at_cal_points => cal_eval_poly_at_cal_points
+        procedure, public :: compute_errors => cal_compute_err
+        procedure, public :: get_polynomial_coefficients => cal_get_coeff
         
         procedure ::cal_set_data_point
         procedure :: cal_set_data_point_args
@@ -208,5 +214,51 @@ module calibrate
             integer(int32), intent(in)  :: order
             class(errors), intent(inout), optional, target :: err
         end subroutine
+
+        !> @brief Evaluates the calibration polynomial at the points specified.
+        !!
+        !! @param[in] this The calibration instance.
+        !! @param[in] x The point(s) at which to evaluate the calibration 
+        !!  polynomial.
+        !! @return The value(s) of the calibration polynomial as evaluated
+        !!  at @p x.
+        pure elemental module function cal_eval_poly(this, x) result(y)
+            class(calibration), intent(in) :: this
+            real(real64), intent(in) :: x
+            real(real64) :: y
+        end function
+
+        !> @brief Evaluates the calibration polynomial at the stored 
+        !! calibraiton points.
+        !!
+        !! @param[in] this The calibration instance.
+        !! @return An array containing the value of the calibration polynomial
+        !!  at each of the stored calibration points.
+        pure module function cal_eval_poly_at_cal_points(this) result(y)
+            class(calibration), intent(in) :: this
+            real(real64), allocatable, dimension(:) :: y
+        end function
+
+        !> @brief Computes the errors in the calibration at each calibration
+        !! point.
+        !!
+        !! @param[in] this The calibration instance.
+        !! @return An array containing the difference between each calibration
+        !!  point, and the corresponding reference standard value.
+        pure module function cal_compute_err(this) result(y)
+            class(calibration), intent(in) :: this
+            real(real64), allocatable, dimension(:) :: y
+        end function
+
+        !> @brief Returns the calibration polynomial coefficients in ascending
+        !! order.
+        !!
+        !! @param[in] this The calibration instance.
+        !! @return An array containing the calibration polynomial coefficients
+        !!  in ascending order.
+        pure module function cal_get_coeff(this) result(c)
+            class(calibration), intent(in) :: this
+            real(real64), allocatable, dimension(:) :: c
+        end function
     end interface
 end module
