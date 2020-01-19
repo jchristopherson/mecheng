@@ -33,6 +33,8 @@ module calibrate
         !! contains the output from the reference standard, and the second 
         !! column contains the UUT output.
         real(real64), private, allocatable, dimension(:,:) :: m_data
+        !> @brief The actual number of points (# of rows) utilized in m_data.
+        integer(int32), private :: m_count
         !> @brief The calibration polynomial.
         type(polynomial), private :: m_poly
 
@@ -72,8 +74,14 @@ module calibrate
         !> @brief Initializes a new instance of the calibration class.
         !!
         !! @param[in] this The calibration instance.
-        module subroutine cal_init(this)
+        !! @param[in,out] err An optional parameter that is used to track the
+        !!  error status of the routine.  The following error codes are
+        !!  possible.
+        !!  - CAL_OUT_OF_MEMORY_ERROR: Occurs if there is insufficient memory
+        !!      available.
+        module subroutine cal_init(this, err)
             class(calibration), intent(inout) :: this
+            class(errors), intent(inout), optional, target :: err
         end subroutine
 
         !> @brief Gets the capacity of the calibration instance to accept
@@ -222,7 +230,7 @@ module calibrate
         !!  polynomial.
         !! @return The value(s) of the calibration polynomial as evaluated
         !!  at @p x.
-        pure elemental module function cal_eval_poly(this, x) result(y)
+        elemental module function cal_eval_poly(this, x) result(y)
             class(calibration), intent(in) :: this
             real(real64), intent(in) :: x
             real(real64) :: y
@@ -234,7 +242,7 @@ module calibrate
         !! @param[in] this The calibration instance.
         !! @return An array containing the value of the calibration polynomial
         !!  at each of the stored calibration points.
-        pure module function cal_eval_poly_at_cal_points(this) result(y)
+        module function cal_eval_poly_at_cal_points(this) result(y)
             class(calibration), intent(in) :: this
             real(real64), allocatable, dimension(:) :: y
         end function

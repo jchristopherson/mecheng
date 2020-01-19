@@ -6,8 +6,16 @@ contains
 !> @brief Initializes a new instance of the calibration class.
 !!
 !! @param[in] this The calibration instance.
-module subroutine cal_init(this)
+module subroutine cal_init(this, err)
     class(calibration), intent(inout) :: this
+    class(errors), intent(inout), optional, target :: err
+    this%m_count = 0
+    call this%set_capacity(100, err)
+    this%conditions%temperature = 21.0d0
+    this%conditions%humidity = 50.0d0
+    this%operator = ""
+    this%notes = ""
+    this%zero_index = 1
 end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -19,6 +27,11 @@ end subroutine
 pure module function cal_get_capacity(this) result(n)
     class(calibration), intent(in) :: this
     integer(int32) :: n
+    if (allocated(this%m_data)) then
+        n = size(this%m_data, 1)
+    else
+        n = 0
+    end if
 end function
 
 ! ------------------------------------------------------------------------------
@@ -36,9 +49,55 @@ end function
 !!  - CAL_INVALID_INPUT_ERROR: Occurs if @p n is not positive and 
 !!      non-zero.
 module subroutine cal_set_capacity(this, n, err)
+    ! Arguments
     class(calibration), intent(inout) :: this
     integer(int32), intent(in) :: n
     class(errors), intent(inout), optional, target :: err
+
+    ! Local Variables
+    class(errors), pointer :: errmgr
+    type(errors), target :: deferr
+    real(real64), allocatable, dimension(:,:) :: cpy
+    integer(int32) :: m, npts, flag
+    
+    ! Set up the error handler
+    if (present(err)) then
+        errmgr => err
+    else
+        errmgr => deferr
+    end if
+    npts = this%get_count()
+
+    if (allocated(this%m_data)) then
+        ! Create a copy of any existing data - if necessary
+        if (npts > 0) then
+            allocate(cpy(npts, 2), stat = flag)
+            if (flag /= 0) go to 100
+            cpy = this%m_data(1:npts,:)
+        end if
+
+        ! Free the existing memory
+        deallocate(this%m_data)
+    end if
+
+    ! Reallocate to the correct size
+    allocate(this%m_data(n, 2), stat = flag)
+    if (flag /= 0) go to 100
+
+    ! Copy back any data - if necessary
+    if (npts > 0) then
+        m = min(npts, n)
+        this%m_data(1:m,:) = cpy(1:m,:)
+    end if
+
+    ! End
+    return
+
+    ! Memory issue handling
+100 continue
+    call errmgr%report_error("cal_set_capacity", &
+        "Insufficient memory available.", &
+        CAL_OUT_OF_MEMORY_ERROR)
 end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -49,6 +108,7 @@ end subroutine
 pure module function cal_get_count(this) result(n)
     class(calibration), intent(in) :: this
     integer(int32) :: n
+    n = this%m_count
 end function
 
 ! ------------------------------------------------------------------------------
@@ -64,6 +124,11 @@ pure module function cal_get_data_point(this, ind) result(x)
     class(calibration), intent(in) :: this
     integer(int32), intent(in) :: ind
     real(real64) :: x(2)
+    if (ind >= 0 .and. ind <= this%get_count()) then
+        x = this%m_data(ind,:)
+    else
+        x = 0.0d0
+    end if
 end function
 
 ! ------------------------------------------------------------------------------
@@ -79,6 +144,9 @@ module subroutine cal_set_data_point(this, ind, x)
     class(calibration), intent(inout) :: this
     integer(int32), intent(in) :: ind
     real(real64), intent(in) :: x(2)
+    if (ind >= 0 .and. ind <= this%get_count()) then
+        this%m_data(ind,:) = x
+    end if
 end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -92,6 +160,10 @@ module subroutine cal_set_data_point_args(this, ind, std, uut)
     class(calibration), intent(inout) :: this
     integer(int32), intent(in) :: ind
     real(real64), intent(in) :: std, uut
+    if (ind >= 0 .and. ind <= this%get_count()) then
+        this%m_data(ind,1) = std
+        this%m_data(ind,2) = uut
+    end if
 end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -109,9 +181,34 @@ end subroutine
 !!  - CAL_OUT_OF_MEMORY_ERROR: Occurs if there is insufficient memory
 !!      available.
 module subroutine cal_add_data_point(this, x, err)
+    ! Arguments
     class(calibration), intent(inout) :: this
     real(real64), intent(in) :: x(2)
     class(errors), intent(inout), optional, target :: err
+
+    ! Local Variables
+    class(errors), pointer :: errmgr
+    type(errors), target :: deferr
+    integer(int32) :: n
+    
+    ! Set up error handling
+    if (present(err)) then
+        errmgr => err
+    else
+        errmgr => deferr
+    end if
+
+    ! Check the capacity, and increase if necessary
+    if (this%get_count() == this%get_capacity()) then
+        n = max(2 * this%get_capacity, 100)
+        call this%set_capacity(n, errmgr)
+        if (errmgr%has_error_occurred()) return
+    end if
+
+    ! Store the data and index the counter
+    n = this%get_count() + 1
+    call this%m_data(n,:) = x
+    this%m_count = n
 end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -130,6 +227,10 @@ module subroutine cal_add_data_point_args(this, std, uut, err)
     class(calibration), intent(inout) :: this
     real(real64), intent(in) :: std, uut
     class(errors), intent(inout), optional, target :: err
+    
+    real(real64) :: x(2)
+    x = [std, uut]
+    call this%append(x, err)
 end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -139,6 +240,7 @@ end subroutine
 !! @param[in,out] this The calibration instance.
 module subroutine cal_remove_last_point(this)
     class(calibration), intent(inout) :: this
+    if (this%get_count() > 0) this%m_count = this%m_count - 1
 end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -167,10 +269,11 @@ end subroutine
 !!  polynomial.
 !! @return The value(s) of the calibration polynomial as evaluated
 !!  at @p x.
-pure elemental module function cal_eval_poly(this, x) result(y)
+elemental module function cal_eval_poly(this, x) result(y)
     class(calibration), intent(in) :: this
     real(real64), intent(in) :: x
     real(real64) :: y
+    y = this%m_poly%evaluate(x)
 end function
 
 ! ------------------------------------------------------------------------------
@@ -180,7 +283,7 @@ end function
 !! @param[in] this The calibration instance.
 !! @return An array containing the value of the calibration polynomial
 !!  at each of the stored calibration points.
-pure module function cal_eval_poly_at_cal_points(this) result(y)
+module function cal_eval_poly_at_cal_points(this) result(y)
     class(calibration), intent(in) :: this
     real(real64), allocatable, dimension(:) :: y
 end function
