@@ -528,6 +528,12 @@ set(genann_sources
     genann/genann.f90
 )
 
+# Define the calibrate source files
+set(calibrate_sources
+    calibrate/calibrate.f90
+    calibrateion/calibrate_calibration.f90
+)
+
 # Define the MECHENG source files
 set(mecheng_sources
     constants.f90
@@ -553,6 +559,7 @@ set(mecheng_sources
     ${controls_sources}
     ${general_sources}
     ${genann_sources}
+    ${calibrate_sources}
 )
 
 # Build the library
