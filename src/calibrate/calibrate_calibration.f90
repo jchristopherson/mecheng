@@ -200,14 +200,14 @@ module subroutine cal_add_data_point(this, x, err)
 
     ! Check the capacity, and increase if necessary
     if (this%get_count() == this%get_capacity()) then
-        n = max(2 * this%get_capacity, 100)
+        n = max(2 * this%get_capacity(), 100)
         call this%set_capacity(n, errmgr)
         if (errmgr%has_error_occurred()) return
     end if
 
     ! Store the data and index the counter
     n = this%get_count() + 1
-    call this%m_data(n,:) = x
+    this%m_data(n,:) = x
     this%m_count = n
 end subroutine
 
@@ -286,6 +286,9 @@ end function
 module function cal_eval_poly_at_cal_points(this) result(y)
     class(calibration), intent(in) :: this
     real(real64), allocatable, dimension(:) :: y
+    integer(int32) :: n
+    n = this%get_count()
+    y = this%evaluate_polynomial(this%m_data(1:n,2))
 end function
 
 ! ------------------------------------------------------------------------------
@@ -295,9 +298,12 @@ end function
 !! @param[in] this The calibration instance.
 !! @return An array containing the difference between each calibration
 !!  point, and the corresponding reference standard value.
-pure module function cal_compute_err(this) result(y)
+module function cal_compute_err(this) result(y)
     class(calibration), intent(in) :: this
     real(real64), allocatable, dimension(:) :: y
+    integer(int32) :: n
+    n = this%get_count()
+    y = this%evaluate_at_cal_points() - this%m_data(1:n,1)
 end function
 
 ! ------------------------------------------------------------------------------
@@ -310,6 +316,7 @@ end function
 pure module function cal_get_coeff(this) result(c)
     class(calibration), intent(in) :: this
     real(real64), allocatable, dimension(:) :: c
+    c = this%m_poly%get_all()
 end function
 
 ! ------------------------------------------------------------------------------

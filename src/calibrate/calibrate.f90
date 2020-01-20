@@ -253,7 +253,7 @@ module calibrate
         !! @param[in] this The calibration instance.
         !! @return An array containing the difference between each calibration
         !!  point, and the corresponding reference standard value.
-        pure module function cal_compute_err(this) result(y)
+        module function cal_compute_err(this) result(y)
             class(calibration), intent(in) :: this
             real(real64), allocatable, dimension(:) :: y
         end function
