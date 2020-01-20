@@ -9,6 +9,7 @@ module calibrate
     private
     public :: CAL_OUT_OF_MEMORY_ERROR
     public :: CAL_INVALID_INPUT_ERROR
+    public :: CAL_INVALID_OPERATION_ERROR
     public :: environment
     public :: calibration
 
@@ -16,6 +17,8 @@ module calibrate
     integer(int32), parameter :: CAL_OUT_OF_MEMORY_ERROR = 20000
     !> @brief Defines an invalid input argument error condition.
     integer(int32), parameter :: CAL_INVALID_INPUT_ERROR = 20001
+    !> @brief Defines an invalid operation error condition.
+    integer(int32), parameter :: CAL_INVALID_OPERATION_ERROR = 20002
 
     !> @brief A type representing the environmental conditions during the 
     !! calibration.
@@ -127,6 +130,8 @@ module calibrate
         integer(int32), private :: m_count
         !> @brief The calibration polynomial.
         type(polynomial), private :: m_poly
+        !> @brief True if the polynomial has been fitted; else, false.
+        logical :: m_polyCurrent
 
         ! -------------------- !
         !> @brief The environmental conditions.
@@ -149,7 +154,7 @@ module calibrate
         generic, public :: append => cal_add_data_point, cal_add_data_point_args
         procedure, public :: remove_last => cal_remove_last_point
         procedure, public :: fit_polynomial => cal_fit_poly
-        procedure, public :: evaluate_polynomial => cal_eval_poly
+        generic, public :: evaluate_polynomial => cal_eval_poly, cal_eval_poly_array
         procedure, public :: evaluate_at_cal_points => cal_eval_poly_at_cal_points
         procedure, public :: compute_errors => cal_compute_err
         procedure, public :: get_polynomial_coefficients => cal_get_coeff
@@ -158,6 +163,8 @@ module calibrate
         procedure :: cal_set_data_point_args
         procedure :: cal_add_data_point
         procedure :: cal_add_data_point_args
+        procedure :: cal_eval_poly
+        procedure :: cal_eval_poly_array
     end type
 
     interface
@@ -320,10 +327,35 @@ module calibrate
         !!  polynomial.
         !! @return The value(s) of the calibration polynomial as evaluated
         !!  at @p x.
-        elemental module function cal_eval_poly(this, x) result(y)
+        !! @param[in,out] err An optional parameter that is used to track the
+        !!  error status of the routine.  The following error codes are
+        !!  possible.
+        !!  - CAL_INVALID_OPERATION_ERROR: Occurs if the polynomial has not
+        !!      been fitted.
+        module function cal_eval_poly(this, x, err) result(y)
             class(calibration), intent(in) :: this
             real(real64), intent(in) :: x
+            class(errors), intent(inout), optional, target :: err
             real(real64) :: y
+        end function
+
+        !> @brief Evaluates the calibration polynomial at the points specified.
+        !!
+        !! @param[in] this The calibration instance.
+        !! @param[in] x The points at which to evaluate the calibration 
+        !!  polynomial.
+        !! @return The values of the calibration polynomial as evaluated
+        !!  at @p x.
+        !! @param[in,out] err An optional parameter that is used to track the
+        !!  error status of the routine.  The following error codes are
+        !!  possible.
+        !!  - CAL_INVALID_OPERATION_ERROR: Occurs if the polynomial has not
+        !!      been fitted.
+        module function cal_eval_poly_array(this, x, err) result(y)
+            class(calibration), intent(in) :: this
+            real(real64), intent(in), dimension(:) :: x
+            class(errors), intent(inout), optional, target :: err
+            real(real64) :: y(size(x))
         end function
 
         !> @brief Evaluates the calibration polynomial at the stored 
@@ -332,8 +364,14 @@ module calibrate
         !! @param[in] this The calibration instance.
         !! @return An array containing the value of the calibration polynomial
         !!  at each of the stored calibration points.
-        module function cal_eval_poly_at_cal_points(this) result(y)
+        !! @param[in,out] err An optional parameter that is used to track the
+        !!  error status of the routine.  The following error codes are
+        !!  possible.
+        !!  - CAL_INVALID_OPERATION_ERROR: Occurs if the polynomial has not
+        !!      been fitted.
+        module function cal_eval_poly_at_cal_points(this, err) result(y)
             class(calibration), intent(in) :: this
+            class(errors), intent(inout), optional, target :: err
             real(real64), allocatable, dimension(:) :: y
         end function
 
@@ -343,8 +381,14 @@ module calibrate
         !! @param[in] this The calibration instance.
         !! @return An array containing the difference between each calibration
         !!  point, and the corresponding reference standard value.
-        module function cal_compute_err(this) result(y)
+        !! @param[in,out] err An optional parameter that is used to track the
+        !!  error status of the routine.  The following error codes are
+        !!  possible.
+        !!  - CAL_INVALID_OPERATION_ERROR: Occurs if the polynomial has not
+        !!      been fitted.
+        module function cal_compute_err(this, err) result(y)
             class(calibration), intent(in) :: this
+            class(errors), intent(inout), optional, target :: err
             real(real64), allocatable, dimension(:) :: y
         end function
 

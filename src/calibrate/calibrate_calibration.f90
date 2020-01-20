@@ -16,6 +16,7 @@ module subroutine cal_init(this, err)
     this%operator = ""
     this%notes = ""
     this%zero_index = 1
+    this%m_polyCurrent = .false.
 end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -146,6 +147,7 @@ module subroutine cal_set_data_point(this, ind, x)
     real(real64), intent(in) :: x(2)
     if (ind >= 0 .and. ind <= this%get_count()) then
         this%m_data(ind,:) = x
+        this%m_polyCurrent = .false.
     end if
 end subroutine
 
@@ -163,6 +165,7 @@ module subroutine cal_set_data_point_args(this, ind, std, uut)
     if (ind >= 0 .and. ind <= this%get_count()) then
         this%m_data(ind,1) = std
         this%m_data(ind,2) = uut
+        this%m_polyCurrent = .false.
     end if
 end subroutine
 
@@ -209,6 +212,7 @@ module subroutine cal_add_data_point(this, x, err)
     n = this%get_count() + 1
     this%m_data(n,:) = x
     this%m_count = n
+    this%m_polyCurrent = .false.
 end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -240,7 +244,10 @@ end subroutine
 !! @param[in,out] this The calibration instance.
 module subroutine cal_remove_last_point(this)
     class(calibration), intent(inout) :: this
-    if (this%get_count() > 0) this%m_count = this%m_count - 1
+    if (this%get_count() > 0) then
+        this%m_count = this%m_count - 1
+        this%m_polyCurrent = .false.
+    end if
 end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -264,15 +271,29 @@ module subroutine cal_fit_poly(this, order, err)
     ! Local Variables
     integer(int32) :: n
     real(real64), allocatable, dimension(:) :: ycopy
+    class(errors), pointer :: errmgr
+    type(errors), target :: deferr
+    
+    ! Set up error handling
+    if (present(err)) then
+        errmgr => err
+    else
+        errmgr => deferr
+    end if
 
     ! Ensure order is appropriate
     n = this%get_count()
-
-    ! Ensure there's data to fit
+    if (order < 1 .or. order >= n) then
+        call errmgr%report_error("cal_fit_poly", "The requested " // &
+            "polynomial order is not compatible with the existing data set.", &
+            CAL_INVALID_INPUT_ERROR)
+        return
+    end if
 
     ! Perform the fit
     ycopy = this%m_data(1:n,1)  ! Prevents overwriting data
     call this%m_poly%fit(this%m_data(1:n,2), ycopy, order)
+    this%m_polyCurrent = .true.
 end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -283,10 +304,83 @@ end subroutine
 !!  polynomial.
 !! @return The value(s) of the calibration polynomial as evaluated
 !!  at @p x.
-elemental module function cal_eval_poly(this, x) result(y)
+!! @param[in,out] err An optional parameter that is used to track the
+!!  error status of the routine.  The following error codes are
+!!  possible.
+!!  - CAL_INVALID_OPERATION_ERROR: Occurs if the polynomial has not
+!!      been fitted.
+module function cal_eval_poly(this, x, err) result(y)
+    ! Arguments
     class(calibration), intent(in) :: this
     real(real64), intent(in) :: x
+    class(errors), intent(inout), optional, target :: err
     real(real64) :: y
+
+    ! Local Variables
+    class(errors), pointer :: errmgr
+    type(errors), target :: deferr
+    
+    ! Set up error handling
+    if (present(err)) then
+        errmgr => err
+    else
+        errmgr => deferr
+    end if
+
+    ! Ensure the polynomial is valid
+    if (.not.this%m_polyCurrent) then
+        y = 0.0d0
+        call errmgr%report_error("cal_eval_poly", &
+            "The polynomial is not current for the given data set.", &
+            CAL_INVALID_OPERATION_ERROR)
+        return
+    end if
+
+    ! Process
+    y = this%m_poly%evaluate(x)
+end function
+
+! ------------------------------------------------------------------------------
+!> @brief Evaluates the calibration polynomial at the points specified.
+!!
+!! @param[in] this The calibration instance.
+!! @param[in] x The points at which to evaluate the calibration 
+!!  polynomial.
+!! @return The values of the calibration polynomial as evaluated
+!!  at @p x.
+!! @param[in,out] err An optional parameter that is used to track the
+!!  error status of the routine.  The following error codes are
+!!  possible.
+!!  - CAL_INVALID_OPERATION_ERROR: Occurs if the polynomial has not
+!!      been fitted.
+module function cal_eval_poly_array(this, x, err) result(y)
+    ! Arguments
+    class(calibration), intent(in) :: this
+    real(real64), intent(in), dimension(:) :: x
+    class(errors), intent(inout), optional, target :: err
+    real(real64) :: y(size(x))
+
+    ! Local Variables
+    class(errors), pointer :: errmgr
+    type(errors), target :: deferr
+    
+    ! Set up error handling
+    if (present(err)) then
+        errmgr => err
+    else
+        errmgr => deferr
+    end if
+
+    ! Ensure the polynomial is valid
+    if (.not.this%m_polyCurrent) then
+        y = 0.0d0
+        call errmgr%report_error("cal_eval_poly_array", &
+            "The polynomial is not current for the given data set.", &
+            CAL_INVALID_OPERATION_ERROR)
+        return
+    end if
+
+    ! Process
     y = this%m_poly%evaluate(x)
 end function
 
@@ -297,10 +391,38 @@ end function
 !! @param[in] this The calibration instance.
 !! @return An array containing the value of the calibration polynomial
 !!  at each of the stored calibration points.
-module function cal_eval_poly_at_cal_points(this) result(y)
+!! @param[in,out] err An optional parameter that is used to track the
+!!  error status of the routine.  The following error codes are
+!!  possible.
+!!  - CAL_INVALID_OPERATION_ERROR: Occurs if the polynomial has not
+!!      been fitted.
+module function cal_eval_poly_at_cal_points(this, err) result(y)
+    ! Arguments
     class(calibration), intent(in) :: this
+    class(errors), intent(inout), optional, target :: err
     real(real64), allocatable, dimension(:) :: y
+    
+    ! Local Variables
     integer(int32) :: n
+    class(errors), pointer :: errmgr
+    type(errors), target :: deferr
+    
+    ! Set up error handling
+    if (present(err)) then
+        errmgr => err
+    else
+        errmgr => deferr
+    end if
+
+    ! Ensure the polynomial is valid
+    if (.not.this%m_polyCurrent) then
+        call errmgr%report_error("cal_eval_poly_at_cal_points", &
+            "The polynomial is not current for the given data set.", &
+            CAL_INVALID_OPERATION_ERROR)
+        return
+    end if
+
+    ! Process
     n = this%get_count()
     y = this%evaluate_polynomial(this%m_data(1:n,2))
 end function
@@ -312,10 +434,38 @@ end function
 !! @param[in] this The calibration instance.
 !! @return An array containing the difference between each calibration
 !!  point, and the corresponding reference standard value.
-module function cal_compute_err(this) result(y)
+!! @param[in,out] err An optional parameter that is used to track the
+!!  error status of the routine.  The following error codes are
+!!  possible.
+!!  - CAL_INVALID_OPERATION_ERROR: Occurs if the polynomial has not
+!!      been fitted.
+module function cal_compute_err(this, err) result(y)
+    ! Arguments
     class(calibration), intent(in) :: this
+    class(errors), intent(inout), optional, target :: err
     real(real64), allocatable, dimension(:) :: y
+
+    ! Local Variables
     integer(int32) :: n
+    class(errors), pointer :: errmgr
+    type(errors), target :: deferr
+    
+    ! Set up error handling
+    if (present(err)) then
+        errmgr => err
+    else
+        errmgr => deferr
+    end if
+
+    ! Ensure the polynomial is valid
+    if (.not.this%m_polyCurrent) then
+        call errmgr%report_error("cal_eval_poly_at_cal_points", &
+            "The polynomial is not current for the given data set.", &
+            CAL_INVALID_OPERATION_ERROR)
+        return
+    end if
+
+    ! Process
     n = this%get_count()
     y = this%evaluate_at_cal_points() - this%m_data(1:n,1)
 end function
