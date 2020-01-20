@@ -50,14 +50,14 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"interfacecurvefit__core_1_1reg__fcn.html",
-"interfacelinalg__immutable_1_1mat__eigen.html#a30c4db4bc943963757cc91e6b01e591b",
-"namespacesignals.html",
-"structfortio__binary_1_1binary__file__manager.html#a53ab8988eaa7ce1bc7227ff0d7ad0045",
-"structfplot__core_1_1multiplot.html#add2e20e53499aa007d9ceb2a7917589f",
-"structfplot__core_1_1surface__plot.html#ac0eaa568dfb58df38348ecc534d44e8c",
-"structmeasurements_1_1emp__grr__results.html#a38ef76cef2025b4e9799ca362497b30e",
-"structstrings_1_1string__builder.html#aae37a629101a752ef3da95fce13cfca5"
+"interfacecurvefit__core_1_1is__monotonic.html",
+"interfacelinalg__core_1_1tri__mtx__mult.html#a06049bd2dc476a4802ed5aa30a22be4f",
+"namespacenonlin__optimize.html",
+"structferror_1_1errors.html#a0e695dc86bf47e17e4e27607b14aaadc",
+"structfplot__core_1_1legend.html#a0555f9a8112c19a44b76a7c5485f199d",
+"structfplot__core_1_1scatter__plot__data.html#a666a5a0660aeabf20eb03928098f03bc",
+"structkinematics_1_1quaternion.html#a0652be88ed3f1a36d396916a7d9dbe0f",
+"structsignals_1_1fir__filter.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

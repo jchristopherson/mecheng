@@ -11,6 +11,7 @@ var hierarchy =
     [ "fortio_binary::binary_formatter", "structfortio__binary_1_1binary__formatter.html", null ],
     [ "vibrations::bode_settings", "structvibrations_1_1bode__settings.html", null ],
     [ "columns::buckling_load", "interfacecolumns_1_1buckling__load.html", null ],
+    [ "calibrate::calibration", "structcalibrate_1_1calibration.html", null ],
     [ "linalg_core::cholesky_factor", "interfacelinalg__core_1_1cholesky__factor.html", null ],
     [ "linalg_core::cholesky_rank1_downdate", "interfacelinalg__core_1_1cholesky__rank1__downdate.html", null ],
     [ "linalg_core::cholesky_rank1_update", "interfacelinalg__core_1_1cholesky__rank1__update.html", null ],
@@ -31,6 +32,7 @@ var hierarchy =
     [ "linalg_immutable::eigen_results", "structlinalg__immutable_1_1eigen__results.html", null ],
     [ "measurements::emp_grr_results", "structmeasurements_1_1emp__grr__results.html", null ],
     [ "measurements::ems_grr_results", "structmeasurements_1_1ems__grr__results.html", null ],
+    [ "calibrate::environment", "structcalibrate_1_1environment.html", null ],
     [ "nonlin_core::equation_optimizer", "structnonlin__core_1_1equation__optimizer.html", [
       [ "nonlin_optimize::line_search_optimizer", "structnonlin__optimize_1_1line__search__optimizer.html", [
         [ "nonlin_optimize::bfgs", "structnonlin__optimize_1_1bfgs.html", null ]
@@ -64,6 +66,8 @@ var hierarchy =
     [ "signals::fourier_diff2", "interfacesignals_1_1fourier__diff2.html", null ],
     [ "vibrations::frequency_sweep_options", "structvibrations_1_1frequency__sweep__options.html", null ],
     [ "vibrations::frf_fitting_tool", "structvibrations_1_1frf__fitting__tool.html", null ],
+    [ "vibrations::frf_peak_detect", "interfacevibrations_1_1frf__peak__detect.html", null ],
+    [ "vibrations::frf_search_info", "structvibrations_1_1frf__search__info.html", null ],
     [ "genann_core::genann", "structgenann__core_1_1genann.html", null ],
     [ "genann_core::genann_act_linear", "interfacegenann__core_1_1genann__act__linear.html", null ],
     [ "genann_core::genann_act_sigmoid", "interfacegenann__core_1_1genann__act__sigmoid.html", null ],
@@ -157,13 +161,14 @@ var hierarchy =
     [ "integral_core::ode_jacobian", "interfaceintegral__core_1_1ode__jacobian.html", null ],
     [ "nonlin_polynomials::operator(*)", "interfacenonlin__polynomials_1_1operator_07_5_08.html", null ],
     [ "kinematics::operator(*)", "interfacekinematics_1_1operator_07_5_08.html", null ],
-    [ "nonlin_polynomials::operator(+)", "interfacenonlin__polynomials_1_1operator_07_09_08.html", null ],
     [ "kinematics::operator(+)", "interfacekinematics_1_1operator_07_09_08.html", null ],
-    [ "nonlin_polynomials::operator(-)", "interfacenonlin__polynomials_1_1operator_07-_08.html", null ],
+    [ "nonlin_polynomials::operator(+)", "interfacenonlin__polynomials_1_1operator_07_09_08.html", null ],
     [ "kinematics::operator(-)", "interfacekinematics_1_1operator_07-_08.html", null ],
+    [ "nonlin_polynomials::operator(-)", "interfacenonlin__polynomials_1_1operator_07-_08.html", null ],
     [ "kinematics::operator(/)", "interfacekinematics_1_1operator_07_2_08.html", null ],
     [ "fplot_core::pa_get_string_result", "interfacefplot__core_1_1pa__get__string__result.html", null ],
     [ "fplot_core::pd_get_string_result", "interfacefplot__core_1_1pd__get__string__result.html", null ],
+    [ "signals::peak_info", "structsignals_1_1peak__info.html", null ],
     [ "geometry::plane", "structgeometry_1_1plane.html", null ],
     [ "geometry::plane_from_angle_axis", "interfacegeometry_1_1plane__from__angle__axis.html", null ],
     [ "fplot_core::plot_object", "structfplot__core_1_1plot__object.html", [

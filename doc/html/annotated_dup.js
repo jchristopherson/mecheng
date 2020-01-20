@@ -1,6 +1,7 @@
 var annotated_dup =
 [
     [ "arrays", "namespacearrays.html", "namespacearrays" ],
+    [ "calibrate", "namespacecalibrate.html", "namespacecalibrate" ],
     [ "collection_containers", "namespacecollection__containers.html", "namespacecollection__containers" ],
     [ "collection_linked_list", "namespacecollection__linked__list.html", "namespacecollection__linked__list" ],
     [ "collection_list", "namespacecollection__list.html", "namespacecollection__list" ],
@@ -69,6 +70,8 @@ var annotated_dup =
       [ "compute_frequency_response", "interfacevibrations_1_1compute__frequency__response.html", "interfacevibrations_1_1compute__frequency__response" ],
       [ "frequency_sweep_options", "structvibrations_1_1frequency__sweep__options.html", "structvibrations_1_1frequency__sweep__options" ],
       [ "frf_fitting_tool", "structvibrations_1_1frf__fitting__tool.html", "structvibrations_1_1frf__fitting__tool" ],
+      [ "frf_peak_detect", "interfacevibrations_1_1frf__peak__detect.html", "interfacevibrations_1_1frf__peak__detect" ],
+      [ "frf_search_info", "structvibrations_1_1frf__search__info.html", "structvibrations_1_1frf__search__info" ],
       [ "harmonic_ode_fcn", "interfacevibrations_1_1harmonic__ode__fcn.html", "interfacevibrations_1_1harmonic__ode__fcn" ],
       [ "lti", "structvibrations_1_1lti.html", "structvibrations_1_1lti" ],
       [ "modal_information", "structvibrations_1_1modal__information.html", "structvibrations_1_1modal__information" ],

@@ -1,6 +1,7 @@
 var namespaces_dup =
 [
     [ "arrays", "namespacearrays.html", null ],
+    [ "calibrate", "namespacecalibrate.html", null ],
     [ "collection_containers", "namespacecollection__containers.html", null ],
     [ "collection_errors", "namespacecollection__errors.html", null ],
     [ "collection_linked_list", "namespacecollection__linked__list.html", null ],
