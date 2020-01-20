@@ -256,9 +256,23 @@ end subroutine
 !!  - CAL_INVALID_INPUT_ERROR: Occurs if @p order is too large, or less
 !!      than one.
 module subroutine cal_fit_poly(this, order, err)
+    ! Arguments
     class(calibration), intent(inout) :: this
     integer(int32), intent(in)  :: order
     class(errors), intent(inout), optional, target :: err
+
+    ! Local Variables
+    integer(int32) :: n
+    real(real64), allocatable, dimension(:) :: ycopy
+
+    ! Ensure order is appropriate
+    n = this%get_count()
+
+    ! Ensure there's data to fit
+
+    ! Perform the fit
+    ycopy = this%m_data(1:n,1)  ! Prevents overwriting data
+    call this%m_poly%fit(this%m_data(1:n,2), ycopy, order)
 end subroutine
 
 ! ------------------------------------------------------------------------------
