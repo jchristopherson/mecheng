@@ -60,6 +60,13 @@ int main() {
             i, creal(rts[i]), cimag(rts[i]), creal(yrts[i]), cimag(yrts[i]));
     }
 
+    // Force the polynomial thru zero
+    for (i = 0; i <= order; ++i) c[i] = 0.0;
+    fit_poly(order, true, npts, x, y, c);
+    printf("Polynomial Thru Zero:\n");
+    printf("%f + (%f) x + (%f) x^2 + (%f) x^3\n",
+        c[0], c[1], c[2], c[3]);
+
     // End
     return 0;
 }
