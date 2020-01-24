@@ -121,3 +121,7 @@ target_link_libraries(genann_example_1 mecheng)
 # CALIBRATE EXAMPLE 1
 add_executable(calibrate_example_1 calibrate_example_1.f90)
 target_link_libraries(calibrate_example_1 mecheng)
+
+# C-API POLYNOMIAL EXAMPLE 1
+add_executable(c_polynomial_example_1 c_polynomial_example_1.c)
+target_link_libraries(c_polynomial_example_1 mecheng)

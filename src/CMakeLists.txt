@@ -534,6 +534,11 @@ set(calibrate_sources
     calibrate/calibrate_calibration.f90
 )
 
+# Define the C-API source files
+set(c_api_sources
+    c_api/c_polynomial.f90
+)
+
 # Define the MECHENG source files
 set(mecheng_sources
     constants.f90
@@ -560,6 +565,7 @@ set(mecheng_sources
     ${general_sources}
     ${genann_sources}
     ${calibrate_sources}
+    ${c_api_sources}
 )
 
 # Build the library
