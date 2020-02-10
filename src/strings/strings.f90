@@ -180,20 +180,30 @@ contains
     !! @param[in] txt The string to split.
     !! @param[in] delim An optional input that defines the delimiter character.
     !!  The default is a comma.
+    !! @param[in] nbuff An optional input that allows control over the size
+    !!  of the buffer that contains the entire list of items.  The default
+    !!  is 10,000 items.
+    !! @param[in] buffsize An optional input that allows control over the
+    !!  size of each item buffer.  The default is 4096 characters per item.
     !!
     !! @return A collection of strings.  The delimiter character is not
     !!  returned.
-    pure function split_string_pure(txt, delim) result(rst)
+    pure function split_string_pure(txt, delim, nbuff, buffsize) result(rst)
         ! Arguments
         character(len = *), intent(in) :: txt
         character, intent(in), optional :: delim
+        integer(int32), intent(in), optional :: nbuff, buffsize
         type(string), allocatable, dimension(:) :: rst
 
+        ! Parameters
+        integer(int32), parameter :: default_line_size = 4096
+        integer(int32), parameter :: default_buffer_size = 10000
+
         ! Local Variables
-        integer(int32) :: i, j, k, n
+        integer(int32) :: i, j, k, n, bufferSize, lineSize
         character :: delimiter
-        character(len = len(txt)) :: buffer
-        type(string) :: stbuffer(len(txt))
+        character(len = :), allocatable :: buffer, linecopy
+        type(string), allocatable, dimension(:) :: stbuffer, buffercopy
 
         ! Initialization
         n = len(txt)
@@ -203,20 +213,59 @@ contains
             delimiter = ","
         end if
 
+        if (present(nbuff)) then
+            bufferSize = nbuff
+        else
+            bufferSize = default_buffer_size
+        end if
+        allocate(stbuffer(bufferSize))
+
+        if (present(buffsize)) then
+            lineSize = buffsize
+        else
+            lineSize = default_line_size
+        end if
+        allocate(character(len = lineSize) :: buffer)
+        
+
         ! Process
         j = 0
         k = 0
         do i = 1, n
             if (txt(i:i) /= delimiter) then
                 j = j + 1
+                if (j > lineSize) then
+                    ! Create a temporary copy of the line buffer
+                    allocate(character(len = j - 1) :: linecopy)
+                    linecopy = buffer
+
+                    ! Deallocate the line buffer, and then reallocate for a larger buffer
+                    deallocate(buffer)
+                    lineSize = lineSize + default_line_size
+                    allocate(character(len = lineSize) :: buffer)
+
+                    ! Copy back the original buffer contents
+                    buffer(1:j-1) = linecopy
+                    deallocate(linecopy)
+                end if
                 buffer(j:j) = txt(i:i)
             else
                 ! Reached a delimiter character
-                ! if (j == 0) cycle
-                ! k = k + 1
-                ! stbuffer(k)%str = buffer(1:j)
-                ! j = 0
                 k = k + 1
+                if (k > bufferSize) then
+                    ! Create a temporary copy of the string buffer
+                    allocate(buffercopy(k - 1))
+                    buffercopy = stbuffer
+
+                    ! Deallocate the string buffer, and then reallocate for a larger buffer
+                    deallocate(stbuffer)
+                    bufferSize = bufferSize + default_buffer_size
+                    allocate(stbuffer(bufferSize))
+
+                    ! Copy back the original
+                    stbuffer(1:k-1) = buffercopy
+                    deallocate(buffercopy)
+                end if
                 if (j == 0) then
                     allocate(character(len = 0) :: stbuffer(k)%str)
                 else
@@ -230,6 +279,20 @@ contains
         ! Catch the last string (between the final delimiter and end of txt)
         if (j /= 0) then
             k = k + 1
+            if (k > bufferSize) then
+                ! Create a temporary copy of the string buffer
+                allocate(buffercopy(k - 1))
+                buffercopy = stbuffer
+
+                ! Deallocate the string buffer, and then reallocate for a larger buffer
+                deallocate(stbuffer)
+                bufferSize = bufferSize + 1 ! We only need 1 more element
+                allocate(stbuffer(bufferSize))
+
+                ! Copy back the original
+                stbuffer(1:k-1) = buffercopy
+                deallocate(buffercopy)
+            end if
             allocate(character(len = j) :: stbuffer(k)%str)
             stbuffer(k)%str = buffer(1:j)
         end if
