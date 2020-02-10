@@ -220,6 +220,7 @@ contains
                 if (j == 0) then
                     allocate(character(len = 0) :: stbuffer(k)%str)
                 else
+                    allocate(character(len = j) :: stbuffer(k)%str)
                     stbuffer(k)%str = buffer(1:j)
                 end if
                 j = 0
@@ -229,10 +230,12 @@ contains
         ! Catch the last string (between the final delimiter and end of txt)
         if (j /= 0) then
             k = k + 1
+            allocate(character(len = j) :: stbuffer(k)%str)
             stbuffer(k)%str = buffer(1:j)
         end if
 
         ! End
+        allocate(rst(k))
         rst = stbuffer(1:k)
     end function
 
