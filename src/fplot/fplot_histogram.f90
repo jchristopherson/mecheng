@@ -167,6 +167,9 @@ module function phist_get_cmd(this) result(x)
 
         ! TO DO
         ! REF: http://www.gnuplotting.org/calculating-histograms/
+        ! http://gnuplot.sourceforge.net/docs_4.2/node249.html
+        ! http://gnuplot.sourceforge.net/demo_5.2/histograms2.html
+        ! http://gnuplot.sourceforge.net/demo_5.2/histograms.html
 
 
         ! End
