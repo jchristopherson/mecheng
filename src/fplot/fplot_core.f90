@@ -8988,4 +8988,18 @@ module fplot_core
         end subroutine
     end interface
 
+! ******************************************************************************
+! FPLOT_HISTOGRAM.F90
+! ------------------------------------------------------------------------------
+    !> @brief A plot object defining a histogram plot.
+    type, extends(plot) :: plot_histogram
+    private
+        !> The x-axis.
+        type(x_axis), pointer :: m_xAxis => null()
+        !> The y-axis.
+        type(y_axis), pointer :: m_yAxis => null()
+    contains
+    end type
+
+! ------------------------------------------------------------------------------
 end module
