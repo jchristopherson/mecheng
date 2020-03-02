@@ -8992,14 +8992,82 @@ module fplot_core
 ! FPLOT_HISTOGRAM.F90
 ! ------------------------------------------------------------------------------
     !> @brief A plot object defining a histogram plot.
-    type, extends(plot) :: plot_histogram
+    type, extends(plot_2d) :: plot_histogram
     private
-        !> The x-axis.
-        type(x_axis), pointer :: m_xAxis => null()
-        !> The y-axis.
-        type(y_axis), pointer :: m_yAxis => null()
     contains
+        !> @brief Gets the GNUPLOT command string to represent this 
+        !! plot_histogram object.
+        !!
+        !! @par Syntax
+        !! @code{.f90}
+        !! character(len = :) function, allocatable get_command_string(class(plot_histogram) this)
+        !! @endcode
+        !!
+        !! @param[in] this The plot_histogram object.
+        !! @return The command string.
+        procedure, public :: get_command_string => phist_get_cmd
     end type
+
+! ------------------------------------------------------------------------------
+    interface
+        module function phist_get_cmd(this) result(x)
+            class(plot_histogram), intent(in) :: this
+            character(len = :), allocatable :: x
+        end function
+    end interface
+
+! ******************************************************************************
+! FPLOT_PLOT_DATA_HISTOGRAM.F90
+! ------------------------------------------------------------------------------
+    !> @brief
+    type, extends(plot_data_colored) :: plot_data_histogram
+    private
+        !> @brief An array of the raw, unbinned data.
+        real(real64), allocatable, dimension(:) :: m_rawData
+        !> @brief The bin width.
+        real(real64) :: m_binWidth
+    contains
+        procedure, public :: get_bin_width => pdhist_get_bin_width
+        procedure, public :: set_bin_width => pdhist_set_bin_width
+        procedure, public :: bin_data => pdhist_bin_data
+        procedure, public :: get_raw_data_array => pdhist_get_raw_data
+        procedure, public :: get_count => pdhist_get_data_count
+        procedure, public :: get_raw_data => pdhist_get_data
+    end type
+
+! ------------------------------------------------------------------------------
+    interface
+        pure module function pdhist_get_bin_width(this) result(x)
+            class(plot_data_histogram), intent(in) :: this
+            real(real64) :: x
+        end function
+
+        module subroutine pdhist_set_bin_width(this, x)
+            class(plot_data_histogram), intent(inout) :: this
+            real(real64), intent(in) :: x
+        end subroutine
+
+        module function pdhist_bin_data(this) result(bins)
+            class(plot_data_histogram), intent(in) :: this
+            real(real64), allocatable, dimension(:) :: bins
+        end function
+
+        module function pdhist_get_raw_data(this) result(x)
+            class(plot_data_histogram), intent(in) :: this
+            real(real64), allocatable, dimension(:) :: x
+        end function
+
+        pure module function pdhist_get_data_count(this) result(x)
+            class(plot_data_histogram), intent(in) :: this
+            integer(int32) :: x
+        end function
+
+        pure module function pdhist_get_data(this, index) result(x)
+            class(plot_data_histogram), intent(in) :: this
+            integer(int32), intent(in) :: index
+            real(real64) :: x
+        end function
+    end interface
 
 ! ------------------------------------------------------------------------------
 end module
