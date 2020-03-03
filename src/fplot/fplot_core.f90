@@ -8992,6 +8992,44 @@ module fplot_core
 ! ******************************************************************************
 ! FPLOT_PLOT_DATA_BAR.F90
 ! ------------------------------------------------------------------------------
+    !> @brief Defines a data set tailored to bar charts.
+    !!
+    !! @par Example
+    !! The following example illustrates the plotting of a simple bar chart.
+    !!
+    !! @code{.f90}
+    !! program example
+    !!     use iso_fortran_env
+    !!     use fplot_core
+    !!     use strings
+    !!     implicit none
+    !!
+    !!     ! Local Variables
+    !!     real(real64) :: x(5)
+    !!     type(string) :: labels(5)
+    !!     type(plot_2d) :: plt
+    !!     type(plot_data_bar) :: pd1
+    !!
+    !!     ! Initialization
+    !!     call plt%initialize()
+    !!     call plt%set_font_size(14)
+    !!
+    !!     labels(1)%str = '"Label 1"'
+    !!     labels(2)%str = '"Label 2"'
+    !!     labels(3)%str = '"Label 3"'
+    !!     labels(4)%str = '"Label 4"'
+    !!     labels(5)%str = '"Label 5"'
+    !!
+    !!     ! Plot the data
+    !!     call random_number(x)
+    !!     call pd1%define_data(labels, x)
+    !!     call pd1%set_transparency(0.2)
+    !!     call plt%push(pd1)
+    !!     call plt%draw()
+    !! end program
+    !! @endcode
+    !! The above program produces the following output.
+    !! @image html box_plot_example_1.png
     type, extends(plot_data_colored) :: plot_data_bar
     private
         !> @brief An array containing axis labels to associate with each bar.
@@ -9007,6 +9045,8 @@ module fplot_core
         logical :: m_useY2 = .false.
         !> @brief Determines if each bar is filled.
         logical :: m_filled = .true.
+        !> @brief The alpha value (transparency) for each bar
+        real(real32) :: m_alpha = 1.0
     contains
         procedure, public :: get_count => pdb_get_count
         procedure, public :: get => pdb_get_data
@@ -9024,6 +9064,8 @@ module fplot_core
         procedure, public :: set_draw_against_y2 => pdb_set_use_y2
         procedure, public :: get_is_filled => pdb_get_is_filled
         procedure, public :: set_is_filled => pdb_set_is_filled
+        procedure, public :: get_transparency => pdb_get_alpha
+        procedure, public :: set_transparency => pdb_set_alpha
         
         generic, public :: define_data => pdb_set_data_1, pdb_set_data_2
         procedure :: pdb_set_data_1
@@ -9130,6 +9172,15 @@ module fplot_core
             class(errors), intent(inout), optional, target :: err
         end subroutine
 
+        pure module function pdb_get_alpha(this) result(x)
+            class(plot_data_bar), intent(in) :: this
+            real(real32) :: x
+        end function
+
+        module subroutine pdb_set_alpha(this, x)
+            class(plot_data_bar), intent(inout) :: this
+            real(real32), intent(in) :: x
+        end subroutine
     end interface
 
 ! ------------------------------------------------------------------------------

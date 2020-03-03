@@ -25,8 +25,7 @@ program example
     ! Plot the data
     call random_number(x)
     call pd1%define_data(labels, x)
-    call pd1%set_is_filled(.false.)
+    call pd1%set_transparency(0.2)
     call plt%push(pd1)
     call plt%draw()
-    ! call plt%save_file("box_plot.plt")
 end program

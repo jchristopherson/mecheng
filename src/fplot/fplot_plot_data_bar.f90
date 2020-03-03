@@ -119,9 +119,12 @@ module function pdb_get_cmd(this) result(x)
     ! Filled?
     if (this%get_is_filled()) then
         call str%append(" fill solid ")
+    else
+        call str%append(" fill empty ")
     end if
 
-    ! Box Width
+    ! Transparency
+    call str%append(to_string(this%get_transparency()))
 
     ! Title
     n = len_trim(this%get_name())
@@ -255,7 +258,9 @@ module subroutine pdb_set_data_1(this, x, err)
     if (allocated(this%m_barData)) deallocate(this%m_barData)
     allocate(this%m_barData(n, 1), stat = flag)
     if (flag /= 0) then
-        ! TO DO: Error Handling
+        call errmgr%report_error("pdb_set_data_1", &
+            "Insufficient memory available.", PLOT_OUT_OF_MEMORY_ERROR)
+        return
     end if
     this%m_barData(:,1) = x
 end subroutine
@@ -283,7 +288,10 @@ module subroutine pdb_set_data_2(this, labels, x, err)
 
     ! Input Check
     if (size(labels) /= n) then
-        ! TO DO: Error handling
+        call errmgr%report_error("pdb_set_data_2", &
+            "The input arrays are not the same size.", &
+            PLOT_ARRAY_SIZE_MISMATCH_ERROR)
+        return
     end if
 
     ! Process
@@ -292,7 +300,9 @@ module subroutine pdb_set_data_2(this, labels, x, err)
     allocate(this%m_barData(n, 1), stat = flag)
     if (flag == 0) allocate(this%m_axisLabels(n), stat = flag)
     if (flag /= 0) then
-        ! TO DO: Error handling
+        call errmgr%report_error("pdb_set_data_2", &
+            "Insufficient memory available.", PLOT_OUT_OF_MEMORY_ERROR)
+        return
     end if
     this%m_barData(:,1) = x
     this%m_axisLabels = labels
@@ -310,6 +320,26 @@ module subroutine pdb_set_is_filled(this, x)
     class(plot_data_bar), intent(inout) :: this
     logical, intent(in) :: x
     this%m_filled = x
+end subroutine
+
+! ------------------------------------------------------------------------------
+pure module function pdb_get_alpha(this) result(x)
+    class(plot_data_bar), intent(in) :: this
+    real(real32) :: x
+    x = this%m_alpha
+end function
+
+! ------------------------------------------------------------------------------
+module subroutine pdb_set_alpha(this, x)
+    class(plot_data_bar), intent(inout) :: this
+    real(real32), intent(in) :: x
+    if (x > 1.0) then
+        this%m_alpha = 1.0
+    else if (x < 0.0) then
+        this%m_alpha = 0.0
+    else
+        this%m_alpha = x
+    end if
 end subroutine
 
 ! ------------------------------------------------------------------------------
