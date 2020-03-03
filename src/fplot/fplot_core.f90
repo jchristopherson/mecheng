@@ -94,6 +94,7 @@ module fplot_core
     public :: multiplot
     public :: plot_data_error_bars
     public :: plot_data_colored
+    public :: plot_data_bar
 
 ! ******************************************************************************
 ! GNUPLOT TERMINAL CONSTANTS
@@ -8989,83 +8990,93 @@ module fplot_core
     end interface
 
 ! ******************************************************************************
-! FPLOT_HISTOGRAM.F90
+! FPLOT_PLOT_DATA_BAR.F90
 ! ------------------------------------------------------------------------------
-    !> @brief A plot object defining a histogram plot.
-    type, extends(plot_2d) :: plot_histogram
+    type, extends(plot_data_colored) :: plot_data_bar
     private
+        !> @brief An array containing axis labels to associate with each bar.
+        type(string), allocatable, dimension(:) :: m_axisLabels
+        !> @brief An array of data defining each bar - the matrix contains
+        !!  multiple columns to allow multiple bars per label.
+        real(real64), allocatable, dimension(:,:) :: m_barData
+        !> @brief Determines if the axis labels should be used - only applicable
+        !! if there is existing data stored in m_axisLabels & m_axisLabels
+        !! is the same size as m_barData.
+        logical :: m_useAxisLabels = .true.
     contains
-        !> @brief Gets the GNUPLOT command string to represent this 
-        !! plot_histogram object.
-        !!
-        !! @par Syntax
-        !! @code{.f90}
-        !! character(len = :) function, allocatable get_command_string(class(plot_histogram) this)
-        !! @endcode
-        !!
-        !! @param[in] this The plot_histogram object.
-        !! @return The command string.
-        procedure, public :: get_command_string => phist_get_cmd
+        procedure, public :: get_count => pdb_get_count
+        procedure, public :: get => pdb_get_data
+        procedure, public :: set => pdb_set_data
+        procedure, public :: get_data => pdb_get_data_set
+        procedure, public :: get_label => pdb_get_label
+        procedure, public :: set_label => pdb_set_label
+        procedure, public :: get_use_labels => pdb_get_use_labels
+        procedure, public :: set_use_labels => pdb_set_use_labels
+        procedure, public :: get_command_string => pdb_get_cmd
+        procedure, public :: get_data_string => pdb_get_data_cmd
+        procedure, public :: get_axes_string => pdb_get_axes_cmd
     end type
 
 ! ------------------------------------------------------------------------------
     interface
-        module function phist_get_cmd(this) result(x)
-            class(plot_histogram), intent(in) :: this
-            character(len = :), allocatable :: x
-        end function
-    end interface
-
-! ******************************************************************************
-! FPLOT_PLOT_DATA_HISTOGRAM.F90
-! ------------------------------------------------------------------------------
-    !> @brief
-    type, extends(plot_data_colored) :: plot_data_histogram
-    private
-        !> @brief An array of the raw, unbinned data.
-        real(real64), allocatable, dimension(:) :: m_rawData
-        !> @brief The bin width.
-        real(real64) :: m_binWidth
-    contains
-        procedure, public :: get_bin_width => pdhist_get_bin_width
-        procedure, public :: set_bin_width => pdhist_set_bin_width
-        procedure, public :: bin_data => pdhist_bin_data
-        procedure, public :: get_raw_data_array => pdhist_get_raw_data
-        procedure, public :: get_count => pdhist_get_data_count
-        procedure, public :: get_raw_data => pdhist_get_data
-    end type
-
-! ------------------------------------------------------------------------------
-    interface
-        pure module function pdhist_get_bin_width(this) result(x)
-            class(plot_data_histogram), intent(in) :: this
-            real(real64) :: x
-        end function
-
-        module subroutine pdhist_set_bin_width(this, x)
-            class(plot_data_histogram), intent(inout) :: this
-            real(real64), intent(in) :: x
-        end subroutine
-
-        module function pdhist_bin_data(this) result(bins)
-            class(plot_data_histogram), intent(in) :: this
-            real(real64), allocatable, dimension(:) :: bins
-        end function
-
-        module function pdhist_get_raw_data(this) result(x)
-            class(plot_data_histogram), intent(in) :: this
-            real(real64), allocatable, dimension(:) :: x
-        end function
-
-        pure module function pdhist_get_data_count(this) result(x)
-            class(plot_data_histogram), intent(in) :: this
+        pure module function pdb_get_count(this) result(x)
+            class(plot_data_bar), intent(in) :: this
             integer(int32) :: x
         end function
 
-        pure module function pdhist_get_data(this, index) result(x)
-            class(plot_data_histogram), intent(in) :: this
-            integer(int32), intent(in) :: index
+        pure module function pdb_get_data(this, index, col) result(x)
+            class(plot_data_bar), intent(in) :: this
+            integer(int32), intent(in) :: index, col
             real(real64) :: x
+        end function
+
+        module subroutine pdb_set_data(this, index, col, x)
+            class(plot_data_bar), intent(inout) :: this
+            integer(int32), intent(in) :: index, col
+            real(real64), intent(in) :: x
+        end subroutine
+
+        pure module function pdb_get_data_set(this, col) result(x)
+            class(plot_data_bar), intent(in) :: this
+            integer(int32), intent(in) :: col
+            real(real64), allocatable, dimension(:) :: x
+        end function
+
+        pure module function pdb_get_label(this, index) result(x)
+            class(plot_data_bar), intent(in) :: this
+            integer(int32), intent(in) :: index
+            character(len = :), allocatable :: x
+        end function
+
+        module subroutine pdb_set_label(this, index, txt)
+            class(plot_data_bar), intent(inout) :: this
+            integer(int32) :: index
+            character(len = *), intent(in) :: txt
+        end subroutine
+
+        pure module function pdb_get_use_labels(this) result(x)
+            class(plot_data_bar), intent(in) :: this
+            logical :: x
+        end function
+
+        module subroutine pdb_set_use_labels(this, x)
+            class(plot_data_bar), intent(inout) :: this
+            logical, intent(in) :: x
+        end subroutine
+
+        module function pdb_get_cmd(this) result(x)
+            class(plot_data_bar), intent(in) :: this
+            character(len = :), allocatable :: x
+        end function
+
+        module function pdb_get_data_cmd(this) result(x)
+            class(plot_data_bar), intent(in) :: this
+            character(len = :), allocatable :: x
+        end function
+
+        module function pdb_get_axes_cmd(this) result(x)
+            class(plot_data_bar), intent(in) :: this
+            character(len = :), allocatable :: x
         end function
     end interface
 
