@@ -88,6 +88,7 @@ set(fplot_sources
     fplot/fplot_plot_data_colored.f90
     fplot/fplot_simplify.f90
     fplot/fplot_plot_data_bar.f90
+    fplot/fplot_plot_data_histogram.f90
 )
 
 # Define the integral sources

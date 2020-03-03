@@ -95,6 +95,7 @@ module fplot_core
     public :: plot_data_error_bars
     public :: plot_data_colored
     public :: plot_data_bar
+    public :: plot_data_histogram
 
 ! ******************************************************************************
 ! GNUPLOT TERMINAL CONSTANTS
@@ -9066,10 +9067,14 @@ module fplot_core
         procedure, public :: set_is_filled => pdb_set_is_filled
         procedure, public :: get_transparency => pdb_get_alpha
         procedure, public :: set_transparency => pdb_set_alpha
-        
-        generic, public :: define_data => pdb_set_data_1, pdb_set_data_2
+        generic, public :: define_data => pdb_set_data_1, pdb_set_data_2, &
+            pdb_set_data_3
         procedure :: pdb_set_data_1
         procedure :: pdb_set_data_2
+        procedure :: pdb_set_data_3
+        procedure :: set_data_1 => pdb_set_data_1_core
+        procedure :: set_data_2 => pdb_set_data_2_core
+        procedure :: set_data_3 => pdb_set_data_3_core
     end type
 
 ! ------------------------------------------------------------------------------
@@ -9172,6 +9177,14 @@ module fplot_core
             class(errors), intent(inout), optional, target :: err
         end subroutine
 
+        module subroutine pdb_set_data_3(this, labels, x, fmt, err)
+            class(plot_data_bar), intent(inout) :: this
+            real(real64), intent(in), dimension(:) :: labels
+            real(real64), intent(in), dimension(:) :: x
+            character(len = *), intent(in), optional :: fmt
+            class(errors), intent(inout), optional, target :: err
+        end subroutine
+
         pure module function pdb_get_alpha(this) result(x)
             class(plot_data_bar), intent(in) :: this
             real(real32) :: x
@@ -9180,6 +9193,105 @@ module fplot_core
         module subroutine pdb_set_alpha(this, x)
             class(plot_data_bar), intent(inout) :: this
             real(real32), intent(in) :: x
+        end subroutine
+
+        module subroutine pdb_set_data_1_core(this, x, err)
+            class(plot_data_bar), intent(inout) :: this
+            real(real64), intent(in), dimension(:) :: x
+            class(errors), intent(inout), optional, target :: err
+        end subroutine
+
+        module subroutine pdb_set_data_2_core(this, labels, x, err)
+            class(plot_data_bar), intent(inout) :: this
+            class(string), intent(in), dimension(:) :: labels
+            real(real64), intent(in), dimension(:) :: x
+            class(errors), intent(inout), optional, target :: err
+        end subroutine
+
+        module subroutine pdb_set_data_3_core(this, labels, x, fmt, err)
+            class(plot_data_bar), intent(inout) :: this
+            real(real64), intent(in), dimension(:) :: labels
+            real(real64), intent(in), dimension(:) :: x
+            character(len = *), intent(in), optional :: fmt
+            class(errors), intent(inout), optional, target :: err
+        end subroutine
+    end interface
+
+! ******************************************************************************
+! FPLOT_PLOT_DATA_HISTOGRAM.F90
+! ------------------------------------------------------------------------------
+    !> @brief A container for plotting data in the form of a histogram.
+    type, extends(plot_data_bar) :: plot_data_histogram
+    private
+        !> @brief The number of bins.
+        integer(int32) :: m_binCount = 10
+        !> @brief The numerical label format string.
+        character(len = :), allocatable :: m_numberFmt
+    contains
+        procedure, public :: get_bin_count => pdh_get_bin_count
+        procedure, public :: set_bin_count => pdh_set_bin_count
+        procedure, public :: bin_data => pdh_bin_data
+        procedure, public :: get_extreme_values => pdh_get_extremes
+        procedure, public :: get_number_format => pdh_get_num_fmt
+        procedure, public :: set_number_format => pdh_set_num_fmt
+        procedure :: set_data_1 => pdh_set_data_1
+        procedure :: set_data_2 => pdh_set_data_2
+        procedure :: set_data_3 => pdh_set_data_3
+    end type
+
+! ------------------------------------------------------------------------------
+    interface
+        pure module function pdh_get_bin_count(this) result(x)
+            class(plot_data_histogram), intent(in) :: this
+            integer(int32) :: x
+        end function
+
+        module subroutine pdh_set_bin_count(this, x)
+            class(plot_data_histogram), intent(inout) :: this
+            integer(int32), intent(in) :: x
+        end subroutine
+
+        module function pdh_bin_data(this, x, err) result(bx)
+            class(plot_data_histogram), intent(in) :: this
+            real(real64), intent(in), dimension(:) :: x
+            class(errors), intent(inout), optional, target :: err
+            real(real64), allocatable, dimension(:,:) :: bx
+        end function
+
+        pure module function pdh_get_extremes(this) result(x)
+            class(plot_data_histogram), intent(in) :: this
+            real(real64), dimension(2) :: x
+        end function
+
+        module subroutine pdh_set_data_1(this, x, err)
+            class(plot_data_histogram), intent(inout) :: this
+            real(real64), intent(in), dimension(:) :: x
+            class(errors), intent(inout), optional, target :: err
+        end subroutine
+
+        module subroutine pdh_set_data_2(this, labels, x, err)
+            class(plot_data_histogram), intent(inout) :: this
+            class(string), intent(in), dimension(:) :: labels
+            real(real64), intent(in), dimension(:) :: x
+            class(errors), intent(inout), optional, target :: err
+        end subroutine
+
+        module subroutine pdh_set_data_3(this, labels, x, fmt, err)
+            class(plot_data_histogram), intent(inout) :: this
+            real(real64), intent(in), dimension(:) :: labels
+            real(real64), intent(in), dimension(:) :: x
+            character(len = *), intent(in), optional :: fmt
+            class(errors), intent(inout), optional, target :: err
+        end subroutine
+
+        pure module function pdh_get_num_fmt(this) result(x)
+            class(plot_data_histogram), intent(in) :: this
+            character(len = :), allocatable :: x
+        end function
+
+        module subroutine pdh_set_num_fmt(this, x)
+            class(plot_data_histogram), intent(inout) :: this
+            character(len = *), intent(in) :: x
         end subroutine
     end interface
 

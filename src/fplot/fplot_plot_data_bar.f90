@@ -240,29 +240,8 @@ module subroutine pdb_set_data_1(this, x, err)
     real(real64), intent(in), dimension(:) :: x
     class(errors), intent(inout), optional, target :: err
 
-    ! Local Variables
-    class(errors), pointer :: errmgr
-    type(errors), target :: deferr
-    integer(int32) :: n, flag
-    
-    ! Initialization
-    if (present(err)) then
-        errmgr => err
-    else
-        errmgr => deferr
-    end if
-    n = size(x)
-
     ! Process
-    if (allocated(this%m_axisLabels)) deallocate(this%m_axisLabels)
-    if (allocated(this%m_barData)) deallocate(this%m_barData)
-    allocate(this%m_barData(n, 1), stat = flag)
-    if (flag /= 0) then
-        call errmgr%report_error("pdb_set_data_1", &
-            "Insufficient memory available.", PLOT_OUT_OF_MEMORY_ERROR)
-        return
-    end if
-    this%m_barData(:,1) = x
+    call this%set_data_1(x, err)
 end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -273,39 +252,21 @@ module subroutine pdb_set_data_2(this, labels, x, err)
     real(real64), intent(in), dimension(:) :: x
     class(errors), intent(inout), optional, target :: err
 
-    ! Local Variables
-    class(errors), pointer :: errmgr
-    type(errors), target :: deferr
-    integer(int32) :: n, flag
-    
-    ! Initialization
-    if (present(err)) then
-        errmgr => err
-    else
-        errmgr => deferr
-    end if
-    n = size(x)
+    ! Process
+    call this%set_data_2(labels, x, err)
+end subroutine
 
-    ! Input Check
-    if (size(labels) /= n) then
-        call errmgr%report_error("pdb_set_data_2", &
-            "The input arrays are not the same size.", &
-            PLOT_ARRAY_SIZE_MISMATCH_ERROR)
-        return
-    end if
+! ------------------------------------------------------------------------------
+module subroutine pdb_set_data_3(this, labels, x, fmt, err)
+    ! Arguments
+    class(plot_data_bar), intent(inout) :: this
+    real(real64), intent(in), dimension(:) :: labels
+    real(real64), intent(in), dimension(:) :: x
+    character(len = *), intent(in), optional :: fmt
+    class(errors), intent(inout), optional, target :: err
 
     ! Process
-    if (allocated(this%m_axisLabels)) deallocate(this%m_axisLabels)
-    if (allocated(this%m_barData)) deallocate(this%m_barData)
-    allocate(this%m_barData(n, 1), stat = flag)
-    if (flag == 0) allocate(this%m_axisLabels(n), stat = flag)
-    if (flag /= 0) then
-        call errmgr%report_error("pdb_set_data_2", &
-            "Insufficient memory available.", PLOT_OUT_OF_MEMORY_ERROR)
-        return
-    end if
-    this%m_barData(:,1) = x
-    this%m_axisLabels = labels
+    call this%set_data_3(labels, x, fmt, err)
 end subroutine
 
 ! ------------------------------------------------------------------------------
@@ -343,6 +304,135 @@ module subroutine pdb_set_alpha(this, x)
 end subroutine
 
 ! ------------------------------------------------------------------------------
+module subroutine pdb_set_data_1_core(this, x, err)
+    ! Arguments
+    class(plot_data_bar), intent(inout) :: this
+    real(real64), intent(in), dimension(:) :: x
+    class(errors), intent(inout), optional, target :: err
+
+    ! Local Variables
+    class(errors), pointer :: errmgr
+    type(errors), target :: deferr
+    integer(int32) :: n, flag
+    
+    ! Initialization
+    if (present(err)) then
+        errmgr => err
+    else
+        errmgr => deferr
+    end if
+    n = size(x)
+
+    ! Process
+    if (allocated(this%m_axisLabels)) deallocate(this%m_axisLabels)
+    if (allocated(this%m_barData)) deallocate(this%m_barData)
+    allocate(this%m_barData(n, 1), stat = flag)
+    if (flag /= 0) then
+        call errmgr%report_error("pdb_set_data_1_core", &
+            "Insufficient memory available.", PLOT_OUT_OF_MEMORY_ERROR)
+        return
+    end if
+    this%m_barData(:,1) = x
+end subroutine
+
+! ------------------------------------------------------------------------------
+module subroutine pdb_set_data_2_core(this, labels, x, err)
+    ! Arguments
+    class(plot_data_bar), intent(inout) :: this
+    class(string), intent(in), dimension(:) :: labels
+    real(real64), intent(in), dimension(:) :: x
+    class(errors), intent(inout), optional, target :: err
+
+    ! Local Variables
+    class(errors), pointer :: errmgr
+    type(errors), target :: deferr
+    integer(int32) :: n, flag
+    
+    ! Initialization
+    if (present(err)) then
+        errmgr => err
+    else
+        errmgr => deferr
+    end if
+    n = size(x)
+
+    ! Input Check
+    if (size(labels) /= n) then
+        call errmgr%report_error("pdb_set_data_2_core", &
+            "The input arrays are not the same size.", &
+            PLOT_ARRAY_SIZE_MISMATCH_ERROR)
+        return
+    end if
+
+    ! Process
+    if (allocated(this%m_axisLabels)) deallocate(this%m_axisLabels)
+    if (allocated(this%m_barData)) deallocate(this%m_barData)
+    allocate(this%m_barData(n, 1), stat = flag)
+    if (flag == 0) allocate(this%m_axisLabels(n), stat = flag)
+    if (flag /= 0) then
+        call errmgr%report_error("pdb_set_data_2_core", &
+            "Insufficient memory available.", PLOT_OUT_OF_MEMORY_ERROR)
+        return
+    end if
+    this%m_barData(:,1) = x
+    this%m_axisLabels = labels
+end subroutine
+
+! ------------------------------------------------------------------------------
+module subroutine pdb_set_data_3_core(this, labels, x, fmt, err)
+    ! Arguments
+    class(plot_data_bar), intent(inout) :: this
+    real(real64), intent(in), dimension(:) :: labels
+    real(real64), intent(in), dimension(:) :: x
+    character(len = *), intent(in), optional :: fmt
+    class(errors), intent(inout), optional, target :: err
+
+    ! Local Variables
+    class(errors), pointer :: errmgr
+    type(errors), target :: deferr
+    integer(int32) :: i, n, flag
+    type(string), allocatable, dimension(:) :: lbls
+    
+    ! Initialization
+    if (present(err)) then
+        errmgr => err
+    else
+        errmgr => deferr
+    end if
+    n = size(x)
+
+    ! Input Check
+    if (size(labels) /= n) then
+        call errmgr%report_error("pdb_set_data_3_core", &
+            "The input arrays are not the same size.", &
+            PLOT_ARRAY_SIZE_MISMATCH_ERROR)
+        return
+    end if
+
+    ! Convert the numeric labels to strings
+    allocate(lbls(n), stat = flag)
+    if (flag /= 0) then
+        call errmgr%report_error("pdb_set_data_3_core", &
+            "Insufficient memory available.", PLOT_OUT_OF_MEMORY_ERROR)
+        return
+    end if
+    do i = 1, n
+        lbls(i)%str = to_string(labels(i), fmt)
+    end do
+
+    ! Store the data
+    if (allocated(this%m_axisLabels)) deallocate(this%m_axisLabels)
+    if (allocated(this%m_barData)) deallocate(this%m_barData)
+    allocate(this%m_barData(n, 1), stat = flag)
+    if (flag == 0) allocate(this%m_axisLabels(n), stat = flag)
+    if (flag /= 0) then
+        call errmgr%report_error("pdb_set_data_3_core", &
+            "Insufficient memory available.", PLOT_OUT_OF_MEMORY_ERROR)
+        return
+    end if
+    this%m_barData(:,1) = x
+    this%m_axisLabels = lbls
+end subroutine
 
 ! ------------------------------------------------------------------------------
 end submodule
