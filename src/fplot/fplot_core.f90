@@ -9003,6 +9003,10 @@ module fplot_core
         !! if there is existing data stored in m_axisLabels & m_axisLabels
         !! is the same size as m_barData.
         logical :: m_useAxisLabels = .true.
+        !> Draw against the secondary y axis?
+        logical :: m_useY2 = .false.
+        !> @brief Determines if each bar is filled.
+        logical :: m_filled = .true.
     contains
         procedure, public :: get_count => pdb_get_count
         procedure, public :: get => pdb_get_data
@@ -9015,6 +9019,15 @@ module fplot_core
         procedure, public :: get_command_string => pdb_get_cmd
         procedure, public :: get_data_string => pdb_get_data_cmd
         procedure, public :: get_axes_string => pdb_get_axes_cmd
+        procedure, public :: get_bar_per_label_count => pdb_get_col_count
+        procedure, public :: get_draw_against_y2 => pdb_get_use_y2
+        procedure, public :: set_draw_against_y2 => pdb_set_use_y2
+        procedure, public :: get_is_filled => pdb_get_is_filled
+        procedure, public :: set_is_filled => pdb_set_is_filled
+        
+        generic, public :: define_data => pdb_set_data_1, pdb_set_data_2
+        procedure :: pdb_set_data_1
+        procedure :: pdb_set_data_2
     end type
 
 ! ------------------------------------------------------------------------------
@@ -9078,6 +9091,45 @@ module fplot_core
             class(plot_data_bar), intent(in) :: this
             character(len = :), allocatable :: x
         end function
+
+        pure module function pdb_get_col_count(this) result(x)
+            class(plot_data_bar), intent(in) :: this
+            integer(int32) :: x
+        end function
+
+        pure module function pdb_get_use_y2(this) result(x)
+            class(plot_data_bar), intent(in) :: this
+            logical :: x
+        end function
+
+        module subroutine pdb_set_use_y2(this, x)
+            class(plot_data_bar), intent(inout) :: this
+            logical, intent(in) :: x
+        end subroutine
+
+        pure module function pdb_get_is_filled(this) result(x)
+            class(plot_data_bar), intent(in) :: this
+            logical :: x
+        end function
+
+        module subroutine pdb_set_is_filled(this, x)
+            class(plot_data_bar), intent(inout) :: this
+            logical, intent(in) :: x
+        end subroutine
+
+        module subroutine pdb_set_data_1(this, x, err)
+            class(plot_data_bar), intent(inout) :: this
+            real(real64), intent(in), dimension(:) :: x
+            class(errors), intent(inout), optional, target :: err
+        end subroutine
+
+        module subroutine pdb_set_data_2(this, labels, x, err)
+            class(plot_data_bar), intent(inout) :: this
+            class(string), intent(in), dimension(:) :: labels
+            real(real64), intent(in), dimension(:) :: x
+            class(errors), intent(inout), optional, target :: err
+        end subroutine
+
     end interface
 
 ! ------------------------------------------------------------------------------
