@@ -6,8 +6,8 @@ program example
     implicit none
 
     ! Local Variables
-    integer(int32), parameter :: n = 5000
-    integer(int32), parameter :: nbins = 20
+    integer(int32), parameter :: n = 500
+    integer(int32), parameter :: nbins = 10
     real(real64) :: x(n)
     type(plot_2d) :: plt
     type(plot_data_histogram) :: pd1
