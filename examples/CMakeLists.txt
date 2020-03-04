@@ -130,6 +130,10 @@ target_link_libraries(c_polynomial_example_1 mecheng)
 add_executable(box_plot_example_1 box_plot_example_1.f90)
 target_link_libraries(box_plot_example_1 mecheng)
 
+# BOX PLOT EXAMPLE 2
+add_executable(box_plot_example_2 box_plot_example_2.f90)
+target_link_libraries(box_plot_example_2 mecheng)
+
 # HISTOGRAM EXAMPLE 1
 add_executable(histogram_example_1 histogram_example_1.f90)
 target_link_libraries(histogram_example_1 mecheng)

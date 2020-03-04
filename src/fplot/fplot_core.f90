@@ -96,6 +96,7 @@ module fplot_core
     public :: plot_data_colored
     public :: plot_data_bar
     public :: plot_data_histogram
+    public :: plot_bar
 
 ! ******************************************************************************
 ! GNUPLOT TERMINAL CONSTANTS
@@ -9324,6 +9325,39 @@ module fplot_core
             class(plot_data_histogram), intent(inout) :: this
             character(len = *), intent(in) :: x
         end subroutine
+    end interface
+
+! ******************************************************************************
+! FPLOT_PLOT_BAR.F90
+! ------------------------------------------------------------------------------
+    !> @brief Defines a 2D plot tailored towards bar plotting.
+    type, extends(plot_2d) :: plot_bar
+    private
+        !> @brief A relative scaling of the width of a single bar.  The value
+        !! must be between 0 and 1 with 1 being full width.
+        real(real32) :: m_barWidth = 0.75d0
+    contains
+        procedure, public :: get_bar_width => pb_get_bar_width
+        procedure, public :: set_bar_width => pb_set_bar_width
+        procedure, public :: get_command_string => pb_get_cmd
+    end type
+
+! ------------------------------------------------------------------------------
+    interface
+        pure module function pb_get_bar_width(this) result(x)
+            class(plot_bar), intent(in) :: this
+            real(real32) :: x
+        end function
+
+        module subroutine pb_set_bar_width(this, x)
+            class(plot_bar), intent(inout) :: this
+            real(real32), intent(in) :: x
+        end subroutine
+
+        module function pb_get_cmd(this) result(x)
+            class(plot_bar), intent(in) :: this
+            character(len = :), allocatable :: x
+        end function
     end interface
 
 ! ------------------------------------------------------------------------------
