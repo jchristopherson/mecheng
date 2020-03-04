@@ -1,5 +1,11 @@
 var NAVTREEINDEX4 =
 {
+"structcurvefit__regression_1_1nonlinear__regression.html#acc9d6b5a022f74984782f5b7c66969fc":[1,0,10,3,17],
+"structcurvefit__regression_1_1nonlinear__regression.html#ae18d84d77331eb1d2a21f9b73d304a36":[1,0,10,3,13],
+"structcurvefit__regression_1_1nonlinear__regression.html#ae2c43b5fc5b1600305a431f17ae72b7a":[1,0,10,3,19],
+"structcurvefit__regression_1_1nonlinear__regression.html#af4b112b760feea2738f93d1a5f3d83b6":[1,0,10,3,7],
+"structferror_1_1errors.html":[1,0,12,1],
+"structferror_1_1errors.html#a0116f6ab44eba258b05126d0a1ee46b2":[1,0,12,1,9],
 "structferror_1_1errors.html#a0e695dc86bf47e17e4e27607b14aaadc":[1,0,12,1,22],
 "structferror_1_1errors.html#a16967ced63ebe7899fa3b3427f98e553":[1,0,12,1,13],
 "structferror_1_1errors.html#a1d2ba3d2a17aaf2fea4d0899185e4656":[1,0,12,1,14],
@@ -243,11 +249,5 @@ var NAVTREEINDEX4 =
 "structfplot__core_1_1hot__colormap.html":[1,0,16,5],
 "structfplot__core_1_1hot__colormap.html#a10ee2b5874ee8b8fc5f944da73ecdbe9":[1,0,16,5,0],
 "structfplot__core_1_1latex__terminal.html":[1,0,16,6],
-"structfplot__core_1_1latex__terminal.html#a0337948cfe3401cf42cbd887c5736b8e":[1,0,16,6,2],
-"structfplot__core_1_1latex__terminal.html#a13910c1c0e215397ebc3125423f2ad3b":[1,0,16,6,4],
-"structfplot__core_1_1latex__terminal.html#a3b876987b423b802794b2ac056053c85":[1,0,16,6,1],
-"structfplot__core_1_1latex__terminal.html#a3f10978cef31279b35dda56bdb5bca48":[1,0,16,6,5],
-"structfplot__core_1_1latex__terminal.html#a5cbe0e20b10a056bfa211a791dc3c353":[1,0,16,6,0],
-"structfplot__core_1_1latex__terminal.html#a6e06b665cda930915ea1c2f913bfd0ff":[1,0,16,6,3],
-"structfplot__core_1_1legend.html":[1,0,16,7]
+"structfplot__core_1_1latex__terminal.html#a0337948cfe3401cf42cbd887c5736b8e":[1,0,16,6,2]
 };

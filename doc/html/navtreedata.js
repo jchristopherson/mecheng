@@ -50,14 +50,14 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"interfacecurvefit__core_1_1is__monotonic.html",
-"interfacelinalg__core_1_1tri__mtx__mult.html#a06049bd2dc476a4802ed5aa30a22be4f",
-"namespacenonlin__optimize.html",
-"structferror_1_1errors.html#a0e695dc86bf47e17e4e27607b14aaadc",
-"structfplot__core_1_1legend.html#a0555f9a8112c19a44b76a7c5485f199d",
-"structfplot__core_1_1scatter__plot__data.html#a666a5a0660aeabf20eb03928098f03bc",
-"structkinematics_1_1quaternion.html#a0652be88ed3f1a36d396916a7d9dbe0f",
-"structsignals_1_1fir__filter.html"
+"interfacecurvefit__calibration_1_1split__ascend__descend.html#afdce8382f30254fdcb7abb9d19f1be24",
+"interfacelinalg__core_1_1trace.html",
+"namespacenonlin__least__squares.html",
+"structcurvefit__regression_1_1nonlinear__regression.html#acc9d6b5a022f74984782f5b7c66969fc",
+"structfplot__core_1_1latex__terminal.html#a13910c1c0e215397ebc3125423f2ad3b",
+"structfplot__core_1_1plot__data__histogram.html#a075d62dd19773848acefaf7db6badbbd",
+"structintegral__core_1_1ode__helper.html#a5f0785936c8edb94beb039537ace0114",
+"structnonlin__optimize_1_1line__search__optimizer.html#a2b1042174ffcc88914b97c27c120f010"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

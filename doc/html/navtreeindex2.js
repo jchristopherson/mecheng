@@ -1,5 +1,8 @@
 var NAVTREEINDEX2 =
 {
+"interfacelinalg__core_1_1trace.html":[1,0,22,30],
+"interfacelinalg__core_1_1trace.html#a753f2d73dae7a5c249ed64db66ff748b":[1,0,22,30,0],
+"interfacelinalg__core_1_1tri__mtx__mult.html":[1,0,22,31],
 "interfacelinalg__core_1_1tri__mtx__mult.html#a06049bd2dc476a4802ed5aa30a22be4f":[1,0,22,31,1],
 "interfacelinalg__core_1_1tri__mtx__mult.html#abab3c7a15f2b87d0537d52c158e3deec":[1,0,22,31,0],
 "interfacelinalg__immutable_1_1mat__eigen.html":[1,0,23,3],
@@ -106,7 +109,7 @@ var NAVTREEINDEX2 =
 "interfacestrain_1_1wheatstone__bridge__series.html#a98a317c75c9bfbdbf38715dcaffb2f88":[1,0,32,2,1],
 "interfacestrings_1_1split__string.html":[1,0,33,0],
 "interfacestrings_1_1split__string.html#a967688df350b0b5b4c84655de787d660":[1,0,33,0,0],
-"interfacestrings_1_1split__string.html#aa7220cbfe17d0464e0344e8bb86fc259":[1,0,33,0,1],
+"interfacestrings_1_1split__string.html#add839bcf65117df056bbb50f38b81f42":[1,0,33,0,1],
 "interfacestrings_1_1split__string__delim.html":[1,0,33,1],
 "interfacestrings_1_1split__string__delim.html#a842efd24f3280c56912cc5aeb0607cec":[1,0,33,1,0],
 "interfacestrings_1_1string__to__number.html":[1,0,33,4],
@@ -246,8 +249,5 @@ var NAVTREEINDEX2 =
 "namespacenonlin__constants.html":[0,0,29],
 "namespacenonlin__core.html":[0,0,30],
 "namespacenonlin__core.html":[1,0,25],
-"namespacenonlin__least__squares.html":[0,0,31],
-"namespacenonlin__least__squares.html":[1,0,26],
-"namespacenonlin__linesearch.html":[0,0,32],
-"namespacenonlin__linesearch.html":[1,0,27]
+"namespacenonlin__least__squares.html":[0,0,31]
 };
