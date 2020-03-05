@@ -540,6 +540,7 @@ set(calibrate_sources
 # Define the C-API source files
 set(c_api_sources
     c_api/c_polynomial.f90
+    c_api/c_data_analysis.f90
 )
 
 # Define the MECHENG source files
