@@ -15,7 +15,6 @@ module function peak_detect(v, delta, err) result(rst)
     integer(int32), allocatable, dimension(:) :: maxind, minind
     real(real64), allocatable, dimension(:) :: maxtab, mintab
     real(real64) :: mx, mn, val
-    logical :: lookformax
     type(errors), target :: deferr
     class(errors), pointer :: errmgr
 
@@ -25,7 +24,6 @@ module function peak_detect(v, delta, err) result(rst)
     else
         errmgr => deferr
     end if
-    lookformax = .true.
     n = size(v)
     allocate(maxind(n), stat = flag)
     if (flag == 0) allocate(minind(n), stat = flag)
@@ -51,18 +49,16 @@ module function peak_detect(v, delta, err) result(rst)
             mnpos = i
         end if
 
-        if (lookformax) then
-            if (val < mx - delta) then
-                j = j + 1
-                maxtab(j) = mx
-                maxind(j) = mxpos
-            end if
-        else
-            if (val > mn + delta) then
-                k = k + 1
-                mintab(k) = mn
-                minind(k) = mnpos
-            end if
+        if (val < mx - delta) then
+            j = j + 1
+            maxtab(j) = mx
+            maxind(j) = mxpos
+        end if
+
+        if (val > mn + delta) then
+            k = k + 1
+            mintab(k) = mn
+            minind(k) = mnpos
         end if
     end do
 
