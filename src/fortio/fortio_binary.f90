@@ -830,6 +830,7 @@ contains
         ! Store the results
         call this%clear()
         this%m_buffer(1:n) = x
+        this%m_count = n
     end subroutine
 
 ! ------------------------------------------------------------------------------
