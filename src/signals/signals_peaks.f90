@@ -15,6 +15,7 @@ module function peak_detect(v, delta, err) result(rst)
     integer(int32), allocatable, dimension(:) :: maxind, minind
     real(real64), allocatable, dimension(:) :: maxtab, mintab
     real(real64) :: mx, mn, val
+    logical :: lookForMax
     type(errors), target :: deferr
     class(errors), pointer :: errmgr
 
@@ -38,6 +39,7 @@ module function peak_detect(v, delta, err) result(rst)
     ! Process
     j = 0
     k = 0
+    lookForMax = .true.
     do i = 1, n
         val = v(i)
         if (val > mx) then
@@ -49,16 +51,24 @@ module function peak_detect(v, delta, err) result(rst)
             mnpos = i
         end if
 
-        if (val < mx - delta) then
-            j = j + 1
-            maxtab(j) = mx
-            maxind(j) = mxpos
-        end if
-
-        if (val > mn + delta) then
-            k = k + 1
-            mintab(k) = mn
-            minind(k) = mnpos
+        if (lookForMax) then
+            if (val < mx - delta) then
+                j = j + 1
+                maxtab(j) = mx
+                maxind(j) = mxpos
+                mn = val
+                mnpos = i
+                lookForMax = .false.
+            end if
+        else
+            if (val > mn + delta) then
+                k = k + 1
+                mintab(k) = mn
+                minind(k) = mnpos
+                mx = val
+                mxpos = i
+                lookForMax = .true.
+            end if
         end if
     end do
 
