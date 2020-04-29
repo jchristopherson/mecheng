@@ -145,7 +145,7 @@ contains
             call str%append(new_line('a'))
             call str%append("set ")
             call str%append(this%get_id_string())
-            call str%append("zeroaxis linestyle -1 linewidth ")
+            call str%append(" zeroaxis linestyle -1 linewidth ")
             call str%append(to_string(this%get_zero_axis_line_width()))
         end if
 
